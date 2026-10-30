@@ -134,7 +134,8 @@ export async function writeBuild(out: BuildOutput, dist: string): Promise<void> 
 
 async function cmdBuild(args: string[]): Promise<void> {
   const out = buildPacks(await loadInputs(args));
-  const dist = resolve(option(args, "out") ?? path.dist);
+  // Relative paths mean relative to the repository root, whatever directory pnpm runs the script from.
+  const dist = resolve(root, option(args, "out") ?? path.dist);
   await writeBuild(out, dist);
   for (const f of out.files)
     log(

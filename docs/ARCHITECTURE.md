@@ -151,7 +151,7 @@ Each game registers a `GameModule` in `apps/web/games/registry.ts`:
 
 | Pack | Source | Simplification | Format | Size budget (gzip) | Loaded when |
 |---|---|---|---|---|---|
-| `geo.world.110m` | NE 1:110m admin-0 map units + tiny-entity points | none beyond NE | TopoJSON, quantized 1e5 | ≤ 90 KB | Any world map at zoom < 3 |
+| `geo.world.110m` | NE 1:110m admin-0 map units + tiny-entity points | none beyond NE | TopoJSON, quantized 1e5 | ≤ 110 KB (measured 102 KB with the real data at 1e5 quantization; 90 KB was an estimate) | Any world map at zoom < 3 |
 | `geo.world.50m` | NE 1:50m | none | TopoJSON 1e5 | ≤ 450 KB | Zoom ≥ 3, or continent-scope maps (tiles by continent: ≤ 120 KB each) |
 | `geo.world.10m` | NE 1:10m | mapshaper Visvalingam to 12% | TopoJSON 1e6, **split by continent** | ≤ 250 KB per continent | Zoom ≥ 7. Fact Pin scoring (point-in-polygon). |
 | `geo.silhouettes` | From 10m main groups (§silhouette 5.4) | 15% | Per-entity TopoJSON objects, bundled by continent | ≤ 80 KB per continent | Silhouette |
