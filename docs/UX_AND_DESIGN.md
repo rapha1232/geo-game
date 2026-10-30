@@ -186,6 +186,8 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 
 All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI components). Feedback colours (`correct`, `wrong`, `near`) are graphics paired with a glyph, so they need 3:1. Message text stays in `--color-text`. The focus ring is always drawn with a positive `outline-offset`, so it sits next to the page or card colour and never touches an accent fill (blue on terracotta is only about 1.3:1). Map tokens (`ocean`, `land`, `border-map`) are verified together with `GameMap` in T0.10. The CI token test verifies this ([TESTING_AND_ACCEPTANCE §3](TESTING_AND_ACCEPTANCE.md#3-platform-acceptance-criteria)).
 
+**Themes:** every screen ships in light and dark. The default follows the system (`prefers-color-scheme`). A System / Light / Dark switch (in the footer now, in Settings later) overrides it. The choice is saved on the device (`localStorage["meridian:theme"]`, absent means System) and applied by a tiny inline script in `<head>` before first paint, so it never flashes. When a CSP is added (T0.12) that script needs a nonce or hash. Selected state is shown with a ✓ and bold text, not colour alone.
+
 **Typography:** UI font `Source Sans 3`, display/headings `Source Serif 4`, numerals tabular (`font-variant-numeric: tabular-nums`) for timers and scores. All are SIL OFL fonts, self-hosted. Scale (rem): 0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25. Body line-height 1.5.
 
 **Spacing:** 4 px base (4, 8, 12, 16, 24, 32, 48, 64). Radius: 6 px for controls, 12 px for cards. Elevation: a 1 px border first, with shadows only on overlays.

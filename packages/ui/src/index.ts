@@ -7,3 +7,5 @@ export * from "./components/Tabs";
 export * from "./components/Toast";
 export * from "./components/ChoiceGrid";
 export * from "./components/AnswerInput";
+export * from "./theme";
+export * from "./components/ThemeToggle";

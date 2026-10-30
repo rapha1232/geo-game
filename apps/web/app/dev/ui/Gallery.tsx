@@ -9,17 +9,13 @@ import {
   ChoiceGrid,
   Dialog,
   Tabs,
+  ThemeToggle,
   ToastProvider,
   useToast,
   colorTokens,
   type ChoiceState,
 } from "@meridian/ui";
 import styles from "./Gallery.module.css";
-
-function setTheme(theme: "light" | "dark" | "system") {
-  if (theme === "system") delete document.documentElement.dataset.theme;
-  else document.documentElement.dataset.theme = theme;
-}
 
 function ToastButtons() {
   const toast = useToast();
@@ -59,17 +55,10 @@ export function Gallery() {
         <header>
           <p className={styles.eyebrow}>Developer playground</p>
           <h1>Components</h1>
-          <div className={styles.row}>
-            <Button variant="ghost" onPress={() => setTheme("system")}>
-              System
-            </Button>
-            <Button variant="ghost" onPress={() => setTheme("light")}>
-              Light
-            </Button>
-            <Button variant="ghost" onPress={() => setTheme("dark")}>
-              Dark
-            </Button>
-          </div>
+          <ThemeToggle
+            label="Theme"
+            optionLabels={{ system: "System", light: "Light", dark: "Dark" }}
+          />
         </header>
 
         <section aria-labelledby="g-buttons">
