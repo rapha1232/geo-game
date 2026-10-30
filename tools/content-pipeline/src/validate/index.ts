@@ -93,6 +93,9 @@ export function contentSetFromBuild(
   const flagIds = has("flags.svg")
     ? new Set(Object.keys((json("flags.svg") as { flags: Record<string, string> }).flags))
     : undefined;
+  const facts = has("facts.v1")
+    ? (json("facts.v1") as { facts: NonNullable<ContentSet["facts"]> }).facts
+    : undefined;
   const adjacency = has("core.adjacency")
     ? (json("core.adjacency") as { edges: ContentSet["adjacency"] }).edges
     : undefined;
@@ -111,6 +114,7 @@ export function contentSetFromBuild(
     ...(ambiguity ? { ambiguity } : {}),
     ...(disputes ? { disputes } : {}),
     ...(adjacency ? { adjacency } : {}),
+    ...(facts ? { facts } : {}),
     ...(flagIds ? { flagIds } : {}),
     ...(daily.length > 0 ? { daily } : {}),
     ...(capitals.length > 0 ? { capitals } : {}),

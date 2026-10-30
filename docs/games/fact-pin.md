@@ -80,6 +80,8 @@ When the timer runs out, the current pin is confirmed automatically. With no pin
 }
 ```
 
+`continent` (AF, AS, EU, NA, OC, SA) says where the answer is, so a run can take at most 2 per continent and the balance quotas can be checked. `generated: true` marks facts built from data by a template (§4.2), such as "Pin the capital of Mongolia."; they are exempt from the 12–35 word rule and from `FACT_NAMES_TARGET`, since they name their target by design.
+
 Area-target facts use `"target": {"type": "entity", "id": "country:PER"}` (the polygon comes from the geometry pack) or `{"type": "polygon", "ref": "feature:atacama"}` for physical features.
 
 ### 4.2 Fact bank size

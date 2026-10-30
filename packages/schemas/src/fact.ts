@@ -37,6 +37,10 @@ export const fact = z
     reviewed_at: isoDate.nullable(),
     review_due: isoDate.nullable(),
     sensitive: z.boolean().optional(),
+    /** Continent code of the answer (AF, AS, EU, NA, OC, SA), for run composition and the balance quotas. */
+    continent: z.enum(["AF", "AS", "EU", "NA", "OC", "SA"]).optional(),
+    /** Built from data by a template (capitals and cities), not written by an editor: exempt from the word-count and naming rules. */
+    generated: z.boolean().optional(),
   })
   .superRefine((f, ctx) => {
     const words = f.text.trim().split(/\s+/).length;
@@ -53,7 +57,7 @@ export const fact = z
           path: ["reviewed_at"],
           message: "a published fact needs reviewed_at",
         });
-      if (words < 12 || words > 35)
+      if (!f.generated && (words < 12 || words > 35))
         ctx.addIssue({
           code: "custom",
           path: ["text"],

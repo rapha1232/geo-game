@@ -24,6 +24,17 @@ export function neCode(props: Record<string, unknown>): string | null {
   return code ? (NE_CODE_FIXES[code] ?? code) : null;
 }
 
+/**
+ * Natural Earth files the Maldives, Mauritius and Seychelles under "Seven seas (open ocean)". Their UN region
+ * (Asia, Africa) gives the continent every quiz and game needs.
+ */
+function continentOf(props: Record<string, unknown>): string | null {
+  const c = str(props["CONTINENT"]);
+  if (c && c !== "Seven seas (open ocean)") return c;
+  const un = str(props["REGION_UN"]);
+  return un && un in CONTINENT_CODES ? un : c;
+}
+
 export type NeCountry = {
   code: string;
   name: string;
@@ -74,7 +85,7 @@ export function indexByCode(collection: NeCollection): Map<string, NeCountry> {
       nameLong: str(f.properties["NAME_LONG"]),
       formalName: str(f.properties["FORMAL_EN"]),
       iso2: str(f.properties["ISO_A2_EH"]),
-      continent: str(f.properties["CONTINENT"]),
+      continent: continentOf(f.properties),
       subregion: str(f.properties["SUBREGION"]),
       labelPoint: typeof x === "number" && typeof y === "number" ? [y, x] : null,
       population:

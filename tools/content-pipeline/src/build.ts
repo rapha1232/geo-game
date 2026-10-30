@@ -21,6 +21,8 @@ import {
   type SilhouetteOverride,
 } from "./derive.ts";
 import type { Editorial } from "./editorial.ts";
+import { buildFacts, type authoredFile, type PopulatedPlace } from "./facts.ts";
+import type { z } from "zod";
 import {
   dropSlivers,
   normalizeGeometry,
@@ -53,6 +55,11 @@ export type BuildInput = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
+  /** Curated fact files and populated places: adds the `facts.v1` pack (curated, capitals and cities). */
+  factSources?: {
+    authored: readonly { file: z.infer<typeof authoredFile> }[];
+    places: readonly PopulatedPlace[];
+  };
   /** ISO alpha-3 codes with no ocean coast (content/landlocked.yaml). */
   landlocked?: ReadonlySet<string>;
   /** Flag SVGs by ISO alpha-2 and the editorial confusables groups. Adds the `flags.svg` pack. */
@@ -138,6 +145,15 @@ export function buildPacks(input: BuildInput): BuildOutput {
       if (e.flag)
         svg[e.id] = input.flags.svg.get((e.external_ids.iso2 as string).toUpperCase()) as string;
     files.push(toFile("flags.svg", { pack: "flags.svg", version: input.version, flags: svg }));
+  }
+  if (input.factSources) {
+    const facts = buildFacts({
+      authored: input.factSources.authored,
+      entities,
+      places: input.factSources.places,
+      reviewedAt: input.releasedAt.slice(0, 10),
+    });
+    files.push(toFile("facts.v1", { pack: "facts.v1", version: input.version, facts }));
   }
   if (input.derive) files.push(...deriveFiles(input, entities, maps));
   for (const d of input.daily ?? [])

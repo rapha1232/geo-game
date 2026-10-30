@@ -5,6 +5,8 @@ import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import { extendSchedule } from "./daily.ts";
+import { authoredFile, readPopulatedPlaces } from "./facts.ts";
+import { readdir } from "node:fs/promises";
 import { confusablesByCode, confusablesFile, extractFlags } from "./flags.ts";
 import { dailySchedule } from "@meridian/schemas";
 import { checkEditorialCoverage, parseEditorial } from "./editorial.ts";
@@ -38,6 +40,8 @@ const path = {
   dailySilhouette: join(root, "content/daily/silhouette.json"),
   confusables: join(root, "content/flags/confusables.yaml"),
   landlocked: join(root, "content/landlocked.yaml"),
+  facts: join(root, "content/facts"),
+  places: join(root, "data/raw/ne/ne_10m_populated_places_simple.geojson"),
   flagsTgz: join(root, "data/raw/fi/flag-icons-7.6.0.tgz"),
   adjacency: join(root, "content/overrides/adjacency.yaml"),
   version: join(root, "content/version.txt"),
@@ -156,6 +160,17 @@ async function loadInputs(args: string[]) {
     ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
     disputes: await list(dispute, "disputes")(path.disputes),
     daily: await readDaily(),
+    factSources: {
+      authored: await Promise.all(
+        (await readdir(path.facts))
+          .filter((f) => f.endsWith(".yaml"))
+          .sort()
+          .map(async (f) => ({ file: authoredFile.parse(await yaml(join(path.facts, f))) })),
+      ),
+      places: readPopulatedPlaces(
+        JSON.parse(new TextDecoder().decode(await read("ne-10m-populated-places", path.places))),
+      ),
+    },
     landlocked: new Set(
       z
         .object({ landlocked: z.array(z.string().regex(/^[A-Z]{3}$/)) })
@@ -225,6 +240,7 @@ async function cmdValidate(args: string[]): Promise<void> {
         fullSets: true,
         retiredIds: retired,
         release: flag(args, "release"),
+        quotas: flag(args, "quotas"),
         knownGeometryIssues: known,
         knownCapitalIssues:
           (

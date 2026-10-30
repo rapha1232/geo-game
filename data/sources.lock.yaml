@@ -12,6 +12,12 @@ entries:
     version: v5.1.2
     sha256: 239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255
     bytes: 13287234
+  - id: ne-10m-populated-places
+    source: ne
+    url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_populated_places_simple.geojson
+    version: v5.1.2
+    sha256: fd3fa867a320cbd5c5b6bb5bc550afeec2939fb2cef688e508007282a55ac42f
+    bytes: 4932147
   - id: ne-110m-countries
     source: ne
     url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_110m_admin_0_countries.geojson

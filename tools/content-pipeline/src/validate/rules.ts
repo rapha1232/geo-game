@@ -246,6 +246,8 @@ export function factNameRules(c: ContentSet): Issue[] {
   const byId = new Map(c.entities.map((e) => [e.id, e] as const));
   const issues: Issue[] = [];
   for (const f of c.facts) {
+    // Generated "Pin X" facts name their target by design (fact-pin §4.2).
+    if (f.generated) continue;
     const forbidden = new Map<string, string>();
     const add = (text: string, why: string) => {
       const t = normTokens(text);
