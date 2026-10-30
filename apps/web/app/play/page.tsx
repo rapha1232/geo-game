@@ -16,6 +16,7 @@ export default function Page() {
         <h2 style={{ margin: 0 }}>{t("sil.title")}</h2>
         <p style={{ margin: 0 }}>{t("play.silhouette")}</p>
         <Link href="/play/silhouette">{t("play.start")}</Link>
+        <Link href="/play/silhouette/challenge">{t("ch.createTitle")}</Link>
       </Card>
     </section>
   );

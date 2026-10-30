@@ -230,7 +230,7 @@ type RepeatRules = {
 
 ### 8.4 Challenge codes
 
-- **Long code (always available, offline):** `base64url(deflateRaw(canonicalJSON({v:1, g, c, s, cv, sc?})))`, where `g` = game ID, `c` = config with short keys, `s` = seed, `cv` = content version, and `sc` = optional sender score. The URL is `/c/<code>`, typically 40–90 characters.
+- **Long code (always available, offline):** `base64url(deflateRaw(canonicalJSON({v:1, g, c, s, cv, sc?})))`, where `g` = game ID, `c` = config with short keys, `s` = seed, `cv` = content version, and `sc` = optional sender score. The URL is `/c/<code>`, typically 90–130 characters for a Silhouette challenge (the config, seed, version and sender score all travel in it).
 - **Short code (R1, needs the server):** `POST /api/v1/challenges` stores the long payload and returns `<PREFIX>-XXXX-XXXX` (e.g. `SH-4KQ2-M9XD`, 8 Crockford base32 characters = 40 bits). `/c/SH-4KQ2-M9XD` resolves server-side and redirects. The share UI uses the short code when online and falls back to the long code.
 - **Version handling:** if `cv` is retained (≤ 180 days old), the challenge loads that version's packs, so the puzzle is identical. If it has expired, the page explains that "This challenge used an older version of our data" and offers the same config with the same seed on the current version (labelled "approximately the same").
 - **Decoder hardening:** max code length 2 KB, decompressed max 8 KB, zod-validated config. Unknown `v` → friendly error.

@@ -61,7 +61,7 @@ export type Session = {
   /** Finished rounds of this session for the summary. */
   done: { state: RoundState; followUpsCorrect: number }[];
   /** Phase after the round: guess list, follow-ups, then the Learn card. */
-  phase: "guessing" | "followups" | "learn";
+  phase: "guessing" | "followups" | "learn" | "finished";
   /** Last feedback line, not persisted meaning. */
   lastEvent: GuessEvent | null;
   /** Active time of the current round: pauses when the tab is hidden and on reload (ARCHITECTURE §9). */
@@ -72,6 +72,8 @@ export type Session = {
   resultId: string | null;
   /** The player resumed this round after a reload. */
   resumed: boolean;
+  /** A seeded challenge: the fixed targets, in order, and the sender's score if they shared one. */
+  challenge?: { code: string; targets: string[]; sc?: number };
 };
 
 export type Env = { world: World; seed: string };
@@ -153,6 +155,51 @@ export function newDailySession(
   };
 }
 
+/** A seeded challenge (silhouette §3): fixed targets in order, no Repeat Guard history, no daily rules. */
+export function newChallengeSession(
+  world: World,
+  seed: string,
+  config: Omit<Config, "mode">,
+  challenge: NonNullable<Session["challenge"]>,
+  now = 0,
+): Session {
+  const full: Config = { ...config, mode: "seeded" };
+  const rng = roundRng(seed, full, 1);
+  const first = challenge.targets[0];
+  if (!first) throw new RangeError("a challenge needs at least one target");
+  return {
+    seed,
+    config: full,
+    roundNo: 1,
+    round: startRound(world, { targetId: first, mode: "seeded", difficulty: full.difficulty }, rng),
+    history: [],
+    guardRelaxed: false,
+    followUps: [],
+    done: [],
+    phase: "guessing",
+    lastEvent: null,
+    timer: startTimer(newTimer(), now),
+    startedAt: now,
+    resultId: null,
+    resumed: false,
+    challenge,
+  };
+}
+
+/** Points so far in a challenge and the most it could have scored. */
+export function challengeTotals(s: Session): { points: number; max: number; solved: number } {
+  const rounds = [
+    ...s.done,
+    ...(s.phase === "learn" ? [{ state: s.round, followUpsCorrect: followUpsCorrect(s) }] : []),
+  ];
+  const perRound = 6 + s.config.followUps.length;
+  return {
+    points: rounds.reduce((sum, r) => sum + roundPoints(r.state, r.followUpsCorrect), 0),
+    max: (s.challenge?.targets.length ?? rounds.length) * perRound,
+    solved: rounds.filter((r) => r.state.status === "solved").length,
+  };
+}
+
 /** Pauses or resumes the round clock (tab hidden or visible). The clock stops when the round ends. */
 export function setClock(s: Session, running: boolean, now: number): Session {
   const live = running && s.phase === "guessing";
@@ -221,6 +268,28 @@ export function next(world: World, s: Session, now = 0): Session {
   if (s.phase !== "learn" || s.config.mode === "daily") return s;
   const done = [...s.done, { state: s.round, followUpsCorrect: followUpsCorrect(s) }];
   const roundNo = s.roundNo + 1;
+  if (s.challenge) {
+    const target = s.challenge.targets[roundNo - 1];
+    if (!target) return { ...s, done, phase: "finished", lastEvent: null };
+    const rng = roundRng(s.seed, s.config, roundNo);
+    return {
+      ...s,
+      done,
+      roundNo,
+      round: startRound(
+        world,
+        { targetId: target, mode: "seeded", difficulty: s.config.difficulty },
+        rng,
+      ),
+      followUps: [],
+      phase: "guessing",
+      lastEvent: null,
+      timer: startTimer(newTimer(), now),
+      startedAt: now,
+      resultId: null,
+      resumed: false,
+    };
+  }
   return {
     ...s,
     done,

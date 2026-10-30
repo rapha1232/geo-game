@@ -78,14 +78,15 @@ export function assemble(packs: SilhouettePacks): Loaded {
 }
 
 /** Loads the four packs the game needs. */
-export async function loadSilhouettePacks(loader: {
-  pack<T>(name: string): Promise<T>;
-}): Promise<SilhouettePacks> {
+export async function loadSilhouettePacks(
+  loader: { pack<T>(name: string, version?: string): Promise<T> },
+  version?: string,
+): Promise<SilhouettePacks> {
   const [countries, adjacency, ambiguity, silhouettes] = await Promise.all([
-    loader.pack<SilhouettePacks["countries"]>("core.countries"),
-    loader.pack<SilhouettePacks["adjacency"]>("core.adjacency"),
-    loader.pack<SilhouettePacks["ambiguity"]>("core.ambiguity"),
-    loader.pack<SilhouettePacks["silhouettes"]>("geo.silhouettes"),
+    loader.pack<SilhouettePacks["countries"]>("core.countries", version),
+    loader.pack<SilhouettePacks["adjacency"]>("core.adjacency", version),
+    loader.pack<SilhouettePacks["ambiguity"]>("core.ambiguity", version),
+    loader.pack<SilhouettePacks["silhouettes"]>("geo.silhouettes", version),
   ]);
   return { countries, adjacency, ambiguity, silhouettes };
 }

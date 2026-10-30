@@ -38,6 +38,7 @@ export function silhouetteResult(
     }),
     seed: s.seed,
     ...(s.config.mode === "daily" && s.config.date ? { daily_date: s.config.date } : {}),
+    ...(s.challenge ? { challenge_code: s.challenge.code } : {}),
     content_version: ctx.contentVersion,
     score: roundPoints(s.round, followUpsCorrect(s)),
     max_score: maxScore(s),

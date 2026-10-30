@@ -117,6 +117,8 @@ export type SilhouetteViewProps = {
   onChange: (s: Session) => void;
   /** Replaces the "Next round" button (a finished daily shows its summary here). */
   endSlot?: ReactNode;
+  /** Shown instead of the play screen once a challenge is over. */
+  finishedSlot?: ReactNode;
 };
 
 /** The whole play screen. Pure view over a Session: every action is a controller call that returns the next Session. */
@@ -126,6 +128,7 @@ export function SilhouetteView({
   shapes,
   onChange,
   endSlot,
+  finishedSlot,
 }: SilhouetteViewProps) {
   const [text, setText] = useState("");
   const target = world.byId.get(s.round.targetId);
@@ -150,12 +153,25 @@ export function SilhouetteView({
     }
   })();
 
+  if (s.phase === "finished" && finishedSlot)
+    return (
+      <div className={styles.page}>
+        <header className={styles.head}>
+          <h1>{t("sil.title")}</h1>
+        </header>
+        {finishedSlot}
+      </div>
+    );
+
   return (
     <div className={styles.page}>
       <header className={styles.head}>
         <h1>{t("sil.title")}</h1>
         <p className={styles.meta}>
-          {t("sil.round", { n: s.roundNo })} · {t("sil.points", { n: sessionPoints(s) })}
+          {s.challenge
+            ? t("ch.roundOf", { n: s.roundNo, total: s.challenge.targets.length })
+            : t("sil.round", { n: s.roundNo })}{" "}
+          · {t("sil.points", { n: sessionPoints(s) })}
         </p>
       </header>
 
@@ -340,7 +356,9 @@ export function SilhouetteView({
                     setText("");
                   }}
                 >
-                  {t("sil.next")}
+                  {s.challenge && s.roundNo >= s.challenge.targets.length
+                    ? t("ch.seeResults")
+                    : t("sil.next")}
                 </Button>
               )}
             </Card>
