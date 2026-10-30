@@ -6,6 +6,7 @@ import { themeInitScript } from "@meridian/ui";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { Nav } from "../components/shell/Nav";
 import { StorageProvider } from "../components/shell/StorageProvider";
+import { SettingsApplier } from "../components/shell/SettingsApplier";
 import { SystemBanners } from "../components/shell/SystemBanners";
 import { BRAND_NAME } from "../lib/brand";
 import { t } from "../lib/i18n";
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body>
         <StorageProvider contentHost={process.env.NEXT_PUBLIC_CONTENT_HOST ?? ""}>
+          <SettingsApplier />
           <div className={styles.shell}>
             <Nav />
             <SystemBanners />

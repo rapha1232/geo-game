@@ -94,3 +94,12 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+/* The Settings page can force the same thing whatever the OS says (UX_AND_DESIGN §3.6). */
+:root[data-motion="reduce"] *,
+:root[data-motion="reduce"] *::before,
+:root[data-motion="reduce"] *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition-property: color, background-color, border-color, opacity !important;
+  transition-duration: 0.01ms !important;
+}

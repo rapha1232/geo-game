@@ -16,6 +16,7 @@ import {
   replaySame,
   type QuizSession,
 } from "../../lib/quiz/session";
+import { loadSettings } from "../../lib/settings/settings";
 import { loadMastery } from "../../lib/results/save";
 import { randomUlid } from "../../lib/results/ulid";
 import type { MasteryRecord } from "../../lib/storage/db";
@@ -69,13 +70,17 @@ export function QuizRunner({ slug }: { slug: string }) {
           .catch(() => undefined);
         const remembered = (await services.db.settings.get("settings").catch(() => undefined))
           ?.value?.[`quiz:${named.template}`] as Partial<QuizConfig> | undefined;
+        const prefs = await loadSettings(services.db);
         if (!live) return;
+        setAccessible(prefs.accessibleDefault);
         version.current = manifest.current;
         seq.current = old?.seq ?? 0;
         history.current = hist?.target_ids ?? [];
         setPbs(new Map(rows.map((r) => [r.pb_key, r.score])));
         setInitial({
           ...defaultConfig(named),
+          strictness: prefs.strictness,
+          countrySet: prefs.countrySet,
           ...(remembered?.difficulty ? { difficulty: remembered.difficulty } : {}),
           ...(remembered?.strictness ? { strictness: remembered.strictness } : {}),
         });

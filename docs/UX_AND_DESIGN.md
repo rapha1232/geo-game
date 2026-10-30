@@ -116,16 +116,18 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 
 ### 3.6 Settings `/settings`
 
+Deviations from the first draft, kept here so the table matches the build: reduced motion has no "Off" (forcing motion against an operating-system preference is an accessibility anti-pattern; movement is only ever declared inside `no-preference` blocks, so "Always reduce" is the one override); the territories option and Sounds wait for their content and assets. The Settings page also holds **Export my data**, **Import data** (merge, never overwrite) and **Delete all data on this device**.
+
 | Setting | Values | Default | Phase |
 |---|---|---|---|
 | Theme | System, Light, Dark | System | R1 |
 | Distance units | km, mi | from locale | R1 |
-| Reduced motion | System, On, Off | System | R1 |
+| Reduced motion | System, Always reduce | System | R1 |
 | Answer strictness (global default) | Lenient, Standard, Strict | Standard | R1 |
-| Country set (global default) | sovereign-197, un-193, +territories | sovereign-197 | R1 |
+| Country set (global default) | sovereign-197, un-193 (+territories when the territories set ships) | sovereign-197 | R1 |
 | High-contrast map palette | On, Off | Off | R1 |
 | Accessible variants by default | On, Off | Off | R1 |
-| Sounds | On, Off | Off | R1 |
+| Sounds | On, Off | Off | R1.x (no audio assets yet; the toggle is not shown until there is something to switch) |
 | Extra answer languages | es, fr, de, pt, it, nl | none | R2 |
 | Streaks | Off, On | **Off** | R2 |
 | Anonymous answer telemetry | On, Off | On (with notice) | R2 |

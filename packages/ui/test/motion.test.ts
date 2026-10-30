@@ -70,7 +70,7 @@ describe("AC-PL-009 reduced motion (CSS level)", () => {
     const bad = all.filter(
       (d) =>
         /^animation(-name)?$/.test(d.prop) &&
-        d.value !== "none" &&
+        !/^none\b/.test(d.value) &&
         !d.inNoPreference &&
         !d.inReduce,
     );

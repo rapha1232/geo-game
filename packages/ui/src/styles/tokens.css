@@ -92,3 +92,22 @@
   color-scheme: dark;
   --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.5);
 }
+
+/* High-contrast map palette (Settings, UX_AND_DESIGN §3.6): land and sea far apart, strong outlines. */
+:root[data-contrast="high"] {
+  --color-ocean: #c4d6e5;
+  --color-land: #ffffff;
+  --color-border-map: #1a2433;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-contrast="high"]:not([data-theme="light"]) {
+    --color-ocean: #0c141b;
+    --color-land: #46515f;
+    --color-border-map: #e8ecf1;
+  }
+}
+:root[data-contrast="high"][data-theme="dark"] {
+  --color-ocean: #0c141b;
+  --color-land: #46515f;
+  --color-border-map: #e8ecf1;
+}

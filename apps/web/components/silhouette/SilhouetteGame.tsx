@@ -15,6 +15,7 @@ import {
   type Config,
   type Session,
 } from "../../lib/silhouette/controller";
+import { browserLocale, loadSettings, resolveUnits } from "../../lib/settings/settings";
 import { loadHistory, loadMastery, saveRound } from "../../lib/results/save";
 import { masteryUpdates, silhouetteResult } from "../../lib/results/silhouette";
 import { randomUlid } from "../../lib/results/ulid";
@@ -192,6 +193,9 @@ export function SilhouetteGame({
               now,
             );
         }
+        // Distance units come from Settings, so a change applies to a round already in progress too.
+        const unit = resolveUnits(await loadSettings(services.db), browserLocale());
+        start = { ...start, config: { ...start.config, unit } };
         setLoaded(data);
         setSession(document.visibilityState === "visible" ? setClock(start, true, now) : start);
       } catch {
