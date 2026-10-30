@@ -1,0 +1,72 @@
+.modules {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-6);
+}
+.hero {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+.hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+}
+.lede {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  border-radius: var(--radius-control);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+.cta:focus-visible,
+.tile:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+.modules h2 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+}
+.cards,
+.tiles {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}
+.card {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+}
+.card h3,
+.card p {
+  margin: 0;
+}
+.tile {
+  display: flex;
+  align-items: center;
+  min-height: 4rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+}

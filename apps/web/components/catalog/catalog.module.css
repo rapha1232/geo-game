@@ -1,0 +1,116 @@
+.page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+.page h1 {
+  margin: 0;
+  font-family: var(--font-display);
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.search,
+.sort {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.search {
+  flex: 1 1 18rem;
+}
+.search input,
+.sort select {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  font: inherit;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+.chipLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  min-width: 4.5rem;
+}
+.chip {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+.chip[aria-pressed="true"]::before {
+  content: "✓ ";
+}
+.chip:focus-visible,
+.star:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+}
+.count {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+.card,
+.empty {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+}
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  align-items: start;
+}
+.cardHead h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.star {
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  border: 0;
+  background: none;
+  font-size: var(--text-xl);
+  cursor: pointer;
+  color: var(--color-accent);
+}
+.pitch,
+.meta {
+  margin: 0;
+}
+.meta {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
