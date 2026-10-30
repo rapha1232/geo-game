@@ -1,0 +1,49 @@
+.list {
+  display: flex;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-1);
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--motion-micro) var(--ease),
+    border-color var(--motion-micro) var(--ease);
+}
+.tab[data-hovered] {
+  color: var(--color-text);
+}
+/* Selected state: a heavier underline and full-contrast text, not colour alone. */
+.tab[data-selected] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+.tab[data-focus-visible] {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.panel {
+  padding-top: var(--space-4);
+}
+.panel[data-focus-visible] {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .tab[data-selected] {
+    border-bottom-color: Highlight;
+  }
+}

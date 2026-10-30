@@ -1,0 +1,70 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgb(18 22 28 / 0.55);
+}
+
+.modal {
+  width: min(32rem, 100%);
+  max-height: 100%;
+  overflow: auto;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-overlay);
+}
+
+.dialog {
+  padding: var(--space-5);
+  outline: none;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 350;
+  font-size: var(--text-xl);
+  margin: 0 0 var(--space-3);
+}
+
+.body {
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .overlay[data-entering] {
+    animation: fade var(--motion-panel) var(--ease);
+  }
+  .modal[data-entering] {
+    animation: rise var(--motion-panel) var(--ease);
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .modal {
+    border-color: CanvasText;
+  }
+}

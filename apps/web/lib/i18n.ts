@@ -3,6 +3,7 @@ const en = {
   "app.tagline": "Geography, history and knowledge games. Unlimited play. No account needed.",
   "app.comingSoon": "The first games are on their way.",
   "footer.rights": "© {year} {brand}. All rights reserved.",
+  "footer.legalNav": "Legal",
   "footer.terms": "Terms of Service",
   "footer.privacy": "Privacy Policy",
 } as const;

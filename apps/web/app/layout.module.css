@@ -1,0 +1,46 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-4);
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-5) var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.footerInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.legal {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  color: var(--color-text);
+}
