@@ -1,0 +1,12 @@
+[
+  {
+    "version": "2026.10.0",
+    "date": "2026-10-30",
+    "changes": [
+      {
+        "kind": "release",
+        "text": "First public content release. Names, aliases and capitals of the 197 sovereign countries are reviewed; the fact bank launches with its first curated facts."
+      }
+    ]
+  }
+]

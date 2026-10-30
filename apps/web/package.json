@@ -11,7 +11,8 @@
     "test": "vitest run --passWithNoTests",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/migrate.mjs",
-    "gen:sources": "node scripts/gen-sources.mjs"
+    "gen:sources": "node scripts/gen-sources.mjs",
+    "gen:corrections": "node scripts/gen-corrections.mjs"
   },
   "dependencies": {
     "@meridian/fact-pin": "workspace:*",

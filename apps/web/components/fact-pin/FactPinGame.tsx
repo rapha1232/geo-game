@@ -25,6 +25,7 @@ import {
 } from "../../lib/fact-pin/session";
 import { factPinResult, saveFactRun, type FactPbOutcome } from "../../lib/fact-pin/results";
 import { randomUlid } from "../../lib/results/ulid";
+import { ReportButton } from "../report/ReportButton";
 import { FactPinConfigure } from "./FactPinConfigure";
 import { FactPinView } from "./FactPinView";
 import styles from "./fact-pin.module.css";
@@ -309,6 +310,19 @@ export function FactPinGame() {
       onChange={update}
       pb={pb}
       saved={saved}
+      revealSlot={(fact) => (
+        <ReportButton
+          targetRef={fact.id}
+          defaultCategory="wrong_fact"
+          context={{
+            game_id: "fact-pin",
+            seed: session.seed,
+            fact: fact.id,
+            content_version: version.current,
+            pin: session.run.rounds[session.run.index]?.pin ?? null,
+          }}
+        />
+      )}
       shared={shared}
       onPlayAgain={() => {
         setStage("configure");

@@ -1,0 +1,9 @@
+# The public changelog behind /about/corrections (UX_AND_DESIGN §10). Newest release first.
+# Add an entry in the same change that fixes a name, alias, capital, fact or map issue. Say what changed and why,
+# in plain words; link a report only by its public ruling ID once rulings exist (R3).
+releases:
+  - version: 2026.10.0
+    date: 2026-10-30
+    changes:
+      - kind: release
+        text: First public content release. Names, aliases and capitals of the 197 sovereign countries are reviewed; the fact bank launches with its first curated facts.

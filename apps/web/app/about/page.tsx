@@ -14,6 +14,9 @@ export default function AboutPage() {
           <a href="/about/sources">{t("sources.title")}</a>
         </li>
         <li>
+          <a href="/about/corrections">{t("corrections.title")}</a>
+        </li>
+        <li>
           <a href="/terms">{t("footer.terms")}</a>
         </li>
         <li>

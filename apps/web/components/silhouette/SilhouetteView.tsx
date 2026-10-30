@@ -1,5 +1,6 @@
 "use client";
 
+import { ReportButton } from "../report/ReportButton";
 import { useMemo, useState, type ReactNode } from "react";
 import { AnswerInput, Button, Card, ChoiceGrid } from "@meridian/ui";
 import {
@@ -119,6 +120,8 @@ export type SilhouetteViewProps = {
   endSlot?: ReactNode;
   /** Shown instead of the play screen once a challenge is over. */
   finishedSlot?: ReactNode;
+  /** For the report dialog. */
+  contentVersion?: string;
 };
 
 /** The whole play screen. Pure view over a Session: every action is a controller call that returns the next Session. */
@@ -129,6 +132,7 @@ export function SilhouetteView({
   onChange,
   endSlot,
   finishedSlot,
+  contentVersion,
 }: SilhouetteViewProps) {
   const [text, setText] = useState("");
   const target = world.byId.get(s.round.targetId);
@@ -345,6 +349,16 @@ export function SilhouetteView({
                 </li>
               </ul>
               <p className={styles.note}>{t("sil.distanceNote")}</p>
+              <ReportButton
+                targetRef={target.id}
+                context={{
+                  game_id: "silhouette",
+                  seed: s.seed,
+                  round: s.roundNo,
+                  content_version: contentVersion ?? "unknown",
+                  input: s.round.guesses.map((g) => g.input).slice(-3),
+                }}
+              />
               <p className={styles.meta}>
                 {t("sil.points", { n: points(s) })} · {followUpsCorrect(s)}/{s.followUps.length}
               </p>

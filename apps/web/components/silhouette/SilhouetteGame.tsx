@@ -306,6 +306,7 @@ export function SilhouetteGame({
         session={session}
         world={loaded.world}
         shapes={loaded.shapes}
+        contentVersion={version.current}
         onChange={(next) => update(next)}
         {...(daily && !practice && finished
           ? {

@@ -341,6 +341,7 @@ export function QuizRunner({ slug }: { slug: string }) {
           now={now}
           pb={pb}
           saved={saved}
+          contentVersion={version.current}
           onPlayAgain={() => begin(session.state.quiz.config, session.kind)}
           onReplay={() => {
             setPb(null);

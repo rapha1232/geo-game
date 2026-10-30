@@ -1,5 +1,6 @@
 "use client";
 
+import { ReportButton } from "../report/ReportButton";
 import { useMemo, useState } from "react";
 import { Button, Card } from "@meridian/ui";
 import { optionLabel, summarize, type QuizWorld } from "@meridian/quiz";
@@ -26,6 +27,8 @@ export type QuizReviewProps = {
   onConfigure: () => void;
   /** Rendered above the table: the map with missed items hatched. */
   mapSlot?: React.ReactNode;
+  /** For the report dialog. */
+  contentVersion?: string;
 };
 
 const statusKey = (it: QuizSession["state"]["items"][number]): MessageKey =>
@@ -48,6 +51,7 @@ export function QuizReview({
   onPractice,
   onConfigure,
   mapSlot,
+  contentVersion,
 }: QuizReviewProps) {
   const s = session.state;
   const sum = summarize(s, now);
@@ -114,6 +118,14 @@ export function QuizReview({
           <Button variant="ghost" onPress={onConfigure}>
             {t("qz.changeSettings")}
           </Button>
+          <ReportButton
+            context={{
+              game_id: "quiz",
+              quiz_slug: session.slug,
+              seed: session.seed,
+              content_version: contentVersion ?? "unknown",
+            }}
+          />
         </div>
       </Card>
       {mapSlot}
