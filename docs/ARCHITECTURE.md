@@ -295,7 +295,7 @@ The full strategy is in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md).
 | Area | Requirement |
 |---|---|
 | Transport | HTTPS only, HSTS (`max-age=63072000; includeSubDomains; preload`) |
-| CSP | `default-src 'self'; script-src 'self' 'nonce-…'; style-src 'self'; img-src 'self' data: <blob-host>; connect-src 'self' <blob-host> <analytics>; frame-ancestors 'none'` |
+| CSP | `default-src 'self'; script-src 'self' 'nonce-…' 'strict-dynamic'; style-src 'self' 'nonce-…'; style-src-attr 'unsafe-inline'; img-src 'self' data: <blob-host>; connect-src 'self' <blob-host> <analytics>; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'`. React Aria injects one small `<style>` and reads the nonce from `<meta name="csp-nonce">`, and components set inline `style` attributes, hence the nonce and `style-src-attr`. A per-request nonce makes pages render on demand instead of being prerendered, which is a deliberate cost of AC-PL-025 |
 | Input validation | zod on every API input. Size limits: JSON body ≤ 64 KB (results batch ≤ 512 KB). |
 | Rate limiting | Vercel WAF rules: `/api/v1/reports` 10/min/IP, `/api/v1/challenges` 30/min/IP, telemetry 120/min/IP, auth endpoints 10/min/IP. 429s include `Retry-After`. |
 | Auth (R2) | Auth.js database sessions, cookies `HttpOnly; Secure; SameSite=Lax`, CSRF protection on mutations, magic links single-use with a 15-minute expiry |
