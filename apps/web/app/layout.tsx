@@ -4,6 +4,9 @@ import type { ReactNode } from "react";
 import "@meridian/ui/styles";
 import { themeInitScript } from "@meridian/ui";
 import { ThemeSwitch } from "./ThemeSwitch";
+import { Nav } from "../components/shell/Nav";
+import { StorageProvider } from "../components/shell/StorageProvider";
+import { SystemBanners } from "../components/shell/SystemBanners";
 import { BRAND_NAME } from "../lib/brand";
 import { t } from "../lib/i18n";
 import styles from "./layout.module.css";
@@ -28,19 +31,23 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
-        <div className={styles.shell}>
-          <main className={styles.main}>{children}</main>
-          <footer className={styles.footer}>
-            <div className={styles.footerInner}>
-              <p>{t("footer.rights", { year: new Date().getFullYear(), brand: BRAND_NAME })}</p>
-              <ThemeSwitch />
-              <nav aria-label={t("footer.legalNav")} className={styles.legal}>
-                <a href="/terms">{t("footer.terms")}</a>
-                <a href="/privacy">{t("footer.privacy")}</a>
-              </nav>
-            </div>
-          </footer>
-        </div>
+        <StorageProvider contentHost={process.env.NEXT_PUBLIC_CONTENT_HOST ?? ""}>
+          <div className={styles.shell}>
+            <Nav />
+            <SystemBanners />
+            <main className={styles.main}>{children}</main>
+            <footer className={styles.footer}>
+              <div className={styles.footerInner}>
+                <p>{t("footer.rights", { year: new Date().getFullYear(), brand: BRAND_NAME })}</p>
+                <ThemeSwitch />
+                <nav aria-label={t("footer.legalNav")} className={styles.legal}>
+                  <a href="/terms">{t("footer.terms")}</a>
+                  <a href="/privacy">{t("footer.privacy")}</a>
+                </nav>
+              </div>
+            </footer>
+          </div>
+        </StorageProvider>
       </body>
     </html>
   );
