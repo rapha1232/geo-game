@@ -68,4 +68,20 @@ describe("ContentLoader", () => {
     await Promise.all([l.pack("core.countries"), l.pack("core.countries")]);
     expect((f as unknown as ReturnType<typeof vi.fn>).mock.calls.length).toBe(2); // manifest + pack
   });
+
+  it("AC-PL-014: with the network down, packs cached earlier still load; an uncached pack fails as a network error", async () => {
+    const db = new MeridianDb("content-offline");
+    await new ContentLoader({ host: "", db, fetcher: fake() }).pack("core.countries");
+    const down = vi.fn(async () => {
+      throw new TypeError("offline");
+    }) as unknown as typeof fetch;
+    const offline = new ContentLoader({ host: "", db, fetcher: down });
+    expect(await offline.pack("core.countries")).toEqual({ hello: "world" });
+    const fresh = new ContentLoader({
+      host: "",
+      db: new MeridianDb("content-offline-empty"),
+      fetcher: down,
+    });
+    await expect(fresh.pack("core.countries")).rejects.toMatchObject({ kind: "network" });
+  });
 });

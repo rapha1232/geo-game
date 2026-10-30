@@ -12,6 +12,7 @@ import {
   type FactPinConfig,
 } from "@meridian/fact-pin";
 import { t } from "../../lib/i18n";
+import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import { assembleFactPin, loadFactPinPacks, type LoadedFactPin } from "../../lib/fact-pin/data";
 import {
@@ -108,6 +109,8 @@ export function FactPinGame() {
         : [],
     [data],
   );
+
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
   const persist = useCallback(
     (next: FactSession) => {
@@ -240,18 +243,8 @@ export function FactPinGame() {
   );
 
   if (error)
-    return (
-      <div className={styles.page} role="alert">
-        <p>{t("fp.loadError")}</p>
-        <Button onPress={() => setAttempt((n) => n + 1)}>{t("sil.retry")}</Button>
-      </div>
-    );
-  if (!data)
-    return (
-      <div className={styles.page} role="status">
-        {t("fp.loading")}
-      </div>
-    );
+    return <LoadFailure className={styles.page} message={t("fp.loadError")} onRetry={retry} />;
+  if (!data) return <LoadingState className={styles.page}>{t("fp.loading")}</LoadingState>;
 
   if (offer && stage === "configure")
     return (

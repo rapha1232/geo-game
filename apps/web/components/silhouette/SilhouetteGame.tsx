@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@meridian/ui";
 import { t } from "../../lib/i18n";
+import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import { assemble, loadSilhouettePacks, type Loaded } from "../../lib/silhouette/data";
 import {
@@ -207,6 +207,8 @@ export function SilhouetteGame({
     };
   }, [services, attempt, daily, practice, challenge]);
 
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
+
   const persist = useCallback(
     (next: Session) => {
       if (!services || !persistent) return;
@@ -287,18 +289,9 @@ export function SilhouetteGame({
       </div>
     );
   if (error)
-    return (
-      <div className={styles.page} role="alert">
-        <p>{t("sil.loadError")}</p>
-        <Button onPress={() => setAttempt((n) => n + 1)}>{t("sil.retry")}</Button>
-      </div>
-    );
+    return <LoadFailure className={styles.page} message={t("sil.loadError")} onRetry={retry} />;
   if (!loaded || !session)
-    return (
-      <div className={styles.page} role="status">
-        {t("sil.loading")}
-      </div>
-    );
+    return <LoadingState className={styles.page}>{t("sil.loading")}</LoadingState>;
   return (
     <>
       {notice === "approx" && (

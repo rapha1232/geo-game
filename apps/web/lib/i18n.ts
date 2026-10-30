@@ -26,6 +26,8 @@ const en = {
   "continue.resume": "Resume",
   "continue.discard": "Discard",
   "state.storageUnavailable": "Your browser isn't letting us save progress. You can still play.",
+  "state.offlineUncached":
+    "Available when you're back online. It will load by itself once you are.",
   "state.offline": "You're offline. Games you've played recently still work.",
   "terms.title": "Terms of Service",
   "privacy.title": "Privacy Policy",

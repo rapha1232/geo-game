@@ -1,6 +1,9 @@
 import { manifest as manifestSchema, type Manifest, type PackEntry } from "@meridian/schemas";
 import type { MeridianDb } from "../storage/db";
 
+/** Where the last good manifest is kept in the `packs` table (never a real pack URL). */
+const MANIFEST_KEY = "manifest:last-good";
+
 export class ContentError extends Error {
   constructor(
     readonly kind: "network" | "integrity" | "invalid",
@@ -31,17 +34,28 @@ export class ContentLoader {
     this.fetcher = o.fetcher ?? ((...a) => fetch(...a));
   }
 
-  /** The manifest, fetched once per load. Falls back to nothing: callers show the pack-load error state. */
+  /**
+   * The manifest, fetched once per load. A copy of the last good one is kept in IndexedDB, so with the network down
+   * the packs already cached still load (AC-PL-014). With nothing cached, callers show the pack-load error state.
+   */
   manifest(): Promise<Manifest> {
     this.manifestPromise ??= this.get(`${this.o.host}/content/manifest.json`)
       .then((r) => r.json())
-      .then((j) => {
+      .then(async (j) => {
         const parsed = manifestSchema.safeParse(j);
         if (!parsed.success) throw new ContentError("invalid", "manifest.json failed validation");
+        await this.o.db?.packs
+          .put({ url: MANIFEST_KEY, sha256: "", json: parsed.data })
+          .catch(() => undefined);
         return parsed.data;
       })
-      .catch((e: unknown) => {
+      .catch(async (e: unknown) => {
         this.manifestPromise = null;
+        if (e instanceof ContentError && e.kind === "network") {
+          const kept = await this.o.db?.packs.get(MANIFEST_KEY).catch(() => undefined);
+          const parsed = manifestSchema.safeParse(kept?.json);
+          if (parsed.success) return parsed.data;
+        }
         throw e;
       });
     return this.manifestPromise;

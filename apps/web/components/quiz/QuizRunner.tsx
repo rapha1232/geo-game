@@ -20,6 +20,7 @@ import { loadSettings } from "../../lib/settings/settings";
 import { loadMastery } from "../../lib/results/save";
 import { randomUlid } from "../../lib/results/ulid";
 import type { MasteryRecord } from "../../lib/storage/db";
+import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import { QuizConfigure } from "./QuizConfigure";
 import { QuizMap } from "./QuizMap";
@@ -111,6 +112,8 @@ export function QuizRunner({ slug }: { slug: string }) {
       .then((p) => setFlags(p.flags))
       .catch(() => undefined);
   }, [services, session, flags]);
+
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
   const persist = useCallback(
     (next: QuizSession) => {
@@ -264,18 +267,9 @@ export function QuizRunner({ slug }: { slug: string }) {
       </section>
     );
   if (error)
-    return (
-      <section className={styles.page} role="alert">
-        <p>{t("qz.loadError")}</p>
-        <Button onPress={() => setAttempt((n) => n + 1)}>{t("sil.retry")}</Button>
-      </section>
-    );
+    return <LoadFailure className={styles.page} message={t("qz.loadError")} onRetry={retry} />;
   if (!data || !initial)
-    return (
-      <section className={styles.page} role="status">
-        {t("qz.loading")}
-      </section>
-    );
+    return <LoadingState className={styles.page}>{t("qz.loading")}</LoadingState>;
 
   if (resumeOffer && stage === "configure") {
     const left = timeLeftMs(resumeOffer.state, 0);
