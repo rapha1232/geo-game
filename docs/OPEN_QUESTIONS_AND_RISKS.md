@@ -6,11 +6,15 @@ Each question has a **default** that the blueprint already uses, so implementati
 
 ### Q-01: Brand name
 
+> **Decided (owner):** Use "Meridian".
+
 - **Question:** Is "Meridian" the final name? It has not been checked for trademarks or domains, and "Meridian" is a common word used by many products.
 - **Default:** Use "Meridian" as a working title behind a single config constant (`BRAND_NAME`) and the share-text template.
 - **Needed by:** R1 launch (T1.21). **Owner decision.**
 
 ### Q-02: Domain and hosting accounts
+
+> **Decided (owner):** Production URL `meridian-quiz.vercel.app` on Vercel. Database: Neon project `meridian-quiz`, connection via the `DATABASE_URL` environment variable (already configured in the cloud environment).
 
 - **Question:** Which domain, Vercel team, Neon project and Blob store should be used?
 - **Default:** Vercel + Neon under the owner's accounts. The domain is a placeholder (`meridian.example`) until decided.
@@ -18,10 +22,14 @@ Each question has a **default** that the blueprint already uses, so implementati
 
 ### Q-03: Default country set (197 vs 193)
 
+> **Decided (owner):** Approved. Keep `sovereign-197` as the default.
+
 - **Question:** Keep `sovereign-197` (including Kosovo and Taiwan) as the default?
 - **Default:** Yes, with a visible explanation and a one-click switch to UN 193. **Owner decision** (sensitive).
 
 ### Q-04: Historical geometry license
+
+> **Decided (owner):** Option 1 (isolated GPL-3.0 content pack).
 
 - **Question:** The best open historical-borders dataset found (aourednik/historical-basemaps) is **GPL-3.0**. Options:
   1. Ship it as an isolated, GPL-3.0-licensed content pack, with derived geometry published in a public repository. App code is unaffected (it is data loaded at runtime), but legal review is advisable.
@@ -32,25 +40,35 @@ Each question has a **default** that the blueprint already uses, so implementati
 
 ### Q-05: Sensitive-content policy sign-off
 
+> **Decided (owner):** Approved as specified.
+
 - **Question:** Confirm the capitals policy (e.g. Jerusalem accepted for Israel with a note; East Jerusalem and Ramallah for Palestine) and the disputed-area rendering ([DATA_AND_CONTENT §6–7](DATA_AND_CONTENT.md#6-what-counts-as-a-country)).
 - **Default:** As specified. **Owner decision** before R1 launch.
 
 ### Q-06: License of Meridian's own content
+
+> **Decided (owner):** All rights reserved. A Terms of Service and a Privacy Policy are required pages (added to T1.18, linked from the site footer).
 
 - **Question:** Should Meridian-authored facts and prompts be published openly (e.g. CC BY 4.0) or kept all-rights-reserved?
 - **Default:** All rights reserved until decided. This doesn't affect implementation.
 
 ### Q-07: Classroom / under-13 use
 
+> **Decided (owner):** No classroom features. General audience 13+.
+
 - **Question:** Should Meridian support teachers and classes, which could involve under-13 users?
 - **Default:** No. General audience 13+. No class features. Revisit after R2, because it would require COPPA/GDPR-K compliance work.
 
 ### Q-08: Analytics vendor
 
+> **Decided (owner):** Vercel Web Analytics.
+
 - **Question:** Use Vercel Web Analytics, or a self-hosted cookieless alternative (e.g. Plausible or Umami)?
 - **Default:** Vercel Web Analytics (cookieless, aggregate).
 
 ### Q-09: Fact authoring capacity
+
+> **Decided (owner):** Facts are verified by a fact-check agent that uses real-world searches and cited sources. Drafts still enter as `status: draft` with source links, and are promoted to `published` only after the agent's verification is recorded in the fact's `sources`/review fields (T1.12 to define the field).
 
 - **Question:** Who writes and reviews the ≥ 400 R1 facts (and ≥ 1,500 R3 events)?
 - **Default:** Editors draft with source links. A coding agent may draft facts **only** as `status: draft` from cited open sources, and a human must review them before `published`. **Owner decision** on staffing. This is the largest content risk for R1 (see R-01).
