@@ -34,3 +34,15 @@ export function silhouetteShare(result: GameResult, link: string): string {
     link,
   ].join("\n");
 }
+
+/** Spoiler-free share text for a finished Fact Pin Daily 5: a bar and the points per fact, never the facts or places. */
+export function factPinShare(result: GameResult, link: string): string {
+  const pins = result.items.map((i) => Math.round(i.points ?? 0));
+  const rating = (result.meta?.rating as string | undefined) ?? "";
+  return [
+    `${BRAND_NAME} · Fact Pin · ${result.daily_date ?? result.ended_at.slice(0, 10)}`,
+    ...pins.map((p) => `${proximityBar(Math.round(p / 10))} ${p}`),
+    `${result.score}/${result.max_score}${rating ? ` · ${rating}` : ""}`,
+    link,
+  ].join("\n");
+}

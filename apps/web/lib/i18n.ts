@@ -96,6 +96,13 @@ const en = {
   "daily.unavailable":
     "Today's daily isn't available right now. You can still play Silhouette without limits.",
   "daily.done": "You've played today's Silhouette.",
+  "daily.factPin": "Fact Pin: Daily 5",
+  "daily.factPinBody":
+    "Five facts for everyone, new every day. Pin where each one happened. Optional.",
+  "daily.playFactPin": "Play today's Daily 5",
+  "daily.resumeFactPin": "Resume today's Daily 5",
+  "daily.doneFactPin": "You've played today's Daily 5.",
+  "daily.moreFacts": "More facts: Endless",
   "daily.result": "{outcome} · {score} of {max} points",
   "daily.share": "Share your result",
   "daily.copy": "Copy result",

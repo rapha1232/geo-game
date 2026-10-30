@@ -12,6 +12,10 @@ import {
   type FactPinConfig,
 } from "@meridian/fact-pin";
 import { t } from "../../lib/i18n";
+import { FACT_PIN_DAILY_GAME_ID } from "../daily/DailyHub";
+import { DailySummary } from "../daily/DailySummary";
+import { browserOffsetMinutes, localDate, msToNextDay } from "../../lib/daily/time";
+import type { GameResult } from "@meridian/schemas";
 import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import { assembleFactPin, loadFactPinPacks, type LoadedFactPin } from "../../lib/fact-pin/data";
@@ -21,6 +25,7 @@ import {
   newSeed,
   pbKeyOf,
   poolKey,
+  newDailySession,
   restoreSession,
   type FactSession,
 } from "../../lib/fact-pin/session";
@@ -37,7 +42,8 @@ const mono = (): number => performance.now();
 type Stage = "configure" | "play";
 
 /** Loads the packs, saves after every action, resumes after a reload, and writes the result when a run ends. */
-export function FactPinGame() {
+export function FactPinGame({ daily = false }: { daily?: boolean }) {
+  const gameId = daily ? FACT_PIN_DAILY_GAME_ID : GAME_ID;
   const services = useServices();
   const [data, setData] = useState<LoadedFactPin | null>(null);
   const [error, setError] = useState(false);
@@ -55,6 +61,9 @@ export function FactPinGame() {
   const seq = useRef(0);
   const version = useRef("");
   const seen = useRef<Map<string, string[]>>(new Map());
+  /** Daily facts of the last week are kept out of Endless (fact-pin §11). */
+  const recentDailies = useRef<Set<string>>(new Set());
+  const [finished, setFinished] = useState<GameResult | null>(null);
 
   useEffect(() => {
     if (!services) return;
@@ -66,7 +75,7 @@ export function FactPinGame() {
         const loaded = assembleFactPin(await loadFactPinPacks(services.loader));
         const rows = await services.db.pbs.toArray().catch(() => []);
         const hist = await services.db.history.toArray().catch(() => []);
-        const old = await services.store.find(GAME_ID);
+        const old = await services.store.find(gameId);
         const remembered = (await services.db.settings.get("settings").catch(() => undefined))
           ?.value?.["fact-pin"] as Partial<FactPinConfig> | undefined;
         if (!live) return;
@@ -87,6 +96,49 @@ export function FactPinGame() {
             ...(remembered.timerSec !== undefined ? { timerSec: remembered.timerSec } : {}),
             ...(remembered.difficulty ? { difficulty: remembered.difficulty } : {}),
           }));
+        const today = localDate(Date.now(), browserOffsetMinutes());
+        const schedule = await services.loader
+          .pack<{ days: Record<string, string[]> }>("daily.fact-pin")
+          .catch(() => null);
+        if (!live) return;
+        if (schedule && !daily) {
+          const back = new Date(`${today}T00:00:00Z`).getTime();
+          for (let i = 0; i <= 7; i++) {
+            const d = new Date(back - i * 86_400_000).toISOString().slice(0, 10);
+            for (const id of schedule.days[d] ?? []) recentDailies.current.add(id);
+          }
+        }
+        if (daily) {
+          // Today's Daily 5: the schedule picks the facts. Played already: back to the hub.
+          const ids = schedule?.days[today];
+          if (!ids) throw new Error("no daily for today");
+          const rowsToday = await services.db.results.where("daily_date").equals(today).toArray();
+          if (
+            rowsToday.some((r) => {
+              const d = r.data as { game_id?: unknown; mode?: unknown } | null;
+              return d?.game_id === "fact-pin" && d.mode === "daily";
+            })
+          ) {
+            window.location.replace("/daily");
+            return;
+          }
+          const saved = old?.state as FactSession | undefined;
+          const resumable =
+            saved &&
+            saved.date === today &&
+            saved.run.phase !== "done" &&
+            old?.content_version === manifest.current;
+          const start = resumable
+            ? restoreSession(saved)
+            : newDailySession(DEFAULT_CONFIG, ids, today, Date.now(), mono());
+          setData(loaded);
+          setStage("play");
+          setSession({
+            ...start,
+            run: start.run.phase === "asking" ? resume(start.run, mono()) : start.run,
+          });
+          return;
+        }
         setData(loaded);
         const s = old?.state as FactSession | undefined;
         if (s && s.run.phase !== "done" && old?.content_version === manifest.current)
@@ -98,7 +150,7 @@ export function FactPinGame() {
     return () => {
       live = false;
     };
-  }, [services, attempt]);
+  }, [services, attempt, daily, gameId]);
 
   const categories = useMemo(
     () =>
@@ -116,17 +168,17 @@ export function FactPinGame() {
     (next: FactSession) => {
       if (!services) return;
       services.store.save({
-        game_id: GAME_ID,
+        game_id: gameId,
         seq: ++seq.current,
         updated_at: Date.now(),
         content_version: version.current,
         title: t("fp.title"),
         progress: t("fp.factOf", { n: next.run.index + 1, total: next.run.factIds.length }),
-        href: "/play/fact-pin",
+        href: daily ? "/play/fact-pin/daily" : "/play/fact-pin",
         state: next,
       });
     },
-    [services],
+    [services, gameId, daily],
   );
   const update = useCallback(
     (next: FactSession) => {
@@ -183,6 +235,7 @@ export function FactPinGame() {
         endedAt: Date.now(),
         now: mono(),
       });
+      setFinished(result);
       const key = poolKey(session.run.config);
       seen.current.set(key, session.seen);
       const out = await saveFactRun(services.db, {
@@ -209,7 +262,7 @@ export function FactPinGame() {
           data,
           c,
           seen.current.get(poolKey(c)) ?? [],
-          new Set(),
+          recentDailies.current,
           newSeed(),
           Date.now(),
           mono(),
@@ -266,7 +319,7 @@ export function FactPinGame() {
             </Button>
             <Button
               onPress={() => {
-                void services?.store.discard(GAME_ID);
+                void services?.store.discard(gameId);
                 setOffer(null);
               }}
             >
@@ -318,9 +371,21 @@ export function FactPinGame() {
       )}
       shared={shared}
       onPlayAgain={() => {
+        if (daily) return window.location.assign("/play/fact-pin");
         setStage("configure");
         setSession(null);
       }}
+      {...(daily && finished
+        ? {
+            summarySlot: (
+              <DailySummary
+                result={finished}
+                link={`${window.location.origin}/daily`}
+                msToNext={msToNextDay(Date.now(), browserOffsetMinutes())}
+              />
+            ),
+          }
+        : {})}
       onShare={(text) => {
         void navigator.clipboard
           ?.writeText(`${text} ${window.location.origin}/play/fact-pin`)
