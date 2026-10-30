@@ -3,3 +3,8 @@ pnpm-lock.yaml
 .turbo
 dist
 docs
+# Generated and pinned data: byte-exact, hashed in data/sources.lock.yaml
+data/snapshots
+data/raw
+data/sources.lock.yaml
+tools/content-pipeline/test/fixtures/*.json

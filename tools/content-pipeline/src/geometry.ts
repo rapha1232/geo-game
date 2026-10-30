@@ -48,6 +48,26 @@ export function normalizeGeometry(g: Geometry): Geometry {
     : { type: "MultiPolygon", coordinates: g.coordinates.map(fixPoly) };
 }
 
+/**
+ * Removes polygons whose exterior area is below `minArea` (square degrees) and holes smaller than that.
+ * Used after normalization: shapes smaller than one quantization cell would collapse to zero area.
+ * Returns null when nothing is left, so the caller can fail instead of shipping an empty country.
+ */
+export function dropSlivers(g: Geometry, minArea: number): Geometry | null {
+  const keep = (p: PolygonCoords): PolygonCoords | null => {
+    const [outer, ...holes] = p;
+    if (!outer || Math.abs(signedArea(outer)) < minArea) return null;
+    return [outer, ...holes.filter((h) => Math.abs(signedArea(h)) >= minArea)];
+  };
+  const polys = polygonsOf(g)
+    .map(keep)
+    .filter((p): p is PolygonCoords => p !== null);
+  if (polys.length === 0) return null;
+  return polys.length === 1 && g.type === "Polygon"
+    ? { type: "Polygon", coordinates: polys[0] as PolygonCoords }
+    : { type: "MultiPolygon", coordinates: polys };
+}
+
 const EARTH_RADIUS_M = 6378137;
 const rad = (d: number): number => (d * Math.PI) / 180;
 

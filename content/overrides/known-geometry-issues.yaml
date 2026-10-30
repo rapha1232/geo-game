@@ -1,0 +1,11 @@
+# Upstream geometry defects that have been inspected and accepted (rule GEOM_INVALID).
+# Each entry downgrades one specific defect to a warning and records why. Anything not listed still fails the build.
+# Entries are matched on entity + scale + the problem text, so a new or different defect is never hidden by an old one.
+issues:
+  - entity: "country:SDN"
+    scale: "110m"
+    problem: "crosses itself"
+    reason: >-
+      Natural Earth v5.1.2 1:110m admin-0 Sudan has an exterior ring that crosses itself in the raw source
+      (checked on the unmodified download, before any pipeline step). It is a small generalization artifact at the
+      Sudan/South Sudan border and does not exist at 1:50m or 1:10m. Revisit when Natural Earth ships a newer 110m file.

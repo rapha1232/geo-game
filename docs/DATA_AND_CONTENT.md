@@ -245,6 +245,18 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `QUOTA` | §8.3 | error |
 | `DETERMINISM` | Rebuilding the packs yields identical hashes | error |
 
+### 10.1 How the validator reads these rules (T0.5)
+
+`pnpm content:validate [--release] [--verbose]` builds in memory, decodes the geometry packs as a browser would, runs every rule, then rebuilds to check `DETERMINISM`. Exit code 1 on any error. Decisions the rules left open:
+
+- **Draft packs.** While `core.countries` is `draft: true`, `ALIAS_COLLISION` is a warning (T1.1 reviews the names). Once the flag is off it is an error.
+- **`GEOM_INVALID`** checks closed rings of at least 4 positions, finite coordinates, non-zero area, winding (exterior clockwise, holes counter-clockwise, the d3-geo convention) and strict self-crossings (touching at a vertex is allowed). A defect in the upstream data that has been inspected can be listed in `content/overrides/known-geometry-issues.yaml` with a reason. It then becomes a warning, matched on entity, scale and problem text, so any other defect still fails. Polygons smaller than one quantization cell are dropped during the build, and a country left with nothing fails the build.
+- **Quantization** is 1e5 / 1e6 / 1e7 grid cells across 360° for 110m / 50m / 10m. Coarser grids made thin shapes cross themselves and collapsed microstates to nothing.
+- **`FACT_NAMES_TARGET`** compares whole words after `norm()`'s token rules. A fact may not contain its answer label, any alias of its target entity, or any alias of a listed entity at the same precision as the answer (city and place; subdivision and region; country and territory; feature and continent). A finer fact may name a coarser container, as fact-pin §4.3 allows.
+- **`DAILY_REPEAT`** windows: Silhouette 150 days, Fact Pin 365 days. Also: no two consecutive Silhouette days on the same continent, and the five Fact Pin facts of a day come from five different categories.
+- **`QUOTA`** is enforced only when asked for (`quotas: true`), because it needs the full fact bank.
+- `INDICATOR_COVERAGE`, `PROMPT_ANSWER_BOUNDS` and `EVENT_DATE_INVALID` belong to R2 and R3 content and land with those tasks.
+
 ## 11. Update cadence
 
 | Content | Cadence |
