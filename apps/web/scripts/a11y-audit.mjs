@@ -86,15 +86,28 @@ const browser = await chromium.launch();
 let failures = 0;
 
 async function audit(label, page, viewport) {
+  const tag = `${viewport.width}px ${viewport.scheme}`;
+  // AC-PL-006: no horizontal page scroll.
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  if (overflow > 0) {
+    failures++;
+    console.log(`✗ ${label} [${tag}] horizontal scroll by ${overflow}px`);
+  }
+  if (!viewport.axe) {
+    if (overflow <= 0) console.log(`✓ ${label} [${tag}] no horizontal scroll`);
+    return;
+  }
   await page.addScriptTag({ content: axeSource });
   const result = await page.evaluate(() =>
     // eslint-disable-next-line no-undef
     axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
     }),
   );
   const small =
-    viewport.width < 600
+    viewport.width < 600 && viewport.axe
       ? await page.evaluate(() =>
           [...document.querySelectorAll("button, a[href], [role=button]")]
             .filter((el) => {
@@ -115,23 +128,32 @@ async function audit(label, page, viewport) {
       : [];
   for (const v of result.violations) {
     failures++;
-    console.log(`✗ ${label} [${viewport.width}px] ${v.id} (${v.impact}): ${v.help}`);
+    console.log(`✗ ${label} [${tag}] ${v.id} (${v.impact}): ${v.help}`);
     for (const n of v.nodes.slice(0, 3))
       console.log(`    ${n.target.join(" ")}  ${n.failureSummary?.split("\n")[1] ?? ""}`);
   }
   for (const s of small) {
     failures++;
-    console.log(`✗ ${label} [${viewport.width}px] touch target under 44px: ${s}`);
+    console.log(`✗ ${label} [${tag}] touch target under 44px: ${s}`);
   }
-  if (result.violations.length === 0 && small.length === 0)
-    console.log(`✓ ${label} [${viewport.width}px]`);
+  if (result.violations.length === 0 && small.length === 0 && overflow <= 0)
+    console.log(`✓ ${label} [${tag}]`);
 }
 
-for (const viewport of [
-  { width: 1100, height: 900 },
-  { width: 390, height: 800 },
-]) {
-  const context = await browser.newContext({ viewport });
+// AC-PL-004: axe in light and dark at 390 and 1280. AC-PL-006: overflow at 320, 390, 768 and 1280.
+const MATRIX = [
+  { width: 1280, height: 900, scheme: "light", axe: true },
+  { width: 1280, height: 900, scheme: "dark", axe: true },
+  { width: 390, height: 800, scheme: "light", axe: true },
+  { width: 390, height: 800, scheme: "dark", axe: true },
+  { width: 768, height: 900, scheme: "light", axe: false },
+  { width: 320, height: 700, scheme: "light", axe: false },
+];
+for (const viewport of MATRIX) {
+  const context = await browser.newContext({
+    viewport: { width: viewport.width, height: viewport.height },
+    colorScheme: viewport.scheme,
+  });
   for (const route of ROUTES) {
     const page = await context.newPage();
     await page.goto(base + route, { waitUntil: "networkidle" });
@@ -140,7 +162,10 @@ for (const viewport of [
   }
   for (const s of STATES) {
     // A fresh profile per state, so a saved session never turns Start into a resume prompt.
-    const fresh = await browser.newContext({ viewport });
+    const fresh = await browser.newContext({
+      viewport: { width: viewport.width, height: viewport.height },
+      colorScheme: viewport.scheme,
+    });
     const page = await fresh.newPage();
     await page.goto(base + s.path, { waitUntil: "networkidle" });
     try {

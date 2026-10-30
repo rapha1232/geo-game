@@ -15,7 +15,8 @@
     "gen:corrections": "node scripts/gen-corrections.mjs",
     "a11y": "node scripts/a11y-audit.mjs",
     "budget": "node scripts/bundle-budget.mjs",
-    "network": "node scripts/network-audit.mjs"
+    "network": "node scripts/network-audit.mjs",
+    "lcp": "node scripts/lcp.mjs"
   },
   "dependencies": {
     "@meridian/fact-pin": "workspace:*",

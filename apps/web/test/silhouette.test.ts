@@ -161,4 +161,14 @@ describe.skipIf(!haveRaw)("Silhouette on the real content packs", () => {
     expect(s.phase).toBe("learn");
     expect(points(s)).toBe(0);
   });
+
+  it("AC-SH-019: starting an Unlimited round after a daily takes at most 300 ms (packs loaded)", () => {
+    let best = Infinity;
+    for (let i = 0; i < 5; i++) {
+      const t0 = performance.now();
+      newSession(data.world, `ABCDEFGH0${i}`, DEFAULT_CONFIG, [], 0);
+      best = Math.min(best, performance.now() - t0);
+    }
+    expect(best).toBeLessThanOrEqual(300);
+  });
 });
