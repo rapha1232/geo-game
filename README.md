@@ -6,9 +6,9 @@ This repository currently contains the **implementation blueprint** (product, de
 
 **Start here → [docs/README.md](docs/README.md)**
 
-| If you are… | Read |
-|---|---|
+| If you are…    | Read                                                                                                                               |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Deciding scope | [Product vision](docs/PRODUCT_VISION.md), [Game catalog](docs/GAME_CATALOG.md), [Open questions](docs/OPEN_QUESTIONS_AND_RISKS.md) |
-| Implementing | [Agent handoff](docs/AGENT_HANDOFF.md), then [Roadmap](docs/IMPLEMENTATION_ROADMAP.md) |
+| Implementing   | [Agent handoff](docs/AGENT_HANDOFF.md), then [Roadmap](docs/IMPLEMENTATION_ROADMAP.md)                                             |
 
 `main` is the source of truth. All changes land through pull requests that are merged automatically once checks pass.
