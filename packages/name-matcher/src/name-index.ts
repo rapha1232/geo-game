@@ -20,8 +20,10 @@ const KIND_PRIORITY: Record<AliasKind, number> = {
   common: 2,
   ascii: 3,
   endonym: 4,
-  former: 5,
-  code: 6,
+  translation: 5,
+  misspelling: 6,
+  former: 7,
+  code: 8,
 };
 
 /** Fuzzy threshold by alias key length (quiz-library §5.1). */
@@ -45,12 +47,22 @@ export class NameIndex {
   /** key → entity ids whose alias keys strictly extend `key` (for prefix-hold). */
   private readonly longer = new Map<string, Set<string>>();
 
-  constructor(entities: readonly MatchEntity[], groups: readonly AmbiguityGroup[] = []) {
+  /**
+   * `languages`: answer languages that are enabled. `translation` aliases are indexed only for these
+   * (quiz-library §5.3, R2). English-only in R1, so the default is none.
+   */
+  constructor(
+    entities: readonly MatchEntity[],
+    groups: readonly AmbiguityGroup[] = [],
+    opts: { languages?: readonly string[] } = {},
+  ) {
+    const languages = new Set(opts.languages ?? []);
     for (const e of entities) {
       this.entities.set(e.id, e);
       const best = new Map<string, Entry>();
       const all = [{ text: e.name, kind: "canonical" as AliasKind }, ...e.aliases];
       for (const a of all) {
+        if (a.kind === "translation" && !(a.lang && languages.has(a.lang))) continue;
         const key = norm(a.text);
         if (key === "") continue;
         const cur = best.get(key);

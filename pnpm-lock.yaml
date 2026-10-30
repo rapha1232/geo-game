@@ -92,6 +92,19 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.20.5)(jsdom@25.0.1)
 
+  packages/schemas:
+    dependencies:
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.20.5
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(jsdom@25.0.1)
+
   packages/ui:
     dependencies:
       '@fontsource-variable/source-sans-3':
@@ -1796,6 +1809,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
 snapshots:
 
   '@adobe/css-tools@4.5.0': {}
@@ -3313,3 +3329,5 @@ snapshots:
   xmlchars@2.2.0: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.25.76: {}
