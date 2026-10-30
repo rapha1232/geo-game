@@ -21,6 +21,7 @@ export type RuleCode =
   | "ADJ_ASYMMETRIC"
   | "CAPITAL_OUTSIDE"
   | "DISPUTE_INVALID"
+  | "FLAG_MISSING"
   | "SET_COUNT"
   | "FACT_NAMES_TARGET"
   | "FACT_NO_SOURCE"
@@ -60,6 +61,8 @@ export type ContentSet = {
   /** Upstream defects to report as warnings, each with a reason. Anything not listed is still an error. */
   knownGeometryIssues?: readonly KnownGeometryIssue[];
   knownCapitalIssues?: readonly KnownCapitalIssue[];
+  /** Entity ids that have an SVG in the flags pack. Absent when the build has no flags. */
+  flagIds?: ReadonlySet<string>;
   adjacency?: readonly AdjacencyEdge[];
   capitals?: readonly CapitalPoint[];
   facts?: readonly Fact[];

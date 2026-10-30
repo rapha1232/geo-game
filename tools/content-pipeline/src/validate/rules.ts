@@ -134,6 +134,32 @@ export function disputeRules(c: ContentSet): Issue[] {
   return issues;
 }
 
+/** FLAG_MISSING: every playable country has a flag in the pack, and its confusables are other real entities. */
+export function flagRules(c: ContentSet): Issue[] {
+  if (!c.flagIds) return [];
+  const ids = new Set(c.entities.map((e) => e.id));
+  const issues: Issue[] = [];
+  for (const e of c.entities) {
+    if (!e.sets?.includes("sovereign-197")) continue;
+    if (!e.flag || !c.flagIds.has(e.id))
+      issues.push({
+        code: "FLAG_MISSING",
+        level: "error",
+        ref: e.id,
+        message: `${e.id} has no flag in the flags pack`,
+      });
+    for (const k of e.flag?.confusables ?? [])
+      if (k === e.id || !ids.has(k))
+        issues.push({
+          code: "FLAG_MISSING",
+          level: "error",
+          ref: e.id,
+          message: `${e.id} lists ${k} as a confusable flag, which is ${k === e.id ? "itself" : "not an entity"}`,
+        });
+  }
+  return issues;
+}
+
 /** SET_COUNT: sovereign-197 has exactly 197 members and un-193 exactly 193. */
 export function setRules(c: ContentSet): Issue[] {
   if (!c.fullSets) return [];

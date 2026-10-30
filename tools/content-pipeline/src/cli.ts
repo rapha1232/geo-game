@@ -5,6 +5,7 @@ import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import { extendSchedule } from "./daily.ts";
+import { confusablesByCode, confusablesFile, extractFlags } from "./flags.ts";
 import { dailySchedule } from "@meridian/schemas";
 import { checkEditorialCoverage, parseEditorial } from "./editorial.ts";
 import { buildPacks, type BuildOutput } from "./build.ts";
@@ -35,6 +36,8 @@ const path = {
   disputes: join(root, "content/disputes.yaml"),
   silhouettes: join(root, "content/overrides/silhouettes.yaml"),
   dailySilhouette: join(root, "content/daily/silhouette.json"),
+  confusables: join(root, "content/flags/confusables.yaml"),
+  flagsTgz: join(root, "data/raw/fi/flag-icons-7.6.0.tgz"),
   adjacency: join(root, "content/overrides/adjacency.yaml"),
   version: join(root, "content/version.txt"),
   dist: join(root, "dist/content"),
@@ -133,6 +136,10 @@ async function loadInputs(args: string[]) {
   const yaml = async (file: string): Promise<unknown> =>
     parse(await readFile(file, "utf8"), { schema: "core" });
   const members = await readSetMembers();
+  const ne10 = await ne("ne-10m-countries", "10m");
+  const ne10Iso2 = ne10.features
+    .map((f) => f.properties["ISO_A2_EH"])
+    .filter((v): v is string => typeof v === "string" && v.length === 2);
   const editorial = parseEditorial(await yaml(path.countries));
   checkEditorialCoverage(
     editorial,
@@ -148,6 +155,10 @@ async function loadInputs(args: string[]) {
     ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
     disputes: await list(dispute, "disputes")(path.disputes),
     daily: await readDaily(),
+    flags: {
+      svg: extractFlags(await read("flag-icons", path.flagsTgz), ne10Iso2),
+      confusables: confusablesByCode(confusablesFile.parse(await yaml(path.confusables)).groups),
+    },
     derive: {
       silhouettes: silhouetteOverrides.parse(await yaml(path.silhouettes)).overrides,
       adjacency: adjacencyOverrides.parse(await yaml(path.adjacency)),
@@ -157,7 +168,7 @@ async function loadInputs(args: string[]) {
     ne: {
       "110m": await ne("ne-110m-countries", "110m"),
       "50m": await ne("ne-50m-countries", "50m"),
-      "10m": await ne("ne-10m-countries", "10m"),
+      "10m": ne10,
     },
     wikidata: snapshot,
     registry: sourceRegistry.parse(

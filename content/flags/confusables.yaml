@@ -1,0 +1,30 @@
+# Flags that players commonly mix up (quiz-library §6.3: Hard multiple choice offers these first).
+# Editorial judgment, not sourced data: reviewed in PRs. Codes are ISO 3166-1 alpha-3 (XKX for Kosovo).
+# Every member of a group lists the others as confusables.
+groups:
+  # Vertical tricolours that are nearly the same
+  - [TCD, ROU, AND] # blue, yellow, red
+  - [IRL, CIV, ITA] # green, white and orange/red/green
+  - [MLI, GIN, SEN] # red, yellow, green
+  - [BOL, GHA, LTU] # red, yellow, green in horizontal bands
+  - [HUN, BGR, IRN] # red, white, green in horizontal bands
+  # Two-band flags
+  - [IDN, MCO, POL] # red and white
+  - [SVK, SVN, RUS] # white, blue, red
+  - [AUT, LVA, PER] # red and white
+  - [NLD, LUX] # red, white, blue
+  - [GRC, URY] # blue and white stripes
+  - [FIN, ISR] # blue and white
+  # Nordic crosses
+  - [NOR, ISL, DNK]
+  # Union flag in the corner
+  - [AUS, NZL, FJI, TUV]
+  # Pan-Arab colours
+  - [YEM, EGY, SYR, IRQ]
+  - [JOR, PSE, SDN, KWT, ARE]
+  # Stripes and stars
+  - [LBR, USA, MYS]
+  - [CRI, THA]
+  - [HND, SLV, NIC, GTM]
+  - [VEN, COL, ECU]
+  - [CHE, TON]

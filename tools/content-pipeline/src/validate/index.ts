@@ -6,6 +6,7 @@ import {
   dailyRules,
   disputeRules,
   factNameRules,
+  flagRules,
   factRules,
   idRules,
   licenseRules,
@@ -29,6 +30,7 @@ export function validate(c: ContentSet): Issue[] {
     ...nameRules(c),
     ...aliasRules(c),
     ...disputeRules(c),
+    ...flagRules(c),
     ...setRules(c),
     ...geometryRules(c),
     ...refPointRules(c),
@@ -88,6 +90,9 @@ export function contentSetFromBuild(
   const daily = out.files
     .filter((f) => f.name.startsWith("daily."))
     .map((f) => json(f.name) as unknown as NonNullable<ContentSet["daily"]>[number]);
+  const flagIds = has("flags.svg")
+    ? new Set(Object.keys((json("flags.svg") as { flags: Record<string, string> }).flags))
+    : undefined;
   const adjacency = has("core.adjacency")
     ? (json("core.adjacency") as { edges: ContentSet["adjacency"] }).edges
     : undefined;
@@ -106,6 +111,7 @@ export function contentSetFromBuild(
     ...(ambiguity ? { ambiguity } : {}),
     ...(disputes ? { disputes } : {}),
     ...(adjacency ? { adjacency } : {}),
+    ...(flagIds ? { flagIds } : {}),
     ...(daily.length > 0 ? { daily } : {}),
     ...(capitals.length > 0 ? { capitals } : {}),
     geometry,

@@ -14,6 +14,8 @@ export type MergeInput = {
   /** Hand-edited names and capitals. Without it the entities keep their unreviewed draft names. */
   editorial?: Editorial;
   capitals?: readonly WdCapital[];
+  /** Flag SVGs by ISO alpha-2 and editorial confusables by alpha-3. */
+  flags?: { svg: ReadonlyMap<string, string>; confusables: ReadonlyMap<string, readonly string[]> };
 };
 
 type Alias = { text: string; kind: "common" | "official" | "code" };
@@ -100,6 +102,15 @@ export function mergeCountries(input: MergeInput): Entity[] {
       ...(ne.continent ? { continent: ne.continent } : {}),
       ...(ne.subregion ? { subregion: ne.subregion } : {}),
       ...(edit ? { capitals: resolveCapitals(m.code, edit, input.capitals ?? []) } : {}),
+      ...(input.flags && ne.iso2 && input.flags.svg.has(ne.iso2.toUpperCase())
+        ? {
+            flag: {
+              svg: `country:${m.code}`,
+              aspect: 1.333333,
+              confusables: (input.flags.confusables.get(m.code) ?? []).map((c) => `country:${c}`),
+            },
+          }
+        : {}),
       ...(ne.population ? { population: { ...ne.population, source: "ne" } } : {}),
       area_km2: { value: Math.round(areaKm2(polygonsOf(geometry)) * 100) / 100, source: "ne" },
     };

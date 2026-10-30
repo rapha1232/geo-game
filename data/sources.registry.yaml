@@ -89,7 +89,7 @@ sources:
     verified_on: 2026-10-30
     evidence: 'LICENSE file: "The MIT License (MIT) Copyright (c) 2013 Panayiotis Lipiridis"; package.json declares version 7.6.0 and license MIT.'
     notes: Keep the MIT notice in THIRD_PARTY_NOTICES.
-    used_in: []
+    used_in: [flags.svg]
   - id: hb
     name: historical-basemaps (aourednik)
     kind: dataset

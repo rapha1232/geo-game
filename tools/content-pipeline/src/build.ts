@@ -53,6 +53,8 @@ export type BuildInput = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
+  /** Flag SVGs by ISO alpha-2 and the editorial confusables groups. Adds the `flags.svg` pack. */
+  flags?: { svg: ReadonlyMap<string, string>; confusables: ReadonlyMap<string, readonly string[]> };
   /** Daily schedules (content/daily/*.json), shipped as `daily.<game>` packs. */
   daily?: readonly DailySchedule[];
   derive?: { silhouettes: readonly SilhouetteOverride[]; adjacency: AdjacencyOverrides };
@@ -103,6 +105,7 @@ export function buildPacks(input: BuildInput): BuildOutput {
     wikidata: wd,
     ...(input.editorial ? { editorial: input.editorial } : {}),
     capitals: input.wikidata.capitals,
+    ...(input.flags ? { flags: input.flags } : {}),
   });
 
   const priors = input.derive ? difficultyPriors(merged) : undefined;
@@ -121,6 +124,13 @@ export function buildPacks(input: BuildInput): BuildOutput {
       entities,
     }),
   ];
+  if (input.flags) {
+    const svg: Record<string, string> = {};
+    for (const e of entities)
+      if (e.flag)
+        svg[e.id] = input.flags.svg.get((e.external_ids.iso2 as string).toUpperCase()) as string;
+    files.push(toFile("flags.svg", { pack: "flags.svg", version: input.version, flags: svg }));
+  }
   if (input.derive) files.push(...deriveFiles(input, entities, maps));
   for (const d of input.daily ?? [])
     files.push(

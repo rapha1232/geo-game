@@ -63,6 +63,7 @@ graph LR
 - **1:110m omits 29 small states** (Vatican, Monaco, Singapore, Malta…). Those entities use their 1:50m outline in the 110m pack, and the release notes list them.
 - Country names, aliases and capitals are editorial: `content/countries.yaml` has one entry per `sovereign-197` member (a missing or unknown code fails the build). Shared aliases live in `content/ambiguity.yaml`, disputed areas in `content/disputes.yaml` (packs `core.ambiguity`, `core.disputes`). Capital coordinates come from the Wikidata snapshot, matched by label. Where Wikidata cannot supply one, the entry carries a `point` and a `point_source`. A capital that sits just outside the generalised 1:10m outline can be accepted, with a reason, in `content/overrides/known-capital-issues.yaml` (a warning, like known geometry issues). Population is Natural Earth's `POP_EST` with its year, and `area_km2` is computed from the 1:10m outline (approximate, rounded to 0.01).
 - The Virgin Islands ambiguity group waits for the `territories` set, because its members do not exist in R1.
+- Flags: the `flags.svg` pack holds each country's 4:3 SVG from the pinned flag-icons package (MIT), minified. `entity.flag.svg` is the entity id, the key into that pack. The confusables come from `content/flags/confusables.yaml`.
 - Editorial content (`content/`) is hand-edited YAML. Generated packs are build outputs and are **not committed**. CI builds them and they are deployed as static assets.
 
 ## 4. Content model overview
@@ -240,6 +241,7 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `ADJ_ASYMMETRIC` | Adjacency is symmetric | error |
 | `CAPITAL_OUTSIDE` | Capital point inside its country's 10m polygon (tolerance 2 km) | error |
 | `DISPUTE_INVALID` | `content/disputes.yaml` entries have unique IDs and name only existing `country:` entities | error |
+| `FLAG_MISSING` | Every `sovereign-197` country has an SVG in the `flags.svg` pack, and each confusable flag is another existing entity | error |
 | `SET_COUNT` | `sovereign-197` has exactly 197 members and `un-193` exactly 193 | error |
 | `FACT_NAMES_TARGET` | Fact text contains no alias of the target (or of an entity at the same or coarser precision) | error |
 | `FACT_NO_SOURCE` | ≥ 1 source with a license | error |
