@@ -1,0 +1,12 @@
+# Capitals that sit just outside the generalised Natural Earth 1:10m outline of their country (rule CAPITAL_OUTSIDE).
+# Each entry downgrades one capital to a warning and records why. A capital not listed here still fails the build.
+issues:
+  - entity: "country:KIR"
+    capital: South Tarawa
+    reason: Tarawa is a narrow atoll; the 1:10m outline of Kiribati generalises it away from the Wikidata point (5 km).
+  - entity: "country:TUV"
+    capital: Funafuti
+    reason: Funafuti is a narrow atoll that the 1:10m outline of Tuvalu does not follow closely (9 km).
+  - entity: "country:PSE"
+    capital: East Jerusalem
+    reason: The Natural Earth outline of Palestine follows the West Bank boundary, and the Wikidata point for East Jerusalem lies 2.2 km beyond it.

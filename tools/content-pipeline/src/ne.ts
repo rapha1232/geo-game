@@ -34,6 +34,8 @@ export type NeCountry = {
   continent: string | null;
   subregion: string | null;
   labelPoint: [number, number] | null;
+  /** NE's POP_EST and POP_YEAR (the year of the estimate). */
+  population: { value: number; year: number } | null;
   geometry: Geometry;
 };
 
@@ -75,6 +77,12 @@ export function indexByCode(collection: NeCollection): Map<string, NeCountry> {
       continent: str(f.properties["CONTINENT"]),
       subregion: str(f.properties["SUBREGION"]),
       labelPoint: typeof x === "number" && typeof y === "number" ? [y, x] : null,
+      population:
+        typeof f.properties["POP_EST"] === "number" &&
+        f.properties["POP_EST"] > 0 &&
+        typeof f.properties["POP_YEAR"] === "number"
+          ? { value: f.properties["POP_EST"], year: f.properties["POP_YEAR"] }
+          : null,
       geometry: f.geometry as Geometry,
     });
   }

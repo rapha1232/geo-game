@@ -61,6 +61,8 @@ graph LR
 - **Raw downloads** (`data/raw/`) are gitignored and re-verified against the lock on every build. **Wikidata is a moving target**, so its query result is committed as a point-in-time snapshot (`data/snapshots/wikidata-countries.json`, pinned in the lock like everything else). Refresh it deliberately with `pnpm content:fetch --wikidata --update-lock` and review the diff.
 - Rules the real data forced (all fail the build rather than guess): Natural Earth gives dependencies and leases the sovereign's code, so the main feature is the one whose own `ADM0_A3` equals the code. Wikidata uses `XKS` for Kosovo (Meridian: `XKX`). Natural Earth's `PSX` is `PSE`. Where Wikidata has two items for one code, `WD_ITEM_PICKS` names the right one (PSE → Q219060).
 - **1:110m omits 29 small states** (Vatican, Monaco, Singapore, Malta…). Those entities use their 1:50m outline in the 110m pack, and the release notes list them.
+- Country names, aliases and capitals are editorial: `content/countries.yaml` has one entry per `sovereign-197` member (a missing or unknown code fails the build). Shared aliases live in `content/ambiguity.yaml`, disputed areas in `content/disputes.yaml` (packs `core.ambiguity`, `core.disputes`). Capital coordinates come from the Wikidata snapshot, matched by label. Where Wikidata cannot supply one, the entry carries a `point` and a `point_source`. A capital that sits just outside the generalised 1:10m outline can be accepted, with a reason, in `content/overrides/known-capital-issues.yaml` (a warning, like known geometry issues). Population is Natural Earth's `POP_EST` with its year, and `area_km2` is computed from the 1:10m outline (approximate, rounded to 0.01).
+- The Virgin Islands ambiguity group waits for the `territories` set, because its members do not exist in R1.
 - Editorial content (`content/`) is hand-edited YAML. Generated packs are build outputs and are **not committed**. CI builds them and they are deployed as static assets.
 
 ## 4. Content model overview
@@ -233,6 +235,7 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `REF_POINT_OUTSIDE` | `ref_point` inside its polygon | error |
 | `ADJ_ASYMMETRIC` | Adjacency is symmetric | error |
 | `CAPITAL_OUTSIDE` | Capital point inside its country's 10m polygon (tolerance 2 km) | error |
+| `DISPUTE_INVALID` | `content/disputes.yaml` entries have unique IDs and name only existing `country:` entities | error |
 | `SET_COUNT` | `sovereign-197` has exactly 197 members and `un-193` exactly 193 | error |
 | `FACT_NAMES_TARGET` | Fact text contains no alias of the target (or of an entity at the same or coarser precision) | error |
 | `FACT_NO_SOURCE` | ≥ 1 source with a license | error |
@@ -249,7 +252,7 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 
 `pnpm content:validate [--release] [--verbose]` builds in memory, decodes the geometry packs as a browser would, runs every rule, then rebuilds to check `DETERMINISM`. Exit code 1 on any error. Decisions the rules left open:
 
-- **Draft packs.** While `core.countries` is `draft: true`, `ALIAS_COLLISION` is a warning (T1.1 reviews the names). Once the flag is off it is an error.
+- **Draft packs.** While `core.countries` is `draft: true`, `ALIAS_COLLISION` is a warning. T1.1 reviewed the names, so the real build now has `draft: false` and the rule is an error. Ambiguity groups are also checked: each member must exist and carry the alias.
 - **`GEOM_INVALID`** checks closed rings of at least 4 positions, finite coordinates, non-zero area, winding (exterior clockwise, holes counter-clockwise, the d3-geo convention) and strict self-crossings (touching at a vertex is allowed). A defect in the upstream data that has been inspected can be listed in `content/overrides/known-geometry-issues.yaml` with a reason. It then becomes a warning, matched on entity, scale and problem text, so any other defect still fails. Polygons smaller than one quantization cell are dropped during the build, and a country left with nothing fails the build.
 - **Quantization** is 1e5 / 1e6 / 1e7 grid cells across 360° for 110m / 50m / 10m. Coarser grids made thin shapes cross themselves and collapsed microstates to nothing.
 - **`FACT_NAMES_TARGET`** compares whole words after `norm()`'s token rules. A fact may not contain its answer label, any alias of its target entity, or any alias of a listed entity at the same precision as the answer (city and place; subdivision and region; country and territory; feature and continent). A finer fact may name a coarser container, as fact-pin §4.3 allows.

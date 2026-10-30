@@ -1,12 +1,17 @@
 import { topology } from "topojson-server";
 import {
+  ambiguityGroup,
+  dispute,
   entity,
   manifest,
   topology as topologySchema,
+  type AmbiguityGroup,
+  type Dispute,
   type Entity,
   type Manifest,
   type SourceRegistry,
 } from "@meridian/schemas";
+import type { Editorial } from "./editorial.ts";
 import { dropSlivers, normalizeGeometry, type Geometry } from "./geometry.ts";
 import { mergeCountries, type SetMember } from "./merge.ts";
 import { indexByCode, type NeCollection, type NeCountry } from "./ne.ts";
@@ -28,6 +33,10 @@ export type BuildInput = {
   ne: Record<Scale, NeCollection>;
   wikidata: WdSnapshot;
   registry: SourceRegistry;
+  /** Reviewed names and capitals. Without it the pack stays a draft with names taken from the sources. */
+  editorial?: Editorial;
+  ambiguity?: readonly AmbiguityGroup[];
+  disputes?: readonly Dispute[];
 };
 
 export type BuiltFile = { name: string; file: string; bytes: Uint8Array; sha256: string };
@@ -73,16 +82,38 @@ export function buildPacks(input: BuildInput): BuildOutput {
     members: input.members,
     ne10: maps["10m"],
     wikidata: wd,
+    ...(input.editorial ? { editorial: input.editorial } : {}),
+    capitals: input.wikidata.capitals,
   });
 
   const files: BuiltFile[] = [
     toFile("core.countries", {
       pack: "core.countries",
-      draft: true,
+      draft: !input.editorial,
       version: input.version,
       entities,
     }),
   ];
+  if (input.ambiguity)
+    files.push(
+      toFile("core.ambiguity", {
+        pack: "core.ambiguity",
+        version: input.version,
+        groups: [...input.ambiguity]
+          .map((g) => ambiguityGroup.parse(g))
+          .sort((a, b) => a.group.localeCompare(b.group)),
+      }),
+    );
+  if (input.disputes)
+    files.push(
+      toFile("core.disputes", {
+        pack: "core.disputes",
+        version: input.version,
+        disputes: [...input.disputes]
+          .map((d) => dispute.parse(d))
+          .sort((a, b) => a.id.localeCompare(b.id)),
+      }),
+    );
   const fallback110: string[] = [];
 
   for (const scale of ["110m", "50m", "10m"] as const) {
@@ -133,7 +164,9 @@ export function buildPacks(input: BuildInput): BuildOutput {
   const notes = [
     `# Content release ${input.version}`,
     "",
-    "Status: DRAFT. Names and aliases are unreviewed (T1.1 applies the style guide).",
+    input.editorial
+      ? "Status: names, aliases and capitals reviewed (content/countries.yaml)."
+      : "Status: DRAFT. Names and aliases are unreviewed.",
     "",
     "## Packs",
     ...files.map((f) => `- ${f.file} (${f.bytes.length} bytes, sha256 ${f.sha256})`),

@@ -84,6 +84,56 @@ export function aliasRules(c: ContentSet): Issue[] {
   return issues.sort((a, b) => (a.ref ?? "").localeCompare(b.ref ?? ""));
 }
 
+/** Ambiguity groups must be real: each member exists and actually carries the alias. Disputes must point at real entities. */
+export function disputeRules(c: ContentSet): Issue[] {
+  const issues: Issue[] = [];
+  const byId = new Map(c.entities.map((e) => [e.id, e]));
+  for (const g of c.ambiguity ?? []) {
+    const key = norm(g.alias);
+    for (const id of g.members) {
+      const e = byId.get(id);
+      const carries =
+        e &&
+        [e.names.canonical, ...e.names.aliases.map((a) => a.text)].some((t) => norm(t) === key);
+      if (!carries)
+        issues.push({
+          code: "ALIAS_COLLISION",
+          level: "error",
+          ref: g.group,
+          message: `ambiguity group "${g.group}" lists ${id}, which ${e ? `has no alias "${g.alias}"` : "does not exist"}`,
+        });
+    }
+  }
+  const seen = new Set<string>();
+  for (const d of c.disputes ?? []) {
+    if (seen.has(d.id))
+      issues.push({
+        code: "DISPUTE_INVALID",
+        level: "error",
+        ref: d.id,
+        message: `${d.id} is listed twice`,
+      });
+    seen.add(d.id);
+    for (const id of d.affects)
+      if (!byId.has(id))
+        issues.push({
+          code: "DISPUTE_INVALID",
+          level: "error",
+          ref: d.id,
+          message: `${d.id} affects ${id}, which is not an entity`,
+        });
+    for (const party of [...d.administered_by, ...d.claimants])
+      if (party.startsWith("country:") && !byId.has(party))
+        issues.push({
+          code: "DISPUTE_INVALID",
+          level: "error",
+          ref: d.id,
+          message: `${d.id} names ${party}, which is not an entity`,
+        });
+  }
+  return issues;
+}
+
 /** SET_COUNT: sovereign-197 has exactly 197 members and un-193 exactly 193. */
 export function setRules(c: ContentSet): Issue[] {
   if (!c.fullSets) return [];

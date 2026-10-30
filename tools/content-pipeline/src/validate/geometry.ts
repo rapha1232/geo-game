@@ -205,13 +205,17 @@ export function capitalRules(c: ContentSet): Issue[] {
       continue;
     }
     const km = distanceToAreaKm({ lat: cap.lat, lon: cap.lon }, polys as unknown as MultiPolygon);
-    if (km > 2)
+    if (km > 2) {
+      const known = c.knownCapitalIssues?.find(
+        (k) => k.entity === cap.entityId && k.capital === cap.name,
+      );
       issues.push({
         code: "CAPITAL_OUTSIDE",
-        level: "error",
+        level: known ? "warn" : "error",
         ref: cap.entityId,
-        message: `${cap.name} is ${km.toFixed(1)} km outside ${cap.entityId} (tolerance 2 km)`,
+        message: `${cap.name} is ${km.toFixed(1)} km outside ${cap.entityId} (tolerance 2 km)${known ? ` (known: ${known.reason})` : ""}`,
       });
+    }
   }
   return issues;
 }

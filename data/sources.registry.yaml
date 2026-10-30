@@ -117,7 +117,7 @@ sources:
     verification: done
     verified_on: 2026-10-30
     evidence: "Owner decision Q-06: all rights reserved."
-    used_in: [core.countries]
+    used_in: [core.countries, core.ambiguity, core.disputes]
   - id: font-source-sans-3
     name: Source Sans 3 (variable, via @fontsource-variable/source-sans-3)
     kind: font

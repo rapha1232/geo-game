@@ -1,13 +1,16 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
-import { sourceRegistry } from "@meridian/schemas";
+import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
+import { z } from "zod";
+import { checkEditorialCoverage, parseEditorial } from "./editorial.ts";
 import { buildPacks, type BuildOutput } from "./build.ts";
 import {
   checkDeterminism,
   contentSetFromBuild,
   errorsOf,
   validate,
+  type KnownCapitalIssue,
   type KnownGeometryIssue,
 } from "./validate/index.ts";
 import { fetchSources, lockText } from "./fetch.ts";
@@ -24,6 +27,9 @@ const path = {
   registry: join(root, "data/sources.registry.yaml"),
   snapshot: join(root, WIKIDATA_SNAPSHOT.file),
   sets: join(root, "content/sets/sovereign-197.yaml"),
+  countries: join(root, "content/countries.yaml"),
+  ambiguity: join(root, "content/ambiguity.yaml"),
+  disputes: join(root, "content/disputes.yaml"),
   version: join(root, "content/version.txt"),
   dist: join(root, "dist/content"),
 };
@@ -108,10 +114,25 @@ async function loadInputs(args: string[]) {
     new TextDecoder().decode(await read(WIKIDATA_SNAPSHOT.id, path.snapshot)),
   ) as WdSnapshot;
   const version = option(args, "version") ?? (await readFile(path.version, "utf8")).trim();
+  const yaml = async (file: string): Promise<unknown> =>
+    parse(await readFile(file, "utf8"), { schema: "core" });
+  const members = await readSetMembers();
+  const editorial = parseEditorial(await yaml(path.countries));
+  checkEditorialCoverage(
+    editorial,
+    members.map((m) => m.code),
+  );
+  const list =
+    <T extends z.ZodTypeAny>(schema: T, key: string) =>
+    async (file: string): Promise<z.infer<T>[]> =>
+      z.array(schema).parse(((await yaml(file)) as Record<string, unknown>)[key]);
   return {
     version,
+    editorial,
+    ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
+    disputes: await list(dispute, "disputes")(path.disputes),
     releasedAt: option(args, "released-at") ?? new Date().toISOString(),
-    members: await readSetMembers(),
+    members,
     ne: {
       "110m": await ne("ne-110m-countries", "110m"),
       "50m": await ne("ne-50m-countries", "50m"),
@@ -166,6 +187,13 @@ async function cmdValidate(args: string[]): Promise<void> {
         retiredIds: retired,
         release: flag(args, "release"),
         knownGeometryIssues: known,
+        knownCapitalIssues:
+          (
+            parse(
+              await readFile(join(root, "content/overrides/known-capital-issues.yaml"), "utf8"),
+              { schema: "core" },
+            ) as { issues?: KnownCapitalIssue[] } | null
+          )?.issues ?? [],
       }),
     ),
     ...(flag(args, "no-determinism") ? [] : checkDeterminism(() => buildPacks(input))),

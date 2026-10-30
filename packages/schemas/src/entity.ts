@@ -37,6 +37,8 @@ export const capital = z.object({
   name: z.string().min(1),
   // Exactly the roles in quiz-library §5.5. A planned capital is expressed with `valid_from` (DATA_AND_CONTENT §7.1).
   role: z.enum(["official", "constitutional", "seat_of_government"]),
+  /** [lat, lon]. Checked against the country's 1:10m outline (CAPITAL_OUTSIDE). */
+  point: latLon.optional(),
   valid_from: z.string().optional(),
   note: z.string().optional(),
 });
@@ -155,3 +157,18 @@ export const adjacencyEdge = z
       });
   });
 export type AdjacencyEdge = z.infer<typeof adjacencyEdge>;
+
+/** Disputed areas (`content/disputes.yaml`, DATA_AND_CONTENT §6.3). */
+export const dispute = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  name: z.string().min(1),
+  /** Who administers the area de facto, when anyone does. A `country:` id where the party is an entity, else a plain name. */
+  administered_by: z.array(z.string().min(1)),
+  /** Every claimant, in the same form. At least two, or it would not be disputed. */
+  claimants: z.array(z.string().min(1)).min(2),
+  /** `country:` entities whose outline contains or touches the area. */
+  affects: z.array(countryId),
+  /** Neutral wording shown on hover and on reveal: "Disputed: administered by X; claimed by Y". */
+  note: z.string().min(1),
+});
+export type Dispute = z.infer<typeof dispute>;

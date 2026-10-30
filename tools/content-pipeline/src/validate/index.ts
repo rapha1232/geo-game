@@ -4,6 +4,7 @@ import {
   adjacencyRules,
   aliasRules,
   dailyRules,
+  disputeRules,
   factNameRules,
   factRules,
   idRules,
@@ -27,6 +28,7 @@ export function validate(c: ContentSet): Issue[] {
     ...idRules(c),
     ...nameRules(c),
     ...aliasRules(c),
+    ...disputeRules(c),
     ...setRules(c),
     ...geometryRules(c),
     ...refPointRules(c),
@@ -76,6 +78,18 @@ export function contentSetFromBuild(
   const json = (name: string): unknown =>
     JSON.parse(new TextDecoder().decode(out.files.find((f) => f.name === name)?.bytes));
   const core = json("core.countries") as { draft: boolean; entities: ContentSet["entities"] };
+  const has = (name: string): boolean => out.files.some((f) => f.name === name);
+  const ambiguity = has("core.ambiguity")
+    ? (json("core.ambiguity") as { groups: ContentSet["ambiguity"] }).groups
+    : undefined;
+  const disputes = has("core.disputes")
+    ? (json("core.disputes") as { disputes: ContentSet["disputes"] }).disputes
+    : undefined;
+  const capitals = core.entities.flatMap((e) =>
+    (e.capitals ?? []).flatMap((c) =>
+      c.point ? [{ entityId: e.id, name: c.name, lat: c.point[0], lon: c.point[1] }] : [],
+    ),
+  );
   const geometry = {} as GeometryByScale;
   for (const scale of ["110m", "50m", "10m"] as const)
     geometry[scale] = decodePack(json(`geo.world.${scale}`));
@@ -83,6 +97,9 @@ export function contentSetFromBuild(
     today: input.releasedAt.slice(0, 10),
     entities: core.entities,
     draft: core.draft,
+    ...(ambiguity ? { ambiguity } : {}),
+    ...(disputes ? { disputes } : {}),
+    ...(capitals.length > 0 ? { capitals } : {}),
     geometry,
     registry: input.registry,
     usedSources: input.registry.sources

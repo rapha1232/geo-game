@@ -2,6 +2,7 @@ import type {
   AdjacencyEdge,
   AmbiguityGroup,
   DailySchedule,
+  Dispute,
   Entity,
   Fact,
   SourceRegistry,
@@ -19,6 +20,7 @@ export type RuleCode =
   | "REF_POINT_OUTSIDE"
   | "ADJ_ASYMMETRIC"
   | "CAPITAL_OUTSIDE"
+  | "DISPUTE_INVALID"
   | "SET_COUNT"
   | "FACT_NAMES_TARGET"
   | "FACT_NO_SOURCE"
@@ -38,6 +40,9 @@ export type GeometryByScale = Record<Scale, Map<string, PolygonCoords[]>>;
 /** A geometry defect in the upstream data that has been looked at and accepted (content/overrides/known-geometry-issues.yaml). */
 export type KnownGeometryIssue = { entity: string; scale: Scale; problem: string; reason: string };
 
+/** A capital that lies just outside the generalised 1:10m outline and has been checked by hand (content/overrides/known-capital-issues.yaml). */
+export type KnownCapitalIssue = { entity: string; capital: string; reason: string };
+
 export type CapitalPoint = { entityId: string; name: string; lat: number; lon: number };
 
 /** Everything the validator looks at. Missing parts are simply not checked. */
@@ -50,9 +55,11 @@ export type ContentSet = {
   /** Validate set sizes (197 and 193). Off for partial fixtures. */
   fullSets?: boolean;
   ambiguity?: readonly AmbiguityGroup[];
+  disputes?: readonly Dispute[];
   geometry?: GeometryByScale;
   /** Upstream defects to report as warnings, each with a reason. Anything not listed is still an error. */
   knownGeometryIssues?: readonly KnownGeometryIssue[];
+  knownCapitalIssues?: readonly KnownCapitalIssue[];
   adjacency?: readonly AdjacencyEdge[];
   capitals?: readonly CapitalPoint[];
   facts?: readonly Fact[];

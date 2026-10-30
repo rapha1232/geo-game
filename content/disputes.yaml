@@ -1,0 +1,112 @@
+# Disputed areas (DATA_AND_CONTENT §6.3). Base geometry stays Natural Earth's de facto boundaries.
+# Notes are neutral: they say who administers and who claims, not who is right. Senior-editor review required.
+# `administered_by` and `claimants` use a `country:` id where the party is an entity, else a plain name.
+disputes:
+  - id: kashmir-aksai-chin
+    name: Kashmir and Aksai Chin
+    administered_by: [country:IND, country:PAK, country:CHN]
+    claimants: [country:IND, country:PAK, country:CHN]
+    affects: [country:IND, country:PAK, country:CHN]
+    note: "Disputed: administered in part by India, Pakistan and China; claimed in full by India and Pakistan, and in part by China."
+  - id: arunachal-pradesh
+    name: Arunachal Pradesh
+    administered_by: [country:IND]
+    claimants: [country:IND, country:CHN]
+    affects: [country:IND, country:CHN]
+    note: "Disputed: administered by India; claimed by China."
+  - id: western-sahara
+    name: Western Sahara
+    administered_by: [country:MAR, Sahrawi Arab Democratic Republic]
+    claimants: [country:MAR, Sahrawi Arab Democratic Republic]
+    affects: [country:MAR]
+    note: "Disputed: mostly administered by Morocco, with the east held by the Sahrawi Arab Democratic Republic; claimed by both."
+  - id: crimea
+    name: Crimea
+    administered_by: [country:RUS]
+    claimants: [country:RUS, country:UKR]
+    affects: [country:RUS, country:UKR]
+    note: "Disputed: administered by Russia; claimed by Ukraine."
+  - id: abkhazia
+    name: Abkhazia
+    administered_by: [Abkhaz de facto authorities]
+    claimants: [country:GEO, Abkhaz de facto authorities]
+    affects: [country:GEO]
+    note: "Disputed: administered by de facto authorities; claimed by Georgia."
+  - id: south-ossetia
+    name: South Ossetia
+    administered_by: [South Ossetian de facto authorities]
+    claimants: [country:GEO, South Ossetian de facto authorities]
+    affects: [country:GEO]
+    note: "Disputed: administered by de facto authorities; claimed by Georgia."
+  - id: golan-heights
+    name: Golan Heights
+    administered_by: [country:ISR]
+    claimants: [country:ISR, country:SYR]
+    affects: [country:ISR, country:SYR]
+    note: "Disputed: administered by Israel; claimed by Syria."
+  - id: northern-cyprus
+    name: Northern Cyprus
+    administered_by: [Turkish Republic of Northern Cyprus]
+    claimants: [country:CYP, Turkish Republic of Northern Cyprus]
+    affects: [country:CYP]
+    note: "Disputed: administered by the Turkish Republic of Northern Cyprus; claimed by Cyprus."
+  - id: transnistria
+    name: Transnistria
+    administered_by: [Transnistrian de facto authorities]
+    claimants: [country:MDA, Transnistrian de facto authorities]
+    affects: [country:MDA]
+    note: "Disputed: administered by de facto authorities; claimed by Moldova."
+  - id: kuril-islands
+    name: Kuril Islands (southern)
+    administered_by: [country:RUS]
+    claimants: [country:RUS, country:JPN]
+    affects: [country:RUS, country:JPN]
+    note: "Disputed: administered by Russia; claimed by Japan."
+  - id: falklands-malvinas
+    name: Falkland Islands / Islas Malvinas
+    administered_by: [United Kingdom]
+    claimants: [United Kingdom, country:ARG]
+    affects: [country:ARG, country:GBR]
+    note: "Disputed: administered by the United Kingdom; claimed by Argentina."
+  - id: essequibo
+    name: Essequibo
+    administered_by: [country:GUY]
+    claimants: [country:GUY, country:VEN]
+    affects: [country:GUY, country:VEN]
+    note: "Disputed: administered by Guyana; claimed by Venezuela."
+  - id: halaib-triangle
+    name: Hala'ib Triangle
+    administered_by: [country:EGY]
+    claimants: [country:EGY, country:SDN]
+    affects: [country:EGY, country:SDN]
+    note: "Disputed: administered by Egypt; claimed by Sudan."
+  - id: bir-tawil
+    name: Bir Tawil
+    administered_by: []
+    claimants: [country:EGY, country:SDN]
+    affects: [country:EGY, country:SDN]
+    note: "Unclaimed by either neighbour: Egypt and Sudan each claim the Hala'ib Triangle instead, under different border definitions."
+  - id: kosovo
+    name: Kosovo
+    administered_by: [country:XKX]
+    claimants: [country:XKX, country:SRB]
+    affects: [country:XKX, country:SRB]
+    note: "Disputed: administered by Kosovo, which declared independence in 2008; claimed by Serbia. Recognition varies."
+  - id: taiwan
+    name: Taiwan
+    administered_by: [country:TWN]
+    claimants: [country:TWN, country:CHN]
+    affects: [country:TWN, country:CHN]
+    note: "Disputed: administered by the Republic of China (Taiwan); claimed by the People's Republic of China."
+  - id: west-bank-gaza
+    name: West Bank and Gaza Strip
+    administered_by: [country:ISR, country:PSE]
+    claimants: [country:ISR, country:PSE]
+    affects: [country:ISR, country:PSE]
+    note: "Disputed: administered in part by Israel and in part by Palestinian authorities; claimed by the State of Palestine."
+  - id: south-china-sea
+    name: South China Sea features
+    administered_by: [country:CHN, country:TWN, country:VNM, country:PHL, country:MYS]
+    claimants: [country:CHN, country:TWN, country:VNM, country:PHL, country:MYS, country:BRN]
+    affects: [country:CHN, country:TWN, country:VNM, country:PHL, country:MYS, country:BRN]
+    note: "Disputed: islands and reefs administered by several parties; claimed in whole or part by China, Taiwan, Vietnam, the Philippines, Malaysia and Brunei."

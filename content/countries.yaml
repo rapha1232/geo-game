@@ -1,0 +1,568 @@
+# Editorial names, aliases and capitals for sovereign-197 (DATA_AND_CONTENT §5, §7.1). Hand-edited, reviewed in PRs.
+# Canonical names follow the style guide in §5.3. `official` is the full English name, `common` other widely used
+# English forms, `former` a previous name of the same state, `endonym` the Latin-script local name.
+# Capitals: a bare string is an `official` capital; the object form sets a role and notes. Coordinates come from the
+# Wikidata snapshot (matched by label, or `wd_label`), or from an explicit `point` with its `point_source`.
+# Names normalise (case, accents, "St"/"Saint", "&", leading "the", punctuation), so those variants are not listed.
+sources: [wd, mer]
+countries:
+  AFG: { name: Afghanistan, official: [Islamic Republic of Afghanistan], capitals: [Kabul] }
+  AGO: { name: Angola, official: [Republic of Angola], capitals: [Luanda] }
+  ALB:
+    {
+      name: Albania,
+      official: [Republic of Albania],
+      endonym: [Shqipëria, Shqipëri],
+      capitals: [Tirana],
+    }
+  AND: { name: Andorra, official: [Principality of Andorra], capitals: [Andorra la Vella] }
+  ARE: { name: United Arab Emirates, common: [UAE, Emirates], capitals: [Abu Dhabi] }
+  ARG: { name: Argentina, official: [Argentine Republic], capitals: [Buenos Aires] }
+  ARM: { name: Armenia, official: [Republic of Armenia], endonym: [Hayastan], capitals: [Yerevan] }
+  ATG:
+    name: Antigua and Barbuda
+    capitals:
+      - name: Saint John's
+        point: [17.121111, -61.844722]
+        point_source: Wikidata Q36262 (the item has no English label, so the snapshot query misses it)
+  AUS: { name: Australia, official: [Commonwealth of Australia], capitals: [Canberra] }
+  AUT: { name: Austria, official: [Republic of Austria], endonym: [Österreich], capitals: [Vienna] }
+  AZE:
+    {
+      name: Azerbaijan,
+      official: [Republic of Azerbaijan],
+      endonym: [Azərbaycan],
+      capitals: [Baku],
+    }
+  BDI:
+    name: Burundi
+    official: [Republic of Burundi]
+    capitals:
+      - { name: Gitega, note: Political capital since 2019. Bujumbura is the economic capital. }
+  BEL:
+    {
+      name: Belgium,
+      official: [Kingdom of Belgium],
+      endonym: [België, Belgique],
+      capitals: [Brussels],
+    }
+  BEN:
+    name: Benin
+    official: [Republic of Benin]
+    former: [Dahomey]
+    capitals:
+      - Porto-Novo
+      - {
+          name: Cotonou,
+          role: seat_of_government,
+          note: "Seat of the government and the largest city.",
+        }
+  BFA:
+    { name: Burkina Faso, official: [Burkina Faso], former: [Upper Volta], capitals: [Ouagadougou] }
+  BGD: { name: Bangladesh, official: [People's Republic of Bangladesh], capitals: [Dhaka] }
+  BGR: { name: Bulgaria, official: [Republic of Bulgaria], endonym: [Balgariya], capitals: [Sofia] }
+  BHR: { name: Bahrain, official: [Kingdom of Bahrain], capitals: [Manama] }
+  BHS: { name: Bahamas, official: [Commonwealth of the Bahamas], capitals: [Nassau] }
+  BIH:
+    {
+      name: Bosnia and Herzegovina,
+      common: [Bosnia, Bosnia-Herzegovina, BiH],
+      endonym: [Bosna i Hercegovina],
+      capitals: [Sarajevo],
+    }
+  BLR:
+    {
+      name: Belarus,
+      official: [Republic of Belarus],
+      former: [Byelorussia, Belorussia],
+      capitals: [Minsk],
+    }
+  BLZ: { name: Belize, former: [British Honduras], capitals: [Belmopan] }
+  BOL:
+    name: Bolivia
+    official: [Plurinational State of Bolivia]
+    capitals:
+      - { name: Sucre, role: constitutional }
+      - { name: La Paz, role: seat_of_government }
+  BRA:
+    {
+      name: Brazil,
+      official: [Federative Republic of Brazil],
+      endonym: [Brasil],
+      capitals: [Brasília],
+    }
+  BRB: { name: Barbados, capitals: [Bridgetown] }
+  BRN:
+    {
+      name: Brunei,
+      official: [Brunei Darussalam, Nation of Brunei the Abode of Peace],
+      capitals: [Bandar Seri Begawan],
+    }
+  BTN: { name: Bhutan, official: [Kingdom of Bhutan], endonym: [Druk Yul], capitals: [Thimphu] }
+  BWA: { name: Botswana, official: [Republic of Botswana], capitals: [Gaborone] }
+  CAF: { name: Central African Republic, common: [CAR], capitals: [Bangui] }
+  CAN: { name: Canada, capitals: [Ottawa] }
+  CHE:
+    {
+      name: Switzerland,
+      official: [Swiss Confederation],
+      endonym: [Schweiz, Suisse, Svizzera],
+      capitals: [Bern],
+    }
+  CHL: { name: Chile, official: [Republic of Chile], capitals: [Santiago] }
+  CHN:
+    {
+      name: China,
+      common: [PRC, Mainland China],
+      official: [People's Republic of China],
+      endonym: [Zhongguo],
+      capitals: [Beijing],
+    }
+  CIV:
+    name: Côte d'Ivoire
+    common: [Ivory Coast]
+    official: [Republic of Côte d'Ivoire]
+    capitals:
+      - {
+          name: Yamoussoukro,
+          note: "Political and administrative capital. Abidjan is the economic capital and the seat of most institutions.",
+        }
+      - name: Abidjan
+        role: seat_of_government
+        point: [5.336389, -4.026667]
+        point_source: Wikidata Q1515 (Abidjan is not a P36 capital there, so the snapshot has no point)
+  CMR:
+    { name: Cameroon, official: [Republic of Cameroon], endonym: [Cameroun], capitals: [Yaoundé] }
+  COD:
+    name: DR Congo
+    common: [Congo, Congo-Kinshasa, DRC, DROC, Democratic Republic of Congo]
+    official: [Democratic Republic of the Congo]
+    former: [Zaire, Belgian Congo]
+    capitals: [Kinshasa]
+  COG:
+    name: Republic of the Congo
+    common: [Congo, Congo-Brazzaville, Congo Republic, Republic of Congo]
+    capitals: [Brazzaville]
+  COL: { name: Colombia, official: [Republic of Colombia], capitals: [Bogotá] }
+  COM: { name: Comoros, official: [Union of the Comoros], endonym: [Komori], capitals: [Moroni] }
+  CPV:
+    {
+      name: Cape Verde,
+      official: [Republic of Cabo Verde],
+      common: [Cabo Verde],
+      capitals: [Praia],
+    }
+  CRI: { name: Costa Rica, official: [Republic of Costa Rica], capitals: [San José] }
+  CUB: { name: Cuba, official: [Republic of Cuba], capitals: [Havana] }
+  CYP:
+    { name: Cyprus, official: [Republic of Cyprus], endonym: [Kypros, Kıbrıs], capitals: [Nicosia] }
+  CZE: { name: Czechia, common: [Czech Republic], endonym: [Česko], capitals: [Prague] }
+  DEU:
+    {
+      name: Germany,
+      official: [Federal Republic of Germany],
+      endonym: [Deutschland],
+      capitals: [Berlin],
+    }
+  DJI: { name: Djibouti, official: [Republic of Djibouti], capitals: [Djibouti] }
+  DMA: { name: Dominica, official: [Commonwealth of Dominica], capitals: [Roseau] }
+  DNK: { name: Denmark, official: [Kingdom of Denmark], endonym: [Danmark], capitals: [Copenhagen] }
+  DOM:
+    {
+      name: Dominican Republic,
+      common: [Dominicana],
+      endonym: [República Dominicana],
+      capitals: [Santo Domingo],
+    }
+  DZA:
+    {
+      name: Algeria,
+      official: [People's Democratic Republic of Algeria],
+      endonym: [Algérie, Dzayer],
+      capitals: [Algiers],
+    }
+  ECU: { name: Ecuador, official: [Republic of Ecuador], capitals: [Quito] }
+  EGY: { name: Egypt, official: [Arab Republic of Egypt], endonym: [Misr], capitals: [Cairo] }
+  ERI: { name: Eritrea, official: [State of Eritrea], capitals: [Asmara] }
+  ESP: { name: Spain, official: [Kingdom of Spain], endonym: [España], capitals: [Madrid] }
+  EST: { name: Estonia, official: [Republic of Estonia], endonym: [Eesti], capitals: [Tallinn] }
+  ETH:
+    { name: Ethiopia, official: [Federal Democratic Republic of Ethiopia], capitals: [Addis Ababa] }
+  FIN: { name: Finland, official: [Republic of Finland], endonym: [Suomi], capitals: [Helsinki] }
+  FJI: { name: Fiji, official: [Republic of Fiji], capitals: [Suva] }
+  FRA: { name: France, official: [French Republic], capitals: [Paris] }
+  FSM:
+    {
+      name: Micronesia,
+      common: [FSM],
+      official: [Federated States of Micronesia],
+      capitals: [Palikir],
+    }
+  GAB: { name: Gabon, official: [Gabonese Republic], capitals: [Libreville] }
+  GBR:
+    {
+      name: United Kingdom,
+      common: [UK, Great Britain, Britain],
+      official: [United Kingdom of Great Britain and Northern Ireland],
+      capitals: [London],
+    }
+  GEO: { name: Georgia, endonym: [Sakartvelo], capitals: [Tbilisi] }
+  GHA: { name: Ghana, official: [Republic of Ghana], former: [Gold Coast], capitals: [Accra] }
+  GIN:
+    { name: Guinea, official: [Republic of Guinea], common: [Guinea-Conakry], capitals: [Conakry] }
+  GMB:
+    { name: Gambia, common: [The Gambia], official: [Republic of the Gambia], capitals: [Banjul] }
+  GNB: { name: Guinea-Bissau, official: [Republic of Guinea-Bissau], capitals: [Bissau] }
+  GNQ:
+    name: Equatorial Guinea
+    official: [Republic of Equatorial Guinea]
+    endonym: [Guinea Ecuatorial]
+    capitals:
+      - {
+          name: Ciudad de la Paz,
+          valid_from: "2026-01-03",
+          note: "Made the capital by presidential decree on 3 January 2026.",
+        }
+      - name: Malabo
+        role: seat_of_government
+        note: The previous capital. Some state services remain there.
+        point: [3.752064, 8.7737]
+        point_source: Wikidata Q3818
+  GRC:
+    { name: Greece, official: [Hellenic Republic], endonym: [Ellada, Hellas], capitals: [Athens] }
+  GRD: { name: Grenada, capitals: [St. George's] }
+  GTM: { name: Guatemala, official: [Republic of Guatemala], capitals: [Guatemala City] }
+  GUY: { name: Guyana, official: [Co-operative Republic of Guyana], capitals: [Georgetown] }
+  HND: { name: Honduras, official: [Republic of Honduras], capitals: [Tegucigalpa] }
+  HRV: { name: Croatia, official: [Republic of Croatia], endonym: [Hrvatska], capitals: [Zagreb] }
+  HTI: { name: Haiti, official: [Republic of Haiti], endonym: [Ayiti], capitals: [Port-au-Prince] }
+  HUN: { name: Hungary, endonym: [Magyarország], capitals: [Budapest] }
+  IDN:
+    name: Indonesia
+    official: [Republic of Indonesia]
+    capitals:
+      - { name: Jakarta, note: Nusantara is the planned future capital. }
+  IND: { name: India, official: [Republic of India], endonym: [Bharat], capitals: [New Delhi] }
+  IRL: { name: Ireland, official: [Republic of Ireland], endonym: [Éire], capitals: [Dublin] }
+  IRN: { name: Iran, official: [Islamic Republic of Iran], former: [Persia], capitals: [Tehran] }
+  IRQ: { name: Iraq, official: [Republic of Iraq], capitals: [Baghdad] }
+  ISL: { name: Iceland, endonym: [Ísland], capitals: [Reykjavík] }
+  ISR:
+    name: Israel
+    official: [State of Israel]
+    capitals:
+      - { name: Jerusalem, note: Most countries maintain their embassies in Tel Aviv. }
+  ITA: { name: Italy, official: [Italian Republic], endonym: [Italia], capitals: [Rome] }
+  JAM: { name: Jamaica, capitals: [Kingston] }
+  JOR: { name: Jordan, official: [Hashemite Kingdom of Jordan], capitals: [Amman] }
+  JPN: { name: Japan, endonym: [Nippon, Nihon], capitals: [Tokyo] }
+  KAZ:
+    {
+      name: Kazakhstan,
+      official: [Republic of Kazakhstan],
+      endonym: [Qazaqstan],
+      capitals: [Astana],
+    }
+  KEN: { name: Kenya, official: [Republic of Kenya], capitals: [Nairobi] }
+  KGZ: { name: Kyrgyzstan, official: [Kyrgyz Republic], common: [Kirghizia], capitals: [Bishkek] }
+  KHM:
+    { name: Cambodia, official: [Kingdom of Cambodia], former: [Kampuchea], capitals: [Phnom Penh] }
+  KIR: { name: Kiribati, official: [Republic of Kiribati], capitals: [South Tarawa] }
+  KNA:
+    {
+      name: Saint Kitts and Nevis,
+      official: [Federation of Saint Christopher and Nevis],
+      common: [Saint Christopher and Nevis],
+      capitals: [Basseterre],
+    }
+  KOR:
+    {
+      name: South Korea,
+      common: [Korea],
+      official: [Republic of Korea],
+      endonym: [Hanguk],
+      capitals: [Seoul],
+    }
+  KWT: { name: Kuwait, official: [State of Kuwait], capitals: [Kuwait City] }
+  LAO:
+    {
+      name: Laos,
+      official: [Lao People's Democratic Republic],
+      common: [Lao PDR],
+      capitals: [Vientiane],
+    }
+  LBN: { name: Lebanon, official: [Lebanese Republic], capitals: [Beirut] }
+  LBR: { name: Liberia, official: [Republic of Liberia], capitals: [Monrovia] }
+  LBY: { name: Libya, official: [State of Libya], capitals: [Tripoli] }
+  LCA: { name: Saint Lucia, capitals: [Castries] }
+  LIE: { name: Liechtenstein, official: [Principality of Liechtenstein], capitals: [Vaduz] }
+  LKA:
+    name: Sri Lanka
+    official: [Democratic Socialist Republic of Sri Lanka]
+    former: [Ceylon]
+    capitals:
+      - { name: Sri Jayawardenepura Kotte, note: Legislative capital. }
+      - {
+          name: Colombo,
+          role: seat_of_government,
+          note: "Executive and judicial capital, and the largest city.",
+        }
+  LSO: { name: Lesotho, official: [Kingdom of Lesotho], capitals: [Maseru] }
+  LTU:
+    { name: Lithuania, official: [Republic of Lithuania], endonym: [Lietuva], capitals: [Vilnius] }
+  LUX:
+    {
+      name: Luxembourg,
+      official: [Grand Duchy of Luxembourg],
+      endonym: [Lëtzebuerg],
+      capitals: [Luxembourg],
+    }
+  LVA: { name: Latvia, official: [Republic of Latvia], endonym: [Latvija], capitals: [Riga] }
+  MAR: { name: Morocco, official: [Kingdom of Morocco], endonym: [Maroc], capitals: [Rabat] }
+  MCO: { name: Monaco, official: [Principality of Monaco], capitals: [Monaco] }
+  MDA: { name: Moldova, official: [Republic of Moldova], capitals: [Chișinău] }
+  MDG: { name: Madagascar, official: [Republic of Madagascar], capitals: [Antananarivo] }
+  MDV: { name: Maldives, official: [Republic of Maldives], capitals: [Malé] }
+  MEX:
+    { name: Mexico, official: [United Mexican States], endonym: [México], capitals: [Mexico City] }
+  MHL: { name: Marshall Islands, official: [Republic of the Marshall Islands], capitals: [Majuro] }
+  MKD:
+    {
+      name: North Macedonia,
+      official: [Republic of North Macedonia],
+      former: [Macedonia, FYROM, Former Yugoslav Republic of Macedonia],
+      capitals: [Skopje],
+    }
+  MLI: { name: Mali, official: [Republic of Mali], capitals: [Bamako] }
+  MLT: { name: Malta, official: [Republic of Malta], capitals: [Valletta] }
+  MMR:
+    {
+      name: Myanmar,
+      official: [Republic of the Union of Myanmar],
+      former: [Burma],
+      capitals: [Naypyidaw],
+    }
+  MNE: { name: Montenegro, endonym: [Crna Gora], capitals: [Podgorica] }
+  MNG: { name: Mongolia, capitals: [Ulaanbaatar] }
+  MOZ:
+    {
+      name: Mozambique,
+      official: [Republic of Mozambique],
+      endonym: [Moçambique],
+      capitals: [Maputo],
+    }
+  MRT: { name: Mauritania, official: [Islamic Republic of Mauritania], capitals: [Nouakchott] }
+  MUS: { name: Mauritius, official: [Republic of Mauritius], capitals: [Port Louis] }
+  MWI: { name: Malawi, official: [Republic of Malawi], capitals: [Lilongwe] }
+  MYS:
+    name: Malaysia
+    capitals:
+      - Kuala Lumpur
+      - { name: Putrajaya, role: seat_of_government, note: Federal administrative centre. }
+  NAM: { name: Namibia, official: [Republic of Namibia], capitals: [Windhoek] }
+  NER: { name: Niger, official: [Republic of the Niger], capitals: [Niamey] }
+  NGA: { name: Nigeria, official: [Federal Republic of Nigeria], capitals: [Abuja] }
+  NIC: { name: Nicaragua, official: [Republic of Nicaragua], capitals: [Managua] }
+  NLD:
+    name: Netherlands
+    common: [Holland]
+    official: [Kingdom of the Netherlands]
+    endonym: [Nederland]
+    capitals:
+      - { name: Amsterdam, role: constitutional }
+      - { name: The Hague, role: seat_of_government }
+  NOR: { name: Norway, official: [Kingdom of Norway], endonym: [Norge, Noreg], capitals: [Oslo] }
+  NPL: { name: Nepal, official: [Federal Democratic Republic of Nepal], capitals: [Kathmandu] }
+  NRU:
+    {
+      name: Nauru,
+      official: [Republic of Nauru],
+      endonym: [Naoero],
+      capitals:
+        [
+          {
+            name: Yaren,
+            wd_label: Yaren District,
+            note: "De facto capital. Nauru has no official capital.",
+          },
+        ],
+    }
+  NZL: { name: New Zealand, endonym: [Aotearoa], capitals: [Wellington] }
+  OMN: { name: Oman, official: [Sultanate of Oman], capitals: [Muscat] }
+  PAK: { name: Pakistan, official: [Islamic Republic of Pakistan], capitals: [Islamabad] }
+  PAN: { name: Panama, official: [Republic of Panama], capitals: [Panama City] }
+  PER: { name: Peru, official: [Republic of Peru], endonym: [Perú], capitals: [Lima] }
+  PHL:
+    {
+      name: Philippines,
+      official: [Republic of the Philippines],
+      endonym: [Pilipinas],
+      capitals: [Manila],
+    }
+  PLW: { name: Palau, official: [Republic of Palau], endonym: [Belau], capitals: [Ngerulmud] }
+  PNG:
+    {
+      name: Papua New Guinea,
+      common: [PNG],
+      official: [Independent State of Papua New Guinea],
+      capitals: [Port Moresby],
+    }
+  POL: { name: Poland, official: [Republic of Poland], endonym: [Polska], capitals: [Warsaw] }
+  PRK:
+    {
+      name: North Korea,
+      common: [Korea, DPRK],
+      official: [Democratic People's Republic of Korea],
+      endonym: [Chosŏn],
+      capitals: [Pyongyang],
+    }
+  PRT: { name: Portugal, official: [Portuguese Republic], capitals: [Lisbon] }
+  PRY: { name: Paraguay, official: [Republic of Paraguay], capitals: [Asunción] }
+  PSE:
+    name: Palestine
+    common: [Palestinian Territories]
+    official: [State of Palestine]
+    capitals:
+      - { name: East Jerusalem, note: Designated capital of the State of Palestine. }
+      - { name: Ramallah, role: seat_of_government, note: Administrative seat. }
+  QAT: { name: Qatar, official: [State of Qatar], capitals: [Doha] }
+  ROU: { name: Romania, endonym: [România], capitals: [Bucharest] }
+  RUS: { name: Russia, official: [Russian Federation], endonym: [Rossiya], capitals: [Moscow] }
+  RWA: { name: Rwanda, official: [Republic of Rwanda], capitals: [Kigali] }
+  SAU: { name: Saudi Arabia, official: [Kingdom of Saudi Arabia], capitals: [Riyadh] }
+  SDN: { name: Sudan, official: [Republic of the Sudan], capitals: [Khartoum] }
+  SEN: { name: Senegal, official: [Republic of Senegal], endonym: [Sénégal], capitals: [Dakar] }
+  SGP: { name: Singapore, official: [Republic of Singapore], capitals: [Singapore] }
+  SLB: { name: Solomon Islands, capitals: [Honiara] }
+  SLE: { name: Sierra Leone, official: [Republic of Sierra Leone], capitals: [Freetown] }
+  SLV: { name: El Salvador, official: [Republic of El Salvador], capitals: [San Salvador] }
+  SMR: { name: San Marino, official: [Republic of San Marino], capitals: [San Marino] }
+  SOM: { name: Somalia, official: [Federal Republic of Somalia], capitals: [Mogadishu] }
+  SRB: { name: Serbia, official: [Republic of Serbia], endonym: [Srbija], capitals: [Belgrade] }
+  SSD: { name: South Sudan, official: [Republic of South Sudan], capitals: [Juba] }
+  STP:
+    {
+      name: São Tomé and Príncipe,
+      official: [Democratic Republic of São Tomé and Príncipe],
+      capitals: [São Tomé],
+    }
+  SUR:
+    {
+      name: Suriname,
+      official: [Republic of Suriname],
+      former: [Dutch Guiana],
+      capitals: [Paramaribo],
+    }
+  SVK: { name: Slovakia, official: [Slovak Republic], endonym: [Slovensko], capitals: [Bratislava] }
+  SVN:
+    {
+      name: Slovenia,
+      official: [Republic of Slovenia],
+      endonym: [Slovenija],
+      capitals: [Ljubljana],
+    }
+  SWE: { name: Sweden, official: [Kingdom of Sweden], endonym: [Sverige], capitals: [Stockholm] }
+  SWZ:
+    name: Eswatini
+    official: [Kingdom of Eswatini]
+    former: [Swaziland]
+    capitals:
+      - { name: Mbabane, note: Administrative capital. }
+      - { name: Lobamba, note: Legislative and royal capital. }
+  SYC: { name: Seychelles, official: [Republic of Seychelles], capitals: [Victoria] }
+  SYR: { name: Syria, official: [Syrian Arab Republic], capitals: [Damascus] }
+  TCD: { name: Chad, official: [Republic of Chad], endonym: [Tchad], capitals: [N'Djamena] }
+  TGO: { name: Togo, official: [Togolese Republic], capitals: [Lomé] }
+  THA: { name: Thailand, official: [Kingdom of Thailand], former: [Siam], capitals: [Bangkok] }
+  TJK: { name: Tajikistan, official: [Republic of Tajikistan], capitals: [Dushanbe] }
+  TKM: { name: Turkmenistan, capitals: [Ashgabat] }
+  TLS:
+    {
+      name: Timor-Leste,
+      common: [East Timor],
+      official: [Democratic Republic of Timor-Leste],
+      capitals: [Dili],
+    }
+  TON: { name: Tonga, official: [Kingdom of Tonga], capitals: [Nukuʻalofa] }
+  TTO:
+    {
+      name: Trinidad and Tobago,
+      official: [Republic of Trinidad and Tobago],
+      capitals: [Port of Spain],
+    }
+  TUN: { name: Tunisia, official: [Republic of Tunisia], capitals: [Tunis] }
+  TUR: { name: Türkiye, common: [Turkey], official: [Republic of Türkiye], capitals: [Ankara] }
+  TUV: { name: Tuvalu, former: [Ellice Islands], capitals: [Funafuti] }
+  TWN: { name: Taiwan, common: [Chinese Taipei], official: [Republic of China], capitals: [Taipei] }
+  TZA:
+    {
+      name: Tanzania,
+      official: [United Republic of Tanzania],
+      capitals: [{ name: Dodoma, note: Dar es Salaam is the largest city. }],
+    }
+  UGA: { name: Uganda, official: [Republic of Uganda], capitals: [Kampala] }
+  UKR: { name: Ukraine, endonym: [Ukraina], capitals: [Kyiv] }
+  URY: { name: Uruguay, official: [Oriental Republic of Uruguay], capitals: [Montevideo] }
+  USA:
+    {
+      name: United States,
+      common: [USA, US, America, United States of America, The States],
+      capitals: ["Washington, D.C."],
+    }
+  UZB: { name: Uzbekistan, official: [Republic of Uzbekistan], capitals: [Tashkent] }
+  VAT:
+    {
+      name: Vatican City,
+      common: [Vatican, Holy See],
+      official: [Vatican City State],
+      capitals: [Vatican City],
+    }
+  VCT: { name: Saint Vincent and the Grenadines, common: [Saint Vincent], capitals: [Kingstown] }
+  VEN: { name: Venezuela, official: [Bolivarian Republic of Venezuela], capitals: [Caracas] }
+  VNM:
+    {
+      name: Vietnam,
+      common: [Viet Nam],
+      official: [Socialist Republic of Vietnam],
+      capitals: [Hanoi],
+    }
+  VUT: { name: Vanuatu, official: [Republic of Vanuatu], capitals: [Port Vila] }
+  WSM:
+    {
+      name: Samoa,
+      official: [Independent State of Samoa],
+      former: [Western Samoa],
+      capitals: [Apia],
+    }
+  XKX: { name: Kosovo, official: [Republic of Kosovo], endonym: [Kosova], capitals: [Pristina] }
+  YEM:
+    name: Yemen
+    official: [Republic of Yemen]
+    capitals:
+      - Sanaa
+      - {
+          name: Aden,
+          role: seat_of_government,
+          note: "Temporary seat of the internationally recognised government.",
+        }
+  ZAF:
+    name: South Africa
+    official: [Republic of South Africa]
+    capitals:
+      - { name: Pretoria, role: seat_of_government, note: Executive capital. }
+      - { name: Cape Town, note: Legislative capital. }
+      - { name: Bloemfontein, note: Judicial capital. }
+  ZMB:
+    {
+      name: Zambia,
+      official: [Republic of Zambia],
+      former: [Northern Rhodesia],
+      capitals: [Lusaka],
+    }
+  ZWE:
+    {
+      name: Zimbabwe,
+      official: [Republic of Zimbabwe],
+      former: [Southern Rhodesia],
+      capitals: [Harare],
+    }

@@ -1,0 +1,14 @@
+# Ambiguity groups (DATA_MODEL §2.4). An alias shared by several entities is only allowed when listed here.
+# Typing the alias earns no credit and shows the message, unless only one member remains unanswered.
+# The Virgin Islands group (territory:VGB, territory:VIR) lands with the `territories` set.
+groups:
+  - group: congo
+    alias: Congo
+    universe: country
+    members: [country:COD, country:COG]
+    message: 'Which Congo? Try "Republic of the Congo" or "DR Congo".'
+  - group: korea
+    alias: Korea
+    universe: country
+    members: [country:KOR, country:PRK]
+    message: 'Which Korea? Try "North Korea" or "South Korea".'
