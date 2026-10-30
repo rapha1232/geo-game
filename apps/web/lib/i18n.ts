@@ -395,6 +395,7 @@ const en = {
   "rp.rateLimited": "You've sent a lot of reports. Try again in {s} seconds.",
   "rp.invalid": "The report couldn't be sent. Check the details and try again.",
   "rp.failed": "The report didn't go through. Check your connection and try again.",
+  "rules.title": "Rules and scoring",
   "corrections.title": "Content corrections",
   "corrections.intro":
     "Changes to names, facts and maps, newest first. Reports from players are reviewed within 7 days.",

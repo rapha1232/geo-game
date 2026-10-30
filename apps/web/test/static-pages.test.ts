@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { generate } from "../scripts/gen-sources.mjs";
 import sources from "../lib/generated/sources.json";
 import { PRIVACY, TERMS } from "../lib/legal";
+import { COUNTRY_RULES, SCORING_RULES } from "../lib/rules";
 
 describe("AC-PL-022 sources page data", () => {
   it("lib/generated/sources.json matches data/sources.registry.yaml (run `pnpm --filter @meridian/web gen:sources`)", async () => {
@@ -21,7 +22,7 @@ describe("AC-PL-022 sources page data", () => {
 
 describe("legal pages (Q-06)", () => {
   it("have unique section headings and non-empty bodies", () => {
-    for (const doc of [TERMS, PRIVACY]) {
+    for (const doc of [TERMS, PRIVACY, COUNTRY_RULES, SCORING_RULES]) {
       const heads = doc.map((s) => s.heading);
       expect(new Set(heads).size).toBe(heads.length);
       for (const s of doc)
