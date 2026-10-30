@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "@meridian/ui/styles";
@@ -11,6 +11,9 @@ import styles from "./layout.module.css";
 export const metadata: Metadata = {
   title: BRAND_NAME,
   description: t("app.tagline"),
+};
+
+export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 

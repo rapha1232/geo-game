@@ -1,0 +1,187 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 12rem;
+  overflow: hidden;
+  background: var(--color-ocean);
+  border-radius: var(--radius-card);
+  touch-action: none;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.svg:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.sphere {
+  fill: var(--color-ocean);
+  stroke: var(--color-border-map);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.land {
+  fill: var(--color-land);
+  stroke: var(--color-border-map);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+
+/* Feedback states: colour AND pattern (AC-PL-008). */
+.correct {
+  fill: var(--color-correct);
+  stroke: var(--color-text);
+  stroke-width: 1.4;
+}
+.wrong {
+  stroke: var(--color-wrong);
+  stroke-width: 1.4;
+}
+.near {
+  stroke: var(--color-near);
+  stroke-width: 1.4;
+}
+.disputed,
+.nodata {
+  stroke: var(--color-border-map);
+}
+.highlight {
+  fill: var(--color-accent);
+  stroke: var(--color-text);
+  stroke-width: 2;
+}
+
+.active {
+  stroke: var(--color-focus);
+  stroke-width: 3;
+}
+
+.patLandBg {
+  fill: var(--color-land);
+}
+.patWrongBg,
+.patNearBg {
+  fill: var(--color-surface);
+}
+.patWrongInk {
+  stroke: var(--color-wrong);
+}
+.patNearInk {
+  fill: var(--color-near);
+}
+.patCrossInk,
+.patLightInk {
+  stroke: var(--color-border-map);
+}
+
+/* Tiny-target rings: dashed so they read as a hit area, not a feature. */
+.ring {
+  fill: transparent;
+  stroke: var(--color-text);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+.ringHighlight {
+  stroke: var(--color-accent);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+.pin {
+  fill: var(--color-accent);
+  stroke: var(--color-text);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+.pinDot {
+  fill: var(--color-text);
+}
+
+.loupeFrame {
+  fill: var(--color-ocean);
+  stroke: var(--color-text);
+  stroke-width: 2;
+}
+.loupeHint {
+  fill: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--color-surface);
+  stroke-width: 3px;
+}
+
+.controls {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.zoomButton {
+  width: var(--touch-target);
+  min-width: var(--touch-target);
+  padding: 0;
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ringHighlight {
+    animation: pulse 1.6s var(--ease) infinite;
+  }
+  @keyframes pulse {
+    50% {
+      stroke-width: 5;
+      opacity: 0.6;
+    }
+  }
+}
+
+/* Forced colours: draw patterns and strokes with system colours so every state stays distinct. */
+@media (forced-colors: active) {
+  .land,
+  .sphere {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+  .correct {
+    fill: Highlight;
+    stroke: CanvasText;
+  }
+  .highlight {
+    fill: Highlight;
+    stroke: HighlightText;
+  }
+  .patWrongBg,
+  .patNearBg,
+  .patLandBg {
+    fill: Canvas;
+  }
+  .patWrongInk,
+  .patCrossInk,
+  .patLightInk {
+    stroke: CanvasText;
+  }
+  .patNearInk {
+    fill: CanvasText;
+  }
+  .active {
+    stroke: Highlight;
+  }
+}

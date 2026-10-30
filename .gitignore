@@ -8,3 +8,4 @@ next-env.d.ts
 !.env.example
 .vercel
 data/raw
+apps/web/public/content
