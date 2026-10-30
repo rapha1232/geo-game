@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "@meridian/ui/styles";
 import { themeInitScript } from "@meridian/ui";
@@ -13,12 +14,15 @@ export const metadata: Metadata = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // The CSP middleware passes a per-request nonce; the inline theme script must carry it (AC-PL-025).
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     // suppressHydrationWarning: the inline script may set data-theme on <html> before React hydrates.
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {nonce && <meta name="csp-nonce" content={nonce} />}
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         <div className={styles.shell}>

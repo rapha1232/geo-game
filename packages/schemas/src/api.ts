@@ -6,7 +6,8 @@ import { gameId } from "./result";
 export const healthResponse = z.object({
   status: z.enum(["ok", "degraded"]),
   db: z.enum(["ok", "down"]),
-  content_version: contentVersion,
+  /** Null until the first content release exists. */
+  content_version: contentVersion.nullable(),
   app_version: z.string().min(1),
 });
 

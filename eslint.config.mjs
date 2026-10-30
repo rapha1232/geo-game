@@ -28,6 +28,11 @@ export default tseslint.config(
     },
   },
   {
+    // Node scripts (migrations, tooling).
+    files: ["**/scripts/**/*.{mjs,js,ts}"],
+    languageOptions: { globals: { process: "readonly", console: "readonly", URL: "readonly" } },
+  },
+  {
     files: [
       "packages/games/**/*.{ts,tsx}",
       "packages/game-kit/**/*.{ts,tsx}",
