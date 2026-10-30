@@ -1,5 +1,13 @@
 export type AliasKind =
-  "canonical" | "common" | "official" | "ascii" | "former" | "endonym" | "code";
+  | "canonical"
+  | "common"
+  | "official"
+  | "ascii"
+  | "former"
+  | "endonym"
+  | "translation"
+  | "code"
+  | "misspelling";
 
 export type Alias = { text: string; kind: AliasKind; lang?: string; script?: string };
 

@@ -19,6 +19,15 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    // Intentionally unused names start with an underscore (e.g. omitting a key with rest destructuring).
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
+    },
+  },
+  {
     files: [
       "packages/games/**/*.{ts,tsx}",
       "packages/game-kit/**/*.{ts,tsx}",

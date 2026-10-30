@@ -344,6 +344,29 @@ describe("acceptance criteria", () => {
     expect((performance.now() - t0) / 20).toBeLessThan(20);
   });
 
+  it("translation aliases are indexed only for enabled answer languages (quiz-library §5.3)", () => {
+    const ents: MatchEntity[] = [
+      {
+        id: "c:DEU",
+        name: "Germany",
+        aliases: [
+          { text: "Alemania", kind: "translation", lang: "es" },
+          { text: "Allemagne", kind: "translation", lang: "fr" },
+        ],
+      },
+    ];
+    const ctx: MatchContext = { mode: "type_all", remaining: new Set(["c:DEU"]) };
+    expect(new NameIndex(ents).match("alemania", ctx, { submitted: true }).kind).toBe(
+      "not-recognized",
+    );
+    const es = new NameIndex(ents, [], { languages: ["es"] });
+    expect(es.match("alemania", ctx, { submitted: true })).toMatchObject({
+      kind: "accept",
+      entityId: "c:DEU",
+    });
+    expect(es.match("allemagne", ctx, { submitted: true }).kind).toBe("not-recognized");
+  });
+
   it("undeclared alias collisions are reported for the content validator and resolved by what remains", () => {
     const dup = new NameIndex([
       { id: "a", name: "Victoria", aliases: [] },
