@@ -38,6 +38,9 @@ importers:
       '@meridian/name-matcher':
         specifier: workspace:*
         version: link:../../packages/name-matcher
+      '@meridian/quiz':
+        specifier: workspace:*
+        version: link:../../packages/games/quiz
       '@meridian/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas

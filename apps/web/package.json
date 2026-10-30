@@ -16,6 +16,7 @@
   "dependencies": {
     "@meridian/game-kit": "workspace:*",
     "@meridian/name-matcher": "workspace:*",
+    "@meridian/quiz": "workspace:*",
     "@meridian/schemas": "workspace:*",
     "@meridian/silhouette": "workspace:*",
     "@meridian/ui": "workspace:*",

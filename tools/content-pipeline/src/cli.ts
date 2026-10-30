@@ -37,6 +37,7 @@ const path = {
   silhouettes: join(root, "content/overrides/silhouettes.yaml"),
   dailySilhouette: join(root, "content/daily/silhouette.json"),
   confusables: join(root, "content/flags/confusables.yaml"),
+  landlocked: join(root, "content/landlocked.yaml"),
   flagsTgz: join(root, "data/raw/fi/flag-icons-7.6.0.tgz"),
   adjacency: join(root, "content/overrides/adjacency.yaml"),
   version: join(root, "content/version.txt"),
@@ -155,6 +156,12 @@ async function loadInputs(args: string[]) {
     ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
     disputes: await list(dispute, "disputes")(path.disputes),
     daily: await readDaily(),
+    landlocked: new Set(
+      z
+        .object({ landlocked: z.array(z.string().regex(/^[A-Z]{3}$/)) })
+        .passthrough()
+        .parse(await yaml(path.landlocked)).landlocked,
+    ),
     flags: {
       svg: extractFlags(await read("flag-icons", path.flagsTgz), ne10Iso2),
       confusables: confusablesByCode(confusablesFile.parse(await yaml(path.confusables)).groups),

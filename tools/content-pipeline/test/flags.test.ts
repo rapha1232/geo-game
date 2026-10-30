@@ -75,6 +75,7 @@ describe.skipIf(!haveRaw)("T1.9 flags in the real build", () => {
       silhouettes: silhouetteOverrides.parse(yaml("content/overrides/silhouettes.yaml")).overrides,
       adjacency: adjacencyOverrides.parse(yaml("content/overrides/adjacency.yaml")),
     },
+    landlocked: new Set((yaml("content/landlocked.yaml").landlocked as string[]) ?? []),
     flags: {
       svg: extractFlags(
         new Uint8Array(readFileSync(tgz)),
@@ -105,6 +106,15 @@ describe.skipIf(!haveRaw)("T1.9 flags in the real build", () => {
       core.entities.every((e) => e.flag?.svg === e.id && pack.flags[e.id]?.startsWith("<svg")),
     ).toBe(true);
     expect(out.files.find((f) => f.name === "flags.svg")!.bytes.length).toBeLessThan(2_500_000);
+  });
+  it("marks the 45 landlocked countries from the editorial list, and rejects a code outside the set", () => {
+    const ids = core.entities
+      .filter((e) => (e as { landlocked?: boolean }).landlocked)
+      .map((e) => e.id);
+    expect(ids).toHaveLength(45);
+    expect(ids).toEqual(expect.arrayContaining(["country:PRY", "country:XKX", "country:CHE"]));
+    expect(ids).not.toContain("country:FRA");
+    expect(() => buildPacks({ ...input, landlocked: new Set(["ZZZ"]) })).toThrow(/outside the set/);
   });
   it("AC-QZ-019 (data): Chad lists Romania among its confusable flags", () => {
     expect(core.entities.find((e) => e.id === "country:TCD")!.flag!.confusables).toContain(

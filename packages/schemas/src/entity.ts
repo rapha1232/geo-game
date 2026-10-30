@@ -73,6 +73,8 @@ export const entity = z
     continent: z.string().optional(),
     subregion: z.string().optional(),
     capitals: z.array(capital).optional(),
+    /** No ocean coast (content/landlocked.yaml). Absent means false. */
+    landlocked: z.boolean().optional(),
     flag: z
       .object({ svg: z.string(), aspect: z.number().positive(), confusables: z.array(countryId) })
       .optional(),

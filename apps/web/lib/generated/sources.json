@@ -18,6 +18,15 @@
     "attributionRequired": false
   },
   {
+    "id": "fi",
+    "name": "flag-icons (lipis/flag-icons) v7.6.0",
+    "kind": "icons",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/lipis/flag-icons/blob/main/LICENSE",
+    "attribution": "flag-icons, Copyright (c) 2013 Panayiotis Lipiridis, MIT License.",
+    "attributionRequired": true
+  },
+  {
     "id": "mer",
     "name": "Meridian editorial content (facts, prompts, overrides, aliases with sources)",
     "kind": "dataset",

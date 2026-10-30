@@ -53,6 +53,8 @@ export type BuildInput = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
+  /** ISO alpha-3 codes with no ocean coast (content/landlocked.yaml). */
+  landlocked?: ReadonlySet<string>;
   /** Flag SVGs by ISO alpha-2 and the editorial confusables groups. Adds the `flags.svg` pack. */
   flags?: { svg: ReadonlyMap<string, string>; confusables: ReadonlyMap<string, readonly string[]> };
   /** Daily schedules (content/daily/*.json), shipped as `daily.<game>` packs. */
@@ -106,8 +108,14 @@ export function buildPacks(input: BuildInput): BuildOutput {
     ...(input.editorial ? { editorial: input.editorial } : {}),
     capitals: input.wikidata.capitals,
     ...(input.flags ? { flags: input.flags } : {}),
+    ...(input.landlocked ? { landlocked: input.landlocked } : {}),
   });
 
+  const unknown = [...(input.landlocked ?? [])].filter(
+    (c) => !input.members.some((m) => m.code === c),
+  );
+  if (unknown.length > 0)
+    throw new Error(`content/landlocked.yaml lists codes outside the set: ${unknown.join(", ")}`);
   const priors = input.derive ? difficultyPriors(merged) : undefined;
   const entities: Entity[] = priors
     ? merged.map((e) => ({

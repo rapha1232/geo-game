@@ -98,7 +98,7 @@ Common fields (all geographic entity types):
 | `difficulty` | `{recall, locate, flag, capital, shape}` 0–1 | countries & territories | |
 | `source_ids[]` | string[] | ✅ | Registry IDs |
 
-Country-specific fields: `continent`, `subregion`, `capitals[] {city?, name, role, point?, valid_from?, note?}` (`point` is `[lat, lon]`, from Wikidata or an editorial entry with a recorded source; it feeds `CAPITAL_OUTSIDE`), `flag {svg, aspect, confusables[]}`, `population {value, year, source}`, `area_km2 {value, source}`, `languages_official[]` (R2), `driving_side` (R2), `currency` (R2).
+Country-specific fields: `continent`, `subregion`, `capitals[] {city?, name, role, point?, valid_from?, note?}` (`point` is `[lat, lon]`, from Wikidata or an editorial entry with a recorded source; it feeds `CAPITAL_OUTSIDE`), `flag {svg, aspect, confusables[]}`, `landlocked?`, `population {value, year, source}`, `area_km2 {value, source}`, `languages_official[]` (R2), `driving_side` (R2), `currency` (R2).
 
 ### 2.3 Geometry objects
 
