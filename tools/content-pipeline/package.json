@@ -1,0 +1,28 @@
+{
+  "name": "@meridian/content-pipeline",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "content:fetch": "tsx src/cli.ts fetch",
+    "content:build": "tsx src/cli.ts build",
+    "content:validate": "tsx src/cli.ts validate"
+  },
+  "dependencies": {
+    "@meridian/geo": "workspace:*",
+    "@meridian/schemas": "workspace:*",
+    "@vercel/blob": "^0.27.3",
+    "polylabel": "^2.0.1",
+    "topojson-server": "^3.0.1",
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/topojson-server": "^3.0.4",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.8"
+  }
+}

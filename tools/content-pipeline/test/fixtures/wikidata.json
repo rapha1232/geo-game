@@ -1,0 +1,200 @@
+{
+  "capitals": [
+    {
+      "code": "AUS",
+      "coord": [-35.293055555, 149.126944444],
+      "label": "Canberra",
+      "qid": "Q3114"
+    },
+    {
+      "code": "CIV",
+      "coord": [6.816111111, -5.274166666],
+      "label": "Yamoussoukro",
+      "qid": "Q3768"
+    },
+    {
+      "code": "FJI",
+      "coord": [-18.133333333, 178.433333333],
+      "label": "Suva",
+      "qid": "Q38807"
+    },
+    {
+      "code": "FRA",
+      "coord": [48.856666666, 2.352222222],
+      "label": "Paris",
+      "qid": "Q90"
+    },
+    {
+      "code": "NOR",
+      "coord": [59.913333333, 10.738888888],
+      "label": "Oslo",
+      "qid": "Q585"
+    },
+    {
+      "code": "PSE",
+      "coord": [31.776679, 35.234156],
+      "label": "Jerusalem",
+      "qid": "Q1218"
+    },
+    {
+      "code": "PSE",
+      "coord": [31.896944444, 35.201666666],
+      "label": "Ramallah",
+      "qid": "Q158119"
+    },
+    {
+      "code": "PSE",
+      "coord": [31.78336, 35.23388],
+      "label": "East Jerusalem",
+      "qid": "Q212938"
+    },
+    {
+      "code": "TWN",
+      "coord": [25.0375, 121.5625],
+      "label": "Taipei",
+      "qid": "Q1867"
+    },
+    {
+      "code": "VAT",
+      "coord": [41.904, 12.453],
+      "label": "Vatican City",
+      "qid": "Q237"
+    },
+    {
+      "code": "XKX",
+      "coord": [42.666666666, 21.166666666],
+      "label": "Pristina",
+      "qid": "Q25270"
+    }
+  ],
+  "countries": [
+    {
+      "altLabels": [
+        "'Straya",
+        "Aussieland",
+        "Commonwealth of Australia",
+        "Down Under",
+        "New Holland",
+        "New Hollandia",
+        "Nova Hollandia",
+        "Oz",
+        "Stralia",
+        "Straya",
+        "Stria",
+        "The Commonwealth of Australia"
+      ],
+      "code": "AUS",
+      "label": "Australia",
+      "officialNames": [],
+      "qid": "Q408"
+    },
+    {
+      "altLabels": [
+        "Cote Ivoire",
+        "Cote d'Ivoire",
+        "Cote d'lvoire",
+        "Cote-d'Ivoire",
+        "Côte-d'Ivoire",
+        "Republic of Cote d'Ivoire",
+        "Republic of Côte d'Ivoire",
+        "Republic of Ivory Coast",
+        "Republic of the Ivory Coast",
+        "The Ivory Coast",
+        "ci"
+      ],
+      "code": "CIV",
+      "label": "Ivory Coast",
+      "officialNames": ["Republic of Côte d’Ivoire"],
+      "qid": "Q1008"
+    },
+    {
+      "altLabels": [
+        "Fijī",
+        "Fijī Gaṇarājya",
+        "Matanitu Tugalala o Viti",
+        "Republic of Fiji",
+        "Republic of the Fiji Islands",
+        "Viti",
+        "fj"
+      ],
+      "code": "FJI",
+      "label": "Fiji",
+      "officialNames": ["Fiji", "Republic of Fiji"],
+      "qid": "Q712"
+    },
+    {
+      "altLabels": ["French Republic"],
+      "code": "FRA",
+      "label": "France",
+      "officialNames": [],
+      "qid": "Q142"
+    },
+    {
+      "altLabels": ["Kingdom of Norway"],
+      "code": "NOR",
+      "label": "Norway",
+      "officialNames": [],
+      "qid": "Q20"
+    },
+    {
+      "altLabels": ["PSE", "State of Palestine"],
+      "code": "PSE",
+      "label": "Palestine",
+      "officialNames": [],
+      "qid": "Q219060"
+    },
+    {
+      "altLabels": [
+        "China, Republic of",
+        "Chinese Republic",
+        "Chinese Taipei",
+        "Chunghwa Minkuo",
+        "Chunghwa Minkwo",
+        "Free China",
+        "Nationalist China",
+        "ROC",
+        "Republic of China",
+        "Republic of China (Taiwan)",
+        "TW",
+        "TWN",
+        "Taiwan",
+        "Taiwan ROC",
+        "The ROC"
+      ],
+      "code": "TWN",
+      "label": "Taiwan",
+      "officialNames": [],
+      "qid": "Q865"
+    },
+    {
+      "altLabels": [
+        "Città del Vaticano",
+        "Holy See",
+        "Papal State",
+        "State of Vatican City",
+        "Stato della Città del Vaticano",
+        "Status Civitatis Vaticanae",
+        "The Vatican",
+        "Vatican",
+        "Vatican City State"
+      ],
+      "code": "VAT",
+      "label": "Vatican City",
+      "officialNames": [],
+      "qid": "Q237"
+    },
+    {
+      "altLabels": ["KOS", "KV", "Kosova", "RKS", "Republic of Kosovo", "XK", "XKX"],
+      "code": "XKX",
+      "label": "Kosovo",
+      "officialNames": [],
+      "qid": "Q1246"
+    }
+  ],
+  "endpoint": "https://query.wikidata.org/sparql",
+  "queries": {
+    "names": "(trimmed in fixture)",
+    "capitals": "(trimmed in fixture)"
+  },
+  "retrieved_on": "2026-10-30"
+}

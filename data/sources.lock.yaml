@@ -1,0 +1,32 @@
+# Pinned source versions and checksums (DATA_AND_CONTENT §3). Regenerate with: pnpm content:fetch --update-lock
+entries:
+  - id: flag-icons
+    source: fi
+    url: https://registry.npmjs.org/flag-icons/-/flag-icons-7.6.0.tgz
+    version: 7.6.0
+    sha256: 99d6feb80562dcaa83700ef184094d7c7b6587cc216b3fab1546cb1643e611a9
+    bytes: 1081405
+  - id: ne-10m-countries
+    source: ne
+    url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_countries.geojson
+    version: v5.1.2
+    sha256: 239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255
+    bytes: 13287234
+  - id: ne-110m-countries
+    source: ne
+    url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_110m_admin_0_countries.geojson
+    version: v5.1.2
+    sha256: 6866c877d39cba9c357620878839b336d569f8c662d3cfab4cb1dbe2d39c977f
+    bytes: 838726
+  - id: ne-50m-countries
+    source: ne
+    url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_50m_admin_0_countries.geojson
+    version: v5.1.2
+    sha256: 3e458fc036ad0a66411f2c1e6cac49c5d7bfb81cb1123bc513b22511a2b7fdeb
+    bytes: 3083490
+  - id: wikidata-countries
+    source: wd
+    url: https://query.wikidata.org/sparql
+    version: snapshot 2026-10-30
+    sha256: 5d5d7c7758b706353edf0ab7c935e58009fc483fe4d85b54b7644b25978573be
+    bytes: 52698

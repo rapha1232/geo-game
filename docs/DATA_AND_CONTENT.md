@@ -58,6 +58,9 @@ graph LR
 
 - The pipeline is deterministic: the same raw inputs, overrides and pipeline version produce byte-identical packs (hash-checked in CI).
 - `data/sources.lock.yaml` pins each source's version or date and SHA-256.
+- **Raw downloads** (`data/raw/`) are gitignored and re-verified against the lock on every build. **Wikidata is a moving target**, so its query result is committed as a point-in-time snapshot (`data/snapshots/wikidata-countries.json`, pinned in the lock like everything else). Refresh it deliberately with `pnpm content:fetch --wikidata --update-lock` and review the diff.
+- Rules the real data forced (all fail the build rather than guess): Natural Earth gives dependencies and leases the sovereign's code, so the main feature is the one whose own `ADM0_A3` equals the code. Wikidata uses `XKS` for Kosovo (Meridian: `XKX`). Natural Earth's `PSX` is `PSE`. Where Wikidata has two items for one code, `WD_ITEM_PICKS` names the right one (PSE → Q219060).
+- **1:110m omits 29 small states** (Vatican, Monaco, Singapore, Malta…). Those entities use their 1:50m outline in the 110m pack, and the release notes list them.
 - Editorial content (`content/`) is hand-edited YAML. Generated packs are build outputs and are **not committed**. CI builds them and they are deployed as static assets.
 
 ## 4. Content model overview
@@ -226,7 +229,7 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `NAME_MISSING` | Every entity has a canonical name | error |
 | `ALIAS_COLLISION` | §5.2 rule 1 | error |
 | `GEOM_INVALID` | Valid, non-self-intersecting polygons with the correct winding. No empty geometries. | error |
-| `GEOM_MISSING` | Every entity in a playable set has geometry in 110m, 50m and 10m | error |
+| `GEOM_MISSING` | Every entity in a playable set has geometry in 110m, 50m and 10m (for entities Natural Earth omits at 110m, the 110m pack uses the 50m outline) | error |
 | `REF_POINT_OUTSIDE` | `ref_point` inside its polygon | error |
 | `ADJ_ASYMMETRIC` | Adjacency is symmetric | error |
 | `CAPITAL_OUTSIDE` | Capital point inside its country's 10m polygon (tolerance 2 km) | error |
