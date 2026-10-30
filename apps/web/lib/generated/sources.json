@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ne",
+    "name": "Natural Earth (1:110m, 1:50m, 1:10m admin-0 countries, populated places, physical layers)",
+    "kind": "dataset",
+    "license": "Public domain",
+    "licenseUrl": "https://www.naturalearthdata.com/about/terms-of-use/",
+    "attribution": null,
+    "attributionRequired": false
+  },
+  {
+    "id": "wd",
+    "name": "Wikidata (structured data)",
+    "kind": "dataset",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+    "attribution": null,
+    "attributionRequired": false
+  },
+  {
+    "id": "mer",
+    "name": "Meridian editorial content (facts, prompts, overrides, aliases with sources)",
+    "kind": "dataset",
+    "license": "All rights reserved",
+    "licenseUrl": null,
+    "attribution": null,
+    "attributionRequired": false
+  },
+  {
+    "id": "font-source-sans-3",
+    "name": "Source Sans 3 (variable, via @fontsource-variable/source-sans-3)",
+    "kind": "font",
+    "license": "SIL OFL 1.1",
+    "licenseUrl": "https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md",
+    "attribution": null,
+    "attributionRequired": false
+  },
+  {
+    "id": "font-source-serif-4",
+    "name": "Source Serif 4 (variable, via @fontsource-variable/source-serif-4)",
+    "kind": "font",
+    "license": "SIL OFL 1.1",
+    "licenseUrl": "https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md",
+    "attribution": null,
+    "attributionRequired": false
+  }
+]
