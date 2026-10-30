@@ -32,9 +32,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@meridian/fact-pin':
+        specifier: workspace:*
+        version: link:../../packages/games/fact-pin
       '@meridian/game-kit':
         specifier: workspace:*
         version: link:../../packages/game-kit
+      '@meridian/geo':
+        specifier: workspace:*
+        version: link:../../packages/geo
       '@meridian/name-matcher':
         specifier: workspace:*
         version: link:../../packages/name-matcher

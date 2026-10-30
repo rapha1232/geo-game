@@ -93,7 +93,7 @@ describe("search and filters (AC-PL-019)", () => {
   });
   it("without content it still lists everything by title", () => {
     const bare = buildCatalog(null);
-    expect(bare).toHaveLength(1 + LIBRARY.length);
+    expect(bare).toHaveLength(2 + LIBRARY.length);
     expect(
       searchCatalog(bare, { ...EMPTY_FILTER, search: "flags multiple" }, none).map((i) => i.title),
     ).toContain("Flags (Multiple Choice)");

@@ -14,7 +14,9 @@
     "gen:sources": "node scripts/gen-sources.mjs"
   },
   "dependencies": {
+    "@meridian/fact-pin": "workspace:*",
     "@meridian/game-kit": "workspace:*",
+    "@meridian/geo": "workspace:*",
     "@meridian/name-matcher": "workspace:*",
     "@meridian/quiz": "workspace:*",
     "@meridian/schemas": "workspace:*",

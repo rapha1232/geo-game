@@ -28,6 +28,7 @@ const config: NextConfig = {
   transpilePackages: [
     "@meridian/ui",
     "@meridian/game-kit",
+    "@meridian/fact-pin",
     "@meridian/geo",
     "@meridian/name-matcher",
   ],

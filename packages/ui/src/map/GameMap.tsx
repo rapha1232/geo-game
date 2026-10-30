@@ -75,6 +75,8 @@ export type GameMapProps = {
   onSelect?: (id: string) => void;
   pin?: Pin | null;
   onPinChange?: (pin: Pin) => void;
+  /** The right answer, drawn after a reveal with a line from the pin. */
+  target?: Pin | null;
   onNeedLod?: (lod: Lod) => void;
   "aria-label": string;
   labels: GameMapLabels;
@@ -143,6 +145,7 @@ export function GameMap({
   onSelect,
   pin = null,
   onPinChange,
+  target = null,
   onNeedLod,
   labels,
   pointer,
@@ -418,6 +421,13 @@ export function GameMap({
       })()
     : null;
 
+  const targetScreen = target
+    ? (() => {
+        const p = projection([target.lon, target.lat]);
+        return p ? baseToScreen(t, p[0], p[1]) : null;
+      })()
+    : null;
+
   const stateClass = (s: MapFeatureState): string | undefined =>
     s === "idle" ? undefined : styles[s];
   const fillFor = (s: MapFeatureState): string | undefined =>
@@ -487,6 +497,22 @@ export function GameMap({
             data-ring={r.id}
           />
         ))}
+        {pinScreen && targetScreen && (
+          <line
+            x1={pinScreen[0]}
+            y1={pinScreen[1]}
+            x2={targetScreen[0]}
+            y2={targetScreen[1]}
+            className={styles.targetLine}
+            data-target-line=""
+          />
+        )}
+        {targetScreen && (
+          <g transform={`translate(${targetScreen[0]} ${targetScreen[1]})`} data-target="">
+            <circle r={9} className={styles.targetRing} />
+            <circle r={3} className={styles.pinDot} />
+          </g>
+        )}
         {pinScreen && (
           <g transform={`translate(${pinScreen[0]} ${pinScreen[1]})`} data-pin="">
             <path d="M0 0 L-7 -15 A9 9 0 1 1 7 -15 Z" className={styles.pin} />

@@ -24,6 +24,7 @@ export async function setFavorite(db: MeridianDb, key: string, on: boolean): Pro
 /** The catalog key a result belongs to: a Silhouette round, or the named quiz with the same template, scope and format. */
 export function catalogKeyOf(r: GameResult): string | null {
   if (r.game_id === "silhouette") return "game:silhouette";
+  if (r.game_id === "fact-pin") return "game:fact-pin";
   if (r.game_id !== "quiz") return null;
   const c = r.config as {
     template?: string;

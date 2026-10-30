@@ -45,6 +45,18 @@ export const SILHOUETTE: CatalogItem = {
   tags: ["countries", "shape", "outline", "deduction", "geography"],
 };
 
+export const FACT_PIN: CatalogItem = {
+  key: "game:fact-pin",
+  kind: "game",
+  title: "Fact Pin",
+  pitch: "Read a fact, then pin where it happened. Closer pins score more.",
+  href: "/play/fact-pin",
+  topic: "mixed",
+  format: "Map",
+  length: "medium",
+  tags: ["facts", "history", "nature", "culture", "science", "sport", "map", "pin", "location"],
+};
+
 /** Games and the named quizzes. With a loaded world, each quiz also matches the names of its countries and capitals. */
 export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
   const quizzes = LIBRARY.map((q): CatalogItem => {
@@ -76,7 +88,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       tags: [q.category, FORMAT_OF[q.format].toLowerCase(), "quiz", ...names],
     };
   });
-  return [SILHOUETTE, ...quizzes];
+  return [SILHOUETTE, FACT_PIN, ...quizzes];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

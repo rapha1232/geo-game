@@ -105,6 +105,18 @@
   stroke-width: 1.5;
   pointer-events: none;
 }
+.targetLine {
+  stroke: var(--color-text);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  pointer-events: none;
+}
+.targetRing {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
 .pinDot {
   fill: var(--color-text);
 }
