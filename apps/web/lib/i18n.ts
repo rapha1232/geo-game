@@ -13,6 +13,20 @@ const en = {
   "footer.legalNav": "Legal",
   "footer.terms": "Terms of Service",
   "footer.privacy": "Privacy Policy",
+  "terms.title": "Terms of Service",
+  "privacy.title": "Privacy Policy",
+  "legal.updated": "Last updated {date}",
+  "about.title": "About",
+  "about.body":
+    "{brand} is a set of geography, history and knowledge games with unlimited play and no account needed. Every name, border and fact comes from a named source, listed on the Sources page.",
+  "sources.title": "Sources and licences",
+  "sources.intro": "Everything we build on, with its licence and the credit it asks for.",
+  "sources.licence": "licence",
+  "sources.kind.dataset": "Data",
+  "sources.kind.font": "Fonts",
+  "sources.kind.icons": "Icons",
+  "sources.kind.image": "Images",
+  "sources.naturalEarth": "Made with Natural Earth.",
 } as const;
 
 export type MessageKey = keyof typeof en;

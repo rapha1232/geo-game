@@ -1,0 +1,38 @@
+.prose {
+  max-width: 44rem;
+  padding: var(--space-6) 0;
+}
+
+.prose h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: var(--space-3);
+}
+
+.prose h2 {
+  font-size: var(--text-xl);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.prose p,
+.prose li {
+  line-height: 1.65;
+  max-width: 68ch;
+}
+
+.prose ul {
+  padding-left: var(--space-5);
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.prose a {
+  color: var(--color-text);
+  text-underline-offset: 0.2em;
+}
