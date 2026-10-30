@@ -6,3 +6,4 @@ export * from "./fact";
 export * from "./daily";
 export * from "./result";
 export * from "./api";
+export * from "./registry";
