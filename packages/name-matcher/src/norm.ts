@@ -33,7 +33,8 @@ const TOKEN_REWRITES: Record<string, string> = {
   dem: "democratic",
 };
 
-export function norm(input: string): string {
+/** The tokens of `norm()` before they are joined: same rules, same rewrites, spaces preserved between words. */
+export function normTokens(input: string): string[] {
   // 1. Trim and cap at 80 characters.
   let s = input.trim().slice(0, MAX_INPUT_LENGTH);
   // 2. NFKD, remove combining marks.
@@ -56,8 +57,12 @@ export function norm(input: string): string {
   );
   // 8. Drop a leading `the`.
   if (rewritten[0] === "the") rewritten.shift();
-  // 9. Remove all spaces.
-  return rewritten.join("");
+  return rewritten;
+}
+
+/** Normalization `norm(s)`: the tokens with all spaces removed (step 9). */
+export function norm(input: string): string {
+  return normTokens(input).join("");
 }
 
 /** True when the input has letters but none of them are Latin (R1 indexes Latin-script aliases only). */

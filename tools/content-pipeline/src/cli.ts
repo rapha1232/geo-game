@@ -3,6 +3,13 @@ import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
 import { sourceRegistry } from "@meridian/schemas";
 import { buildPacks, type BuildOutput } from "./build.ts";
+import {
+  checkDeterminism,
+  contentSetFromBuild,
+  errorsOf,
+  validate,
+  type KnownGeometryIssue,
+} from "./validate/index.ts";
 import { fetchSources, lockText } from "./fetch.ts";
 import { parseLock, verifyAgainstLock, type LockFile } from "./lock.ts";
 import type { NeCollection } from "./ne.ts";
@@ -136,17 +143,60 @@ async function cmdBuild(args: string[]): Promise<void> {
   log(`built ${out.version} into ${dist}`);
 }
 
+async function cmdValidate(args: string[]): Promise<void> {
+  const input = await loadInputs(args);
+  const out = buildPacks(input);
+  const retired = new Set(
+    (await readFile(join(root, "content/retired-ids.txt"), "utf8"))
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith("#")),
+  );
+  const known =
+    (
+      parse(await readFile(join(root, "content/overrides/known-geometry-issues.yaml"), "utf8"), {
+        schema: "core",
+      }) as { issues?: KnownGeometryIssue[] } | null
+    )?.issues ?? [];
+  const issues = [
+    ...validate(
+      contentSetFromBuild(input, out, {
+        fullSets: true,
+        retiredIds: retired,
+        release: flag(args, "release"),
+        knownGeometryIssues: known,
+      }),
+    ),
+    ...(flag(args, "no-determinism") ? [] : checkDeterminism(() => buildPacks(input))),
+  ];
+  const verbose = flag(args, "verbose");
+  const shown = verbose ? issues : issues.slice(0, 40);
+  for (const i of shown)
+    console.log(`${i.level === "error" ? "ERROR" : "warn "} ${i.code.padEnd(18)} ${i.message}`);
+  if (shown.length < issues.length)
+    console.log(`… and ${issues.length - shown.length} more (use --verbose)`);
+  const errors = errorsOf(issues);
+  const byCode = new Map<string, number>();
+  for (const i of issues)
+    byCode.set(`${i.level} ${i.code}`, (byCode.get(`${i.level} ${i.code}`) ?? 0) + 1);
+  log(
+    `validate: ${errors.length} errors, ${issues.length - errors.length} warnings ${JSON.stringify(Object.fromEntries(byCode))}`,
+  );
+  if (errors.length > 0) process.exit(1);
+}
+
 const [command, ...rest] = process.argv.slice(2);
 const commands: Record<string, (args: string[]) => Promise<void>> = {
   fetch: cmdFetch,
   build: cmdBuild,
+  validate: cmdValidate,
 };
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const run = command ? commands[command] : undefined;
   if (!run) {
     console.error(
-      "usage: content <fetch [--update-lock] [--wikidata] | build [--version V] [--out DIR] [--released-at ISO]>",
+      "usage: content <fetch [--update-lock] [--wikidata] | build [--version V] [--out DIR] [--released-at ISO] | validate [--release] [--verbose] [--no-determinism]>",
     );
     process.exit(2);
   }

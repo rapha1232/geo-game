@@ -7,15 +7,19 @@ import {
   type Manifest,
   type SourceRegistry,
 } from "@meridian/schemas";
-import { normalizeGeometry, type Geometry } from "./geometry.ts";
+import { dropSlivers, normalizeGeometry, type Geometry } from "./geometry.ts";
 import { mergeCountries, type SetMember } from "./merge.ts";
 import { indexByCode, type NeCollection, type NeCountry } from "./ne.ts";
 import { parseCountries, type WdCountry, type WdSnapshot } from "./wikidata.ts";
 import { sha256, stableStringify } from "./util.ts";
 
 export type Scale = "110m" | "50m" | "10m";
-/** TopoJSON quantization per scale: finer scales keep more precision. */
-export const QUANTIZATION: Record<Scale, number> = { "110m": 1e4, "50m": 1e5, "10m": 1e6 };
+/**
+ * TopoJSON quantization per scale (grid cells across 360°). Coarser grids made thin shapes cross themselves and
+ * collapsed microstates to zero area: at 1e4 a cell is about 4 km, wider than the Vatican. These values were
+ * chosen by validating the real 197-country build; the next step up bought nothing for 20% more bytes.
+ */
+export const QUANTIZATION: Record<Scale, number> = { "110m": 1e5, "50m": 1e6, "10m": 1e7 };
 
 export type BuildInput = {
   version: string;
@@ -90,7 +94,11 @@ export function buildPacks(input: BuildInput): BuildOutput {
         if (ne) fallback110.push(code);
       }
       if (!ne) throw new Error(`${e.id}: no geometry at ${scale} (GEOM_MISSING)`);
-      const geometry: Geometry = normalizeGeometry(ne.geometry);
+      // Anything smaller than one grid cell would collapse to zero area, so it is dropped. An empty result is an error.
+      const cell = 360 / QUANTIZATION[scale];
+      const geometry: Geometry | null = dropSlivers(normalizeGeometry(ne.geometry), cell * cell);
+      if (!geometry)
+        throw new Error(`${e.id}: nothing is larger than one grid cell at ${scale} (GEOM_MISSING)`);
       return { type: "Feature" as const, id: e.id, properties: {}, geometry };
     });
     const topo = topology(
