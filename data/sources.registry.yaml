@@ -1,0 +1,153 @@
+# Source registry (DATA_AND_CONTENT §1–2). Every dataset, font, icon set or image shipped with Meridian is listed here.
+# `verification: done` means a person or agent read the licensor's own terms and recorded the evidence below.
+# A release pack may only use sources with `verification: done` (rule LICENSE_UNVERIFIED).
+# `rejected` sources are never ingested.
+sources:
+  - id: ne
+    name: Natural Earth (1:110m, 1:50m, 1:10m admin-0 countries, populated places, physical layers)
+    kind: dataset
+    license: Public domain
+    license_url: https://www.naturalearthdata.com/about/terms-of-use/
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Terms page: "All versions of Natural Earth raster + vector map data found on this website are in the public domain." and "Crediting the authors is unnecessary."'
+    notes: Some third-party layers (Washington Post, JRC rivers and lakes, XNR roads, IMA time zones) are limited to base-map use. We use only admin, populated-places and physical layers, none of those. Credit is optional; we credit "Made with Natural Earth" anyway.
+    used_in: [geo.world.110m, geo.world.50m, geo.world.10m, core.countries]
+  - id: wd
+    name: Wikidata (structured data)
+    kind: dataset
+    license: CC0 1.0
+    license_url: https://www.wikidata.org/wiki/Wikidata:Licensing
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Licensing page: structured data in the main, Property, Lexeme and EntitySchema namespaces is "released into the public domain under Creative Commons Zero".'
+    notes: Text in other namespaces, and Wikipedia text, is CC BY-SA and must never be copied into facts.
+    used_in: [core.countries]
+  - id: wb
+    name: World Bank Open Data (World Development Indicators)
+    kind: dataset
+    license: CC BY 4.0 (default for World Bank produced datasets)
+    license_url: https://datacatalog.worldbank.org/public-licenses
+    attribution_required: true
+    attribution_text: "The World Bank, World Development Indicators, CC BY 4.0."
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Data Catalog license page: "CC-BY 4.0, with the additional terms below, is the default license for all Datasets produced by the World Bank itself." Users must give appropriate credit and indicate changes.'
+    notes: Some datasets carry other licenses (ODbL, custom third-party). Each indicator shipped in R2 (T2.7) must have its own license note checked before it enters a pack.
+    used_in: []
+  - id: gn
+    name: GeoNames (cities15000, alternateNamesV2)
+    kind: dataset
+    license: CC BY 4.0
+    license_url: https://www.geonames.org/about.html
+    attribution_required: true
+    attribution_text: GeoNames, CC BY 4.0.
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'About page footer: "This work is licensed under a Creative Commons Attribution 4.0 License".'
+    used_in: []
+  - id: wpv
+    name: Wikimedia pageviews (analytics datasets)
+    kind: dataset
+    license: CC0 1.0
+    license_url: https://dumps.wikimedia.org/other/pageviews/readme.html
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Readme: "All Analytics datasets are available under the Creative Commons CC0 dedication."'
+    notes: Only aggregates are stored.
+    used_in: []
+  - id: un
+    name: UN M49 standard country or area codes and regional groupings
+    kind: dataset
+    license: Not stated
+    license_url: https://unstats.un.org/unsd/methodology/m49/
+    attribution_required: false
+    verification: rejected
+    verified_on: 2026-10-30
+    evidence: "The M49 page states no copyright or reuse terms (it points to statistics@un.org for questions). Unknown terms are not allowed (DATA_AND_CONTENT §2.1)."
+    notes: Not ingested. Continents and subregions come from Natural Earth's CONTINENT and SUBREGION fields instead, which are public domain.
+    used_in: []
+  - id: fi
+    name: flag-icons (lipis/flag-icons) v7.6.0
+    kind: icons
+    license: MIT
+    license_url: https://github.com/lipis/flag-icons/blob/main/LICENSE
+    attribution_required: true
+    attribution_text: "flag-icons, Copyright (c) 2013 Panayiotis Lipiridis, MIT License."
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'LICENSE file: "The MIT License (MIT) Copyright (c) 2013 Panayiotis Lipiridis"; package.json declares version 7.6.0 and license MIT.'
+    notes: Keep the MIT notice in THIRD_PARTY_NOTICES.
+    used_in: []
+  - id: hb
+    name: historical-basemaps (aourednik)
+    kind: dataset
+    license: GPL-3.0
+    license_url: https://github.com/aourednik/historical-basemaps
+    attribution_required: true
+    attribution_text: historical-basemaps (aourednik), GPL-3.0.
+    verification: pending
+    evidence: Decision Q-04 is option 1 (isolated GPL-3.0 pack). Needs the legal check before T3.3.
+    used_in: []
+  - id: cs
+    name: CShapes 2.0
+    kind: dataset
+    license: Unknown
+    attribution_required: false
+    verification: pending
+    notes: Evaluate in T3.1. Possibly non-commercial, which our rules forbid.
+    used_in: []
+  - id: md
+    name: mledoze/countries
+    kind: dataset
+    license: ODbL-1.0 (flags excluded)
+    license_url: https://github.com/mledoze/countries
+    attribution_required: false
+    verification: pending
+    notes: Test-time validation oracle only. Never ingested into packs, to avoid ODbL share-alike obligations. Terms were taken from DATA_AND_CONTENT §2 and not re-read, so it stays pending and cannot be used in a pack.
+    used_in: []
+  - id: mer
+    name: Meridian editorial content (facts, prompts, overrides, aliases with sources)
+    kind: dataset
+    license: All rights reserved
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: "Owner decision Q-06: all rights reserved."
+    used_in: [core.countries]
+  - id: font-source-sans-3
+    name: Source Sans 3 (variable, via @fontsource-variable/source-sans-3)
+    kind: font
+    license: SIL OFL 1.1
+    license_url: https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Upstream LICENSE.md: "This Font Software is licensed under the SIL Open Font License, Version 1.1." Copyright 2010-2024 Adobe, Reserved Font Name "Source".'
+    notes: Keep the OFL notice in THIRD_PARTY_NOTICES. Used unmodified.
+    used_in: [app]
+  - id: font-source-serif-4
+    name: Source Serif 4 (variable, via @fontsource-variable/source-serif-4)
+    kind: font
+    license: SIL OFL 1.1
+    license_url: https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md
+    attribution_required: false
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'Upstream LICENSE.md: "This Font Software is licensed under the SIL Open Font License, Version 1.1." Copyright 2014-2023 Adobe, Reserved Font Name "Source".'
+    used_in: [app]
+  - id: icons-lucide
+    name: Lucide icons
+    kind: icons
+    license: ISC
+    license_url: https://github.com/lucide-icons/lucide/blob/main/LICENSE
+    attribution_required: true
+    attribution_text: "Lucide Icons and Contributors, ISC License."
+    verification: done
+    verified_on: 2026-10-30
+    evidence: 'LICENSE file begins "ISC License. Copyright (c) 2026 Lucide Icons and Contributors".'
+    notes: Planned (UX_AND_DESIGN §5.2). Not yet a dependency.
+    used_in: []
