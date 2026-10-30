@@ -118,7 +118,7 @@ Worked examples (fixture ref points):
 |---|---|---|---|---|
 | France (46.6, 2.5) | Spain (40.2, −3.6) | 865 km | 214.7° → **SW** | 95% |
 | Brazil (−14.0, −52.0) | France (46.6, 2.5) | 8,651 km | 39.2° → **NE** | 56% |
-| Fiji (−17.8, 178.0) | Samoa (−13.8, −172.1) | 1,149 km | 67.2° → **NE** (crosses the antimeridian eastward) | 94% |
+| Fiji (−17.8, 178.0) | Samoa (−13.8, −172.1) | 1,148 km | 67.2° → **NE** (crosses the antimeridian eastward) | 94% |
 | Antipodal fixture (0, 0) | (0, 180) | 20,015 km | 90.0° → **E** | 0% |
 
 ### 5.4 Silhouette geometry rules (islands, overseas territories, multipart shapes)
@@ -256,7 +256,7 @@ A map with the target's full geometry (including remote parts, labeled), ref poi
 |---|---|---|
 | AC-SH-001 | Distance uses haversine between ref points, rounded to the nearest km | (46.6, 2.5)→(40.2, −3.6) = **865 km** |
 | AC-SH-002 | Direction is rhumb-line bucketed to 8 sectors | Same pair → 214.7° → **SW** |
-| AC-SH-003 | Antimeridian handled | (−17.8, 178.0)→(−13.8, −172.1) → 1,149 km, **NE**, 94% |
+| AC-SH-003 | Antimeridian handled | (−17.8, 178.0)→(−13.8, −172.1) → 1,148 km, **NE**, 94% |
 | AC-SH-004 | Proximity formula | 8,651 km → **56%**; antipodal → 0%; correct → 100% |
 | AC-SH-005 | Shared-border marker | Target Russia, guess Kazakhstan → row shows "⇆" and the text "Shares a border" |
 | AC-SH-006 | Invalid and duplicate guesses do not consume attempts | Input "Narnia" → "Not recognized", counter stays 1/6. "Spain" twice → "Already guessed". |
