@@ -1,0 +1,129 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  text-decoration: none;
+  min-height: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+}
+
+.links {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.links a[aria-current="page"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+.links a:hover {
+  color: var(--color-text);
+}
+
+@media (max-width: 639px) {
+  /* Bottom tab bar. The body gets matching padding so content is never covered. */
+  .nav {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 10;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .links {
+    justify-content: space-around;
+    gap: 0;
+  }
+  .links li {
+    flex: 1;
+  }
+  .links a {
+    justify-content: center;
+    width: 100%;
+    border-bottom: 0;
+    border-top: 2px solid transparent;
+  }
+  .links a[aria-current="page"] {
+    border-top-color: var(--color-accent);
+  }
+}
+
+.banners {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.banner {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
+}
+
+.continue {
+  margin-top: var(--space-6);
+  max-width: 44rem;
+}
+
+.continueItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.primaryLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  text-decoration: none;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.empty {
+  max-width: 34rem;
+  padding: var(--space-6) 0;
+}

@@ -54,6 +54,7 @@ Mobile (<640): top bar = logo + search icon + profile; bottom tab bar:
 └──────────┴──────────┴──────────┴──────────┘
 ```
 
+- R1 note: Explore does not exist until R2, so the R1 bar shows Play, Daily, Me and Settings (Settings has no header icon yet). Explore joins the bar in R2.
 - During an active game session, the global nav **collapses** to a slim game header (← Back, title, progress, timer, ⋯ menu). This maximizes the map area. Leaving an in-progress session asks "Leave quiz? Your progress is saved and you can resume." [Leave] [Stay].
 - The `⋯` menu in a game contains: Pause, Restart, Settings for this game, How to play, Report a problem, Share challenge.
 

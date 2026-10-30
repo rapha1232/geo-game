@@ -44,3 +44,10 @@
   min-height: var(--touch-target);
   color: var(--color-text);
 }
+
+@media (max-width: 639px) {
+  /* Keep the footer clear of the fixed bottom tab bar. */
+  .footer {
+    padding-bottom: calc(var(--space-5) + var(--touch-target) + env(safe-area-inset-bottom));
+  }
+}
