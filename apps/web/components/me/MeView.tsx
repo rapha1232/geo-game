@@ -82,7 +82,9 @@ export function MeView({
       <section className={styles.page}>
         <h1>{t("me.title")}</h1>
         <p>{t("me.empty")}</p>
-        <a href={playHref}>{t("me.emptyAction")}</a>
+        <a href={playHref} className={styles.action}>
+          {t("me.emptyAction")}
+        </a>
       </section>
     );
 

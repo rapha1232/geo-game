@@ -82,3 +82,9 @@
   height: min(70vh, 30rem);
   min-height: 16rem;
 }
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+}

@@ -12,7 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/migrate.mjs",
     "gen:sources": "node scripts/gen-sources.mjs",
-    "gen:corrections": "node scripts/gen-corrections.mjs"
+    "gen:corrections": "node scripts/gen-corrections.mjs",
+    "a11y": "node scripts/a11y-audit.mjs"
   },
   "dependencies": {
     "@meridian/fact-pin": "workspace:*",
@@ -44,6 +45,7 @@
     "@types/react-dom": "^19.0.2",
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-specification": "^1.0.5",
+    "axe-core": "4.10.2",
     "drizzle-kit": "^0.30.6",
     "fake-indexeddb": "^6.2.7",
     "jsdom": "^25.0.1",
