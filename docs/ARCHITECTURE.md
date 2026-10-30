@@ -201,6 +201,7 @@ Steps and rules are in [DATA_AND_CONTENT §3](DATA_AND_CONTENT.md#3-content-pipe
 - **Seed:** 10 characters of Crockford base32 (50 bits), e.g. `K7Q2M9XD1A`. Generated with `crypto.getRandomValues`.
 - **PRNG:** `sfc32`, initialized from `cyrb128(seed + "|" + gameId + "|" + stableConfigHash)`. This is deterministic across browsers (32-bit integer math only, with no `Math.random` and no floating-point-dependent branching in selection).
 - **Sub-streams:** `rng.fork("items")`, `rng.fork("distractors")`, … derive independent streams by hashing the label into the state, so adding a new random choice later doesn't shift existing streams.
+- **Normative details:** cyrb128 is the standard 4×32-bit variant over UTF-16 code units. sfc32 runs 15 warm-up rounds before the first output. A fork's key is `<parent key>/<label>` (the parent's *key*, not its current state), so a fork never depends on how many values the parent has drawn. `configHash` is the first cyrb128 word as 8 lowercase hex characters. Golden vectors: `packages/game-kit/test/prng.golden.json`, cross-checked against an independent Python implementation.
 - **Stable config hash:** canonical JSON (sorted keys) of the config → `cyrb128` → hex.
 - **Shuffles:** Fisher–Yates using the stream's `nextUint32() % n`, with rejection sampling to avoid modulo bias.
 
