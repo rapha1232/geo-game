@@ -1,4 +1,11 @@
-import { makeRng, pushHistory } from "@meridian/game-kit";
+import {
+  makeRng,
+  newTimer,
+  pauseTimer,
+  pushHistory,
+  startTimer,
+  type Timer,
+} from "@meridian/game-kit";
 import {
   answerFollowUp,
   followUp,
@@ -55,6 +62,14 @@ export type Session = {
   phase: "guessing" | "followups" | "learn";
   /** Last feedback line, not persisted meaning. */
   lastEvent: GuessEvent | null;
+  /** Active time of the current round: pauses when the tab is hidden and on reload (ARCHITECTURE §9). */
+  timer: Timer;
+  /** Wall-clock ms when this round began, for the result's `started_at`. */
+  startedAt: number;
+  /** Set once the round's result has been written, so a reload never writes it twice. */
+  resultId: string | null;
+  /** The player resumed this round after a reload. */
+  resumed: boolean;
 };
 
 export type Env = { world: World; seed: string };
@@ -89,6 +104,7 @@ export function newSession(
   seed: string,
   config: Config = DEFAULT_CONFIG,
   history: string[] = [],
+  now = 0,
 ): Session {
   return {
     seed,
@@ -99,12 +115,33 @@ export function newSession(
     done: [],
     phase: "guessing",
     lastEvent: null,
+    timer: startTimer(newTimer(), now),
+    startedAt: now,
+    resultId: null,
+    resumed: false,
   };
 }
 
+/** Pauses or resumes the round clock (tab hidden or visible). The clock stops when the round ends. */
+export function setClock(s: Session, running: boolean, now: number): Session {
+  const live = running && s.phase === "guessing";
+  const isRunning = s.timer.runningSince !== null;
+  if (live === isRunning) return s;
+  return { ...s, timer: live ? startTimer(s.timer, now) : pauseTimer(s.timer, now) };
+}
+
+/** A restored session: the clock stays paused until the page reports it is visible, and the round is marked resumed. */
+export const restore = (s: Session): Session => ({
+  ...s,
+  timer: { elapsedMs: s.timer.elapsedMs, runningSince: null },
+  resumed: true,
+});
+
 /** Moves to the follow-ups (if any are on) or the Learn card once the round ends. */
-function finish(world: World, s: Session): Session {
+function finish(world: World, s: Session, now: number): Session {
   if (s.round.status === "guessing") return s;
+  const timer = s.timer.runningSince === null ? s.timer : pauseTimer(s.timer, now);
+  s = { ...s, timer };
   const rng = roundRng(s.seed, s.config, s.roundNo).fork("followups");
   const kinds = s.config.mode === "practice" ? [] : s.config.followUps;
   const followUps = kinds.map((k) => ({
@@ -114,23 +151,25 @@ function finish(world: World, s: Session): Session {
   return { ...s, followUps, phase: followUps.length > 0 ? "followups" : "learn" };
 }
 
-export function guess(world: World, s: Session, input: string): Session {
+export function guess(world: World, s: Session, input: string, now = 0): Session {
   if (s.phase !== "guessing") return s;
   const r = submitGuess(world, s.round, input);
-  return finish(world, { ...s, round: r.state, lastEvent: r.event });
+  return finish(world, { ...s, round: r.state, lastEvent: r.event }, now);
 }
 
-export function pick(world: World, s: Session, entityId: string): Session {
+export function pick(world: World, s: Session, entityId: string, now = 0): Session {
   if (s.phase !== "guessing") return s;
   const r = guessEntity(world, s.round, entityId, world.byId.get(entityId)?.name ?? "");
-  return finish(world, { ...s, round: r.state, lastEvent: r.event });
+  return finish(world, { ...s, round: r.state, lastEvent: r.event }, now);
 }
 
 export const hint = (s: Session, n: number): Session =>
   s.phase === "guessing" ? { ...s, round: openHint(s.round, n) } : s;
 
-export const surrender = (world: World, s: Session): Session =>
-  s.phase === "guessing" ? finish(world, { ...s, round: giveUp(s.round), lastEvent: null }) : s;
+export const surrender = (world: World, s: Session, now = 0): Session =>
+  s.phase === "guessing"
+    ? finish(world, { ...s, round: giveUp(s.round), lastEvent: null }, now)
+    : s;
 
 /** One attempt per follow-up. After the last one the Learn card shows. */
 export function answer(s: Session, index: number, choice: number): Session {
@@ -147,7 +186,7 @@ export const followUpsCorrect = (s: Session): number =>
 export const points = (s: Session): number => roundPoints(s.round, followUpsCorrect(s));
 
 /** Records the finished round and starts the next one (Unlimited and Practice). */
-export function next(world: World, s: Session): Session {
+export function next(world: World, s: Session, now = 0): Session {
   if (s.phase !== "learn") return s;
   const done = [...s.done, { state: s.round, followUpsCorrect: followUpsCorrect(s) }];
   const roundNo = s.roundNo + 1;
@@ -159,6 +198,10 @@ export function next(world: World, s: Session): Session {
     followUps: [],
     phase: "guessing",
     lastEvent: null,
+    timer: startTimer(newTimer(), now),
+    startedAt: now,
+    resultId: null,
+    resumed: false,
   };
 }
 

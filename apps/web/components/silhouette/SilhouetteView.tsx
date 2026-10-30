@@ -211,7 +211,7 @@ export function SilhouetteView({ session: s, world, shapes, onChange }: Silhouet
                 value={text}
                 onChange={setText}
                 onSubmit={(v) => {
-                  onChange(guess(world, s, v));
+                  onChange(guess(world, s, v, Date.now()));
                   setText("");
                 }}
                 status={eventMessage}
@@ -224,7 +224,7 @@ export function SilhouetteView({ session: s, world, shapes, onChange }: Silhouet
                       <button
                         type="button"
                         onClick={() => {
-                          onChange(pick(world, s, e.id));
+                          onChange(pick(world, s, e.id, Date.now()));
                           setText("");
                         }}
                       >
@@ -234,7 +234,7 @@ export function SilhouetteView({ session: s, world, shapes, onChange }: Silhouet
                   ))}
                 </ul>
               )}
-              <Button variant="ghost" onPress={() => onChange(surrender(world, s))}>
+              <Button variant="ghost" onPress={() => onChange(surrender(world, s, Date.now()))}>
                 {t("sil.giveUp")}
               </Button>
             </>
@@ -327,7 +327,7 @@ export function SilhouetteView({ session: s, world, shapes, onChange }: Silhouet
               <Button
                 variant="primary"
                 onPress={() => {
-                  onChange(next(world, s));
+                  onChange(next(world, s, Date.now()));
                   setText("");
                 }}
               >

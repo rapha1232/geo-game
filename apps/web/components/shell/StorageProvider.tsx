@@ -6,6 +6,7 @@ import { MeridianDb } from "../../lib/storage/db";
 import { SessionStore, type StoreStatus } from "../../lib/storage/session-store";
 
 type Services = {
+  db: MeridianDb;
   store: SessionStore;
   loader: ContentLoader;
   status: StoreStatus;
@@ -42,7 +43,7 @@ export function StorageProvider({
     const store = new SessionStore({ db, local, now: () => Date.now(), onStatus: setStatus });
     const loader = new ContentLoader({ host: contentHost, db });
     void db.open().catch(() => setStatus("unavailable"));
-    return { store, loader };
+    return { db, store, loader };
   }, [contentHost]);
 
   useEffect(() => {

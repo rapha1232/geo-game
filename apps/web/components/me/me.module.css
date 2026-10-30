@@ -1,0 +1,84 @@
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-5);
+}
+.page h1,
+.page h2,
+.page h3 {
+  margin: 0;
+  font-family: var(--font-display);
+}
+.headline {
+  font-size: var(--text-2xl);
+  margin: var(--space-2) 0;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+.stats dt {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.stats dd {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
+}
+.game {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.spark {
+  width: 120px;
+  height: 28px;
+  color: var(--color-accent);
+}
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.filters {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin: var(--space-3) 0;
+}
+.filters label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.filters select {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  font: inherit;
+}
+.history {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+}
+.legend {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
+}
+
+.mapBox {
+  position: relative;
+  height: min(70vh, 30rem);
+  min-height: 16rem;
+}
