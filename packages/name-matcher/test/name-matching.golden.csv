@@ -1,0 +1,663 @@
+id,input,submitted,context,expected
+1,france,0,all,accept:FRA
+2,France,0,all,accept:FRA
+3,FRANCE,0,all,accept:FRA
+4,  france  ,0,all,accept:FRA
+5,fRaNcE,0,all,accept:FRA
+6,French Republic,0,all,accept:FRA
+7,Spain,0,all,accept:ESP
+8,españa,0,all,accept:ESP
+9,Espana,0,all,accept:ESP
+10,Deutschland,0,all,accept:DEU
+11,Germany,0,all,accept:DEU
+12,Italia,0,all,accept:ITA
+13,Italy,0,all,accept:ITA
+14,Great Britain,0,all,accept:GBR
+15,britain,0,all,accept:GBR
+16,United Kingdom,0,all,accept:GBR
+17,holland,0,all,accept:NLD
+18,The Netherlands,0,all,accept:NLD
+19,netherlands,0,all,accept:NLD
+20,Nederland,0,all,accept:NLD
+21,switzerland,0,all,accept:CHE
+22,suisse,0,all,accept:CHE
+23,schweiz,0,all,accept:CHE
+24,Österreich,0,all,accept:AUT
+25,osterreich,0,all,accept:AUT
+26,ivory coast,0,all,accept:CIV
+27,Ivory Coast,0,all,accept:CIV
+28,Côte d’Ivoire,0,all,accept:CIV
+29,cote divoire,0,all,accept:CIV
+30,COTE D'IVOIRE,0,all,accept:CIV
+31,cote d'ivoire,0,all,accept:CIV
+32,the gambia,0,all,accept:GMB
+33,gambia,0,all,accept:GMB
+34,guinea-bissau,0,all,accept:GNB
+35,guinea bissau,0,all,accept:GNB
+36,equatorial guinea,0,all,accept:GNQ
+37,papua new guinea,0,all,accept:PNG
+38,png,0,all,accept:PNG
+39,nigeria,0,all,accept:NGA
+40,republic of the niger,0,all,accept:NER
+41,dem. rep. of the congo,0,all,accept:COD
+42,dr congo,0,all,accept:COD
+43,DRC,0,all,accept:COD
+44,D.R. Congo,0,all,accept:COD
+45,congo-kinshasa,0,all,accept:COD
+46,congo kinshasa,0,all,accept:COD
+47,rep of the congo,0,all,accept:COG
+48,Rep. of the Congo,0,all,accept:COG
+49,congo-brazzaville,0,all,accept:COG
+50,congo brazzaville,0,all,accept:COG
+51,republic of the congo,0,all,accept:COG
+52,north korea,0,all,accept:PRK
+53,dprk,0,all,accept:PRK
+54,democratic people's republic of korea,0,all,accept:PRK
+55,south korea,0,all,accept:KOR
+56,rok,0,all,accept:KOR
+57,republic of korea,0,all,accept:KOR
+58,eswatini,0,all,accept:SWZ
+59,myanmar,0,all,accept:MMR
+60,north macedonia,0,all,accept:MKD
+61,czechia,0,all,accept:CZE
+62,czech republic,0,all,accept:CZE
+63,czech rep.,0,all,accept:CZE
+64,turkey,0,all,accept:TUR
+65,türkiye,0,all,accept:TUR
+66,turkiye,0,all,accept:TUR
+67,cabo verde,0,all,accept:CPV
+68,cape verde,0,all,accept:CPV
+69,east timor,0,all,accept:TLS
+70,timor-leste,0,all,accept:TLS
+71,timor leste,0,all,accept:TLS
+72,st lucia,0,all,accept:LCA
+73,St. Lucia,0,all,accept:LCA
+74,saint lucia,0,all,accept:LCA
+75,st kitts and nevis,0,all,accept:KNA
+76,St Kitts & Nevis,0,all,accept:KNA
+77,saint kitts and nevis,0,all,accept:KNA
+78,st vincent,0,all,accept:VCT
+79,St. Vincent and the Grenadines,0,all,accept:VCT
+80,saint vincent and the grenadines,0,all,accept:VCT
+81,Sao Tome,0,all,accept:STP
+82,São Tomé and Príncipe,0,all,accept:STP
+83,sao tome and principe,0,all,accept:STP
+84,Sao Tome & Principe,0,all,accept:STP
+85,usa,0,all,accept:USA
+86,US,0,all,accept:USA
+87,U.S.A.,0,all,accept:USA
+88,America,0,all,accept:USA
+89,united states,0,all,accept:USA
+90,United States of America,0,all,accept:USA
+91,the united states,0,all,accept:USA
+92,uae,0,all,accept:ARE
+93,U.A.E.,0,all,accept:ARE
+94,united arab emirates,0,all,accept:ARE
+95,The Bahamas,0,all,accept:BHS
+96,bahamas,0,all,accept:BHS
+97,bosnia,0,all,accept:BIH
+98,bosnia & herzegovina,0,all,accept:BIH
+99,bosnia and herzegovina,0,all,accept:BIH
+100,micronesia,0,all,accept:FSM
+101,Federated States of Micronesia,0,all,accept:FSM
+102,georgia,0,all,accept:GEO
+103,vatican,0,all,accept:VAT
+104,Holy See,0,all,accept:VAT
+105,vatican city,0,all,accept:VAT
+106,kosovo,0,all,accept:XKX
+107,taiwan,0,all,accept:TWN
+108,ROC,0,all,accept:TWN
+109,palestine,0,all,accept:PSE
+110,Éire,0,all,accept:IRL
+111,island,0,all,accept:ISL
+112,Perú,0,all,accept:PER
+113,México,0,all,accept:MEX
+114,România,0,all,accept:ROU
+115,Magyarország,0,all,accept:HUN
+116,Shqipëria,0,all,accept:ALB
+117,Hrvatska,0,all,accept:HRV
+118,日本 japan,0,all,accept:JPN
+119,France 🇫🇷,0,all,accept:FRA
+120,new zealand,0,all,accept:NZL
+121,newzealand,0,all,accept:NZL
+122,samoa,0,all,accept:WSM
+123,sudan,0,all,accept:SDN
+124,south sudan,0,all,accept:SSD
+125,oman,0,all,accept:OMN
+126,mali,0,all,accept:MLI
+127,china,0,all,accept:CHN
+128,india,0,all,accept:IND
+129,ireland,0,all,accept:IRL
+130,iran,0,all,accept:IRN
+131,laos,0,all,accept:LAO
+132,vietnam,0,all,accept:VNM
+133,Viet Nam,0,all,accept:VNM
+134,UK,0,all,hold:GBR
+135,UK,1,all,accept:GBR
+136,U.K.,0,all,hold:GBR
+137,U.K.,1,all,accept:GBR
+138,the uk,0,all,hold:GBR
+139,the uk,1,all,accept:GBR
+140,UK,0,fra-gbr-named,already:GBR
+141,swaziland,0,all,accept:SWZ+former
+142,swaziland,1,all,accept:SWZ+former
+143,Burma,0,all,accept:MMR+former
+144,Burma,1,all,accept:MMR+former
+145,ceylon,0,all,accept:LKA+former
+146,ceylon,1,all,accept:LKA+former
+147,siam,0,all,accept:THA+former
+148,siam,1,all,accept:THA+former
+149,kampuchea,0,all,accept:KHM+former
+150,kampuchea,1,all,accept:KHM+former
+151,macedonia,0,all,accept:MKD+former
+152,macedonia,1,all,accept:MKD+former
+153,persia,0,all,accept:IRN+former
+154,persia,1,all,accept:IRN+former
+155,rhodesia,0,all,accept:ZWE+former
+156,rhodesia,1,all,accept:ZWE+former
+157,zaire,0,all,accept:COD+former
+158,zaire,1,all,accept:COD+former
+159,kirghizia,0,all,accept:KGZ+former
+160,kirghizia,1,all,accept:KGZ+former
+161,abyssinia,0,all,accept:ETH+former
+162,abyssinia,1,all,accept:ETH+former
+163,western samoa,0,all,accept:WSM+former
+164,western samoa,1,all,accept:WSM+former
+165,gilbert islands,0,all,accept:KIR+former
+166,gilbert islands,1,all,accept:KIR+former
+167,ellice islands,0,all,accept:TUV+former
+168,ellice islands,1,all,accept:TUV+former
+169,pleasant island,0,all,accept:NRU+former
+170,pleasant island,1,all,accept:NRU+former
+171,outer mongolia,0,all,accept:MNG+former
+172,outer mongolia,1,all,accept:MNG+former
+173,saint christopher and nevis,0,all,accept:KNA+former
+174,saint christopher and nevis,1,all,accept:KNA+former
+175,northern rhodesia,0,all,accept:ZMB+former
+176,northern rhodesia,1,all,accept:ZMB+former
+177,niger,0,all,hold:NER
+178,niger,0,nga-named,accept:NER
+179,dominica,0,all,hold:DMA
+180,dominica,0,dom-named,accept:DMA
+181,guinea,0,all,hold:GIN
+182,guinea,0,guinea-gnb-named,accept:GIN
+183,Niger,0,all,hold:NER
+184,DOMINICA,0,all,hold:DMA
+185,the niger,0,all,hold:NER
+186,niger,1,all,accept:NER
+187,dominica,1,all,accept:DMA
+188,guinea,1,all,accept:GIN
+189,Guinea ,1,all,accept:GIN
+190,congo,0,all,ambiguous:congo
+191,Congo,1,all,ambiguous:congo
+192,congo,0,cod-named,accept:COG
+193,Congo,1,cod-named,accept:COG
+194,congo,0,cog-named,accept:COD
+195,Congo,1,cog-named,accept:COD
+196,congo,0,both-congos-named,ambiguous:congo
+197,Congo,1,both-congos-named,ambiguous:congo
+198,korea,0,all,ambiguous:korea
+199,KOREA,1,all,ambiguous:korea
+200,korea,0,prk-named,accept:KOR
+201,KOREA,1,prk-named,accept:KOR
+202,virgin islands,0,all,ambiguous:virgin-islands
+203,Virgin Islands,1,un193,ambiguous:virgin-islands
+204,greenland,0,all,notinquiz:GRL
+205,greenland,1,un193,notinquiz:GRL
+206,Kalaallit Nunaat,0,all,notinquiz:GRL
+207,Kalaallit Nunaat,1,un193,notinquiz:GRL
+208,faroe islands,0,all,notinquiz:FRO
+209,faroe islands,1,un193,notinquiz:FRO
+210,faroes,0,all,notinquiz:FRO
+211,faroes,1,un193,notinquiz:FRO
+212,Føroyar,0,all,notinquiz:FRO
+213,Føroyar,1,un193,notinquiz:FRO
+214,puerto rico,0,all,notinquiz:PRI
+215,puerto rico,1,un193,notinquiz:PRI
+216,hong kong,0,all,notinquiz:HKG
+217,hong kong,1,un193,notinquiz:HKG
+218,macao,0,all,notinquiz:MAC
+219,macao,1,un193,notinquiz:MAC
+220,macau,0,all,notinquiz:MAC
+221,macau,1,un193,notinquiz:MAC
+222,french guiana,0,all,notinquiz:GUF
+223,french guiana,1,un193,notinquiz:GUF
+224,guyane,0,all,notinquiz:GUF
+225,guyane,1,un193,notinquiz:GUF
+226,england,0,all,notinquiz:ENG
+227,england,1,un193,notinquiz:ENG
+228,scotland,0,all,notinquiz:SCT
+229,scotland,1,un193,notinquiz:SCT
+230,wales,0,all,notinquiz:WLS
+231,wales,1,un193,notinquiz:WLS
+232,american samoa,0,all,notinquiz:ASM
+233,american samoa,1,un193,notinquiz:ASM
+234,western sahara,0,all,notinquiz:ESH
+235,western sahara,1,un193,notinquiz:ESH
+236,british virgin islands,0,all,notinquiz:VGB
+237,british virgin islands,1,un193,notinquiz:VGB
+238,bvi,0,all,notinquiz:VGB
+239,bvi,1,un193,notinquiz:VGB
+240,us virgin islands,0,all,notinquiz:VIR
+241,us virgin islands,1,un193,notinquiz:VIR
+242,U.S. Virgin Islands,0,all,notinquiz:VIR
+243,U.S. Virgin Islands,1,un193,notinquiz:VIR
+244,taiwan,0,un193,notinquiz:TWN
+245,taiwan,1,un193,notinquiz:TWN
+246,ROC,0,un193,notinquiz:TWN
+247,ROC,1,un193,notinquiz:TWN
+248,vatican,0,un193,notinquiz:VAT
+249,vatican,1,un193,notinquiz:VAT
+250,holy see,0,un193,notinquiz:VAT
+251,holy see,1,un193,notinquiz:VAT
+252,kosovo,0,un193,notinquiz:XKX
+253,kosovo,1,un193,notinquiz:XKX
+254,palestine,0,un193,notinquiz:PSE
+255,palestine,1,un193,notinquiz:PSE
+256,france,0,fra-gbr-named,already:FRA
+257,france,1,fra-gbr-named,already:FRA
+258,French Republic,0,fra-gbr-named,already:FRA
+259,French Republic,1,fra-gbr-named,already:FRA
+260,UK,0,fra-gbr-named,already:GBR
+261,UK,1,fra-gbr-named,already:GBR
+262,Great Britain,0,fra-gbr-named,already:GBR
+263,Great Britain,1,fra-gbr-named,already:GBR
+264,britain,0,fra-gbr-named,already:GBR
+265,britain,1,fra-gbr-named,already:GBR
+266,the uk,0,fra-gbr-named,already:GBR
+267,the uk,1,fra-gbr-named,already:GBR
+268,holland,0,fra-gbr-named,accept:NLD
+269,nigeria,0,nga-named,already:NGA
+270,niger,0,nga-named,accept:NER
+271,north korea,0,prk-named,already:PRK
+272,DPRK,1,prk-named,already:PRK
+273,fra,0,all-lenient-codes,accept:FRA
+274,fra,1,all-lenient-codes,accept:FRA
+275,fra,0,all,notrec
+276,fra,1,all,notrec
+277,fra,1,all-standard-codes,notrec
+278,fra,0,all-strict,notrec
+279,civ,0,all-lenient-codes,accept:CIV
+280,civ,1,all-lenient-codes,accept:CIV
+281,civ,0,all,notrec
+282,civ,1,all,notrec
+283,civ,1,all-standard-codes,notrec
+284,civ,0,all-strict,notrec
+285,nga,0,all-lenient-codes,accept:NGA
+286,nga,1,all-lenient-codes,accept:NGA
+287,nga,0,all,notrec
+288,nga,1,all,notrec
+289,nga,1,all-standard-codes,notrec
+290,nga,0,all-strict,notrec
+291,gbr,0,all-lenient-codes,accept:GBR
+292,gbr,1,all-lenient-codes,accept:GBR
+293,gbr,0,all,notrec
+294,gbr,1,all,notrec
+295,gbr,1,all-standard-codes,notrec
+296,gbr,0,all-strict,notrec
+297,esp,0,all-lenient-codes,accept:ESP
+298,esp,1,all-lenient-codes,accept:ESP
+299,esp,0,all,notrec
+300,esp,1,all,notrec
+301,esp,1,all-standard-codes,notrec
+302,esp,0,all-strict,notrec
+303,deu,0,all-lenient-codes,accept:DEU
+304,deu,1,all-lenient-codes,accept:DEU
+305,deu,0,all,notrec
+306,deu,1,all,notrec
+307,deu,1,all-standard-codes,notrec
+308,deu,0,all-strict,notrec
+309,kyrgystan,1,all,accept:KGZ+fuzzy
+310,kyrgystan,0,all,notrec
+311,kazakstan,1,all,accept:KAZ+fuzzy
+312,kazakstan,0,all,notrec
+313,uzbekstan,1,all,accept:UZB+fuzzy
+314,uzbekstan,0,all,notrec
+315,tajikstan,1,all,accept:TJK+fuzzy
+316,tajikstan,0,all,notrec
+317,turkmenstan,1,all,accept:TKM+fuzzy
+318,turkmenstan,0,all,notrec
+319,afganistan,1,all,accept:AFG+fuzzy
+320,afganistan,0,all,notrec
+321,bangaldesh,1,all,accept:BGD+fuzzy
+322,bangaldesh,0,all,notrec
+323,colombai,1,all,accept:COL+fuzzy
+324,colombai,0,all,notrec
+325,columbia,1,all,accept:COL+fuzzy
+326,columbia,0,all,notrec
+327,venezuala,1,all,accept:VEN+fuzzy
+328,venezuala,0,all,notrec
+329,equador,1,all,accept:ECU+fuzzy
+330,equador,0,all,notrec
+331,argentinia,1,all,accept:ARG+fuzzy
+332,argentinia,0,all,notrec
+333,philipines,1,all,accept:PHL+fuzzy
+334,philipines,0,all,notrec
+335,indonesa,1,all,accept:IDN+fuzzy
+336,indonesa,0,all,notrec
+337,malaysa,1,all,accept:MYS+fuzzy
+338,malaysa,0,all,notrec
+339,singapor,1,all,accept:SGP+fuzzy
+340,singapor,0,all,notrec
+341,tailand,1,all,accept:THA+fuzzy
+342,tailand,0,all,notrec
+343,swizerland,1,all,accept:CHE+fuzzy
+344,swizerland,0,all,notrec
+345,austrailia,1,all,accept:AUS+fuzzy
+346,austrailia,0,all,notrec
+347,new zeland,1,all,accept:NZL+fuzzy
+348,new zeland,0,all,notrec
+349,suda,1,all,accept:SDN+fuzzy
+350,suda,0,all,notrec
+351,ital,1,all,accept:ITA+fuzzy
+352,ital,0,all,notrec
+353,nigerr,1,all,accept:NER+fuzzy
+354,nigerr,0,all,notrec
+355,chle,1,all,accept:CHL+fuzzy
+356,chle,0,all,notrec
+357,hati,1,all,accept:HTI+fuzzy
+358,hati,0,all,notrec
+359,spian,1,all,accept:ESP+fuzzy
+360,spian,0,all,notrec
+361,indai,1,all,accept:IND+fuzzy
+362,indai,0,all,notrec
+363,egipt,1,all,accept:EGY+fuzzy
+364,egipt,0,all,notrec
+365,kenia,1,all,accept:KEN+fuzzy
+366,kenia,0,all,notrec
+367,nepl,1,all,accept:NPL+fuzzy
+368,nepl,0,all,notrec
+369,japn,1,all,accept:JPN+fuzzy
+370,japn,0,all,notrec
+371,qatr,1,all,accept:QAT+fuzzy
+372,qatr,0,all,notrec
+373,yemin,1,all,accept:YEM+fuzzy
+374,yemin,0,all,notrec
+375,guine,1,all,accept:GIN+fuzzy
+376,guine,0,all,notrec
+377,dominic,1,all,accept:DMA+fuzzy
+378,dominic,0,all,notrec
+379,united arab emirate,1,all,accept:ARE+fuzzy
+380,united arab emirate,0,all,notrec
+381,saudi arabi,1,all,accept:SAU+fuzzy
+382,saudi arabi,0,all,notrec
+383,marshall is,1,all,accept:MHL+fuzzy
+384,marshall is,0,all,notrec
+385,Marshall Is.,1,all,accept:MHL+fuzzy
+386,Marshall Is.,0,all,notrec
+387,dem rep of congo,1,all,accept:COD+fuzzy
+388,dem rep of congo,0,all,notrec
+389,kyrgstan,1,all,accept:KGZ+fuzzy
+390,kyrgstan,1,all-lenient,accept:KGZ+fuzzy
+391,kyrgstan,1,all-strict,notrec
+392,kyrgstn,1,all,notrec
+393,kyrgstn,1,all-lenient,accept:KGZ+fuzzy
+394,kyrgstn,1,all-strict,notrec
+395,kyrgystan,1,all-strict,notrec
+396,kyrgystan,1,all-lenient,accept:KGZ+fuzzy
+397,kyrgystan,1,fra-gbr-named,accept:KGZ+fuzzy
+398,iram,1,all,notrec
+399,cuva,1,all,notrec
+400,malu,1,all,notrec
+401,fifi,1,all,notrec
+402,lass,1,all,notrec
+403,peri,1,all,notrec
+404,omam,1,all,notrec
+405,chda,1,all,notrec
+406,fran,1,all,notrec
+407,ira,1,all,notrec
+408,pru,1,all,notrec
+409,chl,1,all,notrec
+410,hat,1,all,notrec
+411,spn,1,all,notrec
+412,ind,1,all,notrec
+413,egp,1,all,notrec
+414,nigera,1,all,notrec
+415,nigeri,1,all,notrec
+416,zzzzzz,1,all,notrec
+417,zzzzzz,0,all,notrec
+418,atlantis,1,all,notrec
+419,atlantis,0,all,notrec
+420,narnia,1,all,notrec
+421,narnia,0,all,notrec
+422,123,1,all,notrec
+423,123,0,all,notrec
+424,007,1,all,notrec
+425,007,0,all,notrec
+426,xyzzy,1,all,notrec
+427,xyzzy,0,all,notrec
+428,republic,1,all,notrec
+429,republic,0,all,notrec
+430,democratic republic,1,all,notrec
+431,democratic republic,0,all,notrec
+432,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,1,all,notrec
+433,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,0,all,notrec
+434,frnace,1,fra-gbr-named,notrec
+435,grenland,1,all,notrec
+436,grenland,1,un193,notrec
+437,taiwna,1,un193,notrec
+438,nigria,1,nga-named,notrec
+439,,0,all,ignore
+440,,1,all,ignore
+441,   ,0,all,ignore
+442,   ,1,all,ignore
+443,!!!,0,all,ignore
+444,!!!,1,all,ignore
+445,...,0,all,ignore
+446,...,1,all,ignore
+447,😀,0,all,ignore
+448,😀,1,all,ignore
+449,the,0,all,ignore
+450,the,1,all,ignore
+451,The ,0,all,ignore
+452,The ,1,all,ignore
+453,--,0,all,ignore
+454,--,1,all,ignore
+455,',0,all,ignore
+456,',1,all,ignore
+457,日本,0,all,english
+458,日本,1,all,english
+459,中国,0,all,english
+460,中国,1,all,english
+461,Россия,0,all,english
+462,Россия,1,all,english
+463,Ελλάδα,0,all,english
+464,Ελλάδα,1,all,english
+465,東京,0,all,english
+466,東京,1,all,english
+467,한국,0,all,english
+468,한국,1,all,english
+469,مصر,0,all,english
+470,مصر,1,all,english
+471,ไทย,0,all,english
+472,ไทย,1,all,english
+473,भारत,0,all,english
+474,भारत,1,all,english
+475,niger,0,p-ner,accept:NER
+476,niger,1,p-ner,accept:NER
+477,Niger,0,p-ner,accept:NER
+478,Niger,1,p-ner,accept:NER
+479,republic of the niger,0,p-ner,accept:NER
+480,republic of the niger,1,p-ner,accept:NER
+481,nigeria,0,p-ner,wrong:NGA
+482,nigeria,1,p-ner,wrong:NGA
+483,chile,0,p-ner,wrong:CHL
+484,chile,1,p-ner,wrong:CHL
+485,france,0,p-ner,wrong:FRA
+486,france,1,p-ner,wrong:FRA
+487,greenland,0,p-ner,notinquiz:GRL
+488,greenland,1,p-ner,notinquiz:GRL
+489,england,0,p-ner,notinquiz:ENG
+490,england,1,p-ner,notinquiz:ENG
+491,congo,0,p-ner,ambiguous:congo
+492,congo,1,p-ner,ambiguous:congo
+493,korea,0,p-ner,ambiguous:korea
+494,korea,1,p-ner,ambiguous:korea
+495,holland,0,p-ner,wrong:NLD
+496,holland,1,p-ner,wrong:NLD
+497,swaziland,0,p-ner,wrong:SWZ
+498,swaziland,1,p-ner,wrong:SWZ
+499,nigr,1,p-ner,accept:NER+fuzzy
+500,niget,1,p-ner,accept:NER+fuzzy
+501,nigera,1,p-ner,notrec
+502,chle,1,p-ner,notrec
+503,frnace,1,p-ner,notrec
+504,zzzz,1,p-ner,notrec
+505,日本,1,p-ner,english
+506,nigr,0,p-ner,notrec
+507,niget,0,p-ner,notrec
+508,chile,1,p-ner-learn,wrong:CHL+learn
+509,nigeria,1,p-ner-learn,wrong:NGA+learn
+510,niger,1,p-ner-learn,accept:NER
+511,kyrgystan,1,p-kgz,accept:KGZ+fuzzy
+512,kyrgyzstan,1,p-kgz,accept:KGZ
+513,kyrgystan,1,p-kgz-strict,notrec
+514,kazakstan,1,p-kgz,notrec
+515,kirghizia,1,p-kgz,accept:KGZ+former
+516,kyrgyz republic,0,p-kgz,accept:KGZ
+517,swaziland,0,p-swz,accept:SWZ+former
+518,eswatini,0,p-swz,accept:SWZ
+519,burma,0,p-swz,wrong:MMR
+520,congo,0,p-cod-last-congo,accept:COD
+521,zaire,0,p-cod-last-congo,accept:COD+former
+522,republic of the congo,0,p-cod-last-congo,wrong:COG
+523,france,1,all,accept:FRA
+524,SPAIN,1,all,accept:ESP
+525,germany,1,all,accept:DEU
+526,ITALY,1,all,accept:ITA
+527,united kingdom,1,all,accept:GBR
+528,IRELAND,1,all,accept:IRL
+529,netherlands,1,all,accept:NLD
+530,BELGIUM,1,all,accept:BEL
+531,switzerland,1,all,accept:CHE
+532,AUSTRIA,1,all,accept:AUT
+533,portugal,1,all,accept:PRT
+534,SWEDEN,1,all,accept:SWE
+535,norway,1,all,accept:NOR
+536,DENMARK,1,all,accept:DNK
+537,finland,1,all,accept:FIN
+538,ICELAND,1,all,accept:ISL
+539,poland,1,all,accept:POL
+540,CZECHIA,1,all,accept:CZE
+541,slovakia,1,all,accept:SVK
+542,HUNGARY,1,all,accept:HUN
+543,romania,1,all,accept:ROU
+544,BULGARIA,1,all,accept:BGR
+545,greece,1,all,accept:GRC
+546,SERBIA,1,all,accept:SRB
+547,croatia,1,all,accept:HRV
+548,BOSNIA AND HERZEGOVINA,1,all,accept:BIH
+549,north macedonia,1,all,accept:MKD
+550,ALBANIA,1,all,accept:ALB
+551,ukraine,1,all,accept:UKR
+552,BELARUS,1,all,accept:BLR
+553,russia,1,all,accept:RUS
+554,GEORGIA,1,all,accept:GEO
+555,türkiye,1,all,accept:TUR
+556,CÔTE D'IVOIRE,1,all,accept:CIV
+557,gambia,1,all,accept:GMB
+558,GUINEA,1,all,accept:GIN
+559,guinea-bissau,1,all,accept:GNB
+560,EQUATORIAL GUINEA,1,all,accept:GNQ
+561,papua new guinea,1,all,accept:PNG
+562,NIGER,1,all,accept:NER
+563,nigeria,1,all,accept:NGA
+564,REPUBLIC OF THE CONGO,1,all,accept:COG
+565,democratic republic of the congo,1,all,accept:COD
+566,NORTH KOREA,1,all,accept:PRK
+567,south korea,1,all,accept:KOR
+568,ESWATINI,1,all,accept:SWZ
+569,myanmar,1,all,accept:MMR
+570,SRI LANKA,1,all,accept:LKA
+571,thailand,1,all,accept:THA
+572,CAMBODIA,1,all,accept:KHM
+573,laos,1,all,accept:LAO
+574,VIETNAM,1,all,accept:VNM
+575,timor-leste,1,all,accept:TLS
+576,PHILIPPINES,1,all,accept:PHL
+577,indonesia,1,all,accept:IDN
+578,MALAYSIA,1,all,accept:MYS
+579,singapore,1,all,accept:SGP
+580,BRUNEI,1,all,accept:BRN
+581,china,1,all,accept:CHN
+582,JAPAN,1,all,accept:JPN
+583,mongolia,1,all,accept:MNG
+584,INDIA,1,all,accept:IND
+585,pakistan,1,all,accept:PAK
+586,BANGLADESH,1,all,accept:BGD
+587,nepal,1,all,accept:NPL
+588,BHUTAN,1,all,accept:BTN
+589,afghanistan,1,all,accept:AFG
+590,KAZAKHSTAN,1,all,accept:KAZ
+591,uzbekistan,1,all,accept:UZB
+592,TAJIKISTAN,1,all,accept:TJK
+593,turkmenistan,1,all,accept:TKM
+594,KYRGYZSTAN,1,all,accept:KGZ
+595,iran,1,all,accept:IRN
+596,IRAQ,1,all,accept:IRQ
+597,syria,1,all,accept:SYR
+598,LEBANON,1,all,accept:LBN
+599,israel,1,all,accept:ISR
+600,JORDAN,1,all,accept:JOR
+601,saudi arabia,1,all,accept:SAU
+602,UNITED ARAB EMIRATES,1,all,accept:ARE
+603,oman,1,all,accept:OMN
+604,YEMEN,1,all,accept:YEM
+605,qatar,1,all,accept:QAT
+606,KUWAIT,1,all,accept:KWT
+607,bahrain,1,all,accept:BHR
+608,EGYPT,1,all,accept:EGY
+609,libya,1,all,accept:LBY
+610,TUNISIA,1,all,accept:TUN
+611,algeria,1,all,accept:DZA
+612,MOROCCO,1,all,accept:MAR
+613,sudan,1,all,accept:SDN
+614,SOUTH SUDAN,1,all,accept:SSD
+615,ethiopia,1,all,accept:ETH
+616,KENYA,1,all,accept:KEN
+617,tanzania,1,all,accept:TZA
+618,UGANDA,1,all,accept:UGA
+619,rwanda,1,all,accept:RWA
+620,SOUTH AFRICA,1,all,accept:ZAF
+621,zambia,1,all,accept:ZMB
+622,ZIMBABWE,1,all,accept:ZWE
+623,mali,1,all,accept:MLI
+624,CABO VERDE,1,all,accept:CPV
+625,são tomé and príncipe,1,all,accept:STP
+626,MAURITIUS,1,all,accept:MUS
+627,madagascar,1,all,accept:MDG
+628,UNITED STATES,1,all,accept:USA
+629,canada,1,all,accept:CAN
+630,MEXICO,1,all,accept:MEX
+631,cuba,1,all,accept:CUB
+632,HAITI,1,all,accept:HTI
+633,jamaica,1,all,accept:JAM
+634,BAHAMAS,1,all,accept:BHS
+635,dominica,1,all,accept:DMA
+636,DOMINICAN REPUBLIC,1,all,accept:DOM
+637,saint kitts and nevis,1,all,accept:KNA
+638,SAINT LUCIA,1,all,accept:LCA
+639,saint vincent and the grenadines,1,all,accept:VCT
+640,BRAZIL,1,all,accept:BRA
+641,argentina,1,all,accept:ARG
+642,CHILE,1,all,accept:CHL
+643,peru,1,all,accept:PER
+644,COLOMBIA,1,all,accept:COL
+645,venezuela,1,all,accept:VEN
+646,BOLIVIA,1,all,accept:BOL
+647,ecuador,1,all,accept:ECU
+648,GUYANA,1,all,accept:GUY
+649,suriname,1,all,accept:SUR
+650,URUGUAY,1,all,accept:URY
+651,paraguay,1,all,accept:PRY
+652,AUSTRALIA,1,all,accept:AUS
+653,new zealand,1,all,accept:NZL
+654,FIJI,1,all,accept:FJI
+655,samoa,1,all,accept:WSM
+656,TONGA,1,all,accept:TON
+657,tuvalu,1,all,accept:TUV
+658,NAURU,1,all,accept:NRU
+659,federated states of micronesia,1,all,accept:FSM
+660,MARSHALL ISLANDS,1,all,accept:MHL
+661,kiribati,1,all,accept:KIR
+662,PALAU,1,all,accept:PLW

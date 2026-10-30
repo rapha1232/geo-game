@@ -1,0 +1,1829 @@
+{
+  "status": "draft",
+  "note": "Test fixture only. Not content.",
+  "entities": [
+    {
+      "id": "country:FRA",
+      "name": "France",
+      "aliases": [
+        {
+          "text": "French Republic",
+          "kind": "official"
+        },
+        {
+          "text": "FRA",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:ESP",
+      "name": "Spain",
+      "aliases": [
+        {
+          "text": "Kingdom of Spain",
+          "kind": "official"
+        },
+        {
+          "text": "España",
+          "kind": "endonym"
+        },
+        {
+          "text": "ESP",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:DEU",
+      "name": "Germany",
+      "aliases": [
+        {
+          "text": "Federal Republic of Germany",
+          "kind": "official"
+        },
+        {
+          "text": "Deutschland",
+          "kind": "endonym"
+        },
+        {
+          "text": "DEU",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:ITA",
+      "name": "Italy",
+      "aliases": [
+        {
+          "text": "Italian Republic",
+          "kind": "official"
+        },
+        {
+          "text": "Italia",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:GBR",
+      "name": "United Kingdom",
+      "aliases": [
+        {
+          "text": "UK",
+          "kind": "common"
+        },
+        {
+          "text": "U.K.",
+          "kind": "common"
+        },
+        {
+          "text": "Great Britain",
+          "kind": "common"
+        },
+        {
+          "text": "Britain",
+          "kind": "common"
+        },
+        {
+          "text": "United Kingdom of Great Britain and Northern Ireland",
+          "kind": "official"
+        },
+        {
+          "text": "GBR",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:IRL",
+      "name": "Ireland",
+      "aliases": [
+        {
+          "text": "Republic of Ireland",
+          "kind": "common"
+        },
+        {
+          "text": "Éire",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:NLD",
+      "name": "Netherlands",
+      "aliases": [
+        {
+          "text": "Holland",
+          "kind": "common"
+        },
+        {
+          "text": "The Netherlands",
+          "kind": "common"
+        },
+        {
+          "text": "Nederland",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:BEL",
+      "name": "Belgium",
+      "aliases": [
+        {
+          "text": "Kingdom of Belgium",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CHE",
+      "name": "Switzerland",
+      "aliases": [
+        {
+          "text": "Swiss Confederation",
+          "kind": "official"
+        },
+        {
+          "text": "Schweiz",
+          "kind": "endonym"
+        },
+        {
+          "text": "Suisse",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:AUT",
+      "name": "Austria",
+      "aliases": [
+        {
+          "text": "Österreich",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:PRT",
+      "name": "Portugal",
+      "aliases": [
+        {
+          "text": "Portuguese Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SWE",
+      "name": "Sweden",
+      "aliases": [
+        {
+          "text": "Sverige",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:NOR",
+      "name": "Norway",
+      "aliases": [
+        {
+          "text": "Norge",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:DNK",
+      "name": "Denmark",
+      "aliases": [
+        {
+          "text": "Danmark",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:FIN",
+      "name": "Finland",
+      "aliases": [
+        {
+          "text": "Suomi",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:ISL",
+      "name": "Iceland",
+      "aliases": [
+        {
+          "text": "Ísland",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:POL",
+      "name": "Poland",
+      "aliases": [
+        {
+          "text": "Polska",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:CZE",
+      "name": "Czechia",
+      "aliases": [
+        {
+          "text": "Czech Republic",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:SVK",
+      "name": "Slovakia",
+      "aliases": [
+        {
+          "text": "Slovak Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:HUN",
+      "name": "Hungary",
+      "aliases": [
+        {
+          "text": "Magyarország",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:ROU",
+      "name": "Romania",
+      "aliases": [
+        {
+          "text": "România",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:BGR",
+      "name": "Bulgaria",
+      "aliases": [
+        {
+          "text": "Republic of Bulgaria",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:GRC",
+      "name": "Greece",
+      "aliases": [
+        {
+          "text": "Hellenic Republic",
+          "kind": "official"
+        },
+        {
+          "text": "Ellada",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:SRB",
+      "name": "Serbia",
+      "aliases": [
+        {
+          "text": "Republic of Serbia",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:HRV",
+      "name": "Croatia",
+      "aliases": [
+        {
+          "text": "Hrvatska",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:BIH",
+      "name": "Bosnia and Herzegovina",
+      "aliases": [
+        {
+          "text": "Bosnia",
+          "kind": "common"
+        },
+        {
+          "text": "Bosnia & Herzegovina",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:MKD",
+      "name": "North Macedonia",
+      "aliases": [
+        {
+          "text": "Macedonia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:ALB",
+      "name": "Albania",
+      "aliases": [
+        {
+          "text": "Shqipëria",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:UKR",
+      "name": "Ukraine",
+      "aliases": [
+        {
+          "text": "Ukraina",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:BLR",
+      "name": "Belarus",
+      "aliases": [
+        {
+          "text": "Republic of Belarus",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:RUS",
+      "name": "Russia",
+      "aliases": [
+        {
+          "text": "Russian Federation",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:GEO",
+      "name": "Georgia",
+      "aliases": [
+        {
+          "text": "Sakartvelo",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:TUR",
+      "name": "Türkiye",
+      "aliases": [
+        {
+          "text": "Turkey",
+          "kind": "common"
+        },
+        {
+          "text": "Turkiye",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:CIV",
+      "name": "Côte d'Ivoire",
+      "aliases": [
+        {
+          "text": "Ivory Coast",
+          "kind": "common"
+        },
+        {
+          "text": "Cote d'Ivoire",
+          "kind": "ascii"
+        },
+        {
+          "text": "CIV",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:GMB",
+      "name": "Gambia",
+      "aliases": [
+        {
+          "text": "The Gambia",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:GIN",
+      "name": "Guinea",
+      "aliases": [
+        {
+          "text": "Republic of Guinea",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:GNB",
+      "name": "Guinea-Bissau",
+      "aliases": [
+        {
+          "text": "Guinea Bissau",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:GNQ",
+      "name": "Equatorial Guinea",
+      "aliases": [
+        {
+          "text": "Republic of Equatorial Guinea",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:PNG",
+      "name": "Papua New Guinea",
+      "aliases": [
+        {
+          "text": "PNG",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:NER",
+      "name": "Niger",
+      "aliases": [
+        {
+          "text": "Republic of the Niger",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:NGA",
+      "name": "Nigeria",
+      "aliases": [
+        {
+          "text": "Federal Republic of Nigeria",
+          "kind": "official"
+        },
+        {
+          "text": "NGA",
+          "kind": "code"
+        }
+      ]
+    },
+    {
+      "id": "country:COG",
+      "name": "Republic of the Congo",
+      "aliases": [
+        {
+          "text": "Congo-Brazzaville",
+          "kind": "common"
+        },
+        {
+          "text": "Congo Brazzaville",
+          "kind": "common"
+        },
+        {
+          "text": "Congo Republic",
+          "kind": "common"
+        },
+        {
+          "text": "Rep. of the Congo",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:COD",
+      "name": "Democratic Republic of the Congo",
+      "aliases": [
+        {
+          "text": "DR Congo",
+          "kind": "common"
+        },
+        {
+          "text": "DRC",
+          "kind": "common"
+        },
+        {
+          "text": "Congo-Kinshasa",
+          "kind": "common"
+        },
+        {
+          "text": "Zaire",
+          "kind": "former"
+        },
+        {
+          "text": "D.R. Congo",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:PRK",
+      "name": "North Korea",
+      "aliases": [
+        {
+          "text": "Democratic People's Republic of Korea",
+          "kind": "official"
+        },
+        {
+          "text": "DPRK",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:KOR",
+      "name": "South Korea",
+      "aliases": [
+        {
+          "text": "Republic of Korea",
+          "kind": "official"
+        },
+        {
+          "text": "ROK",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:SWZ",
+      "name": "Eswatini",
+      "aliases": [
+        {
+          "text": "Swaziland",
+          "kind": "former"
+        },
+        {
+          "text": "Kingdom of Eswatini",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:MMR",
+      "name": "Myanmar",
+      "aliases": [
+        {
+          "text": "Burma",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:LKA",
+      "name": "Sri Lanka",
+      "aliases": [
+        {
+          "text": "Ceylon",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:THA",
+      "name": "Thailand",
+      "aliases": [
+        {
+          "text": "Siam",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:KHM",
+      "name": "Cambodia",
+      "aliases": [
+        {
+          "text": "Kampuchea",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:LAO",
+      "name": "Laos",
+      "aliases": [
+        {
+          "text": "Lao PDR",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:VNM",
+      "name": "Vietnam",
+      "aliases": [
+        {
+          "text": "Viet Nam",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:TLS",
+      "name": "Timor-Leste",
+      "aliases": [
+        {
+          "text": "East Timor",
+          "kind": "common"
+        },
+        {
+          "text": "Timor Leste",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:PHL",
+      "name": "Philippines",
+      "aliases": [
+        {
+          "text": "The Philippines",
+          "kind": "common"
+        },
+        {
+          "text": "Republic of the Philippines",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:IDN",
+      "name": "Indonesia",
+      "aliases": [
+        {
+          "text": "Republic of Indonesia",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:MYS",
+      "name": "Malaysia",
+      "aliases": [
+        {
+          "text": "Malaysia Federation",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:SGP",
+      "name": "Singapore",
+      "aliases": [
+        {
+          "text": "Republic of Singapore",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:BRN",
+      "name": "Brunei",
+      "aliases": [
+        {
+          "text": "Brunei Darussalam",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CHN",
+      "name": "China",
+      "aliases": [
+        {
+          "text": "People's Republic of China",
+          "kind": "official"
+        },
+        {
+          "text": "PRC",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:JPN",
+      "name": "Japan",
+      "aliases": [
+        {
+          "text": "Nippon",
+          "kind": "ascii"
+        },
+        {
+          "text": "Nihon",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:MNG",
+      "name": "Mongolia",
+      "aliases": [
+        {
+          "text": "Outer Mongolia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:IND",
+      "name": "India",
+      "aliases": [
+        {
+          "text": "Bharat",
+          "kind": "endonym"
+        },
+        {
+          "text": "Republic of India",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:PAK",
+      "name": "Pakistan",
+      "aliases": [
+        {
+          "text": "Islamic Republic of Pakistan",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:BGD",
+      "name": "Bangladesh",
+      "aliases": [
+        {
+          "text": "People's Republic of Bangladesh",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:NPL",
+      "name": "Nepal",
+      "aliases": [
+        {
+          "text": "Federal Democratic Republic of Nepal",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:BTN",
+      "name": "Bhutan",
+      "aliases": [
+        {
+          "text": "Druk Yul",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:AFG",
+      "name": "Afghanistan",
+      "aliases": [
+        {
+          "text": "Islamic Emirate of Afghanistan",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:KAZ",
+      "name": "Kazakhstan",
+      "aliases": [
+        {
+          "text": "Qazaqstan",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:UZB",
+      "name": "Uzbekistan",
+      "aliases": [
+        {
+          "text": "Ozbekiston",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:TJK",
+      "name": "Tajikistan",
+      "aliases": [
+        {
+          "text": "Tojikiston",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:TKM",
+      "name": "Turkmenistan",
+      "aliases": [
+        {
+          "text": "Turkmenia",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:KGZ",
+      "name": "Kyrgyzstan",
+      "aliases": [
+        {
+          "text": "Kyrgyz Republic",
+          "kind": "official"
+        },
+        {
+          "text": "Kirghizia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:IRN",
+      "name": "Iran",
+      "aliases": [
+        {
+          "text": "Persia",
+          "kind": "former"
+        },
+        {
+          "text": "Islamic Republic of Iran",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:IRQ",
+      "name": "Iraq",
+      "aliases": [
+        {
+          "text": "Republic of Iraq",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SYR",
+      "name": "Syria",
+      "aliases": [
+        {
+          "text": "Syrian Arab Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:LBN",
+      "name": "Lebanon",
+      "aliases": [
+        {
+          "text": "Lebanese Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:ISR",
+      "name": "Israel",
+      "aliases": [
+        {
+          "text": "State of Israel",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:JOR",
+      "name": "Jordan",
+      "aliases": [
+        {
+          "text": "Hashemite Kingdom of Jordan",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SAU",
+      "name": "Saudi Arabia",
+      "aliases": [
+        {
+          "text": "Kingdom of Saudi Arabia",
+          "kind": "official"
+        },
+        {
+          "text": "KSA",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:ARE",
+      "name": "United Arab Emirates",
+      "aliases": [
+        {
+          "text": "UAE",
+          "kind": "common"
+        },
+        {
+          "text": "U.A.E.",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:OMN",
+      "name": "Oman",
+      "aliases": [
+        {
+          "text": "Sultanate of Oman",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:YEM",
+      "name": "Yemen",
+      "aliases": [
+        {
+          "text": "Republic of Yemen",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:QAT",
+      "name": "Qatar",
+      "aliases": [
+        {
+          "text": "State of Qatar",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:KWT",
+      "name": "Kuwait",
+      "aliases": [
+        {
+          "text": "State of Kuwait",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:BHR",
+      "name": "Bahrain",
+      "aliases": [
+        {
+          "text": "Kingdom of Bahrain",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:EGY",
+      "name": "Egypt",
+      "aliases": [
+        {
+          "text": "Arab Republic of Egypt",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:LBY",
+      "name": "Libya",
+      "aliases": [
+        {
+          "text": "State of Libya",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:TUN",
+      "name": "Tunisia",
+      "aliases": [
+        {
+          "text": "Tunisian Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:DZA",
+      "name": "Algeria",
+      "aliases": [
+        {
+          "text": "People's Democratic Republic of Algeria",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:MAR",
+      "name": "Morocco",
+      "aliases": [
+        {
+          "text": "Kingdom of Morocco",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SDN",
+      "name": "Sudan",
+      "aliases": [
+        {
+          "text": "Republic of the Sudan",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SSD",
+      "name": "South Sudan",
+      "aliases": [
+        {
+          "text": "Republic of South Sudan",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:ETH",
+      "name": "Ethiopia",
+      "aliases": [
+        {
+          "text": "Abyssinia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:KEN",
+      "name": "Kenya",
+      "aliases": [
+        {
+          "text": "Republic of Kenya",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:TZA",
+      "name": "Tanzania",
+      "aliases": [
+        {
+          "text": "United Republic of Tanzania",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:UGA",
+      "name": "Uganda",
+      "aliases": [
+        {
+          "text": "Republic of Uganda",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:RWA",
+      "name": "Rwanda",
+      "aliases": [
+        {
+          "text": "Republic of Rwanda",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:ZAF",
+      "name": "South Africa",
+      "aliases": [
+        {
+          "text": "Republic of South Africa",
+          "kind": "official"
+        },
+        {
+          "text": "RSA",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:ZMB",
+      "name": "Zambia",
+      "aliases": [
+        {
+          "text": "Northern Rhodesia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:ZWE",
+      "name": "Zimbabwe",
+      "aliases": [
+        {
+          "text": "Rhodesia",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:MLI",
+      "name": "Mali",
+      "aliases": [
+        {
+          "text": "Republic of Mali",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CPV",
+      "name": "Cabo Verde",
+      "aliases": [
+        {
+          "text": "Cape Verde",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:STP",
+      "name": "São Tomé and Príncipe",
+      "aliases": [
+        {
+          "text": "Sao Tome and Principe",
+          "kind": "ascii"
+        },
+        {
+          "text": "Sao Tome",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:MUS",
+      "name": "Mauritius",
+      "aliases": [
+        {
+          "text": "Republic of Mauritius",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:MDG",
+      "name": "Madagascar",
+      "aliases": [
+        {
+          "text": "Republic of Madagascar",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:USA",
+      "name": "United States",
+      "aliases": [
+        {
+          "text": "USA",
+          "kind": "common"
+        },
+        {
+          "text": "US",
+          "kind": "common"
+        },
+        {
+          "text": "U.S.A.",
+          "kind": "common"
+        },
+        {
+          "text": "U.S.",
+          "kind": "common"
+        },
+        {
+          "text": "America",
+          "kind": "common"
+        },
+        {
+          "text": "United States of America",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CAN",
+      "name": "Canada",
+      "aliases": [
+        {
+          "text": "Dominion of Canada",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:MEX",
+      "name": "Mexico",
+      "aliases": [
+        {
+          "text": "México",
+          "kind": "endonym"
+        },
+        {
+          "text": "United Mexican States",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CUB",
+      "name": "Cuba",
+      "aliases": [
+        {
+          "text": "Republic of Cuba",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:HTI",
+      "name": "Haiti",
+      "aliases": [
+        {
+          "text": "Republic of Haiti",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:JAM",
+      "name": "Jamaica",
+      "aliases": [
+        {
+          "text": "Jamaica Island",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:BHS",
+      "name": "Bahamas",
+      "aliases": [
+        {
+          "text": "The Bahamas",
+          "kind": "common"
+        },
+        {
+          "text": "Commonwealth of the Bahamas",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:DMA",
+      "name": "Dominica",
+      "aliases": [
+        {
+          "text": "Commonwealth of Dominica",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:DOM",
+      "name": "Dominican Republic",
+      "aliases": [
+        {
+          "text": "Republica Dominicana",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:KNA",
+      "name": "Saint Kitts and Nevis",
+      "aliases": [
+        {
+          "text": "St Kitts and Nevis",
+          "kind": "common"
+        },
+        {
+          "text": "St. Kitts & Nevis",
+          "kind": "common"
+        },
+        {
+          "text": "Saint Christopher and Nevis",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:LCA",
+      "name": "Saint Lucia",
+      "aliases": [
+        {
+          "text": "St Lucia",
+          "kind": "common"
+        },
+        {
+          "text": "St. Lucia",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:VCT",
+      "name": "Saint Vincent and the Grenadines",
+      "aliases": [
+        {
+          "text": "St Vincent and the Grenadines",
+          "kind": "common"
+        },
+        {
+          "text": "St. Vincent",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:BRA",
+      "name": "Brazil",
+      "aliases": [
+        {
+          "text": "Brasil",
+          "kind": "endonym"
+        },
+        {
+          "text": "Federative Republic of Brazil",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:ARG",
+      "name": "Argentina",
+      "aliases": [
+        {
+          "text": "Argentine Republic",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:CHL",
+      "name": "Chile",
+      "aliases": [
+        {
+          "text": "Republic of Chile",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:PER",
+      "name": "Peru",
+      "aliases": [
+        {
+          "text": "Perú",
+          "kind": "endonym"
+        },
+        {
+          "text": "Republic of Peru",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:COL",
+      "name": "Colombia",
+      "aliases": [
+        {
+          "text": "Republic of Colombia",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:VEN",
+      "name": "Venezuela",
+      "aliases": [
+        {
+          "text": "Bolivarian Republic of Venezuela",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:BOL",
+      "name": "Bolivia",
+      "aliases": [
+        {
+          "text": "Plurinational State of Bolivia",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:ECU",
+      "name": "Ecuador",
+      "aliases": [
+        {
+          "text": "Republic of Ecuador",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:GUY",
+      "name": "Guyana",
+      "aliases": [
+        {
+          "text": "Co-operative Republic of Guyana",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:SUR",
+      "name": "Suriname",
+      "aliases": [
+        {
+          "text": "Surinam",
+          "kind": "ascii"
+        }
+      ]
+    },
+    {
+      "id": "country:URY",
+      "name": "Uruguay",
+      "aliases": [
+        {
+          "text": "Oriental Republic of Uruguay",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:PRY",
+      "name": "Paraguay",
+      "aliases": [
+        {
+          "text": "Republic of Paraguay",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:AUS",
+      "name": "Australia",
+      "aliases": [
+        {
+          "text": "Commonwealth of Australia",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:NZL",
+      "name": "New Zealand",
+      "aliases": [
+        {
+          "text": "Aotearoa",
+          "kind": "endonym"
+        }
+      ]
+    },
+    {
+      "id": "country:FJI",
+      "name": "Fiji",
+      "aliases": [
+        {
+          "text": "Republic of Fiji",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:WSM",
+      "name": "Samoa",
+      "aliases": [
+        {
+          "text": "Western Samoa",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:TON",
+      "name": "Tonga",
+      "aliases": [
+        {
+          "text": "Kingdom of Tonga",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:TUV",
+      "name": "Tuvalu",
+      "aliases": [
+        {
+          "text": "Ellice Islands",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:NRU",
+      "name": "Nauru",
+      "aliases": [
+        {
+          "text": "Pleasant Island",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:FSM",
+      "name": "Federated States of Micronesia",
+      "aliases": [
+        {
+          "text": "Micronesia",
+          "kind": "common"
+        },
+        {
+          "text": "FSM",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:MHL",
+      "name": "Marshall Islands",
+      "aliases": [
+        {
+          "text": "Republic of the Marshall Islands",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:KIR",
+      "name": "Kiribati",
+      "aliases": [
+        {
+          "text": "Gilbert Islands",
+          "kind": "former"
+        }
+      ]
+    },
+    {
+      "id": "country:PLW",
+      "name": "Palau",
+      "aliases": [
+        {
+          "text": "Republic of Palau",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:VAT",
+      "name": "Vatican City",
+      "aliases": [
+        {
+          "text": "Holy See",
+          "kind": "common"
+        },
+        {
+          "text": "Vatican",
+          "kind": "common"
+        }
+      ]
+    },
+    {
+      "id": "country:XKX",
+      "name": "Kosovo",
+      "aliases": [
+        {
+          "text": "Republic of Kosovo",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:TWN",
+      "name": "Taiwan",
+      "aliases": [
+        {
+          "text": "Republic of China",
+          "kind": "common"
+        },
+        {
+          "text": "ROC",
+          "kind": "common"
+        }
+      ],
+      "notInSetReason": "The island democracy, not a UN member state."
+    },
+    {
+      "id": "country:PSE",
+      "name": "Palestine",
+      "aliases": [
+        {
+          "text": "State of Palestine",
+          "kind": "official"
+        }
+      ]
+    },
+    {
+      "id": "country:GRL",
+      "name": "Greenland",
+      "aliases": [
+        {
+          "text": "Kalaallit Nunaat",
+          "kind": "endonym"
+        }
+      ],
+      "notInSetReason": "Greenland is an autonomous territory of Denmark."
+    },
+    {
+      "id": "country:FRO",
+      "name": "Faroe Islands",
+      "aliases": [
+        {
+          "text": "Faroes",
+          "kind": "common"
+        },
+        {
+          "text": "Føroyar",
+          "kind": "endonym"
+        }
+      ],
+      "notInSetReason": "The Faroe Islands are an autonomous territory of Denmark."
+    },
+    {
+      "id": "country:PRI",
+      "name": "Puerto Rico",
+      "aliases": [
+        {
+          "text": "Commonwealth of Puerto Rico",
+          "kind": "official"
+        }
+      ],
+      "notInSetReason": "Puerto Rico is a territory of the United States."
+    },
+    {
+      "id": "country:HKG",
+      "name": "Hong Kong",
+      "aliases": [
+        {
+          "text": "Hong Kong SAR",
+          "kind": "common"
+        }
+      ],
+      "notInSetReason": "Hong Kong is a special administrative region of China."
+    },
+    {
+      "id": "country:MAC",
+      "name": "Macau",
+      "aliases": [
+        {
+          "text": "Macao",
+          "kind": "common"
+        }
+      ],
+      "notInSetReason": "Macau is a special administrative region of China."
+    },
+    {
+      "id": "country:GUF",
+      "name": "French Guiana",
+      "aliases": [
+        {
+          "text": "Guyane",
+          "kind": "endonym"
+        }
+      ],
+      "notInSetReason": "French Guiana is an overseas department of France."
+    },
+    {
+      "id": "country:ENG",
+      "name": "England",
+      "aliases": [],
+      "notInSetReason": "England is part of the United Kingdom. Name the United Kingdom."
+    },
+    {
+      "id": "country:SCT",
+      "name": "Scotland",
+      "aliases": [],
+      "notInSetReason": "Scotland is part of the United Kingdom. Name the United Kingdom."
+    },
+    {
+      "id": "country:WLS",
+      "name": "Wales",
+      "aliases": [],
+      "notInSetReason": "Wales is part of the United Kingdom. Name the United Kingdom."
+    },
+    {
+      "id": "country:ASM",
+      "name": "American Samoa",
+      "aliases": [],
+      "notInSetReason": "American Samoa is a territory of the United States."
+    },
+    {
+      "id": "country:VGB",
+      "name": "British Virgin Islands",
+      "aliases": [
+        {
+          "text": "BVI",
+          "kind": "common"
+        }
+      ],
+      "notInSetReason": "The British Virgin Islands are a British overseas territory."
+    },
+    {
+      "id": "country:VIR",
+      "name": "United States Virgin Islands",
+      "aliases": [
+        {
+          "text": "US Virgin Islands",
+          "kind": "common"
+        },
+        {
+          "text": "U.S. Virgin Islands",
+          "kind": "common"
+        }
+      ],
+      "notInSetReason": "The US Virgin Islands are a territory of the United States."
+    },
+    {
+      "id": "country:ESH",
+      "name": "Western Sahara",
+      "aliases": [],
+      "notInSetReason": "Western Sahara is a non-self-governing territory."
+    }
+  ],
+  "groups": [
+    {
+      "group": "congo",
+      "alias": "Congo",
+      "members": ["country:COG", "country:COD"],
+      "message": "Which Congo? Try \"Republic of the Congo\" or \"DR Congo\"."
+    },
+    {
+      "group": "korea",
+      "alias": "Korea",
+      "members": ["country:PRK", "country:KOR"],
+      "message": "Which Korea? Try \"North Korea\" or \"South Korea\"."
+    },
+    {
+      "group": "virgin-islands",
+      "alias": "Virgin Islands",
+      "members": ["country:VGB", "country:VIR"],
+      "message": "Which Virgin Islands? British or United States?"
+    }
+  ]
+}
