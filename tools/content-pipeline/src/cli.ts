@@ -1,0 +1,157 @@
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { parse } from "yaml";
+import { sourceRegistry } from "@meridian/schemas";
+import { buildPacks, type BuildOutput } from "./build.ts";
+import { fetchSources, lockText } from "./fetch.ts";
+import { parseLock, verifyAgainstLock, type LockFile } from "./lock.ts";
+import type { NeCollection } from "./ne.ts";
+import { SOURCES, WIKIDATA_SNAPSHOT } from "./sources.ts";
+import { sha256 } from "./util.ts";
+import { fetchWikidataSnapshot, snapshotBytes, type WdSnapshot } from "./wikidata.ts";
+
+const root = resolve(import.meta.dirname, "../../..");
+const path = {
+  raw: join(root, "data/raw"),
+  lock: join(root, "data/sources.lock.yaml"),
+  registry: join(root, "data/sources.registry.yaml"),
+  snapshot: join(root, WIKIDATA_SNAPSHOT.file),
+  sets: join(root, "content/sets/sovereign-197.yaml"),
+  version: join(root, "content/version.txt"),
+  dist: join(root, "dist/content"),
+};
+
+const log = (m: string): void => console.log(m);
+const flag = (args: string[], name: string): boolean => args.includes(`--${name}`);
+const option = (args: string[], name: string): string | undefined => {
+  const i = args.indexOf(`--${name}`);
+  return i >= 0 ? args[i + 1] : undefined;
+};
+
+async function readLock(): Promise<LockFile> {
+  try {
+    return parseLock(await readFile(path.lock, "utf8"));
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return { entries: [] };
+    throw e;
+  }
+}
+
+async function readSetMembers(): Promise<{ code: string; un: boolean }[]> {
+  const doc = parse(await readFile(path.sets, "utf8"), { schema: "core" }) as {
+    members: { code: string; un: boolean }[];
+  };
+  return doc.members;
+}
+
+async function cmdFetch(args: string[]): Promise<void> {
+  const updateLock = flag(args, "update-lock");
+  let lock = await readLock();
+  const result = await fetchSources(
+    { rawDir: path.raw, lock, updateLock, fetcher: (u, i) => fetch(u, i as RequestInit), log },
+    SOURCES,
+  );
+  lock = result.lock;
+  if (flag(args, "wikidata")) {
+    const members = await readSetMembers();
+    const snap = await fetchWikidataSnapshot(
+      members.map((m) => m.code),
+      new Date().toISOString().slice(0, 10),
+      (u, i) => fetch(u, i as RequestInit),
+    );
+    await mkdir(dirname(path.snapshot), { recursive: true });
+    const text = snapshotBytes(snap);
+    await writeFile(path.snapshot, text);
+    lock = {
+      entries: [
+        ...lock.entries.filter((e) => e.id !== WIKIDATA_SNAPSHOT.id),
+        {
+          id: WIKIDATA_SNAPSHOT.id,
+          source: "wd",
+          url: snap.endpoint,
+          version: `snapshot ${snap.retrieved_on}`,
+          sha256: sha256(text),
+          bytes: Buffer.byteLength(text),
+        },
+      ],
+    };
+    log(`wikidata snapshot: ${snap.countries.length} countries, ${snap.capitals.length} capitals`);
+  }
+  if (updateLock || result.downloaded.length > 0 || flag(args, "wikidata")) {
+    if (updateLock || flag(args, "wikidata")) await writeFile(path.lock, lockText(lock));
+  }
+  log(`fetch done: ${result.downloaded.length} downloaded, ${result.cached.length} cached`);
+}
+
+async function loadInputs(args: string[]) {
+  const lock = await readLock();
+  const read = async (id: string, file: string): Promise<Uint8Array> => {
+    const bytes = new Uint8Array(await readFile(file));
+    const check = verifyAgainstLock(lock, id, bytes);
+    if (!check.ok) throw new Error(`${id}: ${check.reason}`);
+    return bytes;
+  };
+  const ne = async (id: string, scale: string): Promise<NeCollection> =>
+    JSON.parse(
+      new TextDecoder().decode(
+        await read(id, join(path.raw, `ne/ne_${scale}_admin_0_countries.geojson`)),
+      ),
+    ) as NeCollection;
+  const snapshot = JSON.parse(
+    new TextDecoder().decode(await read(WIKIDATA_SNAPSHOT.id, path.snapshot)),
+  ) as WdSnapshot;
+  const version = option(args, "version") ?? (await readFile(path.version, "utf8")).trim();
+  return {
+    version,
+    releasedAt: option(args, "released-at") ?? new Date().toISOString(),
+    members: await readSetMembers(),
+    ne: {
+      "110m": await ne("ne-110m-countries", "110m"),
+      "50m": await ne("ne-50m-countries", "50m"),
+      "10m": await ne("ne-10m-countries", "10m"),
+    },
+    wikidata: snapshot,
+    registry: sourceRegistry.parse(
+      parse(await readFile(path.registry, "utf8"), { schema: "core" }),
+    ),
+  };
+}
+
+export async function writeBuild(out: BuildOutput, dist: string): Promise<void> {
+  const dir = join(dist, out.version);
+  await mkdir(dir, { recursive: true });
+  for (const f of out.files) await writeFile(join(dir, f.file), f.bytes);
+  await writeFile(join(dir, "RELEASE_NOTES.md"), out.releaseNotes);
+  await writeFile(join(dist, "manifest.json"), `${JSON.stringify(out.manifest, null, 2)}\n`);
+}
+
+async function cmdBuild(args: string[]): Promise<void> {
+  const out = buildPacks(await loadInputs(args));
+  const dist = resolve(option(args, "out") ?? path.dist);
+  await writeBuild(out, dist);
+  for (const f of out.files)
+    log(
+      `${f.file.padEnd(34)} ${String(f.bytes.length).padStart(9)} bytes  ${f.sha256.slice(0, 12)}`,
+    );
+  log(`built ${out.version} into ${dist}`);
+}
+
+const [command, ...rest] = process.argv.slice(2);
+const commands: Record<string, (args: string[]) => Promise<void>> = {
+  fetch: cmdFetch,
+  build: cmdBuild,
+};
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const run = command ? commands[command] : undefined;
+  if (!run) {
+    console.error(
+      "usage: content <fetch [--update-lock] [--wikidata] | build [--version V] [--out DIR] [--released-at ISO]>",
+    );
+    process.exit(2);
+  }
+  run(rest).catch((e: unknown) => {
+    console.error(e instanceof Error ? e.message : String(e));
+    process.exit(1);
+  });
+}

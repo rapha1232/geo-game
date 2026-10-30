@@ -190,7 +190,7 @@ Mercator is not used, because it distorts size and polar regions.
 ## 7. Content pipeline (technical)
 
 Steps and rules are in [DATA_AND_CONTENT §3](DATA_AND_CONTENT.md#3-content-pipeline) and §10. Technically:
-- `pnpm content:build` runs all steps locally. Outputs go to `dist/content/<version>/`.
+- `pnpm content:fetch [--update-lock] [--wikidata]` downloads and pins the sources. `pnpm content:build [--version V] [--out DIR]` runs the steps. Outputs go to `dist/content/<version>/` (`content/version.txt` holds the default version). Building twice gives byte-identical packs, which the test suite checks on fixtures and, when `data/raw` is present, on all 197 countries.
 - `pnpm content:validate` runs the validators only (fast, for editor PRs).
 - CI (`content.yml`) runs on changes to `content/**`, `tools/content-pipeline/**` or `data/sources.lock.yaml`: build → validate → determinism check (build twice, compare hashes) → upload to Blob under a **preview version** (`pr-<n>`). On merge to `main`: release `YYYY.MM.N`, upload, and update `manifest.json`.
 

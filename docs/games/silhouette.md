@@ -97,7 +97,7 @@ The guess resolves to an entity ID. Territories are distinct entities: "Greenlan
 
 ### 5.3 Distance, direction, proximity: normative definitions
 
-**Reference point.** Each entity's `ref_point` is the **pole of inaccessibility** (the point farthest from the boundary, computed with `polylabel` at 0.01° precision in an equirectangular frame scaled by cos(latitude)) of its **largest polygon by geodesic area**, using 1:10m geometry. Rationale:
+**Reference point.** Each entity's `ref_point` is the **pole of inaccessibility** (the point farthest from the boundary, computed with `polylabel` at a precision of min(0.01°, one hundredth of the polygon's smaller side) in an equirectangular frame scaled by cos(latitude). A fixed 0.01° is wider than the Vatican itself, which put its point outside its borders) of its **largest polygon by geodesic area**, using 1:10m geometry. Rationale:
 - It always lies **inside** the entity's main landmass. Centroids can fall outside (Chile, Indonesia, Croatia) or in the sea between islands.
 - Using the largest polygon keeps France on metropolitan France rather than drifting toward the overseas regions, and keeps the US in the contiguous states.
 - It is stable and reproducible, and it is precomputed at build time and stored in the pack.

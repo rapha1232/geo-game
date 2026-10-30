@@ -12,7 +12,10 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "content:fetch": "pnpm --filter @meridian/content-pipeline content:fetch --",
+    "content:build": "pnpm --filter @meridian/content-pipeline content:build --",
+    "content:validate": "pnpm --filter @meridian/content-pipeline content:validate --"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
