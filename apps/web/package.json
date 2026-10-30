@@ -13,7 +13,9 @@
     "db:migrate": "node scripts/migrate.mjs",
     "gen:sources": "node scripts/gen-sources.mjs",
     "gen:corrections": "node scripts/gen-corrections.mjs",
-    "a11y": "node scripts/a11y-audit.mjs"
+    "a11y": "node scripts/a11y-audit.mjs",
+    "budget": "node scripts/bundle-budget.mjs",
+    "network": "node scripts/network-audit.mjs"
   },
   "dependencies": {
     "@meridian/fact-pin": "workspace:*",

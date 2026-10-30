@@ -235,3 +235,29 @@ describe("selection", () => {
     expect(seededRun(pool, DEFAULT_CONFIG, "9876543210")).not.toEqual(a);
   });
 });
+
+describe("performance (ARCHITECTURE §13)", () => {
+  it("a confirm against a 40,000-vertex area takes at most 30 ms", () => {
+    // A wiggly coastline: 40k vertices around a circle of radius ~5 degrees with noise.
+    const ring: [number, number][] = [];
+    for (let i = 0; i < 40_000; i++) {
+      const a = (i / 40_000) * 2 * Math.PI;
+      const r = 5 + 0.2 * Math.sin(a * 200);
+      ring.push([r * Math.cos(a), r * Math.sin(a)]);
+    }
+    ring.push(ring[0] as [number, number]);
+    const big: MultiPolygon = [[ring]];
+    const f = fact("big", { precision: "country", target: { type: "entity", id: "country:XXX" } });
+    const pin = { lat: 20, lon: 20 }; // outside: the slower path, distance to the boundary
+    distanceToTarget(f, pin, () => big); // warm up
+    // Best of five, so a busy CI machine running other test suites cannot fail it.
+    let best = Infinity;
+    for (let i = 0; i < 5; i++) {
+      const t0 = performance.now();
+      const s = confirm(placePin(run(DEFAULT_CONFIG, ["big"]), pin), f, () => big, 1);
+      best = Math.min(best, performance.now() - t0);
+      expect(s.phase).toBe("revealed");
+    }
+    expect(best).toBeLessThanOrEqual(30);
+  });
+});

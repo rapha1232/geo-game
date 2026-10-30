@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@meridian/ui";
-import { gameResult } from "@meridian/schemas";
 import { POPULAR, buildCatalog, pickPlaySomething } from "../../lib/catalog/catalog";
 import { browserOffsetMinutes, localDate } from "../../lib/daily/time";
 import { LIBRARY } from "../../lib/quiz/library";
@@ -40,9 +39,10 @@ export function HomeModules() {
       .then((rows) => {
         if (live)
           setDailyDone(
+            // A light shape check: the full result schema (zod) stays out of the Home bundle.
             rows.some((r) => {
-              const p = gameResult.safeParse(r.data);
-              return p.success && p.data.game_id === "silhouette" && p.data.mode === "daily";
+              const d = r.data as { game_id?: unknown; mode?: unknown } | null;
+              return d?.game_id === "silhouette" && d.mode === "daily";
             }),
           );
       })

@@ -1,8 +1,14 @@
-import { manifest as manifestSchema, type Manifest, type PackEntry } from "@meridian/schemas";
+import type { Manifest, PackEntry } from "@meridian/schemas";
 import type { MeridianDb } from "../storage/db";
 
 /** Where the last good manifest is kept in the `packs` table (never a real pack URL). */
 const MANIFEST_KEY = "manifest:last-good";
+
+/** The schema (and zod with it) loads on first use, so it stays out of the shell bundle (ARCHITECTURE §13). */
+async function parseManifest(json: unknown) {
+  const { manifest } = await import("@meridian/schemas");
+  return manifest.safeParse(json);
+}
 
 export class ContentError extends Error {
   constructor(
@@ -42,7 +48,7 @@ export class ContentLoader {
     this.manifestPromise ??= this.get(`${this.o.host}/content/manifest.json`)
       .then((r) => r.json())
       .then(async (j) => {
-        const parsed = manifestSchema.safeParse(j);
+        const parsed = await parseManifest(j);
         if (!parsed.success) throw new ContentError("invalid", "manifest.json failed validation");
         await this.o.db?.packs
           .put({ url: MANIFEST_KEY, sha256: "", json: parsed.data })
@@ -53,7 +59,7 @@ export class ContentLoader {
         this.manifestPromise = null;
         if (e instanceof ContentError && e.kind === "network") {
           const kept = await this.o.db?.packs.get(MANIFEST_KEY).catch(() => undefined);
-          const parsed = manifestSchema.safeParse(kept?.json);
+          const parsed = await parseManifest(kept?.json);
           if (parsed.success) return parsed.data;
         }
         throw e;

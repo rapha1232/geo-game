@@ -315,8 +315,8 @@ The full strategy is in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md).
 | LCP (p75, mobile, 4G) | ≤ 2.5 s on Home and the game hubs | Lighthouse CI (Moto G Power profile) + field analytics |
 | INP (p75) | ≤ 200 ms | Field analytics |
 | CLS | ≤ 0.1 | Lighthouse CI |
-| Initial JS (shell route) | ≤ 170 KB gzip | Bundle analyzer budget in CI |
-| Per-game chunk | ≤ 120 KB gzip (excluding packs) | CI budget |
+| Initial JS (shell route) | ≤ 170 KB gzip | `pnpm --filter @meridian/web budget` (Home's chunks, after `build`) |
+| Per-game chunk | ≤ 120 KB gzip (excluding packs): the route's JS beyond the shell's chunks | `pnpm --filter @meridian/web budget` |
 | Name Matcher keystroke (exact) | ≤ 2 ms p95 for a 300-entity universe with about 3,000 aliases | Vitest bench |
 | Fuzzy match on submit | ≤ 20 ms p95 | Vitest bench |
 | Next-round generation | ≤ 50 ms typical, ≤ 300 ms max (packs cached) | Playwright timing (AC-SH-019) |

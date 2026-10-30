@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // `ANALYZE=1 pnpm build` writes source maps so a bundle explorer can attribute bytes (T1.20).
+  productionBrowserSourceMaps: process.env["ANALYZE"] === "1",
   // Workspace packages ship TypeScript and CSS sources.
   async headers() {
     return [
