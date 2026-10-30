@@ -3,6 +3,7 @@ import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
 import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
+import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import { checkEditorialCoverage, parseEditorial } from "./editorial.ts";
 import { buildPacks, type BuildOutput } from "./build.ts";
 import {
@@ -30,6 +31,8 @@ const path = {
   countries: join(root, "content/countries.yaml"),
   ambiguity: join(root, "content/ambiguity.yaml"),
   disputes: join(root, "content/disputes.yaml"),
+  silhouettes: join(root, "content/overrides/silhouettes.yaml"),
+  adjacency: join(root, "content/overrides/adjacency.yaml"),
   version: join(root, "content/version.txt"),
   dist: join(root, "dist/content"),
 };
@@ -131,6 +134,10 @@ async function loadInputs(args: string[]) {
     editorial,
     ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
     disputes: await list(dispute, "disputes")(path.disputes),
+    derive: {
+      silhouettes: silhouetteOverrides.parse(await yaml(path.silhouettes)).overrides,
+      adjacency: adjacencyOverrides.parse(await yaml(path.adjacency)),
+    },
     releasedAt: option(args, "released-at") ?? new Date().toISOString(),
     members,
     ne: {

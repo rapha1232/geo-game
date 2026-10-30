@@ -11,8 +11,22 @@ import {
   type Manifest,
   type SourceRegistry,
 } from "@meridian/schemas";
+import {
+  buildAdjacency,
+  difficultyPriors,
+  findContacts,
+  splitParts,
+  type AdjacencyOverrides,
+  type SilhouetteOverride,
+} from "./derive.ts";
 import type { Editorial } from "./editorial.ts";
-import { dropSlivers, normalizeGeometry, type Geometry } from "./geometry.ts";
+import {
+  dropSlivers,
+  normalizeGeometry,
+  polygonsOf,
+  type Geometry,
+  type PolygonCoords,
+} from "./geometry.ts";
 import { mergeCountries, type SetMember } from "./merge.ts";
 import { indexByCode, type NeCollection, type NeCountry } from "./ne.ts";
 import { parseCountries, type WdCountry, type WdSnapshot } from "./wikidata.ts";
@@ -37,6 +51,8 @@ export type BuildInput = {
   editorial?: Editorial;
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
+  /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
+  derive?: { silhouettes: readonly SilhouetteOverride[]; adjacency: AdjacencyOverrides };
 };
 
 export type BuiltFile = { name: string; file: string; bytes: Uint8Array; sha256: string };
@@ -78,13 +94,21 @@ export function buildPacks(input: BuildInput): BuildOutput {
     "10m": indexByCode(input.ne["10m"]),
   };
   const wd = new Map<string, WdCountry>(input.wikidata.countries.map((c) => [c.code, c]));
-  const entities: Entity[] = mergeCountries({
+  const merged: Entity[] = mergeCountries({
     members: input.members,
     ne10: maps["10m"],
     wikidata: wd,
     ...(input.editorial ? { editorial: input.editorial } : {}),
     capitals: input.wikidata.capitals,
   });
+
+  const priors = input.derive ? difficultyPriors(merged) : undefined;
+  const entities: Entity[] = priors
+    ? merged.map((e) => ({
+        ...e,
+        difficulty: priors.get(e.id) as NonNullable<Entity["difficulty"]>,
+      }))
+    : merged;
 
   const files: BuiltFile[] = [
     toFile("core.countries", {
@@ -94,6 +118,7 @@ export function buildPacks(input: BuildInput): BuildOutput {
       entities,
     }),
   ];
+  if (input.derive) files.push(...deriveFiles(input, entities, maps));
   if (input.ambiguity)
     files.push(
       toFile("core.ambiguity", {
@@ -191,6 +216,68 @@ export function buildPacks(input: BuildInput): BuildOutput {
     releaseNotes: notes,
     fallback110: fallback110.sort(),
   };
+}
+
+/** `geo.silhouettes` (main group and remote parts per entity) and `core.adjacency` (land borders). */
+function deriveFiles(
+  input: BuildInput,
+  entities: readonly Entity[],
+  maps: Record<Scale, Map<string, NeCountry>>,
+): BuiltFile[] {
+  const derive = input.derive as NonNullable<BuildInput["derive"]>;
+  const overrides = new Map(derive.silhouettes.map((o) => [o.entity, o]));
+  const cell = 360 / QUANTIZATION["50m"];
+  const main: unknown[] = [];
+  const remote: unknown[] = [];
+  const contactGeoms = new Map<string, PolygonCoords[]>();
+  const mainCount = new Map<string, number>();
+  const asGeometry = (polys: PolygonCoords[]): Geometry =>
+    polys.length === 1
+      ? { type: "Polygon", coordinates: polys[0] as PolygonCoords }
+      : { type: "MultiPolygon", coordinates: polys };
+  for (const e of entities) {
+    const code = e.id.slice("country:".length);
+    const g50 = dropSlivers(
+      normalizeGeometry((maps["50m"].get(code) as NeCountry).geometry),
+      cell * cell,
+    );
+    if (!g50) throw new Error(`${e.id}: no silhouette geometry (GEOM_MISSING)`);
+    const parts = splitParts(polygonsOf(g50), overrides.get(e.id));
+    main.push({
+      type: "Feature",
+      id: e.id,
+      properties: { parts: "main" },
+      geometry: asGeometry(parts.main),
+    });
+    if (parts.remote.length > 0)
+      remote.push({
+        type: "Feature",
+        id: e.id,
+        properties: { parts: "remote", remote_parts: parts.remoteParts },
+        geometry: asGeometry(parts.remote),
+      });
+    const g10 = normalizeGeometry((maps["10m"].get(code) as NeCountry).geometry);
+    const split10 = splitParts(polygonsOf(g10), overrides.get(e.id));
+    contactGeoms.set(e.id, [...split10.main, ...split10.remote]);
+    mainCount.set(e.id, split10.main.length);
+  }
+  const topo = topology(
+    {
+      main: { type: "FeatureCollection", features: main } as never,
+      remote: { type: "FeatureCollection", features: remote } as never,
+    },
+    QUANTIZATION["50m"],
+  );
+  const edges = buildAdjacency(
+    findContacts(contactGeoms),
+    mainCount,
+    derive.adjacency,
+    input.disputes ?? [],
+  );
+  return [
+    toFile("geo.silhouettes", topologySchema.parse(topo)),
+    toFile("core.adjacency", { pack: "core.adjacency", version: input.version, edges }),
+  ];
 }
 
 export { entity, parseCountries };

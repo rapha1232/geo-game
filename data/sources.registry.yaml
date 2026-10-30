@@ -13,7 +13,15 @@ sources:
     verified_on: 2026-10-30
     evidence: 'Terms page: "All versions of Natural Earth raster + vector map data found on this website are in the public domain." and "Crediting the authors is unnecessary."'
     notes: Some third-party layers (Washington Post, JRC rivers and lakes, XNR roads, IMA time zones) are limited to base-map use. We use only admin, populated-places and physical layers, none of those. Credit is optional; we credit "Made with Natural Earth" anyway.
-    used_in: [geo.world.110m, geo.world.50m, geo.world.10m, core.countries]
+    used_in:
+      [
+        geo.world.110m,
+        geo.world.50m,
+        geo.world.10m,
+        geo.silhouettes,
+        core.adjacency,
+        core.countries,
+      ]
   - id: wd
     name: Wikidata (structured data)
     kind: dataset
@@ -117,7 +125,7 @@ sources:
     verification: done
     verified_on: 2026-10-30
     evidence: "Owner decision Q-06: all rights reserved."
-    used_in: [core.countries, core.ambiguity, core.disputes]
+    used_in: [core.countries, core.ambiguity, core.disputes, core.adjacency, geo.silhouettes]
   - id: font-source-sans-3
     name: Source Sans 3 (variable, via @fontsource-variable/source-sans-3)
     kind: font

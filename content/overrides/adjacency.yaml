@@ -1,0 +1,9 @@
+# Adjacency overrides (DATA_MODEL §2.5). Borders are computed from the 1:10m outlines (two vertices within 0.003°).
+# `via` names the overseas part for a border reached only through it; the build fails for any such border not named here.
+via:
+  "country:BRA~country:FRA": French Guiana
+  "country:FRA~country:SUR": French Guiana
+  "country:LTU~country:RUS": Kaliningrad
+  "country:POL~country:RUS": Kaliningrad
+exclude: []
+include: []

@@ -1,0 +1,13 @@
+# Silhouette main-group overrides (silhouette §5.4 rule 4). A polygon whose reference point lies within `within_km`
+# of a `near` point becomes a remote part. The 1,500 km rule already excludes Alaska and Hawaii (United States),
+# Greenland and the Faroe Islands (separate entities), and Easter Island (Chile); tests assert it.
+overrides:
+  - entity: "country:ECU"
+    reason: The Galápagos lie within 1,500 km of mainland Ecuador but are not part of its outline.
+    drop:
+      - { near: [-0.6, -90.5], within_km: 400 }
+  - entity: "country:NOR"
+    reason: Svalbard and Jan Mayen are not part of the mainland silhouette.
+    drop:
+      - { near: [78.5, 17.0], within_km: 700 }
+      - { near: [71.0, -8.5], within_km: 200 }

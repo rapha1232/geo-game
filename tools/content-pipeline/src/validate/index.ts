@@ -85,6 +85,9 @@ export function contentSetFromBuild(
   const disputes = has("core.disputes")
     ? (json("core.disputes") as { disputes: ContentSet["disputes"] }).disputes
     : undefined;
+  const adjacency = has("core.adjacency")
+    ? (json("core.adjacency") as { edges: ContentSet["adjacency"] }).edges
+    : undefined;
   const capitals = core.entities.flatMap((e) =>
     (e.capitals ?? []).flatMap((c) =>
       c.point ? [{ entityId: e.id, name: c.name, lat: c.point[0], lon: c.point[1] }] : [],
@@ -99,6 +102,7 @@ export function contentSetFromBuild(
     draft: core.draft,
     ...(ambiguity ? { ambiguity } : {}),
     ...(disputes ? { disputes } : {}),
+    ...(adjacency ? { adjacency } : {}),
     ...(capitals.length > 0 ? { capitals } : {}),
     geometry,
     registry: input.registry,

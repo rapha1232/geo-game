@@ -262,7 +262,7 @@ A map with the target's full geometry (including remote parts, labeled), ref poi
 | AC-SH-006 | Invalid and duplicate guesses do not consume attempts | Input "Narnia" → "Not recognized", counter stays 1/6. "Spain" twice → "Already guessed". |
 | AC-SH-007 | Territories are guessable in a sovereign pool | Guess "Greenland" → valid row with distance |
 | AC-SH-008 | Ambiguous guess | "Congo" → group message, counter unchanged |
-| AC-SH-009 | Remote parts excluded from the silhouette | France silhouette contains 2 polygons (mainland, Corsica). Hint 3 lists 5 remote parts. |
+| AC-SH-009 | Remote parts excluded from the silhouette | France silhouette contains the mainland, Corsica and at most one more polygon (3 at 1:50m). Hint 3 lists the overseas departments as remote parts (at least 5; 7 at 1:50m, largest first, starting with French Guiana). |
 | AC-SH-010 | US override | The USA silhouette excludes Alaska and Hawaii, which appear in `remote_parts` |
 | AC-SH-011 | Scoring | Solved in 3 guesses with 1 hint and 1 follow-up correct → 4 points |
 | AC-SH-012 | Repeat Guard | 98 consecutive Unlimited rounds on the default pool → 98 distinct targets |

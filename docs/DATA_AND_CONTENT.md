@@ -220,6 +220,10 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `capital` | `1 − (0.5 × fam + 0.5 × capFam)` (`capFam` = familiarity of the capital city), + 0.1 if the capital isn't the largest city |
 | `shape` | `1 − (0.5 × fam + 0.3 × areaN + 0.2 × compactnessDistinctiveness)`, where the latter is an editorial 0–1 score defaulting to 0.5 |
 
+**Deviations until the pageview snapshot lands (T1.2):** `fam` is the percentile of `log10(population)` alone, `capFam` equals `fam`, and the `confusables` and "capital isn't the largest city" adjustments are skipped. Values are rounded to 3 decimals. The Wikimedia pageview aggregates and the flag confusables list (T1.9) replace these approximations when they exist.
+
+**Derived packs.** `geo.silhouettes` holds each entity's main group and remote parts, classified on the 1:50m outlines (`content/overrides/silhouettes.yaml`). `core.adjacency` holds land borders found on the 1:10m outlines (two vertices of different entities within 0.003°), with a `via` name for any border reached only through an overseas part (`content/overrides/adjacency.yaml`; the build fails if one is missing). An edge is `disputed: true` when both entities are claimants of the same entry in `disputes.yaml`.
+
 **Calibration (R2+):** with aggregate first-attempt accuracy `acc` over `n` anonymous attempts, `posterior = (prior × k + (1 − acc) × n) / (k + n)` with `k = 50`. Recomputed nightly and shipped in the next content patch release.
 
 ## 10. Validation rules (content CI)
