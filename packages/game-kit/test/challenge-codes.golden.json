@@ -1,0 +1,82 @@
+[
+  {
+    "canonical": "{\"c\":{\"d\":\"n\",\"f\":[\"c\",\"f\"],\"p\":\"s197\"},\"cv\":\"2026.11.0\",\"g\":\"silhouette\",\"s\":\"K7Q2M9XD1A\",\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKU9JRSlOyigaKgBixOkoFQNFiQ0tzpVodpeQyIMfIwMhMz9BQzwCoIh0kmZmTkV-aWlKSChQoBgp4mwca-VpGuBg6AgWAOgxrAQ"
+  },
+  {
+    "canonical": "{\"c\":{\"fmt\":\"MAP_CLICK\",\"n\":20,\"sc\":\"world\",\"t\":\"find-country\",\"timer\":300},\"cv\":\"2026.11.3\",\"g\":\"quiz\",\"s\":\"0000000000\",\"v\":1}",
+    "code": "q1ZKVrKqVkrLLVGyUvJ1DIh39vF09lbSUcpTsjIy0FEqBkorlecX5aQAxUBq0jLzUnST80vzSooqQUKZualFSlbGBga1OkrJZUAFRgZGZnqGhnrGQNl0IL-wNLMKyCwGMg3gACgAVGtYCwA"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"hard\",\"n\":5,\"t\":30},\"cv\":\"2027.02.1\",\"g\":\"fact-pin\",\"s\":\"ZZZZZZZZZZ\",\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKSCxKUdJRylOyMtVRKlGyMjao1VFKLgPKGBkYmesZGOkZAqXTgfy0xOQS3YLMPCC3GMiNggOgAFC9YS0A"
+  },
+  {
+    "canonical": "{\"c\":{},\"cv\":\"2026.11.0\",\"g\":\"quiz\",\"s\":\"ABCDEFGHJK\",\"v\":1}",
+    "code": "q1ZKVrKqrtVRSi5TslIyMjAy0zM01DNQ0lFKB_ILSzOrgMxiINPRydnF1c3dw8sbKABUa1gLAA"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"n\",\"f\":[\"c\",\"f\"],\"p\":\"s197\"},\"cv\":\"2026.11.0\",\"g\":\"silhouette\",\"s\":\"1234567890\",\"v\":1}",
+    "code": "FYtLDoAgEEPv0jUhDCoIVzGuED-JURPQDeHuDrv29bUgwBcs8LggsMJPTFqYBR6miZxFFQgfF620kURSsbG18Tj3-405RwaJAemuH4wdXTP4QfUH"
+  },
+  {
+    "canonical": "{\"c\":{\"fmt\":\"MAP_CLICK\",\"n\":20,\"sc\":\"world\",\"t\":\"find-country\",\"timer\":300},\"cv\":\"2026.11.3\",\"g\":\"quiz\",\"s\":\"7M3N5P8Q2R\",\"v\":1}",
+    "code": "FYpLDoIwAETvMutK-omfdGdYGcWgF3BRxDSREsovQLg7w27mvbfAwS4oqw4W2TX_pI9beodAgNVSoKXGWMd_QbY3pQ_FwdV96OK0I199I6yRchVwAwMt9SlRKjG0P_6m9zNny3nOzPOYX176TcBWrRs"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"hard\",\"n\":5,\"t\":30},\"cv\":\"2027.02.1\",\"g\":\"fact-pin\",\"s\":\"4KQ2M9XD1A\",\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKSCxKUdJRylOyMtVRKlGyMjao1VFKLgPKGBkYmesZGOkZAqXTgfy0xOQS3YLMPCC3GMg18Q408rWMcDF0BAoA1RvWAgA"
+  },
+  {
+    "canonical": "{\"c\":{},\"cv\":\"2026.11.0\",\"g\":\"quiz\",\"s\":\"VWXYZ01234\",\"v\":1}",
+    "code": "q1ZKVrKqrtVRSi5TslIyMjAy0zM01DNQ0lFKB_ILSzOrgMxiIDMsPCIyysDQyNgEKABUa1gLAA"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"n\",\"f\":[\"c\",\"f\"],\"p\":\"s197\"},\"cv\":\"2026.11.0\",\"g\":\"silhouette\",\"s\":\"H5J6K7M8N9\",\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKU9JRSlOyigaKgBixOkoFQNFiQ0tzpVodpeQyIMfIwMhMz9BQzwCoIh0kmZmTkV-aWlKSChQoBgp4mHqZeZv7WvhZAgWAOgxrAQ"
+  },
+  {
+    "canonical": "{\"c\":{\"fmt\":\"MAP_CLICK\",\"n\":20,\"sc\":\"world\",\"t\":\"find-country\",\"timer\":300},\"cv\":\"2026.11.3\",\"g\":\"quiz\",\"s\":\"P0Q1R2S3T4\",\"v\":1}",
+    "code": "FYrNDoIwGATfZc-VfG2Nh94MJ6Mm-HP3UMQ0kRILSIDw7iy33ZmZ4eFmVHUHh-uxeOWXU36GQoQzotBSY2jStyTbmirEcuebPnZp3FCo3wnOiiwK_s_AiDlkWmeW9sP_68PE2XIWctN387DPPQFbvaw"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"hard\",\"n\":5,\"t\":30},\"cv\":\"2027.02.1\",\"g\":\"fact-pin\",\"s\":\"K7Q2M9XD1A\",\"sc\":370,\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKSCxKUdJRylOyMtVRKlGyMjao1VFKLgPKGBkYmesZGOkZAqXTgfy0xOQS3YLMPCC3GMj1Ng808rWMcDF0BAkAzTM2N9BRAmo0rAUA"
+  },
+  {
+    "canonical": "{\"c\":{},\"cv\":\"2026.11.0\",\"g\":\"quiz\",\"s\":\"0000000000\",\"sc\":407,\"v\":1}",
+    "code": "q1ZKVrKqrtVRSi5TslIyMjAy0zM01DNQ0lFKB_ILSzOrgMxiINMADkACQE0mBuY6SkBNhrUA"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"n\",\"f\":[\"c\",\"f\"],\"p\":\"s197\"},\"cv\":\"2026.11.0\",\"g\":\"silhouette\",\"s\":\"ZZZZZZZZZZ\",\"sc\":444,\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKU9JRSlOyigaKgBixOkoFQNFiQ0tzpVodpeQyIMfIwMhMz9BQzwCoIh0kmZmTkV-aWlKSChQoBgpEwQFIAGi0iYmJjhJQq2EtAA"
+  },
+  {
+    "canonical": "{\"c\":{\"fmt\":\"MAP_CLICK\",\"n\":20,\"sc\":\"world\",\"t\":\"find-country\",\"timer\":300},\"cv\":\"2026.11.3\",\"g\":\"quiz\",\"s\":\"ABCDEFGHJK\",\"sc\":481,\"v\":1}",
+    "code": "FU1JCoMwFL3LW6eSxFJKdjadB-gNXMSBgEaMEyre3Z_dm98KA7WiqHso_JJ_qr8v_QGDg5KcoSMbU-OrjLSQKazLDqYZXO_nINk691Ax5xuDGSkguTxFQkQxuSXxdrALwY5gctHX2_3xfIeDsHw8CwYqiW0H"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"hard\",\"n\":5,\"t\":30},\"cv\":\"2027.02.1\",\"g\":\"fact-pin\",\"s\":\"1234567890\",\"sc\":518,\"v\":1}",
+    "code": "FYxJDoAgEAT_0mckMIjg_IZAXC7EKPFC-LvjsbrS1ZHBHQWMI90FChXsFRrYmaGQXzFkKGhD2orehbeU23SdVfARtORmv4S4mn-QnrdRQY52fA"
+  },
+  {
+    "canonical": "{\"c\":{},\"cv\":\"2026.11.0\",\"g\":\"quiz\",\"s\":\"7M3N5P8Q2R\",\"sc\":555,\"v\":1}",
+    "code": "q1ZKVrKqrtVRSi5TslIyMjAy0zM01DNQ0lFKB_ILSzOrgMxiINPc19jPNMAi0CgIJADUZGpqqqME1GRYCwA"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"n\",\"f\":[\"c\",\"f\"],\"p\":\"s197\"},\"cv\":\"2026.11.0\",\"g\":\"silhouette\",\"s\":\"4KQ2M9XD1A\",\"sc\":592,\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKU9JRSlOyigaKgBixOkoFQNFiQ0tzpVodpeQyIMfIwMhMz9BQzwCoIh0kmZmTkV-aWlKSChQoBgqYeAca-VpGuBg6ggSARptaGukoAbUa1gIA"
+  },
+  {
+    "canonical": "{\"c\":{\"fmt\":\"MAP_CLICK\",\"n\":20,\"sc\":\"world\",\"t\":\"find-country\",\"timer\":300},\"cv\":\"2026.11.3\",\"g\":\"quiz\",\"s\":\"VWXYZ01234\",\"sc\":629,\"v\":1}",
+    "code": "FYzLDoIwFET_ZdaV3N4aErszrIyauPK1cVHENJESC0iA8O_c7mbOPGY42BlV3cHivL-8itOhOEIhwDIptBJjaOK3FJY6lQ_lxjV96OKYkK_fEdYQLQruLwUmzjOtMyPpR_yv95PIVuT1dn88SbPZJiDPOe8UZKSXFQ"
+  },
+  {
+    "canonical": "{\"c\":{\"d\":\"hard\",\"n\":5,\"t\":30},\"cv\":\"2027.02.1\",\"g\":\"fact-pin\",\"s\":\"H5J6K7M8N9\",\"sc\":666,\"v\":1}",
+    "code": "q1ZKVrKqVkpRslLKSCxKUdJRylOyMtVRKlGyMjao1VFKLgPKGBkYmesZGOkZAqXTgfy0xOQS3YLMPCC3GMj1MPUy8zb3tfCzBAkAzTMzM9NRAmo0rAUA"
+  },
+  {
+    "canonical": "{\"c\":{},\"cv\":\"2026.11.0\",\"g\":\"quiz\",\"s\":\"P0Q1R2S3T4\",\"sc\":703,\"v\":1}",
+    "code": "q1ZKVrKqrtVRSi5TslIyMjAy0zM01DNQ0lFKB_ILSzOrgMxiIDPAINAwyCjYOMQEJADUZG5grKME1GRYCwA"
+  }
+]
