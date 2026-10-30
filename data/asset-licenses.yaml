@@ -1,0 +1,20 @@
+# Registry of third-party fonts, icons and images shipped with the app (AGENT_HANDOFF rule 9).
+# Content datasets get their own registry in the content pipeline (T0.4 / T0.6).
+# verification: pending = license taken from the upstream project page, not yet confirmed by T0.6.
+assets:
+  - id: font-source-sans-3
+    name: Source Sans 3 (variable, via @fontsource-variable/source-sans-3)
+    use: UI text
+    license: SIL OFL 1.1
+    license_url: https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md
+    attribution_required: false
+    verification: pending
+    added: 2026-10-30
+  - id: font-source-serif-4
+    name: Source Serif 4 (variable, via @fontsource-variable/source-serif-4)
+    use: Display and headings
+    license: SIL OFL 1.1
+    license_url: https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md
+    attribution_required: false
+    verification: pending
+    added: 2026-10-30

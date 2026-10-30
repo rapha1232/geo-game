@@ -162,6 +162,8 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 
 "**Cartographer's desk**": warm paper surfaces, ink-navy text, restrained accents, and clean maps. The look is calm and editorial, never neon or gamified-casino. It is original and does not resemble the reference products' visual identities.
 
+**Design inspiration (owner request):** [siteinspire.com](https://www.siteinspire.com/). What the featured editorial sites share, and what Meridian takes from them: large light-weight display type, minimal chrome (a wordmark and one menu control), generous whitespace and content-first layouts. Meridian keeps its own palette and type (below) and never copies another site's layout or imagery.
+
 ### 5.2 Design tokens
 
 | Token | Light | Dark | Use |
@@ -178,8 +180,11 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 | `--color-wrong` | `#B42318` | `#F97066` | Always paired with ✕ / hatch |
 | `--color-near` | `#B7791F` | `#F0B429` | Always paired with ◐ / dots |
 | `--color-focus` | `#1D4ED8` | `#93C5FD` | 3 px focus ring |
+| `--color-text-on-accent` | `#FFFFFF` | `#12161C` | Label on an accent fill (primary button) |
+| `--color-border` | `#DDD6C8` | `#2C353F` | Decorative card and divider borders (no contrast requirement) |
+| `--color-border-strong` | `#7D8794` | `#7C8896` | Borders of inputs and buttons (≥ 3:1, WCAG 1.4.11) |
 
-All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI components). The CI token test verifies this ([TESTING_AND_ACCEPTANCE §3](TESTING_AND_ACCEPTANCE.md#3-platform-acceptance-criteria)).
+All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI components). Feedback colours (`correct`, `wrong`, `near`) are graphics paired with a glyph, so they need 3:1. Message text stays in `--color-text`. The focus ring is always drawn with a positive `outline-offset`, so it sits next to the page or card colour and never touches an accent fill (blue on terracotta is only about 1.3:1). Map tokens (`ocean`, `land`, `border-map`) are verified together with `GameMap` in T0.10. The CI token test verifies this ([TESTING_AND_ACCEPTANCE §3](TESTING_AND_ACCEPTANCE.md#3-platform-acceptance-criteria)).
 
 **Typography:** UI font `Source Sans 3`, display/headings `Source Serif 4`, numerals tabular (`font-variant-numeric: tabular-nums`) for timers and scores. All are SIL OFL fonts, self-hosted. Scale (rem): 0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25. Body line-height 1.5.
 

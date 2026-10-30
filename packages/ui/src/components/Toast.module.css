@@ -1,0 +1,82 @@
+.region {
+  position: fixed;
+  z-index: 200;
+  inset: auto var(--space-4) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: min(28rem, 100%);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  border-left-width: 4px;
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-overlay);
+}
+
+.info {
+  border-left-color: var(--color-text-muted);
+}
+.success {
+  border-left-color: var(--color-correct);
+}
+.error {
+  border-left-color: var(--color-wrong);
+}
+
+.success .glyph {
+  color: var(--color-correct);
+}
+.error .glyph {
+  color: var(--color-wrong);
+}
+
+.glyph {
+  font-weight: 700;
+  flex: none;
+}
+
+.message {
+  flex: 1;
+}
+
+.dismiss {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  margin: calc(var(--space-3) * -1) 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--text-xl);
+  cursor: pointer;
+}
+.dismiss:hover {
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: slide-in var(--motion-panel) var(--ease);
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+}

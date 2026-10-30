@@ -1,0 +1,39 @@
+{
+  "name": "@meridian/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "sideEffects": [
+    "*.css",
+    "./src/styles.ts"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource-variable/source-sans-3": "^5.1.0",
+    "@fontsource-variable/source-serif-4": "^5.1.0",
+    "react": "^19.0.0",
+    "react-aria-components": "^1.5.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles": "./src/styles.ts"
+  }
+}
