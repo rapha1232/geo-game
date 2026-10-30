@@ -16,7 +16,8 @@
     "content:fetch": "pnpm --filter @meridian/content-pipeline content:fetch --",
     "content:build": "pnpm --filter @meridian/content-pipeline content:build --",
     "content:validate": "pnpm --filter @meridian/content-pipeline content:validate --",
-    "content:dev": "pnpm content:build --out apps/web/public/content"
+    "content:dev": "pnpm content:build --out apps/web/public/content",
+    "content:daily": "pnpm --filter @meridian/content-pipeline content:daily --"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

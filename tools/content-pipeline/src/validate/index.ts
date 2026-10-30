@@ -85,6 +85,9 @@ export function contentSetFromBuild(
   const disputes = has("core.disputes")
     ? (json("core.disputes") as { disputes: ContentSet["disputes"] }).disputes
     : undefined;
+  const daily = out.files
+    .filter((f) => f.name.startsWith("daily."))
+    .map((f) => json(f.name) as unknown as NonNullable<ContentSet["daily"]>[number]);
   const adjacency = has("core.adjacency")
     ? (json("core.adjacency") as { edges: ContentSet["adjacency"] }).edges
     : undefined;
@@ -103,6 +106,7 @@ export function contentSetFromBuild(
     ...(ambiguity ? { ambiguity } : {}),
     ...(disputes ? { disputes } : {}),
     ...(adjacency ? { adjacency } : {}),
+    ...(daily.length > 0 ? { daily } : {}),
     ...(capitals.length > 0 ? { capitals } : {}),
     geometry,
     registry: input.registry,

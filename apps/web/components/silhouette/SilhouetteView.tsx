@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { AnswerInput, Button, Card, ChoiceGrid } from "@meridian/ui";
 import {
   HINT_COUNT,
@@ -115,10 +115,18 @@ export type SilhouetteViewProps = {
   world: World;
   shapes: ReadonlyMap<string, Shape>;
   onChange: (s: Session) => void;
+  /** Replaces the "Next round" button (a finished daily shows its summary here). */
+  endSlot?: ReactNode;
 };
 
 /** The whole play screen. Pure view over a Session: every action is a controller call that returns the next Session. */
-export function SilhouetteView({ session: s, world, shapes, onChange }: SilhouetteViewProps) {
+export function SilhouetteView({
+  session: s,
+  world,
+  shapes,
+  onChange,
+  endSlot,
+}: SilhouetteViewProps) {
   const [text, setText] = useState("");
   const target = world.byId.get(s.round.targetId);
   const shape = shapes.get(s.round.targetId);
@@ -324,15 +332,17 @@ export function SilhouetteView({ session: s, world, shapes, onChange }: Silhouet
               <p className={styles.meta}>
                 {t("sil.points", { n: points(s) })} · {followUpsCorrect(s)}/{s.followUps.length}
               </p>
-              <Button
-                variant="primary"
-                onPress={() => {
-                  onChange(next(world, s, Date.now()));
-                  setText("");
-                }}
-              >
-                {t("sil.next")}
-              </Button>
+              {endSlot ?? (
+                <Button
+                  variant="primary"
+                  onPress={() => {
+                    onChange(next(world, s, Date.now()));
+                    setText("");
+                  }}
+                >
+                  {t("sil.next")}
+                </Button>
+              )}
             </Card>
           )}
         </section>

@@ -6,6 +6,7 @@ import {
   manifest,
   topology as topologySchema,
   type AmbiguityGroup,
+  type DailySchedule,
   type Dispute,
   type Entity,
   type Manifest,
@@ -52,6 +53,8 @@ export type BuildInput = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
+  /** Daily schedules (content/daily/*.json), shipped as `daily.<game>` packs. */
+  daily?: readonly DailySchedule[];
   derive?: { silhouettes: readonly SilhouetteOverride[]; adjacency: AdjacencyOverrides };
 };
 
@@ -119,6 +122,10 @@ export function buildPacks(input: BuildInput): BuildOutput {
     }),
   ];
   if (input.derive) files.push(...deriveFiles(input, entities, maps));
+  for (const d of input.daily ?? [])
+    files.push(
+      toFile(`daily.${d.game}`, { pack: `daily.${d.game}`, version: input.version, ...d }),
+    );
   if (input.ambiguity)
     files.push(
       toFile("core.ambiguity", {

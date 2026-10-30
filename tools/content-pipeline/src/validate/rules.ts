@@ -382,6 +382,38 @@ export function dailyRules(c: ContentSet): Issue[] {
           });
       }
     }
+    if (s.game === "silhouette") {
+      const shapeOf = (id: string): number | undefined => byId.get(id)?.difficulty?.shape;
+      const small = (id: string): boolean => (byId.get(id)?.area_km2?.value ?? Infinity) < 5000;
+      const poolShapes = c.entities
+        .filter((e) => e.sets?.includes("sovereign-197"))
+        .map((e) => e.difficulty?.shape)
+        .filter((x): x is number => x !== undefined);
+      const poolMean = poolShapes.length
+        ? poolShapes.reduce((a, b) => a + b, 0) / poolShapes.length
+        : undefined;
+      for (let i = 0; i + 6 < dates.length; i++) {
+        const win = dates.slice(i, i + 7).map((d) => s.days[d]?.[0] as string);
+        if (win.filter(small).length > 1)
+          issues.push({
+            code: "DAILY_REPEAT",
+            level: "error",
+            ref: dates[i] as string,
+            message: `silhouette: more than one entity under 5,000 km² in the 7 days from ${dates[i]}`,
+          });
+        const shapes = win.map(shapeOf);
+        if (poolMean !== undefined && shapes.every((x): x is number => x !== undefined)) {
+          const m = shapes.reduce((a, b) => a + b, 0) / 7;
+          if (Math.abs(m - poolMean) > 0.1 + 1e-9)
+            issues.push({
+              code: "DAILY_REPEAT",
+              level: "error",
+              ref: dates[i] as string,
+              message: `silhouette: the 7-day mean difficulty from ${dates[i]} is ${m.toFixed(3)}, more than 0.1 from the pool mean ${poolMean.toFixed(3)}`,
+            });
+        }
+      }
+    }
     if (s.game === "fact-pin") {
       for (const d of dates) {
         const cats = (s.days[d] ?? [])

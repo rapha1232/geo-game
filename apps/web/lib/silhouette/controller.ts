@@ -33,6 +33,8 @@ export type Config = {
   pool: PoolSpec;
   followUps: FollowUpKind[];
   unit: "km" | "mi";
+  /** Local calendar date of a daily round (`YYYY-MM-DD`). */
+  date?: string;
 };
 
 export const DEFAULT_CONFIG: Config = {
@@ -122,6 +124,35 @@ export function newSession(
   };
 }
 
+/** Today's daily: the target comes from the schedule, so nobody's history matters and everyone gets the same shape. */
+export function newDailySession(
+  world: World,
+  seed: string,
+  targetId: string,
+  date: string,
+  now = 0,
+  mode: "daily" | "practice" = "daily",
+): Session {
+  const config: Config = { ...DEFAULT_CONFIG, mode, date };
+  const rng = roundRng(seed, config, 1);
+  return {
+    seed,
+    config,
+    roundNo: 1,
+    round: startRound(world, { targetId, mode, difficulty: config.difficulty }, rng),
+    history: [],
+    guardRelaxed: false,
+    followUps: [],
+    done: [],
+    phase: "guessing",
+    lastEvent: null,
+    timer: startTimer(newTimer(), now),
+    startedAt: now,
+    resultId: null,
+    resumed: false,
+  };
+}
+
 /** Pauses or resumes the round clock (tab hidden or visible). The clock stops when the round ends. */
 export function setClock(s: Session, running: boolean, now: number): Session {
   const live = running && s.phase === "guessing";
@@ -187,7 +218,7 @@ export const points = (s: Session): number => roundPoints(s.round, followUpsCorr
 
 /** Records the finished round and starts the next one (Unlimited and Practice). */
 export function next(world: World, s: Session, now = 0): Session {
-  if (s.phase !== "learn") return s;
+  if (s.phase !== "learn" || s.config.mode === "daily") return s;
   const done = [...s.done, { state: s.round, followUpsCorrect: followUpsCorrect(s) }];
   const roundNo = s.roundNo + 1;
   return {

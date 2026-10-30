@@ -11,7 +11,8 @@ export async function saveRound(
   input: {
     result: GameResult;
     mastery: readonly MasteryRecord[];
-    history: { game_id: string; pool_key: string; target_ids: string[] };
+    /** Absent for dailies: the schedule decides, not the Repeat Guard. */
+    history?: { game_id: string; pool_key: string; target_ids: string[] };
   },
 ): Promise<boolean> {
   try {
@@ -25,7 +26,7 @@ export async function saveRound(
         data: input.result,
       });
       await db.mastery.bulkPut([...input.mastery]);
-      await db.history.put(input.history);
+      if (input.history) await db.history.put(input.history);
     });
     return true;
   } catch {

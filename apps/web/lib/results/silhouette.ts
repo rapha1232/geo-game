@@ -37,6 +37,7 @@ export function silhouetteResult(
       followUps: s.config.followUps,
     }),
     seed: s.seed,
+    ...(s.config.mode === "daily" && s.config.date ? { daily_date: s.config.date } : {}),
     content_version: ctx.contentVersion,
     score: roundPoints(s.round, followUpsCorrect(s)),
     max_score: maxScore(s),

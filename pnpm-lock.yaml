@@ -271,6 +271,9 @@ importers:
 
   tools/content-pipeline:
     dependencies:
+      '@meridian/game-kit':
+        specifier: workspace:*
+        version: link:../../packages/game-kit
       '@meridian/geo':
         specifier: workspace:*
         version: link:../../packages/geo

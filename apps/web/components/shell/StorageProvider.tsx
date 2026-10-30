@@ -13,6 +13,8 @@ type Services = {
   online: boolean;
 };
 const Ctx = createContext<Services | null>(null);
+/** Exported so component tests can supply fake services. */
+export const ServicesContext = Ctx;
 
 /** Creates the browser-only services once. Storage failures degrade to in-memory play (AC-PL-011). */
 export function StorageProvider({

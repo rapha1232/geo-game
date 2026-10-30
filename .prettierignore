@@ -8,3 +8,4 @@ data/snapshots
 data/raw
 data/sources.lock.yaml
 tools/content-pipeline/test/fixtures/*.json
+content/daily/*.json

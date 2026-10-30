@@ -9,9 +9,11 @@
     "test": "vitest run",
     "content:fetch": "tsx src/cli.ts fetch",
     "content:build": "tsx src/cli.ts build",
-    "content:validate": "tsx src/cli.ts validate"
+    "content:validate": "tsx src/cli.ts validate",
+    "content:daily": "tsx src/cli.ts daily"
   },
   "dependencies": {
+    "@meridian/game-kit": "workspace:*",
     "@meridian/geo": "workspace:*",
     "@meridian/name-matcher": "workspace:*",
     "@meridian/schemas": "workspace:*",
