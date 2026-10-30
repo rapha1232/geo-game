@@ -35,14 +35,8 @@ export const SETS = ["sovereign-197", "un-193", "territories"] as const;
 export const capital = z.object({
   city: z.string().optional(),
   name: z.string().min(1),
-  role: z.enum([
-    "official",
-    "constitutional",
-    "seat_of_government",
-    "de_facto",
-    "claimed",
-    "historical",
-  ]),
+  // Exactly the roles in quiz-library §5.5. A planned capital is expressed with `valid_from` (DATA_AND_CONTENT §7.1).
+  role: z.enum(["official", "constitutional", "seat_of_government"]),
   valid_from: z.string().optional(),
   note: z.string().optional(),
 });

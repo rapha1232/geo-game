@@ -140,6 +140,21 @@ describe("entity", () => {
     bad(entity.safeParse({ ...france, valid_from: "1990-01-01", valid_to: "1980-01-01" }));
   });
 
+  it("capital roles are exactly official, constitutional and seat_of_government (quiz-library §5.5)", () => {
+    for (const role of ["official", "constitutional", "seat_of_government"]) {
+      ok(entity.safeParse({ ...france, capitals: [{ name: "Paris", role }] }));
+    }
+    ok(
+      entity.safeParse({
+        ...france,
+        capitals: [
+          { name: "Nusantara", role: "official", valid_from: "2028-01-01", note: "Planned" },
+        ],
+      }),
+    );
+    bad(entity.safeParse({ ...france, capitals: [{ name: "Paris", role: "de_facto" }] }));
+  });
+
   it("alias kinds cover DATA_AND_CONTENT §5.1", () => {
     for (const kind of [
       "canonical",
