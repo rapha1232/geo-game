@@ -222,6 +222,15 @@ From `core.countries` ([DATA_MODEL §2.2](../DATA_MODEL.md#22-entity-records)): 
 
 Accept only if (a) the best candidate is within its threshold, (b) **no other entity** has an alias at the same or lower distance, and (c) the candidate is a remaining item or the prompt's answer. Otherwise reject with "Not recognized". Accepted fuzzy answers show "Accepted as *Kyrgyzstan*" and are listed in the review as "spelling corrected". They score the same as exact answers.
 
+**Implementation clarifications (T0.8, normative):**
+- The distance is optimal string alignment (insert, delete, substitute, adjacent transposition).
+- Condition (b) compares each *entity's* best alias distance. Several aliases of one entity never tie with each other.
+- Fuzzy matching ignores already-named and out-of-quiz entities as *targets*, but they still count as competitors for (b): if the nearest alias belongs to an already-named entity, the input is "Not recognized".
+- An ambiguity group with no remaining member (all named, or none in the quiz) still shows the group message.
+- An alias key shared by several entities without a declared group is treated as an implicit group: it resolves when exactly one of them remains, otherwise it is ambiguous. The content validator reports it as `ALIAS_COLLISION`.
+- Prefix-hold considers every alias key of the other remaining items, so `uk` is held while Ukraine remains.
+- In TYPE_PROMPTED, ambiguity groups resolve against the *remaining* items, not just the current prompt, so `congo` is rejected while both Congos are still to be asked.
+
 **Never accepted:** prefixes ("Austr"), substrings, numeric codes (ISO codes like "FRA" are accepted only if listed as an alias kind `code`, which is enabled only for TYPE_ALL in Lenient mode).
 
 ### 5.2 Prefix-hold rule (TYPE_ALL keystroke acceptance)
