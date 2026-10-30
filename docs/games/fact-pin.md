@@ -210,7 +210,7 @@ The summary lists all 5 facts with map thumbnails, scores, and **[Explore in Atl
 
 - **Selection:** facts are drawn from the eligible pool (filtered by category, era and difficulty) using the Repeat Guard: a fact is ineligible if it is in the player's seen set. Once 80% of the eligible pool has been seen, the oldest 50% of the seen set becomes eligible again, and the player is told "You've seen most History facts. Some favourites are coming back."
 - **Within a run:** at most 2 facts per continent and at most 2 per category (when categories = All). No two facts may share an `entities` value.
-- **Daily 5:** a precomputed schedule (`content/daily/fact-pin.json`, 365 days), with one fact from each of 5 different categories and continents, and no fact in the daily schedule twice within a year. Daily facts are also excluded from Endless for 7 days after their date, so a player doesn't see them in Endless right before the daily.
+- **Daily 5:** a precomputed schedule (`content/daily/fact-pin.json`, ≥ 365 days ahead), with one fact from each of 5 different categories and continents, and no fact in the daily schedule twice within **14 days** (deviation: a year is infeasible while the curated bank has about 23 facts per category and a day uses one per category; restore 365 days when the bank reaches its quota, see `content/facts/README.md`). Daily facts are also excluded from Endless for 7 days after their date, so a player doesn't see them in Endless right before the daily.
 - **Seeded:** `seed + filters + contentVersion → 5 fact IDs`.
 
 ## 12. Acceptance criteria

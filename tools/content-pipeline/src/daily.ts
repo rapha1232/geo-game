@@ -81,3 +81,60 @@ export const targetFor = (schedule: DailySchedule, date: string): string | undef
   schedule.days[date]?.[0];
 
 export const daysBetween = diffDays;
+
+/**
+ * Fact Pin daily rules (fact-pin §11), with one deviation: the no-repeat window is 14 days, not 365. The curated bank
+ * has about 23 facts per category and a day uses one per category, so a year-long window is infeasible until the bank
+ * grows (see content/facts/README.md). The spec is updated in the same change.
+ */
+export const FACT_PIN_NO_REPEAT_DAYS = 14;
+export const DAILY_CATEGORIES = ["history", "nature", "culture", "science", "sport"] as const;
+
+export type FactPinCandidate = { id: string; category: string; continent: string };
+
+/**
+ * Extends the Fact Pin daily schedule to `to` (inclusive): five facts a day, one from each category, from five
+ * different continents, none repeated within the window. Deterministic for the same pool, history and seed.
+ */
+export function extendFactPinSchedule(opts: {
+  pool: readonly FactPinCandidate[];
+  existing?: DailySchedule | undefined;
+  from: string;
+  to: string;
+  seed: string;
+  window?: number;
+}): DailySchedule {
+  const window = opts.window ?? FACT_PIN_NO_REPEAT_DAYS;
+  const days: Record<string, string[]> = { ...(opts.existing?.days ?? {}) };
+  const first = opts.existing?.from ?? opts.from;
+  const rng = new Rng(`${opts.seed}|fact-pin-daily`);
+  let date = opts.existing ? addDays(opts.existing.to, 1) : opts.from;
+  for (; date <= opts.to; date = addDays(date, 1)) {
+    const used = new Set<string>();
+    for (let i = 1; i <= window; i++) for (const id of days[addDays(date, -i)] ?? []) used.add(id);
+    const byCategory = DAILY_CATEGORIES.map((c) =>
+      opts.pool.filter((f) => f.category === c && !used.has(f.id)),
+    );
+    let picked: string[] | null = null;
+    // Random order within each category; backtrack over continents so the five are all different.
+    const shuffled = byCategory.map((list) => rng.shuffle([...list]));
+    const place = (i: number, continents: Set<string>, ids: string[]): string[] | null => {
+      if (i === shuffled.length) return ids;
+      for (const f of shuffled[i] as FactPinCandidate[]) {
+        if (continents.has(f.continent)) continue;
+        const got = place(i + 1, new Set([...continents, f.continent]), [...ids, f.id]);
+        if (got) return got;
+      }
+      return null;
+    };
+    picked = place(0, new Set(), []);
+    if (!picked) throw new Error(`${date}: no five facts satisfy the Fact Pin daily rules`);
+    days[date] = picked;
+  }
+  return {
+    game: "fact-pin",
+    from: first,
+    to: opts.to < first ? first : opts.to,
+    days,
+  } as DailySchedule;
+}

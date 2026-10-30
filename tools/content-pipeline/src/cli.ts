@@ -4,7 +4,7 @@ import { parse } from "yaml";
 import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
-import { extendSchedule } from "./daily.ts";
+import { extendFactPinSchedule, extendSchedule } from "./daily.ts";
 import { authoredFile, readPopulatedPlaces } from "./facts.ts";
 import { readdir } from "node:fs/promises";
 import { confusablesByCode, confusablesFile, extractFlags } from "./flags.ts";
@@ -38,6 +38,7 @@ const path = {
   disputes: join(root, "content/disputes.yaml"),
   silhouettes: join(root, "content/overrides/silhouettes.yaml"),
   dailySilhouette: join(root, "content/daily/silhouette.json"),
+  dailyFactPin: join(root, "content/daily/fact-pin.json"),
   confusables: join(root, "content/flags/confusables.yaml"),
   landlocked: join(root, "content/landlocked.yaml"),
   facts: join(root, "content/facts"),
@@ -111,14 +112,18 @@ async function cmdFetch(args: string[]): Promise<void> {
 }
 
 /** Daily schedules are optional: a build without `content/daily/` simply has no daily packs. */
-async function readDaily() {
+async function readDailyFile(file: string) {
   try {
-    return [dailySchedule.parse(JSON.parse(await readFile(path.dailySilhouette, "utf8")))];
+    return [dailySchedule.parse(JSON.parse(await readFile(file, "utf8")))];
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw e;
   }
 }
+const readDaily = async () => [
+  ...(await readDailyFile(path.dailySilhouette)),
+  ...(await readDailyFile(path.dailyFactPin)),
+];
 
 async function loadInputs(args: string[]) {
   const lock = await readLock();
@@ -269,7 +274,7 @@ async function cmdValidate(args: string[]): Promise<void> {
   if (errors.length > 0) process.exit(1);
 }
 
-/** Generates or extends the Silhouette daily schedule: `daily --from 2026-11-01 --days 730` or `daily --extend-to 2028-12-31`. */
+/** Generates or extends a daily schedule: `daily [--game fact-pin] --from 2026-11-01 --days 730` or `daily --extend-to 2028-12-31`. */
 async function cmdDaily(args: string[]): Promise<void> {
   const input = await loadInputs(args);
   const out = buildPacks({ ...input, daily: [] });
@@ -292,7 +297,8 @@ async function cmdDaily(args: string[]): Promise<void> {
       areaKm2: e.area_km2?.value ?? 0,
       shape: e.difficulty?.shape ?? 0.5,
     }));
-  const existing = (await readDaily())[0];
+  const game = option(args, "game") ?? "silhouette";
+  const existing = (await readDaily()).find((d) => d.game === game);
   const from = option(args, "from") ?? existing?.from;
   if (!from) throw new Error("daily: pass --from YYYY-MM-DD for a new schedule");
   const to =
@@ -302,9 +308,34 @@ async function cmdDaily(args: string[]): Promise<void> {
     )
       .toISOString()
       .slice(0, 10);
-  const schedule = extendSchedule({ pool, existing, from, to, seed: "SILHOUETTE-DAILY-1" });
-  await mkdir(dirname(path.dailySilhouette), { recursive: true });
-  await writeFile(path.dailySilhouette, `${stableStringify(schedule)}\n`);
+  let schedule;
+  let file = path.dailySilhouette;
+  if (game === "fact-pin") {
+    const facts = JSON.parse(
+      new TextDecoder().decode(out.files.find((f) => f.name === "facts.v1")?.bytes),
+    ) as {
+      facts: {
+        id: string;
+        category: string;
+        continent: string;
+        status: string;
+        generated?: boolean;
+      }[];
+    };
+    const curated = facts.facts
+      .filter((f) => f.status === "published" && !f.generated)
+      .map(({ id, category, continent }) => ({ id, category, continent }));
+    schedule = extendFactPinSchedule({
+      pool: curated,
+      existing,
+      from,
+      to,
+      seed: "FACT-PIN-DAILY-1",
+    });
+    file = path.dailyFactPin;
+  } else schedule = extendSchedule({ pool, existing, from, to, seed: "SILHOUETTE-DAILY-1" });
+  await mkdir(dirname(file), { recursive: true });
+  await writeFile(file, `${stableStringify(schedule)}\n`);
   log(`daily: ${schedule.from} to ${schedule.to} (${Object.keys(schedule.days).length} days)`);
 }
 

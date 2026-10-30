@@ -3,7 +3,14 @@ import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 import { ambiguityGroup, dailySchedule, dispute, type DailySchedule } from "@meridian/schemas";
 import { buildPacks } from "../src/build.ts";
-import { addDays, extendSchedule, targetFor, type DailyCandidate } from "../src/daily.ts";
+import {
+  FACT_PIN_NO_REPEAT_DAYS,
+  addDays,
+  extendFactPinSchedule,
+  extendSchedule,
+  targetFor,
+  type DailyCandidate,
+} from "../src/daily.ts";
 import { adjacencyOverrides, silhouetteOverrides } from "../src/derive.ts";
 import { parseEditorial } from "../src/editorial.ts";
 import { contentSetFromBuild, errorsOf, validate } from "../src/validate/index.ts";
@@ -142,4 +149,53 @@ describe.skipIf(!haveRaw)("the committed Silhouette daily schedule", () => {
       true,
     );
   }, 180_000);
+});
+
+describe("extendFactPinSchedule", () => {
+  const cats = ["history", "nature", "culture", "science", "sport"];
+  const conts = ["AF", "AS", "EU", "NA", "OC", "SA"];
+  const facts = Array.from({ length: 150 }, (_, i) => ({
+    id: `fact:${i}`,
+    category: cats[i % 5] as string,
+    continent: conts[(i * 7 + Math.floor(i / 5)) % 6] as string,
+  }));
+  const s = extendFactPinSchedule({ pool: facts, from: "2026-10-30", to: "2027-12-31", seed: "T" });
+
+  it("gives five facts a day from five categories and five continents", () => {
+    for (const ids of Object.values(s.days)) {
+      const rows = ids.map((id) => facts.find((f) => f.id === id) as (typeof facts)[number]);
+      expect(rows).toHaveLength(5);
+      expect(new Set(rows.map((r) => r.category)).size).toBe(5);
+      expect(new Set(rows.map((r) => r.continent)).size).toBe(5);
+    }
+  });
+
+  it("never repeats a fact inside the window", () => {
+    const dates = Object.keys(s.days).sort();
+    dates.forEach((d, i) => {
+      const earlier = new Set(
+        dates.slice(Math.max(0, i - FACT_PIN_NO_REPEAT_DAYS), i).flatMap((x) => s.days[x] ?? []),
+      );
+      for (const id of s.days[d] ?? []) expect(earlier.has(id)).toBe(false);
+    });
+  });
+
+  it("is deterministic and extends without changing the past", () => {
+    const again = extendFactPinSchedule({
+      pool: facts,
+      from: "2026-10-30",
+      to: "2027-12-31",
+      seed: "T",
+    });
+    expect(again).toEqual(s);
+    const longer = extendFactPinSchedule({
+      pool: facts,
+      existing: s,
+      from: "2026-10-30",
+      to: "2028-03-01",
+      seed: "T",
+    });
+    for (const [d, ids] of Object.entries(s.days)) expect(longer.days[d]).toEqual(ids);
+    expect(longer.to).toBe("2028-03-01");
+  });
 });

@@ -367,8 +367,8 @@ export function quotaRules(c: ContentSet): Issue[] {
   return issues;
 }
 
-/** Repeat windows in days (silhouette §11, fact-pin §11). */
-export const DAILY_WINDOWS: Record<string, number> = { silhouette: 150, "fact-pin": 365 };
+/** Repeat windows in days (silhouette §11, fact-pin §11; Fact Pin is 14 days until the bank grows). */
+export const DAILY_WINDOWS: Record<string, number> = { silhouette: 150, "fact-pin": 14 };
 
 /** DAILY_REPEAT: no target twice within the game's window, no two consecutive same-continent silhouettes, five distinct categories per Fact Pin day. */
 export function dailyRules(c: ContentSet): Issue[] {
