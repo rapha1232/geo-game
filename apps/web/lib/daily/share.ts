@@ -92,3 +92,46 @@ export function borderRunShare(result: GameResult, link: string): string {
     link,
   ].join("\n");
 }
+
+/** One short, spoiler-free line per daily for the combined share text. */
+function bundleLine(result: GameResult): string {
+  const solvedMark = result.outcome === "solved" ? "✓" : "✕";
+  switch (result.game_id) {
+    case "silhouette": {
+      const n = ((result.meta?.guesses ?? []) as unknown[]).length;
+      return `Silhouette ${solvedMark} ${result.outcome === "solved" ? n : 6}/6`;
+    }
+    case "quiz": {
+      const pct = result.max_score > 0 ? Math.round((100 * result.score) / result.max_score) : 0;
+      return `Daily Quiz ${pct}%`;
+    }
+    case "fact-pin":
+      return `Fact Pin ${result.score}/${result.max_score}`;
+    case "border-run": {
+      const n = ((result.meta?.guesses ?? []) as unknown[]).length;
+      return `Border Run ${solvedMark} ${n} guesses`;
+    }
+    case "deep-cut":
+      return `Deep Cut ${result.score}/${result.max_score}`;
+    default:
+      return `${result.game_id} ${result.score}/${result.max_score}`;
+  }
+}
+
+/**
+ * Spoiler-free share text for every daily finished on one date, in the order given (the Daily hub's order), with the
+ * count out of `total`. Like the single shares, it never names an answer.
+ */
+export function dailyBundleShare(
+  results: readonly GameResult[],
+  link: string,
+  date: string,
+  total: number,
+): string {
+  return [
+    `${BRAND_NAME} · Daily · ${date}`,
+    ...results.map(bundleLine),
+    `${results.length}/${total} played`,
+    link,
+  ].join("\n");
+}

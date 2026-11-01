@@ -5,6 +5,7 @@ export const messages = {
   "ch.roundOf": "Round {n} of {total}",
   "ch.seeResults": "See results",
   "ch.landingTitle": "Silhouette challenge",
+  "ch.shareDescription": "The same shapes for everyone with this link. Six guesses each.",
   "ch.landingBody": "{n} shapes, the same for everyone with this link. Six guesses each.",
   "ch.beat": "Beat {score} of {max}?",
   "ch.start": "Start the challenge",

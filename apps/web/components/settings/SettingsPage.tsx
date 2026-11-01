@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Dialog, MapStylePicker } from "@meridian/ui";
 import { ThemeSwitch } from "../../app/ThemeSwitch";
 import { t, type MessageKey } from "../../lib/i18n";
+import { cue } from "../../lib/sound/cue";
 import {
   DEFAULT_SETTINGS,
   applySettings,
@@ -201,6 +202,19 @@ export function SettingsPage() {
             onChange={(e) => change({ missedDotsOnly: e.target.checked })}
           />
           {t("set.missedDots")}
+        </label>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={s.sounds}
+            disabled={!ready}
+            onChange={(e) => {
+              change({ sounds: e.target.checked });
+              // A sample right away (change() has applied the setting), and the click unlocks audio for later cues.
+              if (e.target.checked) cue("correct");
+            }}
+          />
+          {t("set.sounds")}
         </label>
         <label className={styles.check}>
           <input

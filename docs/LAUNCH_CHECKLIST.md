@@ -14,7 +14,7 @@ What the repository already does, what was checked locally, and what only the ow
 | No third-party requests at runtime (AC-PL-003)                                                                                                                  | `pnpm --filter @meridian/web network`                                             | Only the app's own origin                                                     |
 | Home LCP, indicative (simulated slow 4G, 4x CPU)                                                                                                                | `pnpm --filter @meridian/web lcp`                                                 | About 0.65 s                                                                  |
 
-Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web i18n` visits every route and fails on a raw message key or a missing string (UI strings now live in `lib/messages/<game>.ts` and load with each game). `pnpm --filter @meridian/web offline` checks that every R1 game opens with the network off (the service worker, T2.4).
+`pnpm verify` runs all of the above in one go (GitHub Actions minutes are not available, so this is the merge gate); `pnpm verify --quick` runs format, lint, types and tests only. Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web site` checks real 404s for unknown slugs, the favicon and app icons, link-preview tags and image, `robots.txt`, the sitemap, immutable caching of hashed content packs, and the content version in `/api/v1/health`. `pnpm --filter @meridian/web i18n` visits every route and fails on a raw message key or a missing string (UI strings now live in `lib/messages/<game>.ts` and load with each game). `pnpm --filter @meridian/web offline` checks that every R1 game opens with the network off (the service worker, T2.4).
 
 ## Only the owner can do
 
@@ -36,7 +36,6 @@ Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web
 - Fact Pin daily no-repeat window is 14 days, not 365, until the bank grows (specs updated).
 - The territories set is not built, so the territories option is absent from Settings.
 - Facts need a second editor's review before they count as verified; the validator flags unreviewed ones.
-- Sounds (Settings) wait for audio assets.
 
 ## R2 additions (built after the R1 checklist)
 
@@ -51,5 +50,5 @@ What is in the code now, and what only the owner can do.
 3. **Reviews before launch:** the official-language data behind Deep Cut (Wikidata, unreviewed), the translated country names (Wikidata labels; collisions are dropped automatically), the four crossing links, and the Deep Cut equator override.
 4. **Content release:** rebuild with `pnpm content:build` and upload as before. New packs: `core.crossings`, `core.indicators`, `deepcut.prompts`, `daily.border-run`. New snapshots are pinned in `data/sources.lock.yaml`.
 5. **Not built, needs an account or a service:** sign-in and sync (T2.1 to T2.3), background sync of results, and Sentry or analytics.
-6. **Not built, needs more data:** Flags and Water prompt families for Deep Cut, the Atlas layers for urban population, forest area, elevation, driving side, languages and currencies, subdivision packs (T2.13) and the cities pack (T2.14).
+6. **Not built, needs more data:** Flags and Water prompt families for Deep Cut, the Atlas layers for urban population, forest area, elevation, languages and currencies, and the cities pack of T2.14 (its Rankings quizzes are built). Subdivision packs (T2.13) and the driving-side layer have since shipped.
 7. **No cron:** the report dedupe and the telemetry roll-up run on request instead; the content calibration release is a manual command.

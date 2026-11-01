@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@meridian/ui";
+import { Button, Card } from "@meridian/ui";
 import { dailySchedule, gameResult, type GameResult } from "@meridian/schemas";
 import { browserOffsetMinutes, localDate, msToNextDay } from "../../lib/daily/time";
 import { t, type MessageKey } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import { DailySummary } from "./DailySummary";
+import { dailyBundleShare } from "../../lib/daily/share";
 import { GameArt, artFor } from "../home/GameArt";
 import styles from "./daily.module.css";
 import "../../lib/messages/daily";
@@ -152,9 +153,25 @@ export function DailyHub() {
     };
   }, [services, offset]);
 
+  const done = GAMES.flatMap((g) => {
+    const s = states[g.id];
+    return s?.kind === "done" ? [s] : [];
+  });
   return (
     <section className={styles.page}>
       <h1>{t("daily.title")}</h1>
+      {done.length >= 2 && (
+        <ShareAll
+          text={dailyBundleShare(
+            done.map((d) => d.result),
+            typeof window === "undefined" ? "" : `${window.location.origin}/daily`,
+            done[0]!.date,
+            GAMES.length,
+          )}
+          count={done.length}
+          total={GAMES.length}
+        />
+      )}
       <div className={`${styles.grid} fx-stagger`}>
         {GAMES.map((g) => {
           const state = states[g.id] ?? { kind: "loading" };
@@ -194,5 +211,33 @@ export function DailyHub() {
         })}
       </div>
     </section>
+  );
+}
+
+/** Copies one spoiler-free summary of every daily played today, once two or more are done. */
+function ShareAll({ text, count, total }: { text: string; count: number; total: number }) {
+  const [copy, setCopy] = useState<"idle" | "ok" | "failed">("idle");
+  return (
+    <Card className={styles.shareAll}>
+      <p>{t("daily.shareAllBody", { count, total })}</p>
+      <Button
+        variant="primary"
+        onPress={() => {
+          // A missing clipboard API (insecure context, old browser) falls back to the selectable text.
+          const write =
+            navigator.clipboard?.writeText(text) ?? Promise.reject(new Error("no clipboard"));
+          write.then(
+            () => setCopy("ok"),
+            () => setCopy("failed"),
+          );
+        }}
+      >
+        {t("daily.shareAll")}
+      </Button>
+      <p role="status" className={styles.shareAllStatus}>
+        {copy === "ok" ? t("daily.copied") : copy === "failed" ? t("daily.copyFailed") : ""}
+      </p>
+      {copy === "failed" && <pre className={styles.shareAllText}>{text}</pre>}
+    </Card>
   );
 }

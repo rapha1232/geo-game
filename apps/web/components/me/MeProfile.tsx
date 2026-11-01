@@ -9,6 +9,7 @@ import { bandOf, masteryByEntity } from "../../lib/results/stats";
 import { useServices } from "../shell/StorageProvider";
 import { MeView } from "./MeView";
 import { computeStreak } from "../../lib/achievements/streak";
+import { activityCalendar } from "../../lib/achievements/calendar";
 import { loadSettings } from "../../lib/settings/settings";
 import { localDate } from "../../lib/daily/time";
 import styles from "./me.module.css";
@@ -120,14 +121,12 @@ export function MeProfile() {
     ) : null;
 
   const offset = -new Date().getTimezoneOffset();
-  const streak = streaks
-    ? computeStreak(
-        results
-          .filter((r) => r.mode !== "practice" && r.mode !== "practice-misses")
-          .map((r) => localDate(Date.parse(r.ended_at), offset)),
-        localDate(Date.now(), offset),
-      )
-    : null;
+  const today = localDate(Date.now(), offset);
+  const playedDays = results
+    .filter((r) => r.mode !== "practice" && r.mode !== "practice-misses")
+    .map((r) => localDate(Date.parse(r.ended_at), offset));
+  const streak = streaks ? computeStreak(playedDays, today) : null;
+  const calendar = streaks ? activityCalendar(playedDays, today) : null;
   return (
     <MeView
       results={results}
@@ -146,6 +145,40 @@ export function MeProfile() {
               {t("streak.longest", { n: streak.longest })} ·{" "}
               {t("streak.freezes", { n: streak.freezes })}
             </p>
+            {calendar && (
+              <figure className={styles.calendar}>
+                {/* One image for screen readers; the grid is a picture of the same count. */}
+                <div
+                  role="img"
+                  aria-label={t("streak.calendar", {
+                    played: calendar.playedCount,
+                    days: calendar.dayCount,
+                  })}
+                  className={styles.calendarGrid}
+                >
+                  {calendar.weeks.map((week) => (
+                    <div key={week[0]!.date} className={styles.calendarWeek}>
+                      {week.map((d) => (
+                        <span
+                          key={d.date}
+                          title={d.future ? undefined : d.date}
+                          data-played={d.played ? "" : undefined}
+                          data-future={d.future ? "" : undefined}
+                          data-today={d.date === today ? "" : undefined}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <figcaption className={styles.note}>
+                  {t("streak.calendar", {
+                    played: calendar.playedCount,
+                    days: calendar.dayCount,
+                  })}{" "}
+                  · {t("streak.calendarLegend")}
+                </figcaption>
+              </figure>
+            )}
             <p className={styles.note}>{t("streak.note")}</p>
           </section>
         )

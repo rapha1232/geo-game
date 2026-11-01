@@ -8,7 +8,7 @@ import { DailyHub } from "../components/daily/DailyHub";
 import { DailySummary } from "../components/daily/DailySummary";
 import { ServicesContext } from "../components/shell/StorageProvider";
 import { browserOffsetMinutes, formatCountdown, localDate, msToNextDay } from "../lib/daily/time";
-import { silhouetteShare } from "../lib/daily/share";
+import { dailyBundleShare, silhouetteShare } from "../lib/daily/share";
 import { MeridianDb } from "../lib/storage/db";
 import { silhouetteResult } from "../lib/results/silhouette";
 import { ulid } from "../lib/results/ulid";
@@ -94,6 +94,21 @@ describe("share text (UX_AND_DESIGN §9)", () => {
   it("shows a failure as ✕ 6/6", () => {
     const r = { ...dailyResult("2026-11-05"), outcome: "failed" as const };
     expect(silhouetteShare(r, link)).toContain("✕ 6/6");
+  });
+  it("AC-PL-024: the combined share has one spoiler-free line per daily played and the count", () => {
+    const sil = dailyResult("2026-11-05");
+    const quiz = { ...sil, game_id: "quiz" as const, score: 41, max_score: 50, meta: {} };
+    const deep = { ...sil, game_id: "deep-cut" as const, score: 31, max_score: 50, meta: {} };
+    const text = dailyBundleShare([sil, quiz, deep], link, "2026-11-05", 5);
+    expect(text.split("\n")).toEqual([
+      "Meridian · Daily · 2026-11-05",
+      "Silhouette ✓ 3/6",
+      "Daily Quiz 82%",
+      "Deep Cut 31/50",
+      "3/5 played",
+      link,
+    ]);
+    for (const name of ["France", "Germany", "Spain"]) expect(text).not.toContain(name);
   });
 });
 

@@ -46,6 +46,7 @@ export const messages = {
   "set.deleteConfirm": "Delete all data",
   "set.deleted": "All data on this device was deleted.",
   "set.streaks": "Show my daily streak on my profile",
+  "set.sounds": "Play sounds for answers and finished rounds",
   "set.telemetry": "Share anonymous answer statistics",
   "set.telemetryNote":
     "Off by default. When on, which items were answered right or wrong is sent without your name, account or IP address, to help us tune difficulty. Turn it off any time and nothing more is sent.",

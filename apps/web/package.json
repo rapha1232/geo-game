@@ -13,12 +13,14 @@
     "db:migrate": "node scripts/migrate.mjs",
     "gen:sources": "node scripts/gen-sources.mjs",
     "gen:corrections": "node scripts/gen-corrections.mjs",
+    "gen:countries": "node scripts/gen-countries.mjs",
     "a11y": "node scripts/a11y-audit.mjs",
     "budget": "node scripts/bundle-budget.mjs",
     "network": "node scripts/network-audit.mjs",
     "lcp": "node scripts/lcp.mjs",
     "offline": "node scripts/offline-check.mjs",
-    "i18n": "node scripts/i18n-audit.mjs"
+    "i18n": "node scripts/i18n-audit.mjs",
+    "site": "node scripts/site-audit.mjs"
   },
   "dependencies": {
     "@meridian/deep-cut": "workspace:*",

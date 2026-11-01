@@ -298,6 +298,10 @@
   font-size: var(--text-sm);
   margin-top: var(--space-1);
 }
+.played {
+  color: var(--color-text);
+  font-weight: 600;
+}
 .empty {
   padding: var(--space-6);
   text-align: center;

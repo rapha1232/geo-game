@@ -39,6 +39,6 @@ export async function pingDatabase(): Promise<void> {
 }
 
 /** Latest released content version, or null until the first release exists (T1.21). */
-export const currentContentVersion = (): string | null => process.env.CONTENT_VERSION ?? null;
+export const currentContentVersion = (): string | null => process.env.CONTENT_VERSION || null;
 
 export const appVersion = (): string => process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "dev";

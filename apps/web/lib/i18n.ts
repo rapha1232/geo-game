@@ -101,6 +101,12 @@ const core = {
   "home.practice": "Practice your weak spots",
   "home.today": "Today (optional)",
   "home.todaySil": "Silhouette daily",
+  "home.todayQuiz": "Daily Quiz",
+  "home.todayFactPin": "Fact Pin daily",
+  "home.todayBorderRun": "Border Run daily",
+  "home.todayDeepCut": "Deep Cut daily",
+  "home.todayCount": "{done} of {total} played today",
+  "home.todayAll": "Open the Daily hub",
   "home.todayDone": "played",
   "home.todayOpen": "not played yet",
   "home.allQuizzes": "All games and quizzes",
@@ -133,6 +139,8 @@ const core = {
   "streak.freezes": "Rest days in hand: {n}",
   "streak.note":
     "Any completed round on a day keeps it going. A missed day uses a rest day if you have one.",
+  "streak.calendar": "Played on {played} of the last {days} days",
+  "streak.calendarLegend": "● a day you played · ○ a day you didn't",
 } as const;
 
 type Messages = typeof core &

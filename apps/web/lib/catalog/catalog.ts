@@ -20,6 +20,8 @@ export type CatalogItem = {
   format: CatalogFormat;
   length: LengthBucket;
   region?: Region;
+  /** A short code shown on the card art: the region, or the country of a subdivision quiz. */
+  badge?: string;
   /** Lowercase words the search matches besides the title: topic, format, and (with content) entity names. */
   tags: string[];
 };
@@ -132,7 +134,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       topic: q.category,
       format: FORMAT_OF[q.format],
       length: lengthOf(ms),
-      ...(q.scope.kind === "continent" ? { region: q.scope.id as Region } : {}),
+      ...(q.scope.kind === "continent" ? { region: q.scope.id as Region, badge: q.scope.id } : {}),
       tags: [q.category, FORMAT_OF[q.format].toLowerCase(), "quiz", ...names],
     };
   });
@@ -147,7 +149,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
     format: "Choice",
     length: "short",
     ...(q.kind === "tiles" && q.criterion.kind === "continent"
-      ? { region: q.criterion.id as Region }
+      ? { region: q.criterion.id as Region, badge: q.criterion.id }
       : {}),
     tags: [q.category, "choice", "quiz", q.kind === "tiles" ? "select" : "match", "tiles"],
   }));
@@ -160,6 +162,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
     topic: "regions",
     format: "Type",
     length: c.count > 30 ? "long" : "medium",
+    badge: c.code,
     tags: [
       "regions",
       "subdivisions",

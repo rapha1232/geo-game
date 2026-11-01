@@ -117,7 +117,7 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 
 ### 3.6 Settings `/settings`
 
-Deviations from the first draft, kept here so the table matches the build: reduced motion has no "Off" (forcing motion against an operating-system preference is an accessibility anti-pattern; movement is only ever declared inside `no-preference` blocks, so "Always reduce" is the one override); the territories option and Sounds wait for their content and assets. The Settings page also holds **Export my data**, **Import data** (merge, never overwrite) and **Delete all data on this device**.
+Deviations from the first draft, kept here so the table matches the build: reduced motion has no "Off" (forcing motion against an operating-system preference is an accessibility anti-pattern; movement is only ever declared inside `no-preference` blocks, so "Always reduce" is the one override); the territories option waits for its content. Sounds are synthesised in the browser (Web Audio: a rising pair for a correct answer, a low dip for a wrong one, a short arpeggio for a finished round), so they need no audio assets or licences; per-answer cues are wired in Quiz and Silhouette, the finished-round cue in every game. The Settings page also holds **Export my data**, **Import data** (merge, never overwrite) and **Delete all data on this device**.
 
 | Setting                            | Values                                                              | Default          | Phase                                                                                  |
 | ---------------------------------- | ------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 | High-contrast map palette          | On, Off                                                             | Off              | R1                                                                                     |
 | Map style                          | Atlas, Political, Midnight, Ink, Blueprint ([§5.3](#53-map-styles))  | Atlas            | R1 (also switchable from the layers button on every map)                               |
 | Accessible variants by default     | On, Off                                                             | Off              | R1                                                                                     |
-| Sounds                             | On, Off                                                             | Off              | R1.x (no audio assets yet; the toggle is not shown until there is something to switch) |
+| Sounds                             | On, Off                                                             | Off              | R2 (synthesised; turning it on plays a sample)                                         |
 | Extra answer languages             | es, fr, de, pt, it, nl                                              | none             | R2                                                                                     |
 | Streaks                            | Off, On                                                             | **Off**          | R2                                                                                     |
 | Anonymous answer telemetry         | On, Off                                                             | On (with notice) | R2                                                                                     |
@@ -279,6 +279,7 @@ There are about 40 achievements at R2. They are defined as declarative data and 
 - **2 freeze days** are automatically banked per 14-day period. A missed day consumes a freeze silently.
 - Freeze rules as built: periods count from the first day played, each period banks 2 freezes, and at most 2 are held at once. Today never breaks a streak.
 - There are no streak-loss notifications, no guilt copy, and no streak shown in the global header. It appears only on `/me`.
+- With streaks on, the panel also shows an **activity calendar**: the last 12 weeks, Monday first, a filled dot for each day with a completed round (shape, not only colour), today outlined. Screen readers get one summary ("Played on 23 of the last 80 days") rather than 84 cells. It shares the opt-in, so a player who never turns streaks on never sees it.
 
 ## 8. System states: loading, empty, error, offline, interrupted
 
@@ -311,8 +312,9 @@ meridian.example/c/SH-4KQ2-M9XD
 ```
 
 - Quiz share: `Meridian · Countries of the World · 171/197 in 12:02 · meridian.example/c/QZ-...`
+- **Combined daily share:** once two or more dailies are done, the Daily hub offers "Copy all of today's results": one spoiler-free line per daily played (`Silhouette ✓ 3/6`, `Daily Quiz 82%`, `Deep Cut 31/50` …), then `3/5 played` and the link. Home lists all five dailies with their played state and a count.
 - A challenge link reproduces the same puzzle(s) for the recipient ([ARCHITECTURE §8.4](ARCHITECTURE.md#84-challenge-codes)). If the sender's score is embedded (an optional `s` parameter), the recipient sees "Beat 171/197?" before starting and a side-by-side comparison after finishing.
-- An Open Graph image is generated per game type (static per game in R1, dynamic per result in R2).
+- An Open Graph image is generated per game type (static per game in R1, dynamic per result in R2). As built: one site-wide image, and a per-challenge image for `/c/<long code>` that reads "Beat 34 of 60?" when the sender's score rides along. Short codes (resolved from the database in the browser) use the generic challenge image.
 
 ## 10. Content corrections (player-facing)
 

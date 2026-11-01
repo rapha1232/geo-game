@@ -210,7 +210,20 @@ const ART: Record<ArtName, ReactNode> = {
   ),
 };
 
-export function GameArt({ name, className }: { name: ArtName; className?: string | undefined }) {
+/**
+ * `badge` adds a short corner tag (a continent code such as "AF", or a country code for a subdivision quiz), so quizzes
+ * that share an illustration still tell apart at a glance. Decorative like the rest: the title carries the meaning.
+ */
+export function GameArt({
+  name,
+  className,
+  badge,
+}: {
+  name: ArtName;
+  className?: string | undefined;
+  badge?: string | undefined;
+}) {
+  const w = badge ? 14 + badge.length * 11 : 0;
   return (
     <svg
       viewBox="0 0 100 100"
@@ -220,6 +233,14 @@ export function GameArt({ name, className }: { name: ArtName; className?: string
       data-art={name}
     >
       {ART[name]}
+      {badge && (
+        <g className={styles.badge}>
+          <rect x={100 - w} y="0" width={w} height="26" rx="13" />
+          <text x={100 - w / 2} y="18.5" textAnchor="middle">
+            {badge}
+          </text>
+        </g>
+      )}
     </svg>
   );
 }
