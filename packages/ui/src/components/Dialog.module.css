@@ -6,7 +6,9 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background: rgb(18 22 28 / 0.55);
+  background: rgb(18 22 28 / 0.45);
+  backdrop-filter: blur(6px) saturate(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
 }
 
 .modal {
@@ -16,19 +18,20 @@
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-overlay);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-overlay), var(--edge-highlight);
 }
 
 .dialog {
-  padding: var(--space-5);
+  padding: var(--space-6);
   outline: none;
 }
 
 .title {
   font-family: var(--font-display);
   font-weight: 350;
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
+  letter-spacing: -0.02em;
   margin: 0 0 var(--space-3);
 }
 
@@ -48,7 +51,10 @@
     animation: fade var(--motion-panel) var(--ease);
   }
   .modal[data-entering] {
-    animation: rise var(--motion-panel) var(--ease);
+    animation: rise var(--motion-reveal) var(--ease-spring);
+  }
+  .overlay[data-exiting] {
+    animation: fade var(--motion-panel) var(--ease) reverse;
   }
   @keyframes fade {
     from {
@@ -58,7 +64,7 @@
   @keyframes rise {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(16px) scale(0.96);
     }
   }
 }

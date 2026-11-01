@@ -30,10 +30,10 @@ function Sparkline({ values }: { values: readonly number[] }) {
     );
   const max = Math.max(...values, 1);
   const w = 120;
-  const h = 28;
-  const pts = values
-    .map((v, i) => `${(i / (values.length - 1)) * w},${h - (v / max) * (h - 4) - 2}`)
-    .join(" ");
+  const h = 32;
+  const xy = values.map((v, i) => [(i / (values.length - 1)) * w, h - (v / max) * (h - 6) - 3]);
+  const pts = xy.map(([x, y]) => `${x},${y}`).join(" ");
+  const last = xy[xy.length - 1]!;
   return (
     <svg
       viewBox={`0 0 ${w} ${h}`}
@@ -44,7 +44,18 @@ function Sparkline({ values }: { values: readonly number[] }) {
         list: values.map(one).join(", "),
       })}
     >
-      <polyline points={pts} fill="none" stroke="currentColor" strokeWidth="2" />
+      <polygon points={`0,${h} ${pts} ${w},${h}`} className={styles.sparkArea} />
+      <polyline
+        points={pts}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        pathLength={1}
+        className={styles.sparkLine}
+      />
+      <circle cx={last[0]} cy={last[1]} r="3" fill="currentColor" className={styles.sparkDot} />
     </svg>
   );
 }
@@ -85,10 +96,17 @@ export function MeView({
     return (
       <section className={styles.page}>
         <h1>{t("me.title")}</h1>
-        <p>{t("me.empty")}</p>
-        <a href={playHref} className={styles.action}>
-          {t("me.emptyAction")}
-        </a>
+        <div className={styles.empty}>
+          <div className={styles.emptyArt} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <p>{t("me.empty")}</p>
+          <a href={playHref} className={styles.cta}>
+            {t("me.emptyAction")} <span aria-hidden="true">→</span>
+          </a>
+        </div>
       </section>
     );
 
@@ -107,7 +125,7 @@ export function MeView({
         <p className={styles.headline}>
           {ov.rounds === 1 ? t("me.round1") : t("me.rounds", { n: ov.rounds })}
         </p>
-        <dl className={styles.stats}>
+        <dl className={`${styles.stats} ${styles.overview} fx-stagger`}>
           <div>
             <dt>{t("me.activeDays")}</dt>
             <dd>{ov.activeDays}</dd>
@@ -126,7 +144,7 @@ export function MeView({
       <section aria-labelledby="me-pg">
         <h2 id="me-pg">{t("me.perGame")}</h2>
         {games.map((g) => (
-          <Card key={g.gameId} className={styles.game}>
+          <Card key={g.gameId} className={`${styles.game} fx-reveal`}>
             <h3>{gameName(g.gameId)}</h3>
             <dl className={styles.stats}>
               <div>
@@ -203,7 +221,7 @@ export function MeView({
         {list.length === 0 ? (
           <p>{t("me.historyEmpty")}</p>
         ) : (
-          <ol className={styles.history}>
+          <ol className={`${styles.history} fx-stagger`}>
             {list.map((r) => (
               <li key={r.id}>
                 <time dateTime={r.ended_at}>{r.ended_at.slice(0, 10)}</time>{" "}

@@ -1,0 +1,64 @@
+/* Hover motion for the game illustrations. The trigger is any hovered card ([data-fx-card]) that contains the art. */
+.art {
+  display: block;
+  overflow: visible;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .art [data-move] {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform var(--motion-reveal) var(--ease-spring);
+  }
+  :global([data-fx-card]):hover .art [data-move="breathe"] {
+    transform: scale(1.1);
+  }
+  :global([data-fx-card]):hover .art [data-move="pop"] {
+    transform: scale(0.8) rotate(8deg);
+  }
+  :global([data-fx-card]):hover .art [data-move="drop"] {
+    transform: translateY(-6px);
+  }
+  .art [data-move="grow"] {
+    transform-origin: bottom;
+  }
+  :global([data-fx-card]):hover .art [data-move="grow"] {
+    transform: scaleY(1.15);
+  }
+  :global([data-fx-card]):hover .art [data-move="spin"] {
+    transform: rotate(90deg);
+  }
+  .art [data-move="wave"] {
+    transform-origin: left center;
+  }
+  :global([data-fx-card]):hover .art [data-move="wave"] {
+    transform: skewY(-5deg) scaleX(0.96);
+  }
+  .art [data-move="dash"],
+  .art [data-move="march"] {
+    animation: art-march 3s linear infinite;
+    animation-play-state: paused;
+  }
+  :global([data-fx-card]):hover .art [data-move="dash"],
+  :global([data-fx-card]):hover .art [data-move="march"] {
+    animation-play-state: running;
+  }
+  .art [data-move="blink"] {
+    animation: art-blink 1s steps(1) infinite;
+  }
+  @keyframes art-march {
+    to {
+      stroke-dashoffset: -48;
+    }
+  }
+  @keyframes art-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
+@media (forced-colors: active) {
+  .art * {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+}

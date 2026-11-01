@@ -58,7 +58,7 @@ export function NavIcon({ name }: { name: keyof typeof PATHS }) {
   );
 }
 
-/** The Meridian mark: a globe with one meridian. */
+/** The Meridian mark: a globe with one meridian. The meridian is its own element so the shell can turn it. */
 export function BrandMark() {
   return (
     <svg
@@ -70,7 +70,7 @@ export function BrandMark() {
       {...stroke}
     >
       <circle cx="12" cy="12" r="9.5" />
-      <ellipse cx="12" cy="12" rx="4" ry="9.5" />
+      <ellipse cx="12" cy="12" rx="4" ry="9.5" data-meridian="" />
       <path d="M2.5 12h19" />
     </svg>
   );

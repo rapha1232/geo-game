@@ -64,12 +64,13 @@ Mobile (<640): top bar = logo + search icon + profile; bottom tab bar:
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│ Know the world. Play as long as you like.                 │
+│ Know the world. Play as long as you like.     (live globe) │
 │ [▶ Play something now]  ← starts a random R1 game, Normal │
+│ 197 countries · N games and quizzes · 0 accounts needed    │
 ├───────────────────────────────────────────────────────────┤
 │ Continue: Countries of the World — 88/197 · 6:41 left [▶] │  (only if a resumable session exists)
 ├───────────────────────────────────────────────────────────┤
-│ Games:  [Silhouette] [Fact Pin] [Quiz Library]  …         │  cards: name, 1-line pitch, ▶
+│ Games: bento of every game; Silhouette + Quiz Library big │  cards: art, name, 1-line pitch, →
 ├───────────────────────────────────────────────────────────┤
 │ Popular quizzes (6 tiles)       Practice your weak spots ▸ │
 ├───────────────────────────────────────────────────────────┤
@@ -167,6 +168,16 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 
 **Design inspiration (owner request):** [siteinspire.com](https://www.siteinspire.com/). What the featured editorial sites share, and what Meridian takes from them: large light-weight display type, minimal chrome (a wordmark and one menu control), generous whitespace and content-first layouts. Meridian keeps its own palette and type (below) and never copies another site's layout or imagery.
 
+**2026-11 refresh: "Modern cartographer" (owner request: "modern, sleek, animated and dynamic").** The palette, type and every contrast-verified colour token stay. What changes is depth and motion:
+
+- **Backdrop:** faint vertical meridian hairlines plus two soft glows (accent and ocean), fixed behind every page. Decorative; dropped in forced-colours mode.
+- **Chrome:** the header is a floating glass capsule that gains a shadow as the page scrolls; on phones the tab bar becomes a floating dock. Glass (`backdrop-filter`) is only used on floating chrome, toasts and map controls, never under body text.
+- **Headlines:** two-tone. An `<em>` inside an `h1`/`h2` carries the quieter second voice (muted or an accent-to-muted gradient).
+- **Home hero:** a live orthographic globe drawn from the `geo.world.110m` pack. It spins slowly, can be dragged, and flies a route between two countries in view. It loads after idle as its own chunk, shows a still globe first, pauses off screen, and is a single still frame with reduced motion. Decorative (`aria-hidden`).
+- **Game art:** each game and quiz card carries a small token-only SVG illustration (`components/home/GameArt.tsx`) that animates on card hover.
+- **Surfaces:** cards get a pointer-following spotlight and a warm border on hover; buttons are pills, and the primary one has a gradient that darkens away from its label, so label contrast never drops below the flat accent.
+- **Inspiration:** siteinspire.com is behind a bot checkpoint even for a headless browser. The refresh instead took cues from well-known product sites (structural hairline grids, two-tone headlines, floating navigation) without copying any layout, type or imagery.
+
 ### 5.2 Design tokens
 
 | Token                    | Light                  | Dark      | Use                                                           |
@@ -193,7 +204,7 @@ All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI co
 
 **Typography:** UI font `Source Sans 3`, display/headings `Source Serif 4`, numerals tabular (`font-variant-numeric: tabular-nums`) for timers and scores. All are SIL OFL fonts, self-hosted. Scale (rem): 0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25. Body line-height 1.5.
 
-**Spacing:** 4 px base (4, 8, 12, 16, 24, 32, 48, 64). Radius: 6 px for controls, 12 px for cards. Elevation: a 1 px border first, with shadows only on overlays.
+**Spacing:** 4 px base (4, 8, 12, 16, 24, 32, 48, 64). Radius: 12 px for controls (buttons and chips are pills), 20 px for cards, 28 px for overlays and feature panels. Elevation: a 1 px border first, a soft card shadow with a 1 px top highlight, a raised shadow on hover and for key panels, and the strongest shadow only on overlays.
 
 **Map feedback patterns** (SVG `<pattern>`): `solid` (correct), `hatch-45` (missed/wrong), `dots` (near/close), `cross-hatch` (disputed), `diagonal-light` (no data). Every pattern renders in forced-colors mode using `CanvasText`/`Canvas`.
 
@@ -201,7 +212,7 @@ All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI co
 
 **Iconography:** a single outline icon set (Lucide, ISC license). Glyphs ✓ ✕ ◐ ⇆ ◆ are used as redundant feedback markers alongside color.
 
-**Motion:** durations 120 ms (micro), 200 ms (panels), 400 ms (reveals). Easing `cubic-bezier(.2,.8,.2,1)`. With `prefers-reduced-motion`, there is no movement, only opacity or instant changes.
+**Motion:** durations 120 ms (micro), 200 ms (panels), 400 ms (reveals), 700 ms (entrances). Easing `cubic-bezier(.2,.8,.2,1)`, plus `--ease-spring` (a soft overshoot for presses, pops and selection) and `--ease-out` (a long tail for entrances). Pages cross-fade between navigations (cross-document View Transitions), and the page body rises in. Lists cascade in (`.fx-stagger`), and sections reveal on scroll where scroll-driven animations are supported (`.fx-reveal`). Feedback has motion as well as glyphs: correct pops, wrong shakes, the pin drops in and the target line marches. Blocks of text that appear mid-game move without fading (`fx-lift`), so they are never at partial contrast. All keyframes, and every `transform`, are declared only inside `prefers-reduced-motion: no-preference` (enforced by `packages/ui/test/motion.test.ts`). With reduced motion, from the OS or from Settings, there is no movement, only opacity or instant changes, and view transitions are off.
 
 ## 6. Responsive layouts
 
