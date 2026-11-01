@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import "fake-indexeddb/auto";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
@@ -234,5 +235,22 @@ describe("Deep Cut daily", () => {
     expect(text).toContain("● ");
     expect(text).toContain("✕");
     expect(text).not.toMatch(/Brazil|BRA/);
+  });
+});
+
+describe("saving a daily result", () => {
+  it("indexes it by date so the hub and the game know it was played", async () => {
+    const { MeridianDb } = await import("../lib/storage/db");
+    const { saveRankIt } = await import("../lib/results/rank-it");
+    const db = new MeridianDb(`dc-${Math.random()}`);
+    let s = newSession(data, "2026110500", { mode: "daily", timer: 60, date: "2026-11-05" }, [], 0);
+    s = { ...s, run: { ...s.run, status: "done" } };
+    const result = deepCutResult(s, {
+      id: "01J00000000000000000000000",
+      contentVersion: "2026.10.0",
+      endedAt: 5000,
+    });
+    expect((await saveRankIt(db, { result })).saved).toBe(true);
+    expect(await db.results.where("daily_date").equals("2026-11-05").count()).toBe(1);
   });
 });

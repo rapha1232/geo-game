@@ -84,6 +84,7 @@ export async function saveRankIt(
         game_id: input.result.game_id,
         ended_at: input.result.ended_at,
         ...(key ? { pb_key: key } : {}),
+        ...(input.result.daily_date ? { daily_date: input.result.daily_date } : {}),
         data: input.result,
       });
       if (input.history) await db.history.put(input.history);
