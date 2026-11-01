@@ -102,7 +102,7 @@ const STATES = [
       await p.getByLabel("Search places and capitals").fill("peru");
       await p.keyboard.press("Enter");
       await p.getByRole("heading", { name: /Peru/ }).waitFor();
-      await p.getByLabel("View").selectOption("table");
+      await p.getByLabel("View", { exact: true }).selectOption("table");
       await p.getByRole("table").waitFor();
     },
   },

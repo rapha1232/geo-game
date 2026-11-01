@@ -1,3 +1,4 @@
+/* global fetch */
 // Site checks a unit test cannot see (status codes, headers, generated files). Run against `next start -p 3111`:
 //   node apps/web/scripts/site-audit.mjs http://localhost:3111
 // Exits 1 on any failure.
