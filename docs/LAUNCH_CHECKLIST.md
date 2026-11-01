@@ -36,3 +36,19 @@ Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web
 - The territories set is not built, so the territories option is absent from Settings.
 - Facts need a second editor's review before they count as verified; the validator flags unreviewed ones.
 - Sounds (Settings) wait for audio assets.
+
+## R2 additions (built after the R1 checklist)
+
+What is in the code now, and what only the owner can do.
+
+**Built and checked locally:** Border Run (with a daily), Rank It, Deep Cut, the Atlas (`/explore`), the Daily Quiz, tile and match quizzes, lives, extra answer languages, Silhouette's neighbours follow-up and heat-map assist, achievements and opt-in streaks, the offline service worker, and anonymous answer statistics (off by default).
+
+**Owner to do:**
+
+1. **Database:** run `pnpm --filter @meridian/web db:migrate` again. Migration `0001_telemetry` adds `answer_events` and `calibration_stats`. Without a database the statistics endpoint answers 503 and nothing else is affected.
+2. **Telemetry consent:** it is off by default and the Privacy Policy now describes it. Decide whether to keep it opt-in, and have the wording reviewed (Q-06). Rate limit for `/api/v1/telemetry`: 120 per minute per IP (see `rate-limits.ts`).
+3. **Reviews before launch:** the official-language data behind Deep Cut (Wikidata, unreviewed), the translated country names (Wikidata labels; collisions are dropped automatically), the four crossing links, and the Deep Cut equator override.
+4. **Content release:** rebuild with `pnpm content:build` and upload as before. New packs: `core.crossings`, `core.indicators`, `deepcut.prompts`, `daily.border-run`. New snapshots are pinned in `data/sources.lock.yaml`.
+5. **Not built, needs an account or a service:** sign-in and sync (T2.1 to T2.3), background sync of results, and Sentry or analytics.
+6. **Not built, needs more data:** Flags and Water prompt families for Deep Cut, the Atlas layers for urban population, forest area, elevation, driving side, languages and currencies, subdivision packs (T2.13) and the cities pack (T2.14).
+7. **No cron:** the report dedupe and the telemetry roll-up run on request instead; the content calibration release is a manual command.
