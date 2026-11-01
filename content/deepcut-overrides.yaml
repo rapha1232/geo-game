@@ -1,0 +1,7 @@
+# Editorial additions to computed Deep Cut prompts (deep-cut §4). The computed list comes from outlines, so a few
+# island countries that straddle a line without a polygon crossing it need to be added by hand, each with a source.
+overrides:
+  - prompt: prompt:line-equator
+    add: [country:STP, country:MDV, country:KIR]
+    source: https://en.wikipedia.org/wiki/Equator
+    reason: The equator crosses Ilhéu das Rolas (São Tomé and Príncipe), the Huvadhu Atoll (Maldives) and the Gilbert Islands (Kiribati); no mainland-style polygon edge crosses it in the 1:10m outlines.

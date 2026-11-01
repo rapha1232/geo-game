@@ -36,34 +36,35 @@ Instructions for the coding agent implementing Meridian. Read this file complete
 
 ## Implementation guidance per area
 
-| Area | Guidance |
-|---|---|
-| Name matcher | Build the golden CSV first (≥ 300 rows from [quiz-library §5 and §9](games/quiz-library.md#5-answer-validation-and-interaction-rules)), then implement. Keystroke path: an O(1) hash lookup on `norm(input)`. Fuzzy path: a length-bucketed candidate scan with early exit (keep it < 20 ms). |
-| Geo | Use the formulas exactly as written (R = 6371.0088 km, rhumb bearing, `floor` for proximity). Add golden rows for the antimeridian and the poles. |
-| GameMap | Start with select mode on 110m, Equal Earth. Add LOD, tiny rings and keyboard navigation next. Free-pin mode comes last. Keep a Storybook-like playground route `/dev/map` (excluded from production builds). |
-| Persistence | Implement the session service once in `apps/web/lib/session` and reuse it. Test reload behavior with Playwright (`page.reload()`) and a fake clock. |
-| Content pipeline | Pin sources first, and commit `sources.lock.yaml`. Raw downloads are gitignored. Make every step idempotent and deterministic (sorted keys, stable float formatting with 6 decimals for coordinates). |
-| UI | Build the components in [UX_AND_DESIGN §4](UX_AND_DESIGN.md#4-interaction-patterns-shared-components) before the game screens. Use React Aria Components for comboboxes, listboxes, dialogs and drag-and-drop. |
-| API | Route handlers in `apps/web/app/api/v1/**`. Validate with zod from `packages/schemas`. Return problem+json via the shared helper. |
+| Area             | Guidance                                                                                                                                                                                                                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name matcher     | Build the golden CSV first (≥ 300 rows from [quiz-library §5 and §9](games/quiz-library.md#5-answer-validation-and-interaction-rules)), then implement. Keystroke path: an O(1) hash lookup on `norm(input)`. Fuzzy path: a length-bucketed candidate scan with early exit (keep it < 20 ms). |
+| Geo              | Use the formulas exactly as written (R = 6371.0088 km, rhumb bearing, `floor` for proximity). Add golden rows for the antimeridian and the poles.                                                                                                                                             |
+| GameMap          | Start with select mode on 110m, Equal Earth. Add LOD, tiny rings and keyboard navigation next. Free-pin mode comes last. Keep a Storybook-like playground route `/dev/map` (excluded from production builds).                                                                                 |
+| Persistence      | Implement the session service once in `apps/web/lib/session` and reuse it. Test reload behavior with Playwright (`page.reload()`) and a fake clock.                                                                                                                                           |
+| Content pipeline | Pin sources first, and commit `sources.lock.yaml`. Raw downloads are gitignored. Make every step idempotent and deterministic (sorted keys, stable float formatting with 6 decimals for coordinates).                                                                                         |
+| UI               | Build the components in [UX_AND_DESIGN §4](UX_AND_DESIGN.md#4-interaction-patterns-shared-components) before the game screens. Use React Aria Components for comboboxes, listboxes, dialogs and drag-and-drop.                                                                                |
+| API              | Route handlers in `apps/web/app/api/v1/**`. Validate with zod from `packages/schemas`. Return problem+json via the shared helper.                                                                                                                                                             |
 
 ## Decisions already made (do not re-open without a spec change)
 
-| Topic | Decision | Where |
-|---|---|---|
-| Default country set | `sovereign-197` (UN 193 + Vatican, Palestine, Kosovo, Taiwan) | [DATA_AND_CONTENT §6](DATA_AND_CONTENT.md#6-what-counts-as-a-country) |
-| Distance point | Pole of inaccessibility of the largest polygon | [silhouette §5.3](games/silhouette.md#53-distance-direction-proximity-normative-definitions) |
-| Direction | Rhumb-line bearing, 8 sectors | Same |
-| Typed acceptance | Exact on keystroke, fuzzy only on Enter, prefix-hold 700 ms | [quiz-library §5](games/quiz-library.md#5-answer-validation-and-interaction-rules) |
-| Ambiguous names | No credit, with an explanatory message, unless only one member remains | Same |
-| Tiny targets | Hit rings of 10/16 px, a loupe on touch | [quiz-library §5.4](games/quiz-library.md#54-map-interaction-rules-map_click-and-type_prompted-with-highlight) |
-| Timer | Active-time, pauses when hidden or on reload | [ARCHITECTURE §9](ARCHITECTURE.md#9-state-management-session-persistence-and-result-storage) |
-| Map projection | Equal Earth (world), azimuthal equal-area (silhouettes) | [ARCHITECTURE §6.2](ARCHITECTURE.md#62-projections) |
-| Stack | Next.js + TS monorepo, d3-geo, IndexedDB, Postgres (Neon), Vercel | [ARCHITECTURE §3](ARCHITECTURE.md#3-recommended-stack) |
-| Disputed areas | De facto base geometry, hatched overlay, any-claimant rule for scoring | [DATA_AND_CONTENT §6.3](DATA_AND_CONTENT.md#63-disputed-areas) |
+| Topic               | Decision                                                               | Where                                                                                                          |
+| ------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Default country set | `sovereign-197` (UN 193 + Vatican, Palestine, Kosovo, Taiwan)          | [DATA_AND_CONTENT §6](DATA_AND_CONTENT.md#6-what-counts-as-a-country)                                          |
+| Distance point      | Pole of inaccessibility of the largest polygon                         | [silhouette §5.3](games/silhouette.md#53-distance-direction-proximity-normative-definitions)                   |
+| Direction           | Rhumb-line bearing, 8 sectors                                          | Same                                                                                                           |
+| Typed acceptance    | Exact on keystroke, fuzzy only on Enter, prefix-hold 700 ms            | [quiz-library §5](games/quiz-library.md#5-answer-validation-and-interaction-rules)                             |
+| Ambiguous names     | No credit, with an explanatory message, unless only one member remains | Same                                                                                                           |
+| Tiny targets        | Hit rings of 10/16 px, a loupe on touch                                | [quiz-library §5.4](games/quiz-library.md#54-map-interaction-rules-map_click-and-type_prompted-with-highlight) |
+| Timer               | Active-time, pauses when hidden or on reload                           | [ARCHITECTURE §9](ARCHITECTURE.md#9-state-management-session-persistence-and-result-storage)                   |
+| Map projection      | Equal Earth (world), azimuthal equal-area (silhouettes)                | [ARCHITECTURE §6.2](ARCHITECTURE.md#62-projections)                                                            |
+| Stack               | Next.js + TS monorepo, d3-geo, IndexedDB, Postgres (Neon), Vercel      | [ARCHITECTURE §3](ARCHITECTURE.md#3-recommended-stack)                                                         |
+| Disputed areas      | De facto base geometry, hatched overlay, any-claimant rule for scoring | [DATA_AND_CONTENT §6.3](DATA_AND_CONTENT.md#63-disputed-areas)                                                 |
 
 ## Escalate to the owner (don't decide alone)
 
 Anything listed in [OPEN_QUESTIONS_AND_RISKS.md](OPEN_QUESTIONS_AND_RISKS.md) as **Owner decision**, plus:
+
 - adding any third-party service that receives user data,
 - any change to the sensitive-content policies (disputes, capitals, sets),
 - anything that would make an account or payment required.

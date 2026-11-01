@@ -7,62 +7,76 @@ Every game in [`games/`](games/) MUST follow this template, with the 12 numbered
 ```markdown
 # <Game Name>
 
-| Field | Value |
-|---|---|
-| Game ID | G-XX |
-| Slug / route | `/play/<slug>` |
-| Phase | R1 / R2 / R3 / R4 |
-| Status | Draft / Approved / Implemented |
-| Inspiration | <reference> (Observed) / Original |
-| Depends on | <components and content packs, with links> |
-| Governing ACs | AC-XX-001 … AC-XX-0NN |
+| Field         | Value                                      |
+| ------------- | ------------------------------------------ |
+| Game ID       | G-XX                                       |
+| Slug / route  | `/play/<slug>`                             |
+| Phase         | R1 / R2 / R3 / R4                          |
+| Status        | Draft / Approved / Implemented             |
+| Inspiration   | <reference> (Observed) / Original          |
+| Depends on    | <components and content packs, with links> |
+| Governing ACs | AC-XX-001 … AC-XX-0NN                      |
 
 ## 1. Purpose and player experience
+
 - What the player learns or practices.
 - The emotional arc of a round (e.g., "uncertainty → narrowing → reveal").
 - Target round length (seconds) and session length.
 - Which personas this serves (see PRODUCT_VISION §3).
 
 ## 2. Rules and complete gameplay loop
+
 - Numbered rules. Each is testable.
 - A Mermaid state or sequence diagram of one round and of the session.
 - Win, loss and end conditions.
 
 ## 3. Modes and configuration
+
 | Mode | Description | Phase |
+
 - Configuration options table: option, values, default, effect.
 
 ## 4. Data requirements
+
 - Content packs and fields used (link DATA_MODEL).
 - Pool size per default configuration, and the minimum needed for unlimited play.
 - Example records.
 
 ## 5. Answer validation or interaction rules
+
 - Exact acceptance rules, ambiguity handling, input methods.
 
 ## 6. Scoring and difficulty
+
 - Exact formulas with worked examples.
 - How difficulty tiers change generation.
 
 ## 7. Hints and feedback
+
 - Hint ladder (order, cost, availability).
 - Per-action feedback (visual + text + screen reader announcement).
 
 ## 8. Screens and state transitions
+
 - Text wireframes for each screen at mobile and desktop widths.
 - State machine (states, events, transitions).
 
 ## 9. Edge cases
+
 | Case | Expected behavior |
 
 ## 10. Accessibility and mobile behavior
+
 - Keyboard map, screen reader strategy, non-color feedback, touch targets, small-screen layout.
 
 ## 11. Unlimited-play and repeat-prevention behavior
+
 - Generation algorithm, Repeat Guard window, pool exhaustion behavior, seeded/daily behavior, replaying a completed seed.
 
 ## 12. Acceptance criteria
+
 | ID | Given / When / Then | Example |
+
 - At least 10 criteria with concrete data examples.
 ```
 

@@ -25,21 +25,21 @@ graph TD
 
 ### 1.1 Routes
 
-| Route | Page | Phase |
-|---|---|---|
-| `/` | Home | R1 |
-| `/play` | Game catalog (all games + quiz highlights, search, filters) | R1 |
-| `/play/quiz` | Quiz Library browser | R1 |
-| `/play/quiz/[slug]` | Configure + play a quiz (query params encode config) | R1 |
-| `/play/[game]` | Game hub (configure + play). Games: `silhouette`, `fact-pin` (R1), `deep-cut`, `border-run`, `rank-it` (R2), `chronology`, `lost-borders`, `knowledge-run` (R3) | per game |
-| `/daily` | Today's optional dailies across games | R1 (Silhouette and Fact Pin dailies) |
-| `/explore`, `/explore/[entityId]` | Atlas Explorer | R2 |
-| `/c/[code]` | Challenge resolver. Redirects to the game with the seed config. | R1 |
-| `/me`, `/me/history`, `/me/achievements` | Profile, stats, history, achievements | R1 (stats, history), R2 (achievements) |
-| `/settings` | Settings | R1 |
-| `/signin` | Optional sign-in | R2 |
-| `/about`, `/about/sources`, `/about/rules`, `/about/corrections`, `/about/privacy` | Static info | R1 |
-| `/admin/*` | Editorial console | R3 |
+| Route                                                                              | Page                                                                                                                                                            | Phase                                  |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `/`                                                                                | Home                                                                                                                                                            | R1                                     |
+| `/play`                                                                            | Game catalog (all games + quiz highlights, search, filters)                                                                                                     | R1                                     |
+| `/play/quiz`                                                                       | Quiz Library browser                                                                                                                                            | R1                                     |
+| `/play/quiz/[slug]`                                                                | Configure + play a quiz (query params encode config)                                                                                                            | R1                                     |
+| `/play/[game]`                                                                     | Game hub (configure + play). Games: `silhouette`, `fact-pin` (R1), `deep-cut`, `border-run`, `rank-it` (R2), `chronology`, `lost-borders`, `knowledge-run` (R3) | per game                               |
+| `/daily`                                                                           | Today's optional dailies across games                                                                                                                           | R1 (Silhouette and Fact Pin dailies)   |
+| `/explore`, `/explore/[entityId]`                                                  | Atlas Explorer                                                                                                                                                  | R2                                     |
+| `/c/[code]`                                                                        | Challenge resolver. Redirects to the game with the seed config.                                                                                                 | R1                                     |
+| `/me`, `/me/history`, `/me/achievements`                                           | Profile, stats, history, achievements                                                                                                                           | R1 (stats, history), R2 (achievements) |
+| `/settings`                                                                        | Settings                                                                                                                                                        | R1                                     |
+| `/signin`                                                                          | Optional sign-in                                                                                                                                                | R2                                     |
+| `/about`, `/about/sources`, `/about/rules`, `/about/corrections`, `/about/privacy` | Static info                                                                                                                                                     | R1                                     |
+| `/admin/*`                                                                         | Editorial console                                                                                                                                               | R3                                     |
 
 ## 2. Global shell
 
@@ -85,7 +85,7 @@ Mobile (<640): top bar = logo + search icon + profile; bottom tab bar:
 - **Filters** (chips, combinable): Topic (Countries, Capitals, Flags, Regions, Subdivisions, Cities, Physical, History, Mixed), Format (Type, Map, Choice, Order, Deduction, Pin), Length (< 2 min, 2–5, 5–15, Endless), Difficulty, Region (continent), Favorites only.
 - **Favorites:** a ☆ on every game and quiz card. Stored locally (R1) and synced (R2).
 - Sort: Recommended (default: unplayed first, then weak spots, then popular), A–Z, Recently played.
-- Empty state: "No games match *History + Under 2 min*. [Clear filters]".
+- Empty state: "No games match _History + Under 2 min_. [Clear filters]".
 
 ### 3.3 Game hub / configure
 
@@ -118,46 +118,46 @@ Sections: overview (games played, total rounds, active days), per-game stats (§
 
 Deviations from the first draft, kept here so the table matches the build: reduced motion has no "Off" (forcing motion against an operating-system preference is an accessibility anti-pattern; movement is only ever declared inside `no-preference` blocks, so "Always reduce" is the one override); the territories option and Sounds wait for their content and assets. The Settings page also holds **Export my data**, **Import data** (merge, never overwrite) and **Delete all data on this device**.
 
-| Setting | Values | Default | Phase |
-|---|---|---|---|
-| Theme | System, Light, Dark | System | R1 |
-| Distance units | km, mi | from locale | R1 |
-| Reduced motion | System, Always reduce | System | R1 |
-| Answer strictness (global default) | Lenient, Standard, Strict | Standard | R1 |
-| Country set (global default) | sovereign-197, un-193 (+territories when the territories set ships) | sovereign-197 | R1 |
-| High-contrast map palette | On, Off | Off | R1 |
-| Accessible variants by default | On, Off | Off | R1 |
-| Sounds | On, Off | Off | R1.x (no audio assets yet; the toggle is not shown until there is something to switch) |
-| Extra answer languages | es, fr, de, pt, it, nl | none | R2 |
-| Streaks | Off, On | **Off** | R2 |
-| Anonymous answer telemetry | On, Off | On (with notice) | R2 |
+| Setting                            | Values                                                              | Default          | Phase                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------- |
+| Theme                              | System, Light, Dark                                                 | System           | R1                                                                                     |
+| Distance units                     | km, mi                                                              | from locale      | R1                                                                                     |
+| Reduced motion                     | System, Always reduce                                               | System           | R1                                                                                     |
+| Answer strictness (global default) | Lenient, Standard, Strict                                           | Standard         | R1                                                                                     |
+| Country set (global default)       | sovereign-197, un-193 (+territories when the territories set ships) | sovereign-197    | R1                                                                                     |
+| High-contrast map palette          | On, Off                                                             | Off              | R1                                                                                     |
+| Accessible variants by default     | On, Off                                                             | Off              | R1                                                                                     |
+| Sounds                             | On, Off                                                             | Off              | R1.x (no audio assets yet; the toggle is not shown until there is something to switch) |
+| Extra answer languages             | es, fr, de, pt, it, nl                                              | none             | R2                                                                                     |
+| Streaks                            | Off, On                                                             | **Off**          | R2                                                                                     |
+| Anonymous answer telemetry         | On, Off                                                             | On (with notice) | R2                                                                                     |
 
 ## 4. Interaction patterns (shared components)
 
-| Component | Behavior summary | Spec |
-|---|---|---|
-| `AnswerInput` | Text input with no autocorrect. Keystroke matching (TYPE_ALL) or submit matching. Optional suggestions listbox (combobox pattern). Inline status line below (aria-live). | [quiz-library §5](games/quiz-library.md#5-answer-validation-and-interaction-rules) |
-| `GameMap` | Pan and zoom, select-entity mode, free-pin mode, highlight mode, tiny-target rings, loupe on touch, spatial keyboard navigation, pattern fills | [ARCHITECTURE §6](ARCHITECTURE.md#6-map-rendering-geometry-projections-and-asset-delivery) |
-| `ChoiceGrid` | 2–16 options as buttons. Number-key shortcuts for ≤ 9 options. Image or text. | — |
-| `OrderList` | Drag-and-drop plus keyboard pick-up/move/drop, with move buttons on touch | [rank-it §5](games/rank-it.md#5-answer-validation-and-interaction-rules) |
-| `TimerBadge` | Countdown or count-up, pause on hidden, warning at 10% (min 10 s) | [ARCHITECTURE §9](ARCHITECTURE.md#9-state-management-session-persistence-and-result-storage) |
-| `EntityCard` | Name, flag, capital, key stats with source and year, neighbors, facts, actions | [atlas-explorer §8](games/atlas-explorer.md#8-screens-and-state-transitions) |
-| `ResultSummary` | §3.4 | — |
-| `ShareSheet` | Web Share API, falling back to copy-to-clipboard | §9 |
-| `ReportDialog` | §10 | — |
+| Component       | Behavior summary                                                                                                                                                         | Spec                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `AnswerInput`   | Text input with no autocorrect. Keystroke matching (TYPE_ALL) or submit matching. Optional suggestions listbox (combobox pattern). Inline status line below (aria-live). | [quiz-library §5](games/quiz-library.md#5-answer-validation-and-interaction-rules)           |
+| `GameMap`       | Pan and zoom, select-entity mode, free-pin mode, highlight mode, tiny-target rings, loupe on touch, spatial keyboard navigation, pattern fills                           | [ARCHITECTURE §6](ARCHITECTURE.md#6-map-rendering-geometry-projections-and-asset-delivery)   |
+| `ChoiceGrid`    | 2–16 options as buttons. Number-key shortcuts for ≤ 9 options. Image or text.                                                                                            | —                                                                                            |
+| `OrderList`     | Drag-and-drop plus keyboard pick-up/move/drop, with move buttons on touch                                                                                                | [rank-it §5](games/rank-it.md#5-answer-validation-and-interaction-rules)                     |
+| `TimerBadge`    | Countdown or count-up, pause on hidden, warning at 10% (min 10 s)                                                                                                        | [ARCHITECTURE §9](ARCHITECTURE.md#9-state-management-session-persistence-and-result-storage) |
+| `EntityCard`    | Name, flag, capital, key stats with source and year, neighbors, facts, actions                                                                                           | [atlas-explorer §8](games/atlas-explorer.md#8-screens-and-state-transitions)                 |
+| `ResultSummary` | §3.4                                                                                                                                                                     | —                                                                                            |
+| `ShareSheet`    | Web Share API, falling back to copy-to-clipboard                                                                                                                         | §9                                                                                           |
+| `ReportDialog`  | §10                                                                                                                                                                      | —                                                                                            |
 
 ### 4.1 Keyboard conventions (global)
 
-| Key | Action |
-|---|---|
-| `/` | Focus search (outside text inputs) |
-| `?` | Shortcuts dialog |
-| `Esc` | Close dialog / pause game |
-| `Enter` | Submit / confirm / next |
-| `1`–`9` | Choose option N in a ChoiceGrid |
-| `H` | Hint (when no text input is focused, or `Alt+H`) |
-| `+` / `−` / `0` | Map zoom in / out / reset |
-| Arrow keys | Map spatial focus navigation (when the map has focus) |
+| Key             | Action                                                |
+| --------------- | ----------------------------------------------------- |
+| `/`             | Focus search (outside text inputs)                    |
+| `?`             | Shortcuts dialog                                      |
+| `Esc`           | Close dialog / pause game                             |
+| `Enter`         | Submit / confirm / next                               |
+| `1`–`9`         | Choose option N in a ChoiceGrid                       |
+| `H`             | Hint (when no text input is focused, or `Alt+H`)      |
+| `+` / `−` / `0` | Map zoom in / out / reset                             |
+| Arrow keys      | Map spatial focus navigation (when the map has focus) |
 
 ## 5. Visual system
 
@@ -169,23 +169,23 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 
 ### 5.2 Design tokens
 
-| Token | Light | Dark | Use |
-|---|---|---|---|
-| `--color-bg` | `#F7F4EE` (paper) | `#12161C` | Page background |
-| `--color-surface` | `#FFFFFF` | `#1B2129` | Cards, panels |
-| `--color-text` | `#1A2433` (ink) | `#E8ECF1` | Body text |
-| `--color-text-muted` | `#5A6576` | `#9AA6B5` | Secondary text |
-| `--color-accent` | `#B4532A` (terracotta) | `#E07A4F` | Primary buttons, highlights |
-| `--color-ocean` | `#DCE8EF` | `#1A2B38` | Map water |
-| `--color-land` | `#EFE9DD` | `#2A3139` | Map land default |
-| `--color-border-map` | `#9AA3AE` | `#5B6673` | Country borders |
-| `--color-correct` | `#1F7A4D` | `#4CC38A` | Always paired with ✓ / solid fill |
-| `--color-wrong` | `#B42318` | `#F97066` | Always paired with ✕ / hatch |
-| `--color-near` | `#B7791F` | `#F0B429` | Always paired with ◐ / dots |
-| `--color-focus` | `#1D4ED8` | `#93C5FD` | 3 px focus ring |
-| `--color-text-on-accent` | `#FFFFFF` | `#12161C` | Label on an accent fill (primary button) |
-| `--color-border` | `#DDD6C8` | `#2C353F` | Decorative card and divider borders (no contrast requirement) |
-| `--color-border-strong` | `#7D8794` | `#7C8896` | Borders of inputs and buttons (≥ 3:1, WCAG 1.4.11) |
+| Token                    | Light                  | Dark      | Use                                                           |
+| ------------------------ | ---------------------- | --------- | ------------------------------------------------------------- |
+| `--color-bg`             | `#F7F4EE` (paper)      | `#12161C` | Page background                                               |
+| `--color-surface`        | `#FFFFFF`              | `#1B2129` | Cards, panels                                                 |
+| `--color-text`           | `#1A2433` (ink)        | `#E8ECF1` | Body text                                                     |
+| `--color-text-muted`     | `#5A6576`              | `#9AA6B5` | Secondary text                                                |
+| `--color-accent`         | `#B4532A` (terracotta) | `#E07A4F` | Primary buttons, highlights                                   |
+| `--color-ocean`          | `#DCE8EF`              | `#1A2B38` | Map water                                                     |
+| `--color-land`           | `#EFE9DD`              | `#2A3139` | Map land default                                              |
+| `--color-border-map`     | `#9AA3AE`              | `#5B6673` | Country borders                                               |
+| `--color-correct`        | `#1F7A4D`              | `#4CC38A` | Always paired with ✓ / solid fill                             |
+| `--color-wrong`          | `#B42318`              | `#F97066` | Always paired with ✕ / hatch                                  |
+| `--color-near`           | `#B7791F`              | `#F0B429` | Always paired with ◐ / dots                                   |
+| `--color-focus`          | `#1D4ED8`              | `#93C5FD` | 3 px focus ring                                               |
+| `--color-text-on-accent` | `#FFFFFF`              | `#12161C` | Label on an accent fill (primary button)                      |
+| `--color-border`         | `#DDD6C8`              | `#2C353F` | Decorative card and divider borders (no contrast requirement) |
+| `--color-border-strong`  | `#7D8794`              | `#7C8896` | Borders of inputs and buttons (≥ 3:1, WCAG 1.4.11)            |
 
 All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI components). Feedback colours (`correct`, `wrong`, `near`) are graphics paired with a glyph, so they need 3:1. Message text stays in `--color-text`. The focus ring is always drawn with a positive `outline-offset`, so it sits next to the page or card colour and never touches an accent fill (blue on terracotta is only about 1.3:1). Map tokens (`ocean`, `land`, `border-map`) are verified together with `GameMap` in T0.10. The CI token test verifies this ([TESTING_AND_ACCEPTANCE §3](TESTING_AND_ACCEPTANCE.md#3-platform-acceptance-criteria)).
 
@@ -205,11 +205,11 @@ All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI co
 
 ## 6. Responsive layouts
 
-| Breakpoint | Width | Layout rules |
-|---|---|---|
-| `sm` | < 640 px | Single column, bottom tab bar, game header 48 px. The map fills the available height. Input pinned above the keyboard via `visualViewport`. Bottom sheets for panels. |
-| `md` | 640–1023 px | Tablet: the map is the main area, with side panels as overlays (portrait) or a right rail of 320 px (landscape) |
-| `lg` | ≥ 1024 px | Full top nav, right rail of 360 px for game panels, max content width of 1280 px for non-map pages |
+| Breakpoint | Width       | Layout rules                                                                                                                                                          |
+| ---------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sm`       | < 640 px    | Single column, bottom tab bar, game header 48 px. The map fills the available height. Input pinned above the keyboard via `visualViewport`. Bottom sheets for panels. |
+| `md`       | 640–1023 px | Tablet: the map is the main area, with side panels as overlays (portrait) or a right rail of 320 px (landscape)                                                       |
+| `lg`       | ≥ 1024 px   | Full top nav, right rail of 360 px for game panels, max content width of 1280 px for non-map pages                                                                    |
 
 Rules: no horizontal page scroll at 320 px or wider. Touch targets ≥ 44×44 px. Maps are never inside a scrolling container on touch devices (game screens use a fixed `100dvh` layout).
 
@@ -217,11 +217,11 @@ Rules: no horizontal page scroll at 320 px or wider. Touch targets ≥ 44×44 px
 
 ### 7.1 Statistics (R1, local)
 
-| Scope | Metrics |
-|---|---|
-| Global | Rounds played, active days, time played, games tried |
-| Per game | Rounds, win/solve rate, average score, best score, average guesses (Silhouette), Fact Pin average points, trend sparkline (last 20) |
-| Per quiz PB key | Best score + time, attempts, last played |
+| Scope              | Metrics                                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Global             | Rounds played, active days, time played, games tried                                                                                     |
+| Per game           | Rounds, win/solve rate, average score, best score, average guesses (Silhouette), Fact Pin average points, trend sparkline (last 20)      |
+| Per quiz PB key    | Best score + time, attempts, last played                                                                                                 |
 | Per entity × skill | Mastery 0–1, exposures, last seen, due date ([quiz-library §11](games/quiz-library.md#11-unlimited-play-and-repeat-prevention-behavior)) |
 
 The **mastery map** on `/me` shades each country by its mean mastery across `recall`, `locate`, `flag`, `capital` and `shape`. Unplayed = no fill + "not yet played" in the tooltip.
@@ -230,43 +230,43 @@ The **mastery map** on `/me` shades each country by its mean mastery across `rec
 
 Personal only (no public leaderboard). Examples, all deterministic from local results:
 
-| ID | Name | Condition |
-|---|---|---|
-| ACH-QZ-197 | Full Atlas | Name all countries in Countries of the World (timed) |
-| ACH-QZ-CONT | Six for Six | 100% on all six continent TYPE_ALL quizzes |
-| ACH-SH-FIRST | First Look | Solve a Silhouette in 1 guess |
-| ACH-SH-50 | Shape Shifter | Solve 50 Silhouettes |
-| ACH-FP-PIN | Bullseye | Score 1000 on an exact-precision fact |
-| ACH-AE-AF | Grand Tour: Africa | Open every African country card in Atlas |
-| ACH-DC-5 | Off the Map | 5 Deep Cut-tier answers in one run |
-| ACH-MS-80 | Cartographer | Average mastery ≥ 0.8 across all 197 countries |
+| ID           | Name               | Condition                                            |
+| ------------ | ------------------ | ---------------------------------------------------- |
+| ACH-QZ-197   | Full Atlas         | Name all countries in Countries of the World (timed) |
+| ACH-QZ-CONT  | Six for Six        | 100% on all six continent TYPE_ALL quizzes           |
+| ACH-SH-FIRST | First Look         | Solve a Silhouette in 1 guess                        |
+| ACH-SH-50    | Shape Shifter      | Solve 50 Silhouettes                                 |
+| ACH-FP-PIN   | Bullseye           | Score 1000 on an exact-precision fact                |
+| ACH-AE-AF    | Grand Tour: Africa | Open every African country card in Atlas             |
+| ACH-DC-5     | Off the Map        | 5 Deep Cut-tier answers in one run                   |
+| ACH-MS-80    | Cartographer       | Average mastery ≥ 0.8 across all 197 countries       |
 
 There are about 40 achievements at R2. They are defined as declarative data and evaluated client-side after each result. **Implementation note (T2.5):** the definitions live in `apps/web/lib/achievements/defs.ts` rather than `content/achievements.yaml`, because the conditions read result shapes the app owns; 18 ship in the first cut (the Atlas, Deep Cut and Grand Tour ones arrive with those games). Practice, learn and review rounds never count. A badge is announced right after the round and listed on `/me/achievements`.
 
 ### 7.3 Streaks (R2, opt-in)
 
-- **Off by default.** When on: the streak increases on any local day with ≥ 1 completed round in *any* game (not only dailies).
+- **Off by default.** When on: the streak increases on any local day with ≥ 1 completed round in _any_ game (not only dailies).
 - **2 freeze days** are automatically banked per 14-day period. A missed day consumes a freeze silently.
 - Freeze rules as built: periods count from the first day played, each period banks 2 freezes, and at most 2 are held at once. Today never breaks a streak.
 - There are no streak-loss notifications, no guilt copy, and no streak shown in the global header. It appears only on `/me`.
 
 ## 8. System states: loading, empty, error, offline, interrupted
 
-| State | Behavior | Copy (example) |
-|---|---|---|
-| Initial load | The shell renders immediately. Game areas show skeletons after 300 ms if the content isn't ready (no flash before then). | — |
-| Content pack loading (> 1 s) | Progress bar with the size ("Loading world map · 180 KB"). The configure screen stays usable. | "Loading map data…" |
-| Pack load failure | Inline error with Retry. Other games stay available. | "We couldn't load the map data. Check your connection and try again. [Retry]" |
-| Offline (R1) | Detected via `navigator.onLine` + failed fetches. A banner says sync is paused. Games with cached packs work. Uncached games show "Available when you're back online". | "You're offline. Games you've played recently still work." |
-| Offline (R2, PWA) | The service worker (`apps/web/public/sw.js`) keeps the last good copy of every page visited, caches hashed scripts and packs, and on first load warms the game routes and R1 packs (not the 4.8 MB 10 m map, which loads on demand). All R1 games are fully playable offline after one online visit. Results are stored on the device; they queue for sync once accounts exist (T2.2). | — |
-| Empty history / stats | Explain and offer an action | "No rounds yet. Your stats appear after your first game. [Play Silhouette]" |
-| Empty search | Suggest clearing filters | §3.2 |
-| Interrupted session (reload, crash, tab closed) | Resume prompt on the game page **and** a "Continue" card on Home, for up to 7 days | "Resume *Countries of the World*? 88/197 · 6:41 left [Resume] [Discard]" |
-| Session from an older content version | Resume if that pack version is still cached or available, otherwise offer a restart | "This quiz was updated since you started. [Start again]" |
-| Server error on sync (R2) | Silent retry with backoff. After 24 h of failure, a non-blocking notice on `/me`. | "Some results haven't synced yet. They're safe on this device." |
-| Challenge link invalid or corrupted | Friendly page with a CTA | "This challenge link doesn't work. It may be incomplete. [Play Silhouette instead]" |
-| Challenge from a newer content version than cached | Fetch the required version. If it's unavailable, explain. | — |
-| Storage unavailable (private mode quota) | Play works in memory. Banner: progress won't be saved. | "Your browser isn't letting us save progress. You can still play." |
+| State                                              | Behavior                                                                                                                                                                                                                                                                                                                                                                               | Copy (example)                                                                      |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Initial load                                       | The shell renders immediately. Game areas show skeletons after 300 ms if the content isn't ready (no flash before then).                                                                                                                                                                                                                                                               | —                                                                                   |
+| Content pack loading (> 1 s)                       | Progress bar with the size ("Loading world map · 180 KB"). The configure screen stays usable.                                                                                                                                                                                                                                                                                          | "Loading map data…"                                                                 |
+| Pack load failure                                  | Inline error with Retry. Other games stay available.                                                                                                                                                                                                                                                                                                                                   | "We couldn't load the map data. Check your connection and try again. [Retry]"       |
+| Offline (R1)                                       | Detected via `navigator.onLine` + failed fetches. A banner says sync is paused. Games with cached packs work. Uncached games show "Available when you're back online".                                                                                                                                                                                                                 | "You're offline. Games you've played recently still work."                          |
+| Offline (R2, PWA)                                  | The service worker (`apps/web/public/sw.js`) keeps the last good copy of every page visited, caches hashed scripts and packs, and on first load warms the game routes and R1 packs (not the 4.8 MB 10 m map, which loads on demand). All R1 games are fully playable offline after one online visit. Results are stored on the device; they queue for sync once accounts exist (T2.2). | —                                                                                   |
+| Empty history / stats                              | Explain and offer an action                                                                                                                                                                                                                                                                                                                                                            | "No rounds yet. Your stats appear after your first game. [Play Silhouette]"         |
+| Empty search                                       | Suggest clearing filters                                                                                                                                                                                                                                                                                                                                                               | §3.2                                                                                |
+| Interrupted session (reload, crash, tab closed)    | Resume prompt on the game page **and** a "Continue" card on Home, for up to 7 days                                                                                                                                                                                                                                                                                                     | "Resume _Countries of the World_? 88/197 · 6:41 left [Resume] [Discard]"            |
+| Session from an older content version              | Resume if that pack version is still cached or available, otherwise offer a restart                                                                                                                                                                                                                                                                                                    | "This quiz was updated since you started. [Start again]"                            |
+| Server error on sync (R2)                          | Silent retry with backoff. After 24 h of failure, a non-blocking notice on `/me`.                                                                                                                                                                                                                                                                                                      | "Some results haven't synced yet. They're safe on this device."                     |
+| Challenge link invalid or corrupted                | Friendly page with a CTA                                                                                                                                                                                                                                                                                                                                                               | "This challenge link doesn't work. It may be incomplete. [Play Silhouette instead]" |
+| Challenge from a newer content version than cached | Fetch the required version. If it's unavailable, explain.                                                                                                                                                                                                                                                                                                                              | —                                                                                   |
+| Storage unavailable (private mode quota)           | Play works in memory. Banner: progress won't be saved.                                                                                                                                                                                                                                                                                                                                 | "Your browser isn't letting us save progress. You can still play."                  |
 
 ## 9. Sharing
 
@@ -293,14 +293,14 @@ meridian.example/c/SH-4KQ2-M9XD
 
 ## 11. Guest play and optional accounts
 
-| Capability | Guest (R1+) | Account (R2+) |
-|---|---|---|
-| Play every game and mode | ✅ | ✅ |
-| Stats, mastery, history, favorites, settings | ✅ local (IndexedDB) | ✅ synced |
-| Resume sessions | ✅ same device | ✅ same device. Cross-device resume of *untimed* sessions only. |
-| Achievements and streaks | ✅ local | ✅ synced |
-| Export/import data | ✅ JSON file | ✅ + server export |
-| Report problems | ✅ (optional email) | ✅ |
+| Capability                                   | Guest (R1+)          | Account (R2+)                                                   |
+| -------------------------------------------- | -------------------- | --------------------------------------------------------------- |
+| Play every game and mode                     | ✅                   | ✅                                                              |
+| Stats, mastery, history, favorites, settings | ✅ local (IndexedDB) | ✅ synced                                                       |
+| Resume sessions                              | ✅ same device       | ✅ same device. Cross-device resume of _untimed_ sessions only. |
+| Achievements and streaks                     | ✅ local             | ✅ synced                                                       |
+| Export/import data                           | ✅ JSON file         | ✅ + server export                                              |
+| Report problems                              | ✅ (optional email)  | ✅                                                              |
 
 - **Sign-in methods (R2):** email magic link + Google. No passwords.
 - **Merge on first sign-in:** local data is uploaded and merged (results union by result ID, mastery by most recent exposure, favorites union, settings: local wins with a prompt if the server already has settings).

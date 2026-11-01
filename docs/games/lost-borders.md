@@ -1,13 +1,13 @@
 # Lost Borders
 
-| Field | Value |
-|---|---|
-| Game ID | G-LB |
-| Slug / route | `/play/lost-borders` |
-| Phase | **R3**. **Gated by open question [Q-04](../OPEN_QUESTIONS_AND_RISKS.md#q-04-historical-geometry-license)** (license of the historical geometry). |
-| Inspiration | Original (Proposed) |
-| Depends on | `history.basemaps` pack (time-sliced polity geometry), `history.polities` (names and aliases with validity periods), Name Matcher, `GameMap`, `ChoiceGrid`, Repeat Guard |
-| Governing ACs | AC-LB-001 … AC-LB-013 |
+| Field         | Value                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Game ID       | G-LB                                                                                                                                                                     |
+| Slug / route  | `/play/lost-borders`                                                                                                                                                     |
+| Phase         | **R3**. **Gated by open question [Q-04](../OPEN_QUESTIONS_AND_RISKS.md#q-04-historical-geometry-license)** (license of the historical geometry).                         |
+| Inspiration   | Original (Proposed)                                                                                                                                                      |
+| Depends on    | `history.basemaps` pack (time-sliced polity geometry), `history.polities` (names and aliases with validity periods), Name Matcher, `GameMap`, `ChoiceGrid`, Repeat Guard |
+| Governing ACs | AC-LB-001 … AC-LB-013                                                                                                                                                    |
 
 ## 1. Purpose and player experience
 
@@ -24,13 +24,13 @@ Formats:
 
 ## 3. Modes and configuration
 
-| Option | Values | Default |
-|---|---|---|
-| Format | Identify, Find, Which year?, Then and now | Identify |
-| Era | Ancient, Medieval, Early modern, Modern | Mixed |
-| Region | World, a continent | World |
-| Answer style | Typed, Multiple choice | Typed (Normal), MC (Easy) |
-| Unlimited / Daily / Seeded | — | Unlimited |
+| Option                     | Values                                    | Default                   |
+| -------------------------- | ----------------------------------------- | ------------------------- |
+| Format                     | Identify, Find, Which year?, Then and now | Identify                  |
+| Era                        | Ancient, Medieval, Early modern, Modern   | Mixed                     |
+| Region                     | World, a continent                        | World                     |
+| Answer style               | Typed, Multiple choice                    | Typed (Normal), MC (Easy) |
+| Unlimited / Daily / Seeded | —                                         | Unlimited                 |
 
 ## 4. Data requirements
 
@@ -42,12 +42,17 @@ Formats:
   "id": "polity:ottoman-empire",
   "canonical": "Ottoman Empire",
   "aliases": [
-    {"text": "Ottoman Empire", "valid_from": 1299, "valid_to": 1922},
-    {"text": "Ottomans", "valid_from": 1299, "valid_to": 1922},
-    {"text": "Sublime Porte", "valid_from": 1600, "valid_to": 1922, "kind": "metonym"}
+    { "text": "Ottoman Empire", "valid_from": 1299, "valid_to": 1922 },
+    { "text": "Ottomans", "valid_from": 1299, "valid_to": 1922 },
+    { "text": "Sublime Porte", "valid_from": 1600, "valid_to": 1922, "kind": "metonym" }
   ],
-  "related_hints": [{"text": "Turkey", "message": "Close: modern Turkey is its successor state, but in {year} this was the Ottoman Empire."}],
-  "source_names": {"1600": "Ottoman Empire", "1700": "Ottoman Empire"}
+  "related_hints": [
+    {
+      "text": "Turkey",
+      "message": "Close: modern Turkey is its successor state, but in {year} this was the Ottoman Empire."
+    }
+  ],
+  "source_names": { "1600": "Ottoman Empire", "1700": "Ottoman Empire" }
 }
 ```
 
@@ -56,7 +61,7 @@ Formats:
 ## 5. Answer validation and interaction rules
 
 - **Accepted:** any alias whose validity period contains Y ± 25 years.
-- **Related hint (no credit, no attempt consumed):** if the input matches a `related_hints` entry (e.g. "Turkey" for the Ottoman Empire, "Germany" for the Holy Roman Empire in 1700, "Iran" for Safavid Persia), show the message, which teaches the difference. This is the platform's rule for **ambiguous historical answers**: a modern successor name is *not wrong in spirit* but not the answer, so it gets a teaching message and no penalty.
+- **Related hint (no credit, no attempt consumed):** if the input matches a `related_hints` entry (e.g. "Turkey" for the Ottoman Empire, "Germany" for the Holy Roman Empire in 1700, "Iran" for Safavid Persia), show the message, which teaches the difference. This is the platform's rule for **ambiguous historical answers**: a modern successor name is _not wrong in spirit_ but not the answer, so it gets a teaching message and no penalty.
 - **Anachronism:** an alias of the right polity but outside its validity window (e.g. "Byzantine Empire" for Y = 1500, after 1453) is treated as a wrong attempt with the message "In 1500, the Byzantine Empire no longer existed."
 - Uncertainty is shown: polities with `BORDERPRECISION = 1` are drawn with a blurred edge and the label "approximate borders".
 
@@ -83,12 +88,12 @@ States as in Quiz Library TYPE_PROMPTED (`prompting` → `answered`/`revealed` �
 
 ## 9. Edge cases
 
-| Case | Expected behavior |
-|---|---|
-| Polity name differs between source slices ("Mughal Empire" / "Mughal") | `source_names` mapping unifies them under one polity ID |
-| Typed modern name | `related_hints` message, no penalty |
-| Overlapping claims in the source (e.g. tributary relationships via `SUBJECTO`) | The target highlight uses the polity's own polygon. "Then and now" uses its own polygon only. |
-| A source slice with clearly wrong data reported | Report flow → editorial override (`content/overrides/history/*.yaml`) that renames or hides the polity in that slice |
+| Case                                                                           | Expected behavior                                                                                                    |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Polity name differs between source slices ("Mughal Empire" / "Mughal")         | `source_names` mapping unifies them under one polity ID                                                              |
+| Typed modern name                                                              | `related_hints` message, no penalty                                                                                  |
+| Overlapping claims in the source (e.g. tributary relationships via `SUBJECTO`) | The target highlight uses the polity's own polygon. "Then and now" uses its own polygon only.                        |
+| A source slice with clearly wrong data reported                                | Report flow → editorial override (`content/overrides/history/*.yaml`) that renames or hides the polity in that slice |
 
 ## 10. Accessibility and mobile behavior
 
@@ -100,18 +105,18 @@ Each (slice, polity) pair is a candidate round (an estimated 2,000+ across slice
 
 ## 12. Acceptance criteria
 
-| ID | Given / When / Then | Example |
-|---|---|---|
-| AC-LB-001 | Alias validity window | Y = 1600, "Ottoman Empire" accepted |
-| AC-LB-002 | Related hint is not penalized | Y = 1700 Ottoman target, "Turkey" → teaching message, attempts unchanged |
-| AC-LB-003 | Anachronism | Y = 1500, a Byzantine-alias input against an Ottoman target → wrong, with the message "no longer existed" |
-| AC-LB-004 | ±25-year tolerance | An alias valid from 1720 is accepted at Y = 1700 |
-| AC-LB-005 | Eligibility | No target with `BORDERPRECISION = 1` and area < 500,000 km² |
-| AC-LB-006 | Approximate badge | A precision-1 target shows "approximate borders" |
-| AC-LB-007 | Which year? options ≥ 100 years apart | Normal |
-| AC-LB-008 | Then and now overlap rule | A modern country with ≥ 10% overlap counts as correct |
-| AC-LB-009 | Attribution | The basemap credit and license appear on every Lost Borders screen |
-| AC-LB-010 | Determinism | Same seed → same (slice, polity) |
-| AC-LB-011 | Repeat Guard | 200 rounds → no repeated pair |
-| AC-LB-012 | Assisted text variant | Text description shown when enabled |
-| AC-LB-013 | Release gate | The build fails if the `history.basemaps` pack lacks a `license_cleared: true` manifest flag |
+| ID        | Given / When / Then                   | Example                                                                                                   |
+| --------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| AC-LB-001 | Alias validity window                 | Y = 1600, "Ottoman Empire" accepted                                                                       |
+| AC-LB-002 | Related hint is not penalized         | Y = 1700 Ottoman target, "Turkey" → teaching message, attempts unchanged                                  |
+| AC-LB-003 | Anachronism                           | Y = 1500, a Byzantine-alias input against an Ottoman target → wrong, with the message "no longer existed" |
+| AC-LB-004 | ±25-year tolerance                    | An alias valid from 1720 is accepted at Y = 1700                                                          |
+| AC-LB-005 | Eligibility                           | No target with `BORDERPRECISION = 1` and area < 500,000 km²                                               |
+| AC-LB-006 | Approximate badge                     | A precision-1 target shows "approximate borders"                                                          |
+| AC-LB-007 | Which year? options ≥ 100 years apart | Normal                                                                                                    |
+| AC-LB-008 | Then and now overlap rule             | A modern country with ≥ 10% overlap counts as correct                                                     |
+| AC-LB-009 | Attribution                           | The basemap credit and license appear on every Lost Borders screen                                        |
+| AC-LB-010 | Determinism                           | Same seed → same (slice, polity)                                                                          |
+| AC-LB-011 | Repeat Guard                          | 200 rounds → no repeated pair                                                                             |
+| AC-LB-012 | Assisted text variant                 | Text description shown when enabled                                                                       |
+| AC-LB-013 | Release gate                          | The build fails if the `history.basemaps` pack lacks a `license_cleared: true` manifest flag              |

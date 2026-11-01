@@ -1,13 +1,13 @@
 # Chronology
 
-| Field | Value |
-|---|---|
-| Game ID | G-CH |
-| Slug / route | `/play/chronology` |
-| Phase | **R3** |
-| Inspiration | Timeline-ordering games in general (e.g. Timdle, which is listed as similar on game directories; not researched in depth). Everything here is **Proposed**. |
-| Depends on | `events` pack, `OrderList`, `ChoiceGrid` (Match), Repeat Guard |
-| Governing ACs | AC-CH-001 … AC-CH-014 |
+| Field         | Value                                                                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Game ID       | G-CH                                                                                                                                                        |
+| Slug / route  | `/play/chronology`                                                                                                                                          |
+| Phase         | **R3**                                                                                                                                                      |
+| Inspiration   | Timeline-ordering games in general (e.g. Timdle, which is listed as similar on game directories; not researched in depth). Everything here is **Proposed**. |
+| Depends on    | `events` pack, `OrderList`, `ChoiceGrid` (Match), Repeat Guard                                                                                              |
+| Governing ACs | AC-CH-001 … AC-CH-014                                                                                                                                       |
 
 ## 1. Purpose and player experience
 
@@ -23,14 +23,14 @@ Three formats:
 
 ## 3. Modes and configuration
 
-| Option | Values | Default |
-|---|---|---|
-| Format | Order, Insert, Match | Order |
-| Categories | Events, Inventions & discoveries, Buildings & works, Treaties & states, People (birth year) | All |
-| Era | Ancient, Medieval, Early modern, Modern, Contemporary, Mixed | Mixed |
-| Region | World, a continent | World |
-| Difficulty | Easy, Normal, Hard | Normal |
-| Unlimited / Daily / Seeded | — | Unlimited |
+| Option                     | Values                                                                                      | Default   |
+| -------------------------- | ------------------------------------------------------------------------------------------- | --------- |
+| Format                     | Order, Insert, Match                                                                        | Order     |
+| Categories                 | Events, Inventions & discoveries, Buildings & works, Treaties & states, People (birth year) | All       |
+| Era                        | Ancient, Medieval, Early modern, Modern, Contemporary, Mixed                                | Mixed     |
+| Region                     | World, a continent                                                                          | World     |
+| Difficulty                 | Easy, Normal, Hard                                                                          | Normal    |
+| Unlimited / Daily / Seeded | —                                                                                           | Unlimited |
 
 ## 4. Data requirements
 
@@ -41,7 +41,7 @@ Three formats:
   "id": "event:printing-press-gutenberg",
   "label": "Gutenberg's movable-type printing press in use in Mainz",
   "category": "invention",
-  "date": {"start": 1450, "end": 1455, "precision": "range", "calendar": "julian"},
+  "date": { "start": 1450, "end": 1455, "precision": "range", "calendar": "julian" },
   "sort_year": 1450,
   "uncertainty_years": 5,
   "region": "continent:EU",
@@ -49,7 +49,9 @@ Three formats:
   "people": ["person:johannes-gutenberg"],
   "status": "published",
   "convention_note": null,
-  "sources": [{"title": "Wikidata Q1366", "url": "https://www.wikidata.org/wiki/Q1366", "license": "CC0"}]
+  "sources": [
+    { "title": "Wikidata Q1366", "url": "https://www.wikidata.org/wiki/Q1366", "license": "CC0" }
+  ]
 }
 ```
 
@@ -91,13 +93,13 @@ States: `arranging` → `revealed` → `next` (Order). Insert: `placing` → (`c
 
 ## 9. Edge cases
 
-| Case | Expected behavior |
-|---|---|
+| Case                                                          | Expected behavior                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Julian vs Gregorian dates (e.g. events in Russia before 1918) | `sort_year` is always proleptic Gregorian. Reveal shows "(Julian: …)" when they differ by day. Year-level ordering is unaffected unless the event is within days of a year boundary; such events are flagged `calendar_boundary` and excluded from Hard. |
-| BCE / CE boundary | Astronomical numbering ensures correct sorting. There is no year 0 in display. |
-| An event with a disputed date (e.g. a battle's year debated) | `contested` → excluded by default |
-| The player argues that two events are the same year | Impossible by construction (§5). If it happens due to a data error, the report flow tags `CHRONOLOGY_TIE` with high priority. |
-| A person's birth year uncertain ("c. 1340") | `circa` with `uncertainty_years`. Only paired with others outside that window plus the gap. |
+| BCE / CE boundary                                             | Astronomical numbering ensures correct sorting. There is no year 0 in display.                                                                                                                                                                           |
+| An event with a disputed date (e.g. a battle's year debated)  | `contested` → excluded by default                                                                                                                                                                                                                        |
+| The player argues that two events are the same year           | Impossible by construction (§5). If it happens due to a data error, the report flow tags `CHRONOLOGY_TIE` with high priority.                                                                                                                            |
+| A person's birth year uncertain ("c. 1340")                   | `circa` with `uncertainty_years`. Only paired with others outside that window plus the gap.                                                                                                                                                              |
 
 ## 10. Accessibility and mobile behavior
 
@@ -109,19 +111,19 @@ The generator samples N events satisfying the separation rule (retrying up to 20
 
 ## 12. Acceptance criteria
 
-| ID | Given / When / Then | Example |
-|---|---|---|
-| AC-CH-001 | Separation by construction | 10,000 generated Normal rounds: every pair satisfies a disjoint-interval and ≥ 20-year gap |
-| AC-CH-002 | BCE sorting | 753 BCE (−752) sorts before 44 BCE (−43) |
-| AC-CH-003 | Display has no year 0 | Astronomical 0 is displayed as "1 BCE" |
-| AC-CH-004 | Scoring | N = 6, 13/15 → 87 |
-| AC-CH-005 | Legendary excluded by default | The founding of Rome never appears unless "Include legendary dates" is on |
-| AC-CH-006 | Convention note shown | An event with `convention_note` shows it on reveal |
-| AC-CH-007 | Insert lives | 3 wrong insertions end the run, with score = correct count |
-| AC-CH-008 | Hint cost | Hint + perfect → 85 |
-| AC-CH-009 | Circa handling | A c. 1340 ± 10 event is never paired with an event in 1320–1380 on Normal |
-| AC-CH-010 | Keyboard reorder | As AC-RK-006 |
-| AC-CH-011 | Balance quota validator | The bank fails CI if any non-European continent has < 5% of events |
-| AC-CH-012 | Repeat Guard | 150 consecutive cards → no repeats |
-| AC-CH-013 | Determinism | The same seed gives the same cards |
-| AC-CH-014 | Source on reveal | Every card shows ≥ 1 source |
+| ID        | Given / When / Then           | Example                                                                                    |
+| --------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| AC-CH-001 | Separation by construction    | 10,000 generated Normal rounds: every pair satisfies a disjoint-interval and ≥ 20-year gap |
+| AC-CH-002 | BCE sorting                   | 753 BCE (−752) sorts before 44 BCE (−43)                                                   |
+| AC-CH-003 | Display has no year 0         | Astronomical 0 is displayed as "1 BCE"                                                     |
+| AC-CH-004 | Scoring                       | N = 6, 13/15 → 87                                                                          |
+| AC-CH-005 | Legendary excluded by default | The founding of Rome never appears unless "Include legendary dates" is on                  |
+| AC-CH-006 | Convention note shown         | An event with `convention_note` shows it on reveal                                         |
+| AC-CH-007 | Insert lives                  | 3 wrong insertions end the run, with score = correct count                                 |
+| AC-CH-008 | Hint cost                     | Hint + perfect → 85                                                                        |
+| AC-CH-009 | Circa handling                | A c. 1340 ± 10 event is never paired with an event in 1320–1380 on Normal                  |
+| AC-CH-010 | Keyboard reorder              | As AC-RK-006                                                                               |
+| AC-CH-011 | Balance quota validator       | The bank fails CI if any non-European continent has < 5% of events                         |
+| AC-CH-012 | Repeat Guard                  | 150 consecutive cards → no repeats                                                         |
+| AC-CH-013 | Determinism                   | The same seed gives the same cards                                                         |
+| AC-CH-014 | Source on reveal              | Every card shows ≥ 1 source                                                                |

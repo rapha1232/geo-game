@@ -36,6 +36,12 @@ entries:
     version: snapshot 2026-10-30
     sha256: 5d5d7c7758b706353edf0ab7c935e58009fc483fe4d85b54b7644b25978573be
     bytes: 52698
+  - id: wikidata-languages
+    source: wd
+    url: https://query.wikidata.org/sparql
+    version: snapshot 2026-11-01
+    sha256: 359ee7395e7c847c3de08b66a61b297df1b9bbbe65ef14b06307098b2d20e884
+    bytes: 6602
   - id: wikidata-translations
     source: wd
     url: https://query.wikidata.org/sparql

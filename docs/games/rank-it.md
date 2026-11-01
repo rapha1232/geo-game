@@ -1,13 +1,13 @@
 # Rank It
 
-| Field | Value |
-|---|---|
-| Game ID | G-RK |
-| Slug / route | `/play/rank-it` |
-| Phase | **R2** |
-| Inspiration | JetPunk ranking quizzes and Point clicker (Secondary: [REFERENCE_RESEARCH §1](../REFERENCE_RESEARCH.md#1-jetpunk)). Formats, scoring and data-gap rules are Proposed. |
-| Depends on | `indicators` pack, `OrderList` component, `ChoiceGrid`, Repeat Guard |
-| Governing ACs | AC-RK-001 … AC-RK-012 |
+| Field         | Value                                                                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Game ID       | G-RK                                                                                                                                                                  |
+| Slug / route  | `/play/rank-it`                                                                                                                                                       |
+| Phase         | **R2**                                                                                                                                                                |
+| Inspiration   | JetPunk ranking quizzes and Point clicker (Secondary: [REFERENCE_RESEARCH §1](../REFERENCE_RESEARCH.md#1-jetpunk)). Formats, scoring and data-gap rules are Proposed. |
+| Depends on    | `indicators` pack, `OrderList` component, `ChoiceGrid`, Repeat Guard                                                                                                  |
+| Governing ACs | AC-RK-001 … AC-RK-012                                                                                                                                                 |
 
 ## 1. Purpose and player experience
 
@@ -23,27 +23,27 @@ Three formats share one engine:
 
 ## 3. Modes and configuration
 
-| Option | Values | Default |
-|---|---|---|
-| Format | Order, Higher/Lower, Top Picks | Order |
-| Statistic | Population, Area, Population density, GDP per capita, Life expectancy, Highest point, Capital latitude (north → south), Random | Random |
-| Scope | World, continent | World |
-| Difficulty | Easy, Normal, Hard | Normal |
-| Unlimited / Daily / Seeded | — | Unlimited |
+| Option                     | Values                                                                                                                         | Default   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| Format                     | Order, Higher/Lower, Top Picks                                                                                                 | Order     |
+| Statistic                  | Population, Area, Population density, GDP per capita, Life expectancy, Highest point, Capital latitude (north → south), Random | Random    |
+| Scope                      | World, continent                                                                                                               | World     |
+| Difficulty                 | Easy, Normal, Hard                                                                                                             | Normal    |
+| Unlimited / Daily / Seeded | —                                                                                                                              | Unlimited |
 
 ## 4. Data requirements
 
 `indicators` records (`value`, `year`, `source_id`). Statistic definitions:
 
-| Statistic | Unit | Source (license) | Sort |
-|---|---|---|---|
-| Population | people | World Bank WDI `SP.POP.TOTL` (CC BY 4.0) | desc |
-| Area | km² | World Bank `AG.SRF.TOTL.K2` (CC BY 4.0) | desc |
-| Density | people/km² | Derived | desc |
-| GDP per capita | current US$ | World Bank `NY.GDP.PCAP.CD` | desc |
-| Life expectancy | years | World Bank `SP.DYN.LE00.IN` | desc |
-| Highest point | m | Wikidata P610 → P2044 (CC0), editorially reviewed | desc |
-| Capital latitude | ° | `core.countries` capital coordinates | north → south |
+| Statistic        | Unit        | Source (license)                                  | Sort          |
+| ---------------- | ----------- | ------------------------------------------------- | ------------- |
+| Population       | people      | World Bank WDI `SP.POP.TOTL` (CC BY 4.0)          | desc          |
+| Area             | km²         | World Bank `AG.SRF.TOTL.K2` (CC BY 4.0)           | desc          |
+| Density          | people/km²  | Derived                                           | desc          |
+| GDP per capita   | current US$ | World Bank `NY.GDP.PCAP.CD`                       | desc          |
+| Life expectancy  | years       | World Bank `SP.DYN.LE00.IN`                       | desc          |
+| Highest point    | m           | Wikidata P610 → P2044 (CC0), editorially reviewed | desc          |
+| Capital latitude | °           | `core.countries` capital coordinates              | north → south |
 
 Pool: 197 entities × 7 stats gives effectively unlimited combinations.
 
@@ -80,12 +80,12 @@ States: `arranging` → `SUBMIT` → `revealed` → `NEXT` → `arranging`.
 
 ## 9. Edge cases
 
-| Case | Expected behavior |
-|---|---|
-| A value is missing for an entity | Entity excluded from that stat's pool |
-| Different data years across entities | Allowed. The reveal footer says "Values: World Bank, latest available year (2022–2024)". |
-| Player submits without moving anything | Scored normally |
-| Values change in a content update | Stored results keep their score. History shows the original values. |
+| Case                                   | Expected behavior                                                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
+| A value is missing for an entity       | Entity excluded from that stat's pool                                                    |
+| Different data years across entities   | Allowed. The reveal footer says "Values: World Bank, latest available year (2022–2024)". |
+| Player submits without moving anything | Scored normally                                                                          |
+| Values change in a content update      | Stored results keep their score. History shows the original values.                      |
 
 ## 10. Accessibility and mobile behavior
 
@@ -97,17 +97,17 @@ The Repeat Guard excludes identical (stat, entity-set) combinations from the las
 
 ## 12. Acceptance criteria
 
-| ID | Given / When / Then | Example |
-|---|---|---|
-| AC-RK-001 | Pair scoring | A, C, B, D, E vs A > B > C > D > E → 90 |
-| AC-RK-002 | Perfect = 100 | Correct order → 100 |
-| AC-RK-003 | Reverse = 0 | E, D, C, B, A → 0 |
-| AC-RK-004 | Separation rule | Every generated Normal Order round satisfies ≥ 10% relative separation |
-| AC-RK-005 | Higher/Lower pair separation | ≥ 5% |
-| AC-RK-006 | Keyboard reorder | Space, ArrowUp, Space moves an item up one position and announces it |
-| AC-RK-007 | Source footer | The reveal includes the source and year range |
-| AC-RK-008 | Top Picks max | Picking ranks 1–5 → 15 |
-| AC-RK-009 | Hint cost | Hint used + perfect order → 80 |
-| AC-RK-010 | Log scale | Max/min > 100 → bars on a log scale with a "log scale" label |
-| AC-RK-011 | Determinism | The same seed gives the same 5 entities and stat |
-| AC-RK-012 | Missing data | An entity without a value never appears for that stat |
+| ID        | Given / When / Then          | Example                                                                |
+| --------- | ---------------------------- | ---------------------------------------------------------------------- |
+| AC-RK-001 | Pair scoring                 | A, C, B, D, E vs A > B > C > D > E → 90                                |
+| AC-RK-002 | Perfect = 100                | Correct order → 100                                                    |
+| AC-RK-003 | Reverse = 0                  | E, D, C, B, A → 0                                                      |
+| AC-RK-004 | Separation rule              | Every generated Normal Order round satisfies ≥ 10% relative separation |
+| AC-RK-005 | Higher/Lower pair separation | ≥ 5%                                                                   |
+| AC-RK-006 | Keyboard reorder             | Space, ArrowUp, Space moves an item up one position and announces it   |
+| AC-RK-007 | Source footer                | The reveal includes the source and year range                          |
+| AC-RK-008 | Top Picks max                | Picking ranks 1–5 → 15                                                 |
+| AC-RK-009 | Hint cost                    | Hint used + perfect order → 80                                         |
+| AC-RK-010 | Log scale                    | Max/min > 100 → bars on a log scale with a "log scale" label           |
+| AC-RK-011 | Determinism                  | The same seed gives the same 5 entities and stat                       |
+| AC-RK-012 | Missing data                 | An entity without a value never appears for that stat                  |

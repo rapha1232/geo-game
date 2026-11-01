@@ -1,6 +1,6 @@
 # Meridian — Product & Technical Blueprint
 
-> **Working title:** *Meridian* (see [OPEN_QUESTIONS_AND_RISKS.md](OPEN_QUESTIONS_AND_RISKS.md#q-01-brand-name) — the name has not been trademark-checked).
+> **Working title:** _Meridian_ (see [OPEN_QUESTIONS_AND_RISKS.md](OPEN_QUESTIONS_AND_RISKS.md#q-01-brand-name) — the name has not been trademark-checked).
 
 Meridian is a geography, history and general-knowledge game platform built around **unlimited replayability**. Every game can be played endlessly with fresh, non-repeating puzzles. Daily challenges exist only as an optional extra. One shell ties the games together: navigation, settings, a local-first profile, statistics and a shared visual language.
 
@@ -8,13 +8,13 @@ This directory is the **implementation blueprint**. It contains specifications, 
 
 ## Product summary
 
-| Area | Summary |
-|---|---|
-| Core promise | Play as long as you like. Choose a topic, configure the session, and get a new non-repeating puzzle every time. |
-| Game families | Quiz Library (JetPunk-style typed, map and choice quizzes), Silhouette (shape deduction), Fact Pin (pin a fact on the map), Atlas Explorer (interactive fact map), Deep Cut (find the rare correct answer), Border Run, Rank It, Chronology, Lost Borders, Knowledge Run |
-| Accounts | Optional. Everything works for guests, with progress stored on the device. Accounts (Phase 2) add cross-device sync. |
-| First release (R1) | Platform shell plus three distinct games: **Quiz Library** (countries, capitals, flags, continents), **Silhouette** and **Fact Pin**. See [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md#phase-1--first-playable-release-r1). |
-| Stack | TypeScript monorepo: Next.js (React) web app, pure-TS game engines, d3-geo map renderer, static versioned content packs, Postgres (only for accounts, results and reports). See [ARCHITECTURE.md](ARCHITECTURE.md). |
+| Area               | Summary                                                                                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Core promise       | Play as long as you like. Choose a topic, configure the session, and get a new non-repeating puzzle every time.                                                                                                                                                          |
+| Game families      | Quiz Library (JetPunk-style typed, map and choice quizzes), Silhouette (shape deduction), Fact Pin (pin a fact on the map), Atlas Explorer (interactive fact map), Deep Cut (find the rare correct answer), Border Run, Rank It, Chronology, Lost Borders, Knowledge Run |
+| Accounts           | Optional. Everything works for guests, with progress stored on the device. Accounts (Phase 2) add cross-device sync.                                                                                                                                                     |
+| First release (R1) | Platform shell plus three distinct games: **Quiz Library** (countries, capitals, flags, continents), **Silhouette** and **Fact Pin**. See [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md#phase-1--first-playable-release-r1).                                     |
+| Stack              | TypeScript monorepo: Next.js (React) web app, pure-TS game engines, d3-geo map renderer, static versioned content packs, Postgres (only for accounts, results and reports). See [ARCHITECTURE.md](ARCHITECTURE.md).                                                      |
 
 ## Reading order
 
@@ -45,14 +45,14 @@ This directory is the **implementation blueprint**. It contains specifications, 
 
 ## Conventions used in these documents
 
-| Convention | Meaning |
-|---|---|
-| **R1 / R2 / R3 / R4** | Release phases. R1 is the first playable public release. Every feature names its phase. |
-| `AC-XX-NNN` | Acceptance-criterion ID. Game ACs live in each game spec; platform ACs live in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md). |
-| `T<phase>.<n>` | Roadmap task ID in [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md). |
-| `country:FRA` | Stable entity ID (see [DATA_MODEL.md](DATA_MODEL.md#stable-identifiers)). |
-| **MUST / SHOULD / MAY** | RFC 2119 requirement levels. |
-| *Observed* vs *Proposed* | In research and game specs, *Observed* means verified on a reference product. *Proposed* means new to Meridian. |
+| Convention               | Meaning                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **R1 / R2 / R3 / R4**    | Release phases. R1 is the first playable public release. Every feature names its phase.                                                |
+| `AC-XX-NNN`              | Acceptance-criterion ID. Game ACs live in each game spec; platform ACs live in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md). |
+| `T<phase>.<n>`           | Roadmap task ID in [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md).                                                             |
+| `country:FRA`            | Stable entity ID (see [DATA_MODEL.md](DATA_MODEL.md#stable-identifiers)).                                                              |
+| **MUST / SHOULD / MAY**  | RFC 2119 requirement levels.                                                                                                           |
+| _Observed_ vs _Proposed_ | In research and game specs, _Observed_ means verified on a reference product. _Proposed_ means new to Meridian.                        |
 
 ## Repository workflow
 

@@ -274,6 +274,29 @@ export function indicatorRules(c: ContentSet): Issue[] {
   return issues;
 }
 
+/** DEEPCUT_BOUNDS (AC-DC-009): every prompt has 4 to 30 answers, all real countries, each with a rarity prior. */
+export function deepcutRules(c: ContentSet): Issue[] {
+  if (!c.deepcut) return [];
+  const known = new Set(c.entities.map((e) => e.id));
+  const issues: Issue[] = [];
+  const seen = new Set<string>();
+  const bad = (ref: string, message: string): void => {
+    issues.push({ code: "DEEPCUT_BOUNDS", level: "error", ref, message: `${ref}: ${message}` });
+  };
+  for (const p of c.deepcut) {
+    if (seen.has(p.id)) bad(p.id, "listed twice");
+    seen.add(p.id);
+    if (p.answers.length < 4 || p.answers.length > 30)
+      bad(p.id, `${p.answers.length} answers, the allowed range is 4 to 30`);
+    for (const id of p.answers) {
+      if (!known.has(id)) bad(p.id, `${id} is not an entity`);
+      const o = p.rarity_prior[id];
+      if (o === undefined || o < 0 || o > 1) bad(p.id, `${id} has no rarity prior in [0, 1]`);
+    }
+  }
+  return issues;
+}
+
 /** Entity-type rank used by FACT_NAMES_TARGET: facts at one precision may not name entities at the same rank. */
 const PRECISION_TYPES: Record<Fact["precision"], readonly string[]> = {
   exact: ["place", "city", "feature"],

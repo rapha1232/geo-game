@@ -6,38 +6,38 @@ The repository `rapha1232/geo-game` was **empty** when this blueprint was writte
 
 ## 2. Architectural drivers
 
-| Driver | Consequence |
-|---|---|
-| Unlimited, instant replay | Puzzle generation runs **client-side** from cached content packs, with no network per round |
-| Guest-first and offline-tolerant | Local-first persistence (IndexedDB). The server is optional for core play. |
-| Reproducible challenges | A seeded PRNG plus versioned, immutable content packs |
-| Map-heavy UI with accessibility | A custom map component over d3-geo (full control of hit testing, patterns and keyboard navigation) |
-| Small team or a coding agent | One language (TypeScript), one repository, managed hosting, few moving parts |
-| Data quality | A deterministic content pipeline with a validator and git-based editorial overrides |
+| Driver                           | Consequence                                                                                        |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Unlimited, instant replay        | Puzzle generation runs **client-side** from cached content packs, with no network per round        |
+| Guest-first and offline-tolerant | Local-first persistence (IndexedDB). The server is optional for core play.                         |
+| Reproducible challenges          | A seeded PRNG plus versioned, immutable content packs                                              |
+| Map-heavy UI with accessibility  | A custom map component over d3-geo (full control of hit testing, patterns and keyboard navigation) |
+| Small team or a coding agent     | One language (TypeScript), one repository, managed hosting, few moving parts                       |
+| Data quality                     | A deterministic content pipeline with a validator and git-based editorial overrides                |
 
 ## 3. Recommended stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Language | **TypeScript** (strict), Node 22 LTS | One language from pipeline to UI. Shared schemas. |
-| Monorepo | **pnpm** workspaces + **Turborepo** | Fast installs, task caching, clear package boundaries |
-| Web framework | **Next.js 15** (App Router) + **React 19** | Static generation for catalog and info pages, route handlers for a small API, first-class Vercel deploys |
-| UI primitives | **React Aria Components** | Accessible combobox, listbox, dialog and drag-and-drop reorder with keyboard support built in |
-| Styling | CSS Modules + CSS custom-property tokens ([UX_AND_DESIGN §5](UX_AND_DESIGN.md#5-visual-system)) | Full control of the design system. No runtime CSS-in-JS cost. |
-| Client state | Pure TS game reducers + **Zustand** stores | Engines are framework-free and unit-testable. Zustand is a thin bridge to React. |
-| Local persistence | **IndexedDB** via **Dexie** | Structured, sizable and async. Holds sessions, results, mastery and history. |
-| Server state (R2) | **TanStack Query** | Sync status, caching and retries |
-| Map | **d3-geo**, **d3-zoom**, **topojson-client**, **flatbush** (spatial index), **polylabel** | Projection control (Equal Earth, azimuthal equal-area), small bundle, no tile server |
-| Content pipeline | Node scripts + **mapshaper** (simplification) + **topojson-server** + **zod** | Deterministic builds from pinned sources |
-| Database | **PostgreSQL 16** on **Neon** (serverless, preview branches) | Only for accounts, synced results, reports, challenges and telemetry |
-| ORM / migrations | **Drizzle ORM** + drizzle-kit | Type-safe, SQL-first, light |
-| Auth (R2) | **Auth.js v5** (email magic link via Resend + Google OAuth), database sessions | No passwords. Guest-first. |
-| Validation | **zod** schemas in `packages/schemas` | One source for pack, API and DB-boundary validation |
-| Hosting | **Vercel** (web + API; no cron on the free plan), **Vercel Blob** (content packs) | Previews per PR. Immutable versioned assets on a CDN. |
-| Testing | **Vitest**, **fast-check**, **Playwright**, **@axe-core/playwright**, **Lighthouse CI** | [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md) |
-| CI | **GitHub Actions** | Lint, typecheck, test, content validation, preview deploy |
-| Analytics | Cookieless aggregate analytics (Vercel Web Analytics) | Product metrics without personal tracking |
-| Errors | Sentry (browser + server), PII scrubbing on | Crash visibility |
+| Layer             | Choice                                                                                          | Why                                                                                                      |
+| ----------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Language          | **TypeScript** (strict), Node 22 LTS                                                            | One language from pipeline to UI. Shared schemas.                                                        |
+| Monorepo          | **pnpm** workspaces + **Turborepo**                                                             | Fast installs, task caching, clear package boundaries                                                    |
+| Web framework     | **Next.js 15** (App Router) + **React 19**                                                      | Static generation for catalog and info pages, route handlers for a small API, first-class Vercel deploys |
+| UI primitives     | **React Aria Components**                                                                       | Accessible combobox, listbox, dialog and drag-and-drop reorder with keyboard support built in            |
+| Styling           | CSS Modules + CSS custom-property tokens ([UX_AND_DESIGN §5](UX_AND_DESIGN.md#5-visual-system)) | Full control of the design system. No runtime CSS-in-JS cost.                                            |
+| Client state      | Pure TS game reducers + **Zustand** stores                                                      | Engines are framework-free and unit-testable. Zustand is a thin bridge to React.                         |
+| Local persistence | **IndexedDB** via **Dexie**                                                                     | Structured, sizable and async. Holds sessions, results, mastery and history.                             |
+| Server state (R2) | **TanStack Query**                                                                              | Sync status, caching and retries                                                                         |
+| Map               | **d3-geo**, **d3-zoom**, **topojson-client**, **flatbush** (spatial index), **polylabel**       | Projection control (Equal Earth, azimuthal equal-area), small bundle, no tile server                     |
+| Content pipeline  | Node scripts + **mapshaper** (simplification) + **topojson-server** + **zod**                   | Deterministic builds from pinned sources                                                                 |
+| Database          | **PostgreSQL 16** on **Neon** (serverless, preview branches)                                    | Only for accounts, synced results, reports, challenges and telemetry                                     |
+| ORM / migrations  | **Drizzle ORM** + drizzle-kit                                                                   | Type-safe, SQL-first, light                                                                              |
+| Auth (R2)         | **Auth.js v5** (email magic link via Resend + Google OAuth), database sessions                  | No passwords. Guest-first.                                                                               |
+| Validation        | **zod** schemas in `packages/schemas`                                                           | One source for pack, API and DB-boundary validation                                                      |
+| Hosting           | **Vercel** (web + API; no cron on the free plan), **Vercel Blob** (content packs)               | Previews per PR. Immutable versioned assets on a CDN.                                                    |
+| Testing           | **Vitest**, **fast-check**, **Playwright**, **@axe-core/playwright**, **Lighthouse CI**         | [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md)                                                   |
+| CI                | **GitHub Actions**                                                                              | Lint, typecheck, test, content validation, preview deploy                                                |
+| Analytics         | Cookieless aggregate analytics (Vercel Web Analytics)                                           | Product metrics without personal tracking                                                                |
+| Errors            | Sentry (browser + server), PII scrubbing on                                                     | Crash visibility                                                                                         |
 
 ## 4. System overview and boundaries
 
@@ -73,15 +73,15 @@ graph TB
   GH -->|read aggregates| DB
 ```
 
-| Responsibility | Client | Server |
-|---|---|---|
-| Puzzle generation, validation, scoring | ✅ (authoritative for personal play) | ❌ |
-| Content | Reads packs | Serves static packs (CDN) |
-| Guest progress | ✅ IndexedDB | ❌ |
-| Account progress (R2) | Cache + sync queue | ✅ Postgres (source of truth for signed-in users) |
-| Challenge short codes | Generates long codes locally | Stores short-code → long-code mappings |
-| Reports | Submits | Stores, triages (admin) |
-| Telemetry aggregates (R2) | Sends anonymous answer events | Aggregates nightly |
+| Responsibility                         | Client                               | Server                                            |
+| -------------------------------------- | ------------------------------------ | ------------------------------------------------- |
+| Puzzle generation, validation, scoring | ✅ (authoritative for personal play) | ❌                                                |
+| Content                                | Reads packs                          | Serves static packs (CDN)                         |
+| Guest progress                         | ✅ IndexedDB                         | ❌                                                |
+| Account progress (R2)                  | Cache + sync queue                   | ✅ Postgres (source of truth for signed-in users) |
+| Challenge short codes                  | Generates long codes locally         | Stores short-code → long-code mappings            |
+| Reports                                | Submits                              | Stores, triages (admin)                           |
+| Telemetry aggregates (R2)              | Sends anonymous answer events        | Aggregates nightly                                |
 
 **Trust model:** with no public leaderboards, client-side scoring is acceptable. The server never ranks players. Results uploaded to an account are validated only for schema and plausibility (e.g. score ≤ max), not re-simulated. If competitive features are ever added, server-side verification by replaying the seed and event log becomes necessary. The event log is already recorded to make that possible ([DATA_MODEL §3](DATA_MODEL.md#3-database-schema-postgres)).
 
@@ -118,13 +118,19 @@ Every game engine exports pure functions:
 ```ts
 // Contract example (illustrative signatures, not implementation)
 type Engine<Config, State, Event, Result> = {
-  generate(config: Config, seed: Seed, ctx: GenContext): State;        // deterministic
-  reduce(state: State, event: Event, now: MonoTime): State;            // pure
+  generate(config: Config, seed: Seed, ctx: GenContext): State; // deterministic
+  reduce(state: State, event: Event, now: MonoTime): State; // pure
   isTerminal(state: State): boolean;
-  result(state: State): Result;                                        // scoring
-  serialize(state: State): JsonValue; deserialize(json: JsonValue): State;
+  result(state: State): Result; // scoring
+  serialize(state: State): JsonValue;
+  deserialize(json: JsonValue): State;
 };
-type GenContext = { packs: LoadedPacks; history: RepeatHistory; mastery?: MasterySnapshot; contentVersion: string };
+type GenContext = {
+  packs: LoadedPacks;
+  history: RepeatHistory;
+  mastery?: MasterySnapshot;
+  contentVersion: string;
+};
 ```
 
 A React screen subscribes to a Zustand store wrapping `reduce`. Every dispatched event is (a) applied, (b) appended to the session's event log, and (c) persisted (§9).
@@ -133,41 +139,41 @@ A React screen subscribes to a Zustand store wrapping `reduce`. Every dispatched
 
 Each game registers a `GameModule` in `apps/web/games/registry.ts`:
 
-| Member | Purpose |
-|---|---|
-| `id`, `slug`, `phase`, `title`, `pitch`, `tags` | Catalog and search |
-| `requiredPacks(config)` | Which packs to load (so the loader can prefetch) |
-| `configSchema` (zod) + `defaultConfig` | Configuration and challenge-code encoding |
-| `engine` | §5.2 |
-| `Screen` (lazy React component) | The play UI |
-| `ResultView` | Fills the slots of the shared `ResultSummary` |
-| `microRound?` | `(seed, difficulty) => MicroRoundState` for Knowledge Run (R3) |
-| `masterySkills` | Which skills results update (`recall`, `locate`, `flag`, `capital`, `shape`, …) |
-| `dailySchedulePack?` | Name of the schedule pack if the game supports Daily |
+| Member                                          | Purpose                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `id`, `slug`, `phase`, `title`, `pitch`, `tags` | Catalog and search                                                              |
+| `requiredPacks(config)`                         | Which packs to load (so the loader can prefetch)                                |
+| `configSchema` (zod) + `defaultConfig`          | Configuration and challenge-code encoding                                       |
+| `engine`                                        | §5.2                                                                            |
+| `Screen` (lazy React component)                 | The play UI                                                                     |
+| `ResultView`                                    | Fills the slots of the shared `ResultSummary`                                   |
+| `microRound?`                                   | `(seed, difficulty) => MicroRoundState` for Knowledge Run (R3)                  |
+| `masterySkills`                                 | Which skills results update (`recall`, `locate`, `flag`, `capital`, `shape`, …) |
+| `dailySchedulePack?`                            | Name of the schedule pack if the game supports Daily                            |
 
 ## 6. Map rendering, geometry, projections and asset delivery
 
 ### 6.1 Geometry packs
 
-| Pack | Source | Simplification | Format | Size budget (gzip) | Loaded when |
-|---|---|---|---|---|---|
-| `geo.world.110m` | NE 1:110m admin-0 map units + tiny-entity points | none beyond NE | TopoJSON, quantized 1e5 | ≤ 110 KB (measured 102 KB with the real data at 1e5 quantization; 90 KB was an estimate) | Any world map at zoom < 3 |
-| `geo.world.50m` | NE 1:50m | none | TopoJSON 1e5 | ≤ 450 KB | Zoom ≥ 3, or continent-scope maps (tiles by continent: ≤ 120 KB each) |
-| `geo.world.10m` | NE 1:10m | mapshaper Visvalingam to 12% | TopoJSON 1e6, **split by continent** | ≤ 250 KB per continent | Zoom ≥ 7. Fact Pin scoring (point-in-polygon). |
-| `geo.silhouettes` | From 10m main groups (§silhouette 5.4) | 15% | Per-entity TopoJSON objects, bundled by continent | ≤ 80 KB per continent | Silhouette |
-| `geo.admin1.<ISO>` (R2) | NE admin-1 or geoBoundaries gbOpen | 10–20% | TopoJSON per country | ≤ 150 KB each | Subdivision quizzes |
-| `history.basemaps.<year>` (R3) | historical-basemaps | 15% | TopoJSON per slice | ≤ 200 KB each | Lost Borders |
+| Pack                           | Source                                           | Simplification               | Format                                            | Size budget (gzip)                                                                       | Loaded when                                                           |
+| ------------------------------ | ------------------------------------------------ | ---------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `geo.world.110m`               | NE 1:110m admin-0 map units + tiny-entity points | none beyond NE               | TopoJSON, quantized 1e5                           | ≤ 110 KB (measured 102 KB with the real data at 1e5 quantization; 90 KB was an estimate) | Any world map at zoom < 3                                             |
+| `geo.world.50m`                | NE 1:50m                                         | none                         | TopoJSON 1e5                                      | ≤ 450 KB                                                                                 | Zoom ≥ 3, or continent-scope maps (tiles by continent: ≤ 120 KB each) |
+| `geo.world.10m`                | NE 1:10m                                         | mapshaper Visvalingam to 12% | TopoJSON 1e6, **split by continent**              | ≤ 250 KB per continent                                                                   | Zoom ≥ 7. Fact Pin scoring (point-in-polygon).                        |
+| `geo.silhouettes`              | From 10m main groups (§silhouette 5.4)           | 15%                          | Per-entity TopoJSON objects, bundled by continent | ≤ 80 KB per continent                                                                    | Silhouette                                                            |
+| `geo.admin1.<ISO>` (R2)        | NE admin-1 or geoBoundaries gbOpen               | 10–20%                       | TopoJSON per country                              | ≤ 150 KB each                                                                            | Subdivision quizzes                                                   |
+| `history.basemaps.<year>` (R3) | historical-basemaps                              | 15%                          | TopoJSON per slice                                | ≤ 200 KB each                                                                            | Lost Borders                                                          |
 
 All geometry is WGS84 lon/lat. The pipeline fixes winding order, removes slivers under 0.5 km², and validates antimeridian handling (features crossing ±180° are kept as single features with longitudes beyond 180 converted to d3's spherical representation, and tested in AC-FP-008 and AC-SH-003).
 
 ### 6.2 Projections
 
-| Use | Projection | Notes |
-|---|---|---|
-| World maps (quiz, Fact Pin, Atlas) | **Equal Earth** (`d3.geoEqualEarth`) | Equal-area, so sizes are honest, and it looks good |
-| Continent and regional maps | Lambert azimuthal equal-area centered on the region, or conic equal-area for mid-latitudes | Defined per scope in `content/map-views.yaml` |
-| Silhouette | Azimuthal equal-area centered on the shape | [silhouette §5.4](games/silhouette.md#54-silhouette-geometry-rules-islands-overseas-territories-multipart-shapes) |
-| Atlas globe (R3) | Orthographic | Optional view |
+| Use                                | Projection                                                                                 | Notes                                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| World maps (quiz, Fact Pin, Atlas) | **Equal Earth** (`d3.geoEqualEarth`)                                                       | Equal-area, so sizes are honest, and it looks good                                                                |
+| Continent and regional maps        | Lambert azimuthal equal-area centered on the region, or conic equal-area for mid-latitudes | Defined per scope in `content/map-views.yaml`                                                                     |
+| Silhouette                         | Azimuthal equal-area centered on the shape                                                 | [silhouette §5.4](games/silhouette.md#54-silhouette-geometry-rules-islands-overseas-territories-multipart-shapes) |
+| Atlas globe (R3)                   | Orthographic                                                                               | Optional view                                                                                                     |
 
 Mercator is not used, because it distorts size and polar regions.
 
@@ -190,6 +196,7 @@ Mercator is not used, because it distorts size and polar regions.
 ## 7. Content pipeline (technical)
 
 Steps and rules are in [DATA_AND_CONTENT §3](DATA_AND_CONTENT.md#3-content-pipeline) and §10. Technically:
+
 - `pnpm content:fetch [--update-lock] [--wikidata]` downloads and pins the sources. `pnpm content:build [--version V] [--out DIR]` runs the steps. Outputs go to `dist/content/<version>/` (`content/version.txt` holds the default version). Building twice gives byte-identical packs, which the test suite checks on fixtures and, when `data/raw` is present, on all 197 countries.
 - `pnpm content:validate` runs the validators only (fast, for editor PRs).
 - CI (`content.yml`) runs on changes to `content/**`, `tools/content-pipeline/**` or `data/sources.lock.yaml`: build → validate → determinism check (build twice, compare hashes) → upload to Blob under a **preview version** (`pr-<n>`). On merge to `main`: release `YYYY.MM.N`, upload, and update `manifest.json`.
@@ -201,7 +208,7 @@ Steps and rules are in [DATA_AND_CONTENT §3](DATA_AND_CONTENT.md#3-content-pipe
 - **Seed:** 10 characters of Crockford base32 (50 bits), e.g. `K7Q2M9XD1A`. Generated with `crypto.getRandomValues`.
 - **PRNG:** `sfc32`, initialized from `cyrb128(seed + "|" + gameId + "|" + stableConfigHash)`. This is deterministic across browsers (32-bit integer math only, with no `Math.random` and no floating-point-dependent branching in selection).
 - **Sub-streams:** `rng.fork("items")`, `rng.fork("distractors")`, … derive independent streams by hashing the label into the state, so adding a new random choice later doesn't shift existing streams.
-- **Normative details:** cyrb128 is the standard 4×32-bit variant over UTF-16 code units. sfc32 runs 15 warm-up rounds before the first output. A fork's key is `<parent key>/<label>` (the parent's *key*, not its current state), so a fork never depends on how many values the parent has drawn. `configHash` is the first cyrb128 word as 8 lowercase hex characters. Golden vectors: `packages/game-kit/test/prng.golden.json`, cross-checked against an independent Python implementation.
+- **Normative details:** cyrb128 is the standard 4×32-bit variant over UTF-16 code units. sfc32 runs 15 warm-up rounds before the first output. A fork's key is `<parent key>/<label>` (the parent's _key_, not its current state), so a fork never depends on how many values the parent has drawn. `configHash` is the first cyrb128 word as 8 lowercase hex characters. Golden vectors: `packages/game-kit/test/prng.golden.json`, cross-checked against an independent Python implementation.
 - **Stable config hash:** canonical JSON (sorted keys) of the config → `cyrb128` → hex.
 - **Shuffles:** Fisher–Yates using the stream's `nextUint32() % n`, with rejection sampling to avoid modulo bias.
 
@@ -211,7 +218,7 @@ A shared utility with per-game rules:
 
 ```ts
 type RepeatRules = {
-  windowSize: number | ((poolSize: number) => number);   // exclude last N targets
+  windowSize: number | ((poolSize: number) => number); // exclude last N targets
   extraWindows?: { predicate: (id) => boolean; size: number }[]; // e.g. small countries: 7
   downWeight?: { predicate: (id, prev) => boolean; factor: number }[]; // e.g. same continent ×0.3
   relax: "halve-window" | "reset-oldest-half";
@@ -219,7 +226,7 @@ type RepeatRules = {
 ```
 
 - History is a ring buffer of up to 500 target IDs per `(gameId, poolKey)` in IndexedDB (synced in R2).
-- Seeded challenges and dailies **ignore** personal history (so they are identical for everyone) but apply the rules *within* the generated sequence.
+- Seeded challenges and dailies **ignore** personal history (so they are identical for everyone) but apply the rules _within_ the generated sequence.
 - Selection never fails. If the eligible set is empty, the rules are relaxed according to `relax`, and the relaxation is logged in the session (`guardRelaxed: true`).
 
 ### 8.3 Difficulty calibration
@@ -271,15 +278,15 @@ sequenceDiagram
 
 ## 10. Background jobs
 
-| Job | Schedule | Phase | Action |
-|---|---|---|---|
-| `aggregate-telemetry` | Opportunistic: on telemetry ingest, at most hourly per instance (no cron on the free plan) | R2 | Roll raw `answer_events` into `calibration_stats`. Delete raw events older than 90 days. |
-| `content-calibration-release` | Manual (`pnpm` script; no scheduled CI) | R2 | Pipeline reads `calibration_stats` (read-only role) and builds a patch release if the changes are significant (any tier change or a difficulty shift > 0.05) |
-| `report-dedupe` | On report submission, at most hourly per instance | R1 | Group duplicate reports |
-| `fact-review-due` | Weekly | R1 | Open a GitHub issue listing facts within 30 days of `review_due` |
-| `daily-schedule-extend` | Monthly | R1 | Ensure ≥ 365 days of schedule (an automated content PR) |
-| `expire-challenges` | Weekly | R1 | Remove short codes unused for more than 2 years |
-| `retro-rulings` | On ruling | R3 | Apply Deep Cut ruling credits to stored account results |
+| Job                           | Schedule                                                                                   | Phase | Action                                                                                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `aggregate-telemetry`         | Opportunistic: on telemetry ingest, at most hourly per instance (no cron on the free plan) | R2    | Roll raw `answer_events` into `calibration_stats`. Delete raw events older than 90 days.                                                                     |
+| `content-calibration-release` | Manual (`pnpm` script; no scheduled CI)                                                    | R2    | Pipeline reads `calibration_stats` (read-only role) and builds a patch release if the changes are significant (any tier change or a difficulty shift > 0.05) |
+| `report-dedupe`               | On report submission, at most hourly per instance                                          | R1    | Group duplicate reports                                                                                                                                      |
+| `fact-review-due`             | Weekly                                                                                     | R1    | Open a GitHub issue listing facts within 30 days of `review_due`                                                                                             |
+| `daily-schedule-extend`       | Monthly                                                                                    | R1    | Ensure ≥ 365 days of schedule (an automated content PR)                                                                                                      |
+| `expire-challenges`           | Weekly                                                                                     | R1    | Remove short codes unused for more than 2 years                                                                                                              |
+| `retro-rulings`               | On ruling                                                                                  | R3    | Apply Deep Cut ruling credits to stored account results                                                                                                      |
 
 ## 11. Testing and deployment (summary)
 
@@ -292,36 +299,36 @@ The full strategy is in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md).
 
 ## 12. Security and privacy
 
-| Area | Requirement |
-|---|---|
-| Transport | HTTPS only, HSTS (`max-age=63072000; includeSubDomains; preload`) |
-| CSP | `default-src 'self'; script-src 'self' 'nonce-…' 'strict-dynamic'; style-src 'self' 'nonce-…'; style-src-attr 'unsafe-inline'; img-src 'self' data: <blob-host>; connect-src 'self' <blob-host> <analytics>; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'`. React Aria injects one small `<style>` and reads the nonce from `<meta name="csp-nonce">`, and components set inline `style` attributes, hence the nonce and `style-src-attr`. A per-request nonce makes pages render on demand instead of being prerendered, which is a deliberate cost of AC-PL-025 |
-| Input validation | zod on every API input. Size limits: JSON body ≤ 64 KB (results batch ≤ 512 KB). |
-| Rate limiting | Vercel WAF rules: `/api/v1/reports` 10/min/IP, `/api/v1/challenges` 30/min/IP, telemetry 120/min/IP, auth endpoints 10/min/IP. 429s include `Retry-After`. |
-| Auth (R2) | Auth.js database sessions, cookies `HttpOnly; Secure; SameSite=Lax`, CSRF protection on mutations, magic links single-use with a 15-minute expiry |
-| Authorization | User data is scoped by `user_id` in every query (a repository-layer helper). Admin routes (R3) require `role ∈ {editor, senior_editor, maintainer}`. |
-| Abuse | Report text is stored and rendered as plain text, never as HTML. Basic profanity and spam heuristics flag reports for review. |
-| Privacy: guests | No cookies. No personal data leaves the device except optional reports (with an optional email) and anonymous telemetry (R2; random per-session ID, no IP storage, opt-out in Settings). |
-| Privacy: accounts | Store email, optional display name and game data only. Self-service export (JSON) and deletion (hard-delete within 24 h, backups expire in 30 days). |
-| Retention | Raw telemetry 90 days. Reports 2 years. Challenge short codes 2 years after last use. |
-| Secrets | Vercel environment variables only. Never in the repository. Rotated on staff change. |
-| Dependencies | Renovate weekly, `pnpm audit` in CI (high severity blocks), lockfile committed |
-| Legal pages | `/about/privacy` and `/about/sources` (license attributions) are required for R1 |
+| Area              | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Transport         | HTTPS only, HSTS (`max-age=63072000; includeSubDomains; preload`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| CSP               | `default-src 'self'; script-src 'self' 'nonce-…' 'strict-dynamic'; style-src 'self' 'nonce-…'; style-src-attr 'unsafe-inline'; img-src 'self' data: <blob-host>; connect-src 'self' <blob-host> <analytics>; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'`. React Aria injects one small `<style>` and reads the nonce from `<meta name="csp-nonce">`, and components set inline `style` attributes, hence the nonce and `style-src-attr`. A per-request nonce makes pages render on demand instead of being prerendered, which is a deliberate cost of AC-PL-025 |
+| Input validation  | zod on every API input. Size limits: JSON body ≤ 64 KB (results batch ≤ 512 KB).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Rate limiting     | Vercel WAF rules: `/api/v1/reports` 10/min/IP, `/api/v1/challenges` 30/min/IP, telemetry 120/min/IP, auth endpoints 10/min/IP. 429s include `Retry-After`.                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Auth (R2)         | Auth.js database sessions, cookies `HttpOnly; Secure; SameSite=Lax`, CSRF protection on mutations, magic links single-use with a 15-minute expiry                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Authorization     | User data is scoped by `user_id` in every query (a repository-layer helper). Admin routes (R3) require `role ∈ {editor, senior_editor, maintainer}`.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Abuse             | Report text is stored and rendered as plain text, never as HTML. Basic profanity and spam heuristics flag reports for review.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Privacy: guests   | No cookies. No personal data leaves the device except optional reports (with an optional email) and anonymous telemetry (R2; random per-session ID, no IP storage, opt-out in Settings).                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Privacy: accounts | Store email, optional display name and game data only. Self-service export (JSON) and deletion (hard-delete within 24 h, backups expire in 30 days).                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Retention         | Raw telemetry 90 days. Reports 2 years. Challenge short codes 2 years after last use.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Secrets           | Vercel environment variables only. Never in the repository. Rotated on staff change.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Dependencies      | Renovate weekly, `pnpm audit` in CI (high severity blocks), lockfile committed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Legal pages       | `/about/privacy` and `/about/sources` (license attributions) are required for R1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## 13. Performance targets
 
-| Metric | Target | Measured by |
-|---|---|---|
-| LCP (p75, mobile, 4G) | ≤ 2.5 s on Home and the game hubs | Lighthouse CI (Moto G Power profile) + field analytics |
-| INP (p75) | ≤ 200 ms | Field analytics |
-| CLS | ≤ 0.1 | Lighthouse CI |
-| Initial JS (shell route) | ≤ 170 KB gzip | `pnpm --filter @meridian/web budget` (Home's chunks, after `build`) |
-| Per-game chunk | ≤ 120 KB gzip (excluding packs): the route's JS beyond the shell's chunks | `pnpm --filter @meridian/web budget` |
-| Name Matcher keystroke (exact) | ≤ 2 ms p95 for a 300-entity universe with about 3,000 aliases | Vitest bench |
-| Fuzzy match on submit | ≤ 20 ms p95 | Vitest bench |
-| Next-round generation | ≤ 50 ms typical, ≤ 300 ms max (packs cached) | Playwright timing (AC-SH-019) |
-| Map pan/zoom | ≥ 55 fps desktop, ≥ 40 fps mid-tier Android with the 50m world | Playwright trace on CI hardware (indicative) + manual device check |
-| Fact Pin point-in-polygon + distance | ≤ 30 ms per confirm | Vitest bench |
+| Metric                               | Target                                                                    | Measured by                                                         |
+| ------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| LCP (p75, mobile, 4G)                | ≤ 2.5 s on Home and the game hubs                                         | Lighthouse CI (Moto G Power profile) + field analytics              |
+| INP (p75)                            | ≤ 200 ms                                                                  | Field analytics                                                     |
+| CLS                                  | ≤ 0.1                                                                     | Lighthouse CI                                                       |
+| Initial JS (shell route)             | ≤ 170 KB gzip                                                             | `pnpm --filter @meridian/web budget` (Home's chunks, after `build`) |
+| Per-game chunk                       | ≤ 120 KB gzip (excluding packs): the route's JS beyond the shell's chunks | `pnpm --filter @meridian/web budget`                                |
+| Name Matcher keystroke (exact)       | ≤ 2 ms p95 for a 300-entity universe with about 3,000 aliases             | Vitest bench                                                        |
+| Fuzzy match on submit                | ≤ 20 ms p95                                                               | Vitest bench                                                        |
+| Next-round generation                | ≤ 50 ms typical, ≤ 300 ms max (packs cached)                              | Playwright timing (AC-SH-019)                                       |
+| Map pan/zoom                         | ≥ 55 fps desktop, ≥ 40 fps mid-tier Android with the 50m world            | Playwright trace on CI hardware (indicative) + manual device check  |
+| Fact Pin point-in-polygon + distance | ≤ 30 ms per confirm                                                       | Vitest bench                                                        |
 
 ## 14. Observability
 
@@ -332,15 +339,15 @@ The full strategy is in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md).
 
 ## 15. Architecture decision records (summary)
 
-| ADR | Decision | Alternatives considered | Rationale |
-|---|---|---|---|
-| ADR-001 | TypeScript monorepo (pnpm + Turborepo) | Separate repos; Python backend | One language. Shared schemas. A single agent can work across it. |
-| ADR-002 | Client-side generation from static packs | Server-generated puzzles | Instant unlimited play, offline, low cost. No competitive stakes need server authority. |
-| ADR-003 | Custom d3-geo SVG/Canvas map | MapLibre GL + vector tiles; Leaflet | No tile server. Full control of patterns, hit areas, projections (equal-area, azimuthal) and accessibility. World-scale data is small. MapLibre can be reconsidered for a deep-zoom Atlas in R3+. |
-| ADR-004 | Postgres only for user, report and telemetry data. Content stays in git and packs. | Content in a DB/CMS | Reviewable diffs, deterministic builds, rollbacks via manifest |
-| ADR-005 | Next.js on Vercel + Neon + Vercel Blob | Self-hosted; Cloudflare | Managed, preview environments per PR, minimal ops |
-| ADR-006 | Equal Earth for world maps | Robinson, Mercator | Equal-area, attractive, standard in d3 |
-| ADR-007 | Ref point = pole of inaccessibility of the largest polygon | Centroid; bbox center | Always inside land. Intuitive for multipart countries ([silhouette §5.3](games/silhouette.md#53-distance-direction-proximity-normative-definitions)). |
-| ADR-008 | Rhumb-line bearing for direction | Initial great-circle bearing | Never routes over poles. Matches flat-map intuition. |
-| ADR-009 | Guest-first local persistence with optional sync | Mandatory accounts | Product principle 1 |
-| ADR-010 | Long, self-contained challenge codes plus optional short codes | Server-only codes | Links work offline and survive server issues |
+| ADR     | Decision                                                                           | Alternatives considered             | Rationale                                                                                                                                                                                         |
+| ------- | ---------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ADR-001 | TypeScript monorepo (pnpm + Turborepo)                                             | Separate repos; Python backend      | One language. Shared schemas. A single agent can work across it.                                                                                                                                  |
+| ADR-002 | Client-side generation from static packs                                           | Server-generated puzzles            | Instant unlimited play, offline, low cost. No competitive stakes need server authority.                                                                                                           |
+| ADR-003 | Custom d3-geo SVG/Canvas map                                                       | MapLibre GL + vector tiles; Leaflet | No tile server. Full control of patterns, hit areas, projections (equal-area, azimuthal) and accessibility. World-scale data is small. MapLibre can be reconsidered for a deep-zoom Atlas in R3+. |
+| ADR-004 | Postgres only for user, report and telemetry data. Content stays in git and packs. | Content in a DB/CMS                 | Reviewable diffs, deterministic builds, rollbacks via manifest                                                                                                                                    |
+| ADR-005 | Next.js on Vercel + Neon + Vercel Blob                                             | Self-hosted; Cloudflare             | Managed, preview environments per PR, minimal ops                                                                                                                                                 |
+| ADR-006 | Equal Earth for world maps                                                         | Robinson, Mercator                  | Equal-area, attractive, standard in d3                                                                                                                                                            |
+| ADR-007 | Ref point = pole of inaccessibility of the largest polygon                         | Centroid; bbox center               | Always inside land. Intuitive for multipart countries ([silhouette §5.3](games/silhouette.md#53-distance-direction-proximity-normative-definitions)).                                             |
+| ADR-008 | Rhumb-line bearing for direction                                                   | Initial great-circle bearing        | Never routes over poles. Matches flat-map intuition.                                                                                                                                              |
+| ADR-009 | Guest-first local persistence with optional sync                                   | Mandatory accounts                  | Product principle 1                                                                                                                                                                               |
+| ADR-010 | Long, self-contained challenge codes plus optional short codes                     | Server-only codes                   | Links work offline and survive server issues                                                                                                                                                      |

@@ -64,3 +64,11 @@ export const TRANSLATIONS_SNAPSHOT = {
   file: "data/snapshots/wikidata-translations.json",
   version: "snapshot",
 };
+
+/** Official languages from Wikidata (P37), committed like the other snapshots. */
+export const LANGUAGES_SNAPSHOT = {
+  id: "wikidata-languages",
+  source: "wd",
+  file: "data/snapshots/wikidata-languages.json",
+  version: "snapshot",
+};

@@ -1,13 +1,13 @@
 # Border Run
 
-| Field | Value |
-|---|---|
-| Game ID | G-BR |
-| Slug / route | `/play/border-run` |
-| Phase | **R2**. Regional variants (e.g. US states) arrive in R2 with the subdivision packs. |
-| Inspiration | Travle (Observed: [REFERENCE_RESEARCH §5](../REFERENCE_RESEARCH.md#5-other-relevant-products)): connect a start and end country through intermediate guesses, with outline and initials hints. Feedback tiers, scoring, crossings and the guess budget are **Proposed**. |
-| Depends on | `core.adjacency`, `core.crossings` (curated sea links), Name Matcher, `GameMap`, Repeat Guard |
-| Governing ACs | AC-BR-001 … AC-BR-013 |
+| Field         | Value                                                                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Game ID       | G-BR                                                                                                                                                                                                                                                                     |
+| Slug / route  | `/play/border-run`                                                                                                                                                                                                                                                       |
+| Phase         | **R2**. Regional variants (e.g. US states) arrive in R2 with the subdivision packs.                                                                                                                                                                                      |
+| Inspiration   | Travle (Observed: [REFERENCE_RESEARCH §5](../REFERENCE_RESEARCH.md#5-other-relevant-products)): connect a start and end country through intermediate guesses, with outline and initials hints. Feedback tiers, scoring, crossings and the guess budget are **Proposed**. |
+| Depends on    | `core.adjacency`, `core.crossings` (curated sea links), Name Matcher, `GameMap`, Repeat Guard                                                                                                                                                                            |
+| Governing ACs | AC-BR-001 … AC-BR-013                                                                                                                                                                                                                                                    |
 
 ## 1. Purpose and player experience
 
@@ -24,18 +24,18 @@ Learn neighbor relationships and regional layout by routing overland: "From Spai
 
 ## 3. Modes and configuration
 
-| Mode | Description | Phase |
-|---|---|---|
-| Unlimited | Endless rounds | R2 |
-| Daily | One route per local date | R2 (built: `/play/border-run/daily`, schedule in `content/daily/border-run.json`) |
-| Practice | Unlimited budget, free hints | R2 |
-| Regional | Subdivision graphs (US states, etc.) | R2 (with T2.13) |
+| Mode      | Description                          | Phase                                                                             |
+| --------- | ------------------------------------ | --------------------------------------------------------------------------------- |
+| Unlimited | Endless rounds                       | R2                                                                                |
+| Daily     | One route per local date             | R2 (built: `/play/border-run/daily`, schedule in `content/daily/border-run.json`) |
+| Practice  | Unlimited budget, free hints         | R2                                                                                |
+| Regional  | Subdivision graphs (US states, etc.) | R2 (with T2.13)                                                                   |
 
-| Option | Values | Default |
-|---|---|---|
-| Region | World, a single continent | World |
-| Route length (m) | Easy 2–3, Normal 3–5, Hard 5–8 | Normal |
-| Allow sea crossings | Off, On (`core.crossings`) | Off |
+| Option              | Values                         | Default |
+| ------------------- | ------------------------------ | ------- |
+| Region              | World, a single continent      | World   |
+| Route length (m)    | Easy 2–3, Normal 3–5, Hard 5–8 | Normal  |
+| Allow sea crossings | Off, On (`core.crossings`)     | Off     |
 
 ## 4. Data requirements
 
@@ -55,17 +55,17 @@ Guesses use the Name Matcher over the countries universe. The map is a passive d
 
 ## 7. Hints and feedback
 
-| Guess classification | Rule (dist = BFS hop distance) | Display |
-|---|---|---|
-| **On a shortest route** | dist(A, c) + dist(c, B) = L | Solid fill + ✓ "On route" |
-| **Near** | = L + 1 | Dotted fill + ◐ "Close" |
-| **Off route** | > L + 1, or unreachable | Hatched fill + ✕ "Off route" |
+| Guess classification    | Rule (dist = BFS hop distance) | Display                      |
+| ----------------------- | ------------------------------ | ---------------------------- |
+| **On a shortest route** | dist(A, c) + dist(c, B) = L    | Solid fill + ✓ "On route"    |
+| **Near**                | = L + 1                        | Dotted fill + ◐ "Close"      |
+| **Off route**           | > L + 1, or unreachable        | Hatched fill + ✕ "Off route" |
 
-| Hint (2 points each) | Effect |
-|---|---|
-| Next outline | Bold outline of one unrevealed country adjacent to the current connected frontier that lies on a shortest route |
-| Initials | Shows the first letters of one shortest route's intermediates, e.g. "F · G · C" |
-| Reveal one | Reveals one shortest-route intermediate (counts as a guess) |
+| Hint (2 points each) | Effect                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Next outline         | Bold outline of one unrevealed country adjacent to the current connected frontier that lies on a shortest route |
+| Initials             | Shows the first letters of one shortest route's intermediates, e.g. "F · G · C"                                 |
+| Reveal one           | Reveals one shortest-route intermediate (counts as a guess)                                                     |
 
 ## 8. Screens and state transitions
 
@@ -82,13 +82,13 @@ States: `routing` → (`GUESS` | `HINT`) → `routing` | `won` | `lost` → `rev
 
 ## 9. Edge cases
 
-| Case | Expected behavior |
-|---|---|
-| Island countries (Japan, Iceland) with crossings off | Never chosen as endpoints. Guessable, but always "Off route". |
-| Multiple shortest routes | Any of them completes the round. The review lists up to 5. |
-| The player completes a longer (non-shortest) path | Win. Score reflects guesses used. |
-| Guessing A or B | "Already on the map", not consumed |
-| Spain → Morocco with crossings off | Valid via the Ceuta/Melilla land border, so L = 1: the pair is not playable (a route needs at least one country between, L ≥ 2) and the generator's range starts at m = 2 |
+| Case                                                 | Expected behavior                                                                                                                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Island countries (Japan, Iceland) with crossings off | Never chosen as endpoints. Guessable, but always "Off route".                                                                                                             |
+| Multiple shortest routes                             | Any of them completes the round. The review lists up to 5.                                                                                                                |
+| The player completes a longer (non-shortest) path    | Win. Score reflects guesses used.                                                                                                                                         |
+| Guessing A or B                                      | "Already on the map", not consumed                                                                                                                                        |
+| Spain → Morocco with crossings off                   | Valid via the Ceuta/Melilla land border, so L = 1: the pair is not playable (a route needs at least one country between, L ≥ 2) and the generator's range starts at m = 2 |
 
 ## 10. Accessibility and mobile behavior
 
@@ -100,18 +100,18 @@ Pairs are drawn uniformly within the configured m range. The Repeat Guard exclud
 
 ## 12. Acceptance criteria
 
-| ID | Given / When / Then | Example |
-|---|---|---|
-| AC-BR-001 | L computed by BFS | Spain → Poland → L = 3 (Spain–France–Germany–Poland), m = 2 |
-| AC-BR-002 | Win on a connected path | Guess France, Germany → win with g = 2 → 10 points |
-| AC-BR-003 | Classification | Spain → Poland: Italy → "Off route" (dist 2 + 3 = 5 > L + 1 = 4); Switzerland → "Close" (2 + 2 = 4 = L + 1) |
-| AC-BR-004 | Budget | m = 2 → budget 6. After 6 non-winning guesses → lost, path revealed. |
-| AC-BR-005 | Invalid guess not consumed | "Narnia" → counter unchanged |
-| AC-BR-006 | Endpoint guess not consumed | Guessing "Spain" → "Already on the map" |
-| AC-BR-007 | French Guiana edge | France–Brazil adjacency exists with `via: "French Guiana"` |
-| AC-BR-008 | Islands are not endpoints with crossings off | Over 10,000 generated rounds, no endpoint is in an isolated component |
-| AC-BR-009 | Crossings on | GBR → BEL becomes valid with L = 2 via FRA (Channel Tunnel) |
-| AC-BR-010 | Scoring formula | m = 3, g = 5, 1 hint → 4 |
-| AC-BR-011 | Determinism | The same seed gives the same A and B |
-| AC-BR-012 | Repeat Guard | 200 rounds → no repeated pair |
-| AC-BR-013 | Screen reader announcement after a guess | Includes the classification word |
+| ID        | Given / When / Then                          | Example                                                                                                     |
+| --------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| AC-BR-001 | L computed by BFS                            | Spain → Poland → L = 3 (Spain–France–Germany–Poland), m = 2                                                 |
+| AC-BR-002 | Win on a connected path                      | Guess France, Germany → win with g = 2 → 10 points                                                          |
+| AC-BR-003 | Classification                               | Spain → Poland: Italy → "Off route" (dist 2 + 3 = 5 > L + 1 = 4); Switzerland → "Close" (2 + 2 = 4 = L + 1) |
+| AC-BR-004 | Budget                                       | m = 2 → budget 6. After 6 non-winning guesses → lost, path revealed.                                        |
+| AC-BR-005 | Invalid guess not consumed                   | "Narnia" → counter unchanged                                                                                |
+| AC-BR-006 | Endpoint guess not consumed                  | Guessing "Spain" → "Already on the map"                                                                     |
+| AC-BR-007 | French Guiana edge                           | France–Brazil adjacency exists with `via: "French Guiana"`                                                  |
+| AC-BR-008 | Islands are not endpoints with crossings off | Over 10,000 generated rounds, no endpoint is in an isolated component                                       |
+| AC-BR-009 | Crossings on                                 | GBR → BEL becomes valid with L = 2 via FRA (Channel Tunnel)                                                 |
+| AC-BR-010 | Scoring formula                              | m = 3, g = 5, 1 hint → 4                                                                                    |
+| AC-BR-011 | Determinism                                  | The same seed gives the same A and B                                                                        |
+| AC-BR-012 | Repeat Guard                                 | 200 rounds → no repeated pair                                                                               |
+| AC-BR-013 | Screen reader announcement after a guess     | Includes the classification word                                                                            |

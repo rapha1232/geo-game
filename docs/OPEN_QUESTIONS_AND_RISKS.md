@@ -75,29 +75,29 @@ Each question has a **default** that the blueprint already uses, so implementati
 
 ## Assumptions
 
-| ID | Assumption | If wrong |
-|---|---|---|
-| A-01 | No competitive leaderboards, so client-side scoring is acceptable | Add server-side replay verification ([ARCHITECTURE §4](ARCHITECTURE.md#4-system-overview-and-boundaries)) |
-| A-02 | English-speaking primary audience for R1 | Pull extra answer languages forward from R2 |
-| A-03 | World-scale maps don't need vector tiles | Switch Atlas deep zoom to MapLibre (ADR-003) |
-| A-04 | Natural Earth 10m is accurate enough for point-in-polygon scoring at Fact Pin's tolerances (≥ 25 km) | Use geoBoundaries ADM0 for specific countries |
-| A-05 | Spoilable daily schedules (in client packs) are acceptable | Serve daily targets from an API on the day |
-| A-06 | The terms of Wikidata, World Bank and other sources marked ❓ are as commonly documented | T0.6 verifies them. Replace any source that fails verification. |
+| ID   | Assumption                                                                                           | If wrong                                                                                                  |
+| ---- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| A-01 | No competitive leaderboards, so client-side scoring is acceptable                                    | Add server-side replay verification ([ARCHITECTURE §4](ARCHITECTURE.md#4-system-overview-and-boundaries)) |
+| A-02 | English-speaking primary audience for R1                                                             | Pull extra answer languages forward from R2                                                               |
+| A-03 | World-scale maps don't need vector tiles                                                             | Switch Atlas deep zoom to MapLibre (ADR-003)                                                              |
+| A-04 | Natural Earth 10m is accurate enough for point-in-polygon scoring at Fact Pin's tolerances (≥ 25 km) | Use geoBoundaries ADM0 for specific countries                                                             |
+| A-05 | Spoilable daily schedules (in client packs) are acceptable                                           | Serve daily targets from an API on the day                                                                |
+| A-06 | The terms of Wikidata, World Bank and other sources marked ❓ are as commonly documented             | T0.6 verifies them. Replace any source that fails verification.                                           |
 
 ## Risks
 
-| ID | Risk | Likelihood | Impact | Mitigation | Owner |
-|---|---|---|---|---|---|
-| R-01 | Fact bank not ready (400 quality facts with sources) | High | Delays R1 Slice C | Start T1.12 in Phase 0. Generated capital and city facts provide a playable floor (≈ 500). Launch with ≥ 300 curated if needed, keeping quotas. | Content |
-| R-02 | Alias coverage gaps cause "correct answer rejected" frustration | Medium | High (trust) | Golden table, fuzzy matching, S1 hotfix SLA of 48 h, and a report button on every review | Content + Eng |
-| R-03 | Sensitive geopolitical content provokes complaints | Medium | Medium | Neutral notes, transparent rules page, configurable sets, senior-editor review | Owner |
-| R-04 | Historical data license (GPL) blocks Lost Borders | Medium | Medium (R3 only) | Q-04 options. The game is gated. | Owner |
-| R-05 | Map performance on low-end mobile | Medium | High | LOD packs, SVG path count limits, canvas underlay, performance budgets in CI | Eng |
-| R-06 | Tiny-target usability on touch | Medium | Medium | Rings + loupe + accessible variant. E2E on an emulated iPhone. | Eng |
-| R-07 | Deep Cut rarity feels arbitrary before calibration | Medium | Medium | Published method, "provisional" label, editorial typicality overrides | Product |
-| R-08 | Daily answers discoverable in packs | High | Low | Accepted (no stakes). Could move to an API later (A-05). | — |
-| R-09 | Natural Earth de facto borders differ from some players' expectations | Medium | Low–Medium | Dispute overlays and notes. Any-claimant scoring. | Content |
-| R-10 | Similarity to reference products (trade dress, names) | Low | High | Originality guardrails in [REFERENCE_RESEARCH §8](REFERENCE_RESEARCH.md#8-originality-guardrails) | Product |
-| R-11 | Reference research gaps (JetPunk 403, Fact Map 429) led to wrong assumptions | Low | Low | Meridian's mechanics are fully specified independently. Manual play is suggested (RR-1…4). | Product |
-| R-12 | Scope creep across 10 games | High | High | Strict phase gates. R1 = 3 games only. The catalog lists rejected ideas. | Owner |
-| R-13 | IndexedDB eviction (Safari storage policies) loses guest progress | Medium | Medium | Request `navigator.storage.persist()`, prompt to export, offer accounts in R2 | Eng |
+| ID   | Risk                                                                         | Likelihood | Impact            | Mitigation                                                                                                                                      | Owner         |
+| ---- | ---------------------------------------------------------------------------- | ---------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| R-01 | Fact bank not ready (400 quality facts with sources)                         | High       | Delays R1 Slice C | Start T1.12 in Phase 0. Generated capital and city facts provide a playable floor (≈ 500). Launch with ≥ 300 curated if needed, keeping quotas. | Content       |
+| R-02 | Alias coverage gaps cause "correct answer rejected" frustration              | Medium     | High (trust)      | Golden table, fuzzy matching, S1 hotfix SLA of 48 h, and a report button on every review                                                        | Content + Eng |
+| R-03 | Sensitive geopolitical content provokes complaints                           | Medium     | Medium            | Neutral notes, transparent rules page, configurable sets, senior-editor review                                                                  | Owner         |
+| R-04 | Historical data license (GPL) blocks Lost Borders                            | Medium     | Medium (R3 only)  | Q-04 options. The game is gated.                                                                                                                | Owner         |
+| R-05 | Map performance on low-end mobile                                            | Medium     | High              | LOD packs, SVG path count limits, canvas underlay, performance budgets in CI                                                                    | Eng           |
+| R-06 | Tiny-target usability on touch                                               | Medium     | Medium            | Rings + loupe + accessible variant. E2E on an emulated iPhone.                                                                                  | Eng           |
+| R-07 | Deep Cut rarity feels arbitrary before calibration                           | Medium     | Medium            | Published method, "provisional" label, editorial typicality overrides                                                                           | Product       |
+| R-08 | Daily answers discoverable in packs                                          | High       | Low               | Accepted (no stakes). Could move to an API later (A-05).                                                                                        | —             |
+| R-09 | Natural Earth de facto borders differ from some players' expectations        | Medium     | Low–Medium        | Dispute overlays and notes. Any-claimant scoring.                                                                                               | Content       |
+| R-10 | Similarity to reference products (trade dress, names)                        | Low        | High              | Originality guardrails in [REFERENCE_RESEARCH §8](REFERENCE_RESEARCH.md#8-originality-guardrails)                                               | Product       |
+| R-11 | Reference research gaps (JetPunk 403, Fact Map 429) led to wrong assumptions | Low        | Low               | Meridian's mechanics are fully specified independently. Manual play is suggested (RR-1…4).                                                      | Product       |
+| R-12 | Scope creep across 10 games                                                  | High       | High              | Strict phase gates. R1 = 3 games only. The catalog lists rejected ideas.                                                                        | Owner         |
+| R-13 | IndexedDB eviction (Safari storage policies) loses guest progress            | Medium     | Medium            | Request `navigator.storage.persist()`, prompt to export, offer accounts in R2                                                                   | Eng           |

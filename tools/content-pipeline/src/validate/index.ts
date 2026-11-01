@@ -4,6 +4,7 @@ import {
   adjacencyRules,
   crossingRules,
   indicatorRules,
+  deepcutRules,
   aliasRules,
   dailyRules,
   disputeRules,
@@ -40,6 +41,7 @@ export function validate(c: ContentSet): Issue[] {
     ...adjacencyRules(c),
     ...crossingRules(c),
     ...indicatorRules(c),
+    ...deepcutRules(c),
     ...factRules(c),
     ...factNameRules(c),
     ...quotaRules(c),
@@ -97,6 +99,9 @@ export function contentSetFromBuild(
   const indicators = has("core.indicators")
     ? (json("core.indicators") as NonNullable<ContentSet["indicators"]>)
     : undefined;
+  const deepcut = has("deepcut.prompts")
+    ? (json("deepcut.prompts") as { prompts: NonNullable<ContentSet["deepcut"]> }).prompts
+    : undefined;
   const daily = out.files
     .filter((f) => f.name.startsWith("daily."))
     .map((f) => json(f.name) as unknown as NonNullable<ContentSet["daily"]>[number]);
@@ -126,6 +131,7 @@ export function contentSetFromBuild(
     ...(adjacency ? { adjacency } : {}),
     ...(crossings ? { crossings } : {}),
     ...(indicators ? { indicators } : {}),
+    ...(deepcut ? { deepcut } : {}),
     ...(facts ? { facts } : {}),
     ...(flagIds ? { flagIds } : {}),
     ...(daily.length > 0 ? { daily } : {}),

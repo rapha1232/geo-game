@@ -22,6 +22,7 @@ export type RuleCode =
   | "ADJ_ASYMMETRIC"
   | "CROSSING_INVALID"
   | "INDICATOR_COVERAGE"
+  | "DEEPCUT_BOUNDS"
   | "CAPITAL_OUTSIDE"
   | "DISPUTE_INVALID"
   | "FLAG_MISSING"
@@ -61,6 +62,12 @@ export type ContentSet = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   crossings?: readonly Crossing[];
+  deepcut?: readonly {
+    id: string;
+    family: string;
+    answers: readonly string[];
+    rarity_prior: Record<string, number>;
+  }[];
   indicators?: {
     stats: readonly { id: string }[];
     values: Record<string, Record<string, unknown>>;

@@ -39,5 +39,5 @@ For **Silhouette**, **Quiz Library** (one type-in quiz and one multiple-choice q
 ## Result
 
 | Date | Tester | Browser and reader | Pass or fail | Notes |
-|---|---|---|---|---|
-| | | | | |
+| ---- | ------ | ------------------ | ------------ | ----- |
+|      |        |                    |              |       |

@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
-import { ambiguityGroup, crossing, dispute, sourceRegistry } from "@meridian/schemas";
+import { ambiguityGroup, countryId, crossing, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import {
@@ -27,7 +27,14 @@ import {
 import { fetchSources, lockText } from "./fetch.ts";
 import { parseLock, verifyAgainstLock, type LockFile } from "./lock.ts";
 import type { NeCollection } from "./ne.ts";
-import { SOURCES, TRANSLATIONS_SNAPSHOT, WB_SNAPSHOT, WIKIDATA_SNAPSHOT } from "./sources.ts";
+import {
+  LANGUAGES_SNAPSHOT,
+  SOURCES,
+  TRANSLATIONS_SNAPSHOT,
+  WB_SNAPSHOT,
+  WIKIDATA_SNAPSHOT,
+} from "./sources.ts";
+import { fetchLanguages, languagesBytes, type LanguagesSnapshot } from "./languages.ts";
 import { fetchTranslations, translationsBytes, type TranslationsSnapshot } from "./translations.ts";
 import { fetchWorldBank, wbSnapshotBytes, type WbSnapshot } from "./worldbank.ts";
 import { sha256, stableStringify } from "./util.ts";
@@ -41,6 +48,7 @@ const path = {
   snapshot: join(root, WIKIDATA_SNAPSHOT.file),
   wbSnapshot: join(root, WB_SNAPSHOT.file),
   trSnapshot: join(root, TRANSLATIONS_SNAPSHOT.file),
+  langSnapshot: join(root, LANGUAGES_SNAPSHOT.file),
   sets: join(root, "content/sets/sovereign-197.yaml"),
   countries: join(root, "content/countries.yaml"),
   ambiguity: join(root, "content/ambiguity.yaml"),
@@ -50,6 +58,7 @@ const path = {
   dailySilhouette: join(root, "content/daily/silhouette.json"),
   dailyFactPin: join(root, "content/daily/fact-pin.json"),
   dailyBorderRun: join(root, "content/daily/border-run.json"),
+  deepcutOverrides: join(root, "content/deepcut-overrides.yaml"),
   confusables: join(root, "content/flags/confusables.yaml"),
   landlocked: join(root, "content/landlocked.yaml"),
   facts: join(root, "content/facts"),
@@ -139,6 +148,29 @@ async function cmdFetch(args: string[]): Promise<void> {
     };
     log(`translations snapshot: ${Object.keys(snap.labels).length} countries`);
   }
+  if (flag(args, "languages")) {
+    const names = JSON.parse(await readFile(path.snapshot, "utf8")) as WdSnapshot;
+    const snap = await fetchLanguages(names, new Date().toISOString().slice(0, 10), (u, i) =>
+      fetch(u, i as RequestInit),
+    );
+    const text = languagesBytes(snap);
+    await mkdir(dirname(path.langSnapshot), { recursive: true });
+    await writeFile(path.langSnapshot, text);
+    lock = {
+      entries: [
+        ...lock.entries.filter((e) => e.id !== LANGUAGES_SNAPSHOT.id),
+        {
+          id: LANGUAGES_SNAPSHOT.id,
+          source: "wd",
+          url: snap.endpoint,
+          version: `snapshot ${snap.retrieved_on}`,
+          sha256: sha256(text),
+          bytes: Buffer.byteLength(text),
+        },
+      ],
+    };
+    log(`languages snapshot: ${Object.keys(snap.languages).length} countries`);
+  }
   if (flag(args, "worldbank")) {
     const snap = await fetchWorldBank(new Date().toISOString().slice(0, 10), (u, i) =>
       fetch(u, i as RequestInit),
@@ -170,13 +202,15 @@ async function cmdFetch(args: string[]): Promise<void> {
     result.downloaded.length > 0 ||
     flag(args, "wikidata") ||
     flag(args, "worldbank") ||
-    flag(args, "translations")
+    flag(args, "translations") ||
+    flag(args, "languages")
   ) {
     if (
       updateLock ||
       flag(args, "wikidata") ||
       flag(args, "worldbank") ||
-      flag(args, "translations")
+      flag(args, "translations") ||
+      flag(args, "languages")
     )
       await writeFile(path.lock, lockText(lock));
   }
@@ -225,6 +259,9 @@ async function loadInputs(args: string[]) {
   const translations = JSON.parse(
     new TextDecoder().decode(await read(TRANSLATIONS_SNAPSHOT.id, path.trSnapshot)),
   ) as TranslationsSnapshot;
+  const languages = JSON.parse(
+    new TextDecoder().decode(await read(LANGUAGES_SNAPSHOT.id, path.langSnapshot)),
+  ) as LanguagesSnapshot;
   const ne10 = await ne("ne-10m-countries", "10m");
   const ne10Iso2 = ne10.features
     .map((f) => f.properties["ISO_A2_EH"])
@@ -280,6 +317,17 @@ async function loadInputs(args: string[]) {
     wikidata: snapshot,
     worldBank: wbSnapshot,
     translations,
+    languages,
+    deepcutOverrides: z
+      .array(
+        z.object({
+          prompt: z.string().min(1),
+          add: z.array(countryId).min(1),
+          source: z.string().url(),
+          reason: z.string().min(1),
+        }),
+      )
+      .parse(((await yaml(path.deepcutOverrides)) as { overrides?: unknown }).overrides ?? []),
     registry: sourceRegistry.parse(
       parse(await readFile(path.registry, "utf8"), { schema: "core" }),
     ),

@@ -24,6 +24,8 @@ import {
 } from "./derive.ts";
 import { buildIndicators } from "./indicators.ts";
 import type { WbSnapshot } from "./worldbank.ts";
+import { generatePrompts, type DeepCutOverride } from "./deepcut.ts";
+import type { LanguagesSnapshot } from "./languages.ts";
 import { addTranslations, type TranslationsSnapshot } from "./translations.ts";
 import type { Editorial } from "./editorial.ts";
 import { buildFacts, type authoredFile, type PopulatedPlace } from "./facts.ts";
@@ -64,6 +66,10 @@ export type BuildInput = {
   worldBank?: WbSnapshot;
   /** Wikidata labels in the answer languages; adds `translation` aliases to each country. */
   translations?: TranslationsSnapshot;
+  /** Official languages (Wikidata P37); with the derived data this adds the `deepcut.prompts` pack. */
+  languages?: LanguagesSnapshot;
+  /** Editorial additions to the computed Deep Cut prompts. */
+  deepcutOverrides?: readonly DeepCutOverride[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
   /** Curated fact files and populated places: adds the `facts.v1` pack (curated, capitals and cities). */
   factSources?: {
@@ -168,7 +174,30 @@ export function buildPacks(input: BuildInput): BuildOutput {
     });
     files.push(toFile("facts.v1", { pack: "facts.v1", version: input.version, facts }));
   }
-  if (input.derive) files.push(...deriveFiles(input, entities, maps));
+  if (input.derive) {
+    const derived = deriveFiles(input, entities, maps);
+    files.push(...derived);
+    if (input.languages) {
+      const adjacency = JSON.parse(
+        new TextDecoder().decode(derived.find((f) => f.name === "core.adjacency")?.bytes),
+      ) as { edges: { a: string; b: string }[] };
+      files.push(
+        toFile("deepcut.prompts", {
+          pack: "deepcut.prompts",
+          version: input.version,
+          prompts: generatePrompts({
+            entities,
+            edges: adjacency.edges,
+            geometry: new Map(
+              [...maps["10m"]].map(([code, c]) => [`country:${code}`, c.geometry] as const),
+            ),
+            languages: input.languages,
+            ...(input.deepcutOverrides ? { overrides: input.deepcutOverrides } : {}),
+          }),
+        }),
+      );
+    }
+  }
   for (const d of input.daily ?? [])
     files.push(
       toFile(`daily.${d.game}`, { pack: `daily.${d.game}`, version: input.version, ...d }),
