@@ -127,3 +127,23 @@
   max-width: 34rem;
   padding: var(--space-6) 0;
 }
+
+.toaster {
+  position: fixed;
+  inset-inline: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 20;
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  pointer-events: none;
+}
+.toast {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border: 3px solid var(--color-correct);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  pointer-events: auto;
+}

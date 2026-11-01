@@ -33,6 +33,26 @@ export default tseslint.config(
     languageOptions: { globals: { process: "readonly", console: "readonly", URL: "readonly" } },
   },
   {
+    // The service worker is plain JavaScript served from /public.
+    files: ["apps/web/public/sw.js"],
+    languageOptions: {
+      globals: {
+        self: "readonly",
+        caches: "readonly",
+        fetch: "readonly",
+        Response: "readonly",
+        URL: "readonly",
+      },
+    },
+  },
+  {
+    // The offline check runs code inside the browser page.
+    files: ["apps/web/scripts/offline-check.mjs"],
+    languageOptions: {
+      globals: { navigator: "readonly", caches: "readonly", document: "readonly" },
+    },
+  },
+  {
     files: [
       "packages/games/**/*.{ts,tsx}",
       "packages/game-kit/**/*.{ts,tsx}",

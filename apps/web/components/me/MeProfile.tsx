@@ -8,6 +8,9 @@ import type { MasteryRecord } from "../../lib/storage/db";
 import { bandOf, masteryByEntity } from "../../lib/results/stats";
 import { useServices } from "../shell/StorageProvider";
 import { MeView } from "./MeView";
+import { computeStreak } from "../../lib/achievements/streak";
+import { loadSettings } from "../../lib/settings/settings";
+import { localDate } from "../../lib/daily/time";
 import styles from "./me.module.css";
 
 type Pack = {
@@ -30,6 +33,7 @@ export function MeProfile() {
   const [results, setResults] = useState<GameResult[] | null>(null);
   const [mastery, setMastery] = useState<MasteryRecord[]>([]);
   const [failed, setFailed] = useState(false);
+  const [streaks, setStreaks] = useState(false);
   const [entities, setEntities] = useState<MapEntity[]>([]);
   const [lods, setLods] = useState<Partial<Record<Lod, never>>>({});
 
@@ -44,7 +48,9 @@ export function MeProfile() {
           return p.success ? [p.data] : [];
         });
         const m = await services.db.mastery.toArray();
+        const on = (await loadSettings(services.db)).streaks;
         if (!live) return;
+        setStreaks(on);
         setResults(parsed);
         setMastery(m);
         if (m.length > 0) {
@@ -111,7 +117,37 @@ export function MeProfile() {
       </>
     ) : null;
 
+  const offset = -new Date().getTimezoneOffset();
+  const streak = streaks
+    ? computeStreak(
+        results
+          .filter((r) => r.mode !== "practice" && r.mode !== "practice-misses")
+          .map((r) => localDate(Date.parse(r.ended_at), offset)),
+        localDate(Date.now(), offset),
+      )
+    : null;
   return (
-    <MeView results={results} masteryMap={map} offsetMinutes={-new Date().getTimezoneOffset()} />
+    <MeView
+      results={results}
+      masteryMap={map}
+      offsetMinutes={offset}
+      streak={
+        streak && (
+          <section className={styles.streak} aria-labelledby="me-streak">
+            <h2 id="me-streak">{t("streak.title")}</h2>
+            <p className={styles.headline}>
+              {streak.current === 1
+                ? t("streak.currentOne")
+                : t("streak.current", { n: streak.current })}
+            </p>
+            <p className={styles.note}>
+              {t("streak.longest", { n: streak.longest })} ·{" "}
+              {t("streak.freezes", { n: streak.freezes })}
+            </p>
+            <p className={styles.note}>{t("streak.note")}</p>
+          </section>
+        )
+      }
+    />
   );
 }

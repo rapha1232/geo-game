@@ -38,6 +38,7 @@ export type MasteryRecord = {
 export type HistoryRecord = { game_id: string; pool_key: string; target_ids: string[] };
 export type SeenRecord = { kind: string; id: string };
 export type FavoriteRecord = { item_key: string };
+export type AchievementRecord = { id: string; unlocked_at: string; result_id: string | null };
 
 export class MeridianDb extends Dexie {
   sessions!: EntityTable<SessionRecord, "game_id">;
@@ -49,6 +50,7 @@ export class MeridianDb extends Dexie {
   favorites!: EntityTable<FavoriteRecord, "item_key">;
   settings!: EntityTable<SettingsRecord, "key">;
   packs!: EntityTable<PackRecord, "url">;
+  achievements!: EntityTable<AchievementRecord, "id">;
 
   constructor(name = "meridian") {
     super(name);
@@ -65,5 +67,7 @@ export class MeridianDb extends Dexie {
       settings: "key",
       packs: "url",
     });
+    // R2: achievements (T2.5). The syncQueue arrives with accounts.
+    this.version(2).stores({ achievements: "id" });
   }
 }

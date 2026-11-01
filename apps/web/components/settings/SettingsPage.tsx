@@ -184,6 +184,15 @@ export function SettingsPage() {
           />
           {t("set.accessible")}
         </label>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={s.streaks}
+            disabled={!ready}
+            onChange={(e) => change({ streaks: e.target.checked })}
+          />
+          {t("set.streaks")}
+        </label>
         <p role="status" className={styles.note}>
           {saved === true ? t("set.saved") : saved === false ? t("set.saveFailed") : ""}
         </p>

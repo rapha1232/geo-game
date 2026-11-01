@@ -55,6 +55,8 @@ export type MeViewProps = {
   /** The player's UTC offset in minutes, for "active days". */
   offsetMinutes?: number;
   playHref?: string;
+  /** The opt-in streak panel; shown only here, never in the header (UX_AND_DESIGN §7.3). */
+  streak?: ReactNode;
 };
 
 /** Profile body (UX_AND_DESIGN §3.5, §7.1): overview, per-game stats, mastery map and history. Pure over its props. */
@@ -63,6 +65,7 @@ export function MeView({
   masteryMap,
   offsetMinutes = 0,
   playHref = "/play/silhouette",
+  streak,
 }: MeViewProps) {
   const [game, setGame] = useState("");
   const [outcome, setOutcome] = useState("");
@@ -91,6 +94,10 @@ export function MeView({
   return (
     <section className={styles.page}>
       <h1>{t("me.title")}</h1>
+      <p>
+        <a href="/me/achievements">{t("ach.link")}</a>
+      </p>
+      {streak}
 
       <section aria-labelledby="me-ov">
         <h2 id="me-ov">{t("me.overview")}</h2>

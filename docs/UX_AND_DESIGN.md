@@ -241,12 +241,13 @@ Personal only (no public leaderboard). Examples, all deterministic from local re
 | ACH-DC-5 | Off the Map | 5 Deep Cut-tier answers in one run |
 | ACH-MS-80 | Cartographer | Average mastery ≥ 0.8 across all 197 countries |
 
-There are about 40 achievements at R2. They are defined in data (`content/achievements.yaml`) and evaluated client-side after each result.
+There are about 40 achievements at R2. They are defined as declarative data and evaluated client-side after each result. **Implementation note (T2.5):** the definitions live in `apps/web/lib/achievements/defs.ts` rather than `content/achievements.yaml`, because the conditions read result shapes the app owns; 18 ship in the first cut (the Atlas, Deep Cut and Grand Tour ones arrive with those games). Practice, learn and review rounds never count. A badge is announced right after the round and listed on `/me/achievements`.
 
 ### 7.3 Streaks (R2, opt-in)
 
 - **Off by default.** When on: the streak increases on any local day with ≥ 1 completed round in *any* game (not only dailies).
 - **2 freeze days** are automatically banked per 14-day period. A missed day consumes a freeze silently.
+- Freeze rules as built: periods count from the first day played, each period banks 2 freezes, and at most 2 are held at once. Today never breaks a streak.
 - There are no streak-loss notifications, no guilt copy, and no streak shown in the global header. It appears only on `/me`.
 
 ## 8. System states: loading, empty, error, offline, interrupted
@@ -257,7 +258,7 @@ There are about 40 achievements at R2. They are defined in data (`content/achiev
 | Content pack loading (> 1 s) | Progress bar with the size ("Loading world map · 180 KB"). The configure screen stays usable. | "Loading map data…" |
 | Pack load failure | Inline error with Retry. Other games stay available. | "We couldn't load the map data. Check your connection and try again. [Retry]" |
 | Offline (R1) | Detected via `navigator.onLine` + failed fetches. A banner says sync is paused. Games with cached packs work. Uncached games show "Available when you're back online". | "You're offline. Games you've played recently still work." |
-| Offline (R2, PWA) | The service worker precaches the shell + R1 packs. All R1 games are fully playable offline. Results queue for sync. | — |
+| Offline (R2, PWA) | The service worker (`apps/web/public/sw.js`) keeps the last good copy of every page visited, caches hashed scripts and packs, and on first load warms the game routes and R1 packs (not the 4.8 MB 10 m map, which loads on demand). All R1 games are fully playable offline after one online visit. Results are stored on the device; they queue for sync once accounts exist (T2.2). | — |
 | Empty history / stats | Explain and offer an action | "No rounds yet. Your stats appear after your first game. [Play Silhouette]" |
 | Empty search | Suggest clearing filters | §3.2 |
 | Interrupted session (reload, crash, tab closed) | Resume prompt on the game page **and** a "Continue" card on Home, for up to 7 days | "Resume *Countries of the World*? 88/197 · 6:41 left [Resume] [Discard]" |

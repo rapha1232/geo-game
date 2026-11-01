@@ -13,6 +13,8 @@ export type Settings = {
   countrySet: CountrySet;
   highContrast: boolean;
   accessibleDefault: boolean;
+  /** Opt-in daily streak, shown only on /me (UX_AND_DESIGN §7.3). Off by default. */
+  streaks: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -22,6 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   countrySet: "sovereign-197",
   highContrast: false,
   accessibleDefault: false,
+  streaks: false,
 };
 
 /** The key inside the single `settings` record. Other keys there belong to games (`quiz:*`, `fact-pin`). */
@@ -43,6 +46,7 @@ export function sanitize(raw: unknown): Settings {
     countrySet: pick(r["countrySet"], SETS, DEFAULT_SETTINGS.countrySet),
     highContrast: r["highContrast"] === true,
     accessibleDefault: r["accessibleDefault"] === true,
+    streaks: r["streaks"] === true,
   };
 }
 

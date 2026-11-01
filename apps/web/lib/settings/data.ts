@@ -35,19 +35,24 @@ const exportFile = z.object({
   ),
   seen: z.array(z.object({ kind: z.string(), id: z.string() })),
   favorites: z.array(z.object({ item_key: z.string() })),
+  achievements: z
+    .array(z.object({ id: z.string(), unlocked_at: z.string(), result_id: z.string().nullable() }))
+    .default([]),
 });
 export type ExportFile = z.infer<typeof exportFile>;
 
 export async function exportData(db: MeridianDb, now: number): Promise<ExportFile> {
-  const [results, pbs, mastery, history, seen, favorites, settings] = await Promise.all([
-    db.results.toArray(),
-    db.pbs.toArray(),
-    db.mastery.toArray(),
-    db.history.toArray(),
-    db.seen.toArray(),
-    db.favorites.toArray(),
-    db.settings.get("settings"),
-  ]);
+  const [results, pbs, mastery, history, seen, favorites, settings, achievements] =
+    await Promise.all([
+      db.results.toArray(),
+      db.pbs.toArray(),
+      db.mastery.toArray(),
+      db.history.toArray(),
+      db.seen.toArray(),
+      db.favorites.toArray(),
+      db.settings.get("settings"),
+      db.achievements.toArray(),
+    ]);
   return {
     app: "meridian",
     format: EXPORT_FORMAT,
@@ -59,6 +64,7 @@ export async function exportData(db: MeridianDb, now: number): Promise<ExportFil
     history,
     seen,
     favorites,
+    achievements,
   };
 }
 
@@ -103,7 +109,7 @@ export async function importData(db: MeridianDb, file: ExportFile): Promise<Impo
   let masteryCount = 0;
   await db.transaction(
     "rw",
-    ["results", "pbs", "mastery", "history", "seen", "favorites", "settings"],
+    ["results", "pbs", "mastery", "history", "seen", "favorites", "settings", "achievements"],
     async () => {
       await db.results.bulkPut(
         valid.map(({ result }) => ({
@@ -140,6 +146,10 @@ export async function importData(db: MeridianDb, file: ExportFile): Promise<Impo
       }
       await db.seen.bulkPut(file.seen);
       await db.favorites.bulkPut(file.favorites);
+      for (const a of file.achievements) {
+        const prev = await db.achievements.get(a.id);
+        if (!prev || a.unlocked_at < prev.unlocked_at) await db.achievements.put(a);
+      }
       const cur = (await db.settings.get("settings"))?.value ?? {};
       await db.settings.put({ key: "settings", value: { ...file.settings, ...cur } });
     },
@@ -156,7 +166,17 @@ export async function importData(db: MeridianDb, file: ExportFile): Promise<Impo
 export async function deleteAll(db: MeridianDb): Promise<void> {
   await db.transaction(
     "rw",
-    ["results", "pbs", "mastery", "history", "seen", "favorites", "settings", "sessions"],
+    [
+      "results",
+      "pbs",
+      "mastery",
+      "history",
+      "seen",
+      "favorites",
+      "settings",
+      "sessions",
+      "achievements",
+    ],
     async () => {
       await Promise.all([
         db.results.clear(),
@@ -167,6 +187,7 @@ export async function deleteAll(db: MeridianDb): Promise<void> {
         db.favorites.clear(),
         db.settings.clear(),
         db.sessions.clear(),
+        db.achievements.clear(),
       ]);
     },
   );

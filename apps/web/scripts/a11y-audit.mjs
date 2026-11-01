@@ -21,6 +21,7 @@ const ROUTES = [
   "/play/rank-it",
   "/daily",
   "/me",
+  "/me/achievements",
   "/settings",
   "/about",
   "/about/rules",

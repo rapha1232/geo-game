@@ -9,6 +9,14 @@ const config: NextConfig = {
   async headers() {
     return [
       {
+        // A stale service worker would keep serving stale pages, so browsers must always re-check it.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
         source: "/:path*",
         headers: [
           {

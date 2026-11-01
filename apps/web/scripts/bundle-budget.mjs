@@ -20,6 +20,7 @@ const GAMES = [
   "/play/rank-it/page",
   "/daily/page",
   "/me/page",
+  "/me/achievements/page",
   "/settings/page",
 ];
 

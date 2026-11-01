@@ -648,6 +648,24 @@ const en = {
   "rk.loading": "Loading the data…",
   "rk.loadError": "The data didn't load. Check your connection and try again.",
   "me.game.rank-it": "Rank It",
+  "ach.title": "Achievements",
+  "ach.intro":
+    "Badges for things you have done. They are yours alone: no leaderboard, no pressure.",
+  "ach.unlocked": "Unlocked {date}",
+  "ach.locked": "Not yet",
+  "ach.count": "{n} of {total} unlocked",
+  "ach.toast": "Achievement unlocked: {name}",
+  "ach.link": "See your achievements",
+  "ach.back": "Back to your profile",
+  "ach.loadError": "Your achievements didn't load. Try again in a moment.",
+  "streak.title": "Daily streak",
+  "streak.current": "{n} days",
+  "streak.currentOne": "1 day",
+  "streak.longest": "Longest: {n}",
+  "streak.freezes": "Rest days in hand: {n}",
+  "streak.note":
+    "Any completed round on a day keeps it going. A missed day uses a rest day if you have one.",
+  "set.streaks": "Show my daily streak on my profile",
   "sil.sessionSummary": "{points} points · {solved} of {rounds} solved",
 } as const;
 

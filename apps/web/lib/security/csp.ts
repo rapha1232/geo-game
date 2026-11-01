@@ -41,6 +41,9 @@ export function buildCsp({
       ...extraConnect,
       ...(dev ? ["ws:", "http://localhost:*"] : []),
     ],
+    // 'strict-dynamic' makes browsers ignore 'self' in script-src, so the service worker needs its own entry.
+    "worker-src": ["'self'"],
+    "manifest-src": ["'self'"],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
