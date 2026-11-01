@@ -12,6 +12,7 @@ import styles from "./daily.module.css";
 export const DAILY_GAME_ID = "silhouette:daily";
 export const FACT_PIN_DAILY_GAME_ID = "fact-pin:daily";
 export const BORDER_RUN_DAILY_GAME_ID = "border-run:daily";
+export const QUIZ_DAILY_GAME_ID = "quiz:daily";
 
 type State =
   | { kind: "loading" }
@@ -20,8 +21,9 @@ type State =
   | { kind: "done"; date: string; result: GameResult };
 
 type DailyGame = {
-  id: "silhouette" | "fact-pin" | "border-run";
-  pack: string;
+  id: "silhouette" | "fact-pin" | "border-run" | "quiz";
+  /** The schedule pack; the daily quiz has none, it rotates by date. */
+  pack: string | null;
   sessionId: string;
   href: string;
   keepPlaying: string;
@@ -65,6 +67,17 @@ const GAMES: DailyGame[] = [
     play: "daily.playBorderRun",
     resume: "daily.resumeBorderRun",
   },
+  {
+    id: "quiz",
+    pack: null,
+    sessionId: QUIZ_DAILY_GAME_ID,
+    href: "/play/quiz/daily",
+    keepPlaying: "/play/quiz",
+    title: "daily.quiz",
+    body: "daily.quizBody",
+    play: "daily.playQuiz",
+    resume: "daily.resumeQuiz",
+  },
 ];
 
 /** `/daily`: today's optional puzzles for the player's local date. Each summary leads on to unlimited play. */
@@ -91,10 +104,12 @@ export function DailyHub() {
         .sort((a, b) => a.ended_at.localeCompare(b.ended_at));
       for (const g of GAMES) {
         try {
-          const schedule = dailySchedule.parse(await services.loader.pack(g.pack));
-          if (!schedule.days[date]) {
-            set(g.id, { kind: "unavailable" });
-            continue;
+          if (g.pack) {
+            const schedule = dailySchedule.parse(await services.loader.pack(g.pack));
+            if (!schedule.days[date]) {
+              set(g.id, { kind: "unavailable" });
+              continue;
+            }
           }
           const done = played.find((r) => r.game_id === g.id);
           if (done) {
@@ -104,7 +119,14 @@ export function DailyHub() {
           const saved = await services.store.find(g.sessionId);
           const savedDate =
             (saved?.state as { config?: { date?: string }; date?: string } | undefined)?.config
-              ?.date ?? (saved?.state as { date?: string } | undefined)?.date;
+              ?.date ??
+            (saved?.state as { date?: string } | undefined)?.date ??
+            (g.id === "quiz"
+              ? (saved?.state as { seed?: string } | undefined)?.seed ===
+                date.replaceAll("-", "").padEnd(10, "0")
+                ? date
+                : undefined
+              : undefined);
           set(g.id, { kind: "ready", date, resumable: savedDate === date });
         } catch {
           set(g.id, { kind: "unavailable" });

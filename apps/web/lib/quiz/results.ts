@@ -3,7 +3,7 @@ import { gameResult, type GameResult } from "@meridian/schemas";
 import { isNewPb, masteryOutcomes, pbKey, summarize, type QuizState } from "@meridian/quiz";
 import type { MasteryRecord, MeridianDb, PbRecord } from "../storage/db";
 
-export type QuizKind = "normal" | "practice";
+export type QuizKind = "normal" | "practice" | "daily";
 
 /** The GameResult of a finished quiz (DATA_MODEL §2.9). Learn mode records views only, with score 0. */
 export function quizResult(
@@ -18,18 +18,22 @@ export function quizResult(
     startedAt: number;
     /** Monotonic ms now, for the active time. */
     now: number;
+    /** Local date of a daily quiz. */
+    dailyDate?: string;
   },
 ): GameResult {
   const c = s.quiz.config;
   const sum = summarize(s, ctx.now);
   const mode = c.learn
     ? "learn"
-    : ctx.kind === "practice"
-      ? "practice-misses"
-      : c.timed
-        ? "timed"
-        : "untimed";
-  const key = ctx.kind === "practice" ? null : pbKey(c, s.quiz.items.length);
+    : ctx.kind === "daily"
+      ? "daily"
+      : ctx.kind === "practice"
+        ? "practice-misses"
+        : c.timed
+          ? "timed"
+          : "untimed";
+  const key = ctx.kind === "normal" ? pbKey(c, s.quiz.items.length) : null;
   const activeMs = Math.min(sum.usedMs, Math.max(0, ctx.endedAt - ctx.startedAt) + 60_000);
   return gameResult.parse({
     id: ctx.id,
@@ -38,6 +42,7 @@ export function quizResult(
     config: JSON.parse(JSON.stringify(c)) as Record<string, unknown>,
     config_hash: configHash(c),
     ...(key ? { pb_key: key } : {}),
+    ...(ctx.kind === "daily" && ctx.dailyDate ? { daily_date: ctx.dailyDate } : {}),
     seed: ctx.seed,
     content_version: ctx.contentVersion,
     score: sum.points,
@@ -130,6 +135,7 @@ export async function saveQuiz(
         game_id: "quiz",
         ended_at: input.result.ended_at,
         ...(key ? { pb_key: key } : {}),
+        ...(input.result.daily_date ? { daily_date: input.result.daily_date } : {}),
         data: input.result,
       });
       await db.mastery.bulkPut([...input.mastery]);

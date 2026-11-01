@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, Card } from "@meridian/ui";
 import type { GameResult } from "@meridian/schemas";
 import { formatCountdown } from "../../lib/daily/time";
-import { borderRunShare, factPinShare, silhouetteShare } from "../../lib/daily/share";
+import { borderRunShare, factPinShare, quizShare, silhouetteShare } from "../../lib/daily/share";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./daily.module.css";
 
@@ -18,6 +18,8 @@ export type DailySummaryProps = {
   unlimitedHref?: string;
   /** Null hides the practice link (Fact Pin has none). */
   practiceHref?: string | null;
+  /** The daily quiz's title, for the share text. */
+  quizTitle?: string;
   /** Test seam: defaults to the browser clipboard. */
   writeClipboard?: (text: string) => Promise<void>;
 };
@@ -36,19 +38,33 @@ export function DailySummary({
       ? "/play/border-run"
       : "/play/silhouette",
   practiceHref = result.game_id === "silhouette" ? "/play/silhouette/daily?practice=1" : null,
+  quizTitle,
   writeClipboard = (text) => navigator.clipboard.writeText(text),
 }: DailySummaryProps) {
   const [copy, setCopy] = useState<"idle" | "ok" | "failed">("idle");
   const fact = result.game_id === "fact-pin";
   const border = result.game_id === "border-run";
+  const quiz = result.game_id === "quiz";
   const text = fact
     ? factPinShare(result, link)
     : border
       ? borderRunShare(result, link)
-      : silhouetteShare(result, link);
+      : quiz
+        ? quizShare(result, link, quizTitle ?? "")
+        : silhouetteShare(result, link);
   return (
     <Card className={styles.summary}>
-      <h2>{t(fact ? "daily.doneFactPin" : border ? "daily.doneBorderRun" : "daily.done")}</h2>
+      <h2>
+        {t(
+          fact
+            ? "daily.doneFactPin"
+            : border
+              ? "daily.doneBorderRun"
+              : quiz
+                ? "daily.doneQuiz"
+                : "daily.done",
+        )}
+      </h2>
       <p>
         {t("daily.result", {
           outcome: t(`me.outcome.${result.outcome}` as MessageKey),

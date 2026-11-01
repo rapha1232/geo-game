@@ -96,6 +96,12 @@ const en = {
   "daily.unavailable":
     "Today's daily isn't available right now. You can still play Silhouette without limits.",
   "daily.done": "You've played today's Silhouette.",
+  "daily.quiz": "Daily Quiz",
+  "daily.quizBody":
+    "One short quiz a day, the same for everyone. A different kind of question each day.",
+  "daily.playQuiz": "Play today's quiz",
+  "daily.resumeQuiz": "Resume today's quiz",
+  "daily.doneQuiz": "Today's quiz is done",
   "daily.borderRun": "Border Run: Daily route",
   "daily.borderRunBody":
     "One route a day, the same for everyone. Connect the two countries by land.",

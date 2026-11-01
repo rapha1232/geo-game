@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Card } from "@meridian/ui";
+import type { GameResult } from "@meridian/schemas";
+import { browserOffsetMinutes, msToNextDay } from "../../lib/daily/time";
+import { DailySummary } from "../daily/DailySummary";
 import {
   pause,
   resume,
@@ -37,13 +40,22 @@ import { QuizReview } from "./QuizReview";
 import styles from "./quiz.module.css";
 
 const GAME_ID = "quiz";
+export const DAILY_QUIZ_GAME_ID = "quiz:daily";
 const mono = (): number => performance.now();
 
 type Loaded = ReturnType<typeof assembleQuiz>;
 type Stage = "configure" | "play" | "review";
 
 /** One named quiz from configuration to review: saves after every action, resumes after a reload, writes the result. */
-export function QuizRunner({ slug }: { slug: string }) {
+export function QuizRunner({
+  slug,
+  daily,
+}: {
+  slug: string;
+  /** Today's daily quiz: the seed is fixed, there is no configure step and it can be played once. */
+  daily?: { date: string; seed: string };
+}) {
+  const gameId = daily ? DAILY_QUIZ_GAME_ID : GAME_ID;
   const services = useServices();
   const named: NamedQuiz | undefined = findQuiz(slug);
   const [data, setData] = useState<Loaded | null>(null);
@@ -59,6 +71,7 @@ export function QuizRunner({ slug }: { slug: string }) {
   const [saved, setSaved] = useState(true);
   const [pbs, setPbs] = useState<Map<string, number>>(new Map());
   const [initial, setInitial] = useState<QuizConfig | null>(null);
+  const [finishedResult, setFinishedResult] = useState<GameResult | null>(null);
   const seq = useRef(0);
   const version = useRef("");
   const history = useRef<string[]>([]);
@@ -73,7 +86,7 @@ export function QuizRunner({ slug }: { slug: string }) {
         const manifest = await services.loader.manifest();
         const loaded = assembleQuiz(packs, edges);
         const rows = await services.db.pbs.toArray().catch(() => []);
-        const old = await services.store.find(GAME_ID);
+        const old = await services.store.find(gameId);
         const hist = await services.db.history
           .get([GAME_ID, poolKey(defaultConfig(named))])
           .catch(() => undefined);
@@ -100,6 +113,7 @@ export function QuizRunner({ slug }: { slug: string }) {
         if (
           s &&
           s.slug === slug &&
+          (!daily || s.seed === daily.seed) &&
           s.state.phase !== "review" &&
           old?.content_version === manifest.current
         )
@@ -111,7 +125,10 @@ export function QuizRunner({ slug }: { slug: string }) {
     return () => {
       live = false;
     };
-  }, [services, named, slug, attempt]);
+  }, [services, named, slug, attempt, gameId]);
+
+  // The daily has no configure step: check it has not been played today, then resume today's quiz or start it.
+  const autoStarted = useRef(false);
 
   // Extra answer languages (R2): the country name index is rebuilt to accept the chosen translations.
   const languages = session?.state.quiz.config.languages?.join(",") ?? "";
@@ -138,7 +155,7 @@ export function QuizRunner({ slug }: { slug: string }) {
       if (!services || !named) return;
       const done = next.state.items.filter((i) => i.status !== "pending").length;
       services.store.save({
-        game_id: GAME_ID,
+        game_id: gameId,
         seq: ++seq.current,
         updated_at: Date.now(),
         content_version: version.current,
@@ -148,7 +165,7 @@ export function QuizRunner({ slug }: { slug: string }) {
         state: next,
       });
     },
-    [services, named, slug],
+    [services, named, slug, gameId],
   );
   const update = useCallback(
     (next: QuizSession) => {
@@ -215,7 +232,9 @@ export function QuizRunner({ slug }: { slug: string }) {
         endedAt: Date.now(),
         startedAt: session.startedWall,
         now: t0,
+        ...(daily ? { dailyDate: daily.date } : {}),
       });
+      setFinishedResult(result);
       const previous = await loadMastery(
         services.db,
         session.state.quiz.items.map((i) => i.id),
@@ -237,11 +256,11 @@ export function QuizRunner({ slug }: { slug: string }) {
   }, [services, session, data, persist]);
 
   const begin = useCallback(
-    (config: QuizConfig, kind: "normal" | "practice") => {
+    (config: QuizConfig, kind: "normal" | "practice" | "daily") => {
       if (!data || !named || !services) return;
       void (async () => {
         const nowWall = Date.now();
-        const seed = newQuizSeed();
+        const seed = kind === "daily" && daily ? daily.seed : newQuizSeed();
         let s: QuizSession;
         if (kind === "practice") {
           const rows = (await services.db.mastery.toArray().catch(() => [] as MasteryRecord[])).map(
@@ -253,21 +272,25 @@ export function QuizRunner({ slug }: { slug: string }) {
             }),
           );
           s = practiceMisses(data.world, slug, config, seed, rows, nowWall);
+        } else if (kind === "daily") {
+          s = { ...newQuiz(data.world, slug, config, seed, [], nowWall), kind: "daily" };
         } else s = newQuiz(data.world, slug, config, seed, history.current, nowWall);
-        await services.db.settings
-          .put({
-            key: "settings",
-            value: {
-              ...((await services.db.settings.get("settings").catch(() => undefined))?.value ?? {}),
-              [`quiz:${named.template}`]: {
-                difficulty: config.difficulty,
-                strictness: config.strictness,
-                ...(config.lives ? { lives: config.lives } : {}),
-                ...(config.languages?.length ? { languages: config.languages } : {}),
+        if (kind !== "daily")
+          await services.db.settings
+            .put({
+              key: "settings",
+              value: {
+                ...((await services.db.settings.get("settings").catch(() => undefined))?.value ??
+                  {}),
+                [`quiz:${named.template}`]: {
+                  difficulty: config.difficulty,
+                  strictness: config.strictness,
+                  ...(config.lives ? { lives: config.lives } : {}),
+                  ...(config.languages?.length ? { languages: config.languages } : {}),
+                },
               },
-            },
-          })
-          .catch(() => undefined);
+            })
+            .catch(() => undefined);
         setPb(null);
         setSaved(true);
         setFlags(null);
@@ -276,8 +299,36 @@ export function QuizRunner({ slug }: { slug: string }) {
         update(s);
       })();
     },
-    [data, named, services, slug, update],
+    [data, named, services, slug, update, daily],
   );
+
+  useEffect(() => {
+    if (!daily || !services || !data || !initial || session || autoStarted.current) return;
+    autoStarted.current = true;
+    void (async () => {
+      const rows = await services.db.results
+        .where("daily_date")
+        .equals(daily.date)
+        .toArray()
+        .catch(() => []);
+      if (
+        rows.some(
+          (r) =>
+            (r.data as { game_id?: string; mode?: string }).mode === "daily" &&
+            r.game_id === "quiz",
+        )
+      ) {
+        window.location.replace("/daily");
+        return;
+      }
+      if (resumeOffer) {
+        const s = { ...resumeOffer, state: resume(resumeOffer.state, mono()) };
+        setResumeOffer(null);
+        setStage("play");
+        update(s);
+      } else begin({ ...initial, difficulty: "normal", strictness: initial.strictness }, "daily");
+    })();
+  }, [daily, services, data, initial, session, resumeOffer, begin, update]);
 
   if (!named)
     return (
@@ -323,7 +374,7 @@ export function QuizRunner({ slug }: { slug: string }) {
             </Button>
             <Button
               onPress={() => {
-                void services?.store.discard(GAME_ID);
+                void services?.store.discard(gameId);
                 setResumeOffer(null);
               }}
             >
@@ -390,6 +441,15 @@ export function QuizRunner({ slug }: { slug: string }) {
             ) : null
           }
         />
+        {daily && finishedResult && (
+          <DailySummary
+            result={finishedResult}
+            link={`${window.location.origin}/daily`}
+            msToNext={msToNextDay(Date.now(), browserOffsetMinutes())}
+            unlimitedHref={`/play/quiz/${slug}`}
+            quizTitle={named?.title ?? ""}
+          />
+        )}
       </section>
     );
 

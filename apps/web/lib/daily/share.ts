@@ -47,6 +47,18 @@ export function factPinShare(result: GameResult, link: string): string {
   ].join("\n");
 }
 
+/** Spoiler-free share text for the daily quiz: the quiz title, the score and the time, never the items. */
+export function quizShare(result: GameResult, link: string, title: string): string {
+  const pct = result.max_score > 0 ? Math.round((100 * result.score) / result.max_score) : 0;
+  const secs = Math.round(result.active_ms / 1000);
+  return [
+    `${BRAND_NAME} · Daily Quiz · ${result.daily_date ?? result.ended_at.slice(0, 10)}`,
+    title,
+    `${pct}% · ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`,
+    link,
+  ].join("\n");
+}
+
 /**
  * Spoiler-free share text for a finished Border Run daily: one mark per guess (on route, close, off route) and the
  * verdict, never the countries.
