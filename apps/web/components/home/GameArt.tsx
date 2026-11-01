@@ -117,7 +117,6 @@ const ART: Record<ArtName, ReactNode> = {
           fill={i === 0 ? accent : "var(--color-land)"}
           stroke="var(--color-border-map)"
           data-move="grow"
-          style={{ transitionDelay: `${i * 50}ms` }}
         />
       ))}
     </>

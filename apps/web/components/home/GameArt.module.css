@@ -21,6 +21,16 @@
   .art [data-move="grow"] {
     transform-origin: bottom;
   }
+  /* Bars rise one after another (delays in CSS: style attributes are blocked by the CSP). */
+  .art [data-move="grow"]:nth-of-type(2) {
+    transition-delay: 50ms;
+  }
+  .art [data-move="grow"]:nth-of-type(3) {
+    transition-delay: 100ms;
+  }
+  .art [data-move="grow"]:nth-of-type(4) {
+    transition-delay: 150ms;
+  }
   :global([data-fx-card]):hover .art [data-move="grow"] {
     transform: scaleY(1.15);
   }
