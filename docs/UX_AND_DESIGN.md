@@ -175,6 +175,10 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 - **Headlines:** two-tone. An `<em>` inside an `h1`/`h2` carries the quieter second voice (muted or an accent-to-muted gradient).
 - **Home hero:** a live orthographic globe drawn from the `geo.world.110m` pack. It spins slowly, can be dragged, and flies a route between two countries in view. It loads after idle as its own chunk, shows a still globe first, pauses off screen, and is a single still frame with reduced motion. Decorative (`aria-hidden`).
 - **Game art:** each game and quiz card carries a small token-only SVG illustration (`components/home/GameArt.tsx`) that animates on card hover.
+- **Results and stats:** end-of-round screens lead with a hero (quiz: an animated `ProgressRing` showing the percentage next to the result sentence; Silhouette: an outcome card with a ✓/✕ badge). Per-game cards on Me show the solve rate as a ring. The ring is decorative (`aria-hidden`); the same number is always in nearby text.
+- **Daily hub:** a grid of cards with each game's art and a compact pill action. A game already played today gets a green border and badge tint, alongside the result summary that already describes it in text.
+- **404:** a compass whose needle hunts for north (a still needle with reduced motion), with ways back to Home and Play.
+- **No inline styles:** a `style` attribute in server-rendered markup is blocked by the CSP (`style-src` has no `unsafe-inline`), so components size and stagger with classes or data attributes instead (for example `ProgressRing` sizes `sm`/`md`/`lg`).
 - **Surfaces:** cards get a pointer-following spotlight and a warm border on hover; buttons are pills, and the primary one has a gradient that darkens away from its label, so label contrast never drops below the flat accent.
 - **Inspiration:** siteinspire.com is behind a bot checkpoint even for a headless browser. The refresh instead took cues from well-known product sites (structural hairline grids, two-tone headlines, floating navigation) without copying any layout, type or imagery.
 

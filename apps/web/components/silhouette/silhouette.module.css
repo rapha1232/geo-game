@@ -280,3 +280,55 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------- round result */
+.result {
+  padding: clamp(var(--space-5), 4vw, var(--space-6));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(36rem 14rem at 100% 0%, var(--fx-glow), transparent 70%), var(--color-surface);
+  box-shadow: var(--shadow-raised), var(--edge-highlight);
+}
+.result[data-outcome="solved"] {
+  border-color: var(--color-correct);
+  background:
+    radial-gradient(
+      36rem 14rem at 100% 0%,
+      color-mix(in srgb, var(--color-correct) 14%, transparent),
+      transparent 70%
+    ),
+    var(--color-surface);
+}
+.outcome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  font-weight: 350;
+  letter-spacing: -0.025em;
+}
+.outcomeGlyph {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  font-family: var(--font-ui);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-bg);
+  background: var(--color-text);
+}
+.result[data-outcome="solved"] .outcomeGlyph {
+  background: var(--color-correct);
+}
+.followUp h3 {
+  font-size: var(--text-xl);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .outcomeGlyph {
+    animation: fx-pop var(--motion-reveal) var(--ease-spring) 200ms backwards;
+  }
+}

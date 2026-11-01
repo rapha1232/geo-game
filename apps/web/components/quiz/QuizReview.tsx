@@ -2,7 +2,7 @@
 
 import { ReportButton } from "../report/ReportButton";
 import { useMemo, useState } from "react";
-import { Button, Card } from "@meridian/ui";
+import { Button, Card, ProgressRing } from "@meridian/ui";
 import { optionLabel, summarize, type QuizWorld } from "@meridian/quiz";
 import { formatClock } from "../../lib/quiz/library";
 import type { QuizSession } from "../../lib/quiz/session";
@@ -87,20 +87,32 @@ export function QuizReview({
   return (
     <section className={styles.review}>
       <h1>{t("qz.review")}</h1>
-      <Card className={styles.card}>
-        {!learn && (
-          <p className={styles.headline}>
-            {t("qz.reviewResult", {
-              points: Number.isInteger(sum.points) ? sum.points : sum.points.toFixed(2),
-              total: sum.total,
-              percent: sum.percent,
-              time: formatClock(sum.usedMs),
-            })}
-          </p>
-        )}
-        <p>{why}</p>
+      <Card className={`${styles.card} ${styles.resultCard}`}>
+        <div className={styles.resultHero}>
+          {!learn && (
+            <ProgressRing
+              value={sum.total > 0 ? sum.points / sum.total : 0}
+              label={`${sum.percent}%`}
+              size="lg"
+              tone={sum.percent >= 80 ? "correct" : "accent"}
+            />
+          )}
+          <div className={styles.resultText}>
+            {!learn && (
+              <p className={styles.headline}>
+                {t("qz.reviewResult", {
+                  points: Number.isInteger(sum.points) ? sum.points : sum.points.toFixed(2),
+                  total: sum.total,
+                  percent: sum.percent,
+                  time: formatClock(sum.usedMs),
+                })}
+              </p>
+            )}
+            <p className={styles.note}>{why}</p>
+          </div>
+        </div>
         {pb?.isNew && (
-          <p role="status">
+          <p role="status" className={styles.pb}>
             <span aria-hidden="true">▲ </span>
             {t("qz.newPb")}
             {pb.previous

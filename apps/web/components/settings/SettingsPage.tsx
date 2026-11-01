@@ -108,7 +108,6 @@ export function SettingsPage() {
       <section className={styles.group} aria-labelledby="set-display">
         <h2 id="set-display">{t("set.display")}</h2>
         <div className={styles.field}>
-          <span id="set-theme">{t("set.theme")}</span>
           <ThemeSwitch />
         </div>
         <label className={styles.field}>

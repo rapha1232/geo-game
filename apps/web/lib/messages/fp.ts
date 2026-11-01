@@ -18,6 +18,7 @@ export const messages = {
   "fp.category.science": "Science",
   "fp.category.sport": "Sport",
   "fp.category.other": "Other",
+  "fp.category.capitals-and-cities": "Capitals and cities",
   "fp.timer": "Timer per fact",
   "fp.timer.0": "Off",
   "fp.timer.15": "15 seconds",

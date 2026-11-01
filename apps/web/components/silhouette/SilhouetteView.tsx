@@ -278,8 +278,11 @@ export function SilhouetteView({
       </div>
 
       {over && target && (
-        <section className={styles.result} aria-live="polite">
-          <h2>
+        <section className={styles.result} aria-live="polite" data-outcome={s.round.status}>
+          <h2 className={styles.outcome}>
+            <span aria-hidden="true" className={styles.outcomeGlyph}>
+              {s.round.status === "solved" ? "✓" : "✕"}
+            </span>
             {s.round.status === "solved"
               ? t("sil.solved", { n: s.round.guesses.length, name: target.name })
               : t("sil.failed", { name: target.name })}

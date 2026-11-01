@@ -4,7 +4,6 @@ import { registerMessages } from "../i18n";
 export const messages = {
   "set.title": "Settings",
   "set.display": "Display",
-  "set.theme": "Theme",
   "set.motion": "Reduced motion",
   "set.motion.system": "Follow my device",
   "set.motion.reduce": "Always reduce",

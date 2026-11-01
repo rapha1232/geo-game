@@ -1,5 +1,5 @@
 .page {
-  max-width: 40rem;
+  max-width: 64rem;
   margin: 0;
   display: grid;
   gap: var(--space-4);
@@ -110,4 +110,49 @@
   .summary {
     animation: fx-rise var(--motion-slow) var(--ease-out);
   }
+}
+
+/* ---------------------------------------------------------------- hub grid */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+}
+.summary {
+  align-content: start;
+}
+.art {
+  width: 64px;
+  height: 64px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--tint-bg);
+}
+.summary h2 {
+  font-size: var(--text-2xl);
+  letter-spacing: -0.02em;
+}
+.summary p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+.summary .primary {
+  width: fit-content;
+  margin-top: var(--space-2);
+}
+.arrow {
+  transition: transform var(--motion-panel) var(--ease-spring);
+}
+.primary:hover .arrow {
+  transform: translateX(4px);
+}
+/* Played today: the card steps back and the summary below it takes the stage. */
+.game[data-state="done"] .summary {
+  border-color: var(--color-correct);
+}
+.game[data-state="done"] .art {
+  border-color: var(--color-correct);
+  background: color-mix(in srgb, var(--color-correct) 10%, var(--color-surface));
 }
