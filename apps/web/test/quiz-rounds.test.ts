@@ -12,8 +12,8 @@ import {
   newRoundSession,
   roundPbKey,
   roundPoints,
-  roundResult,
 } from "../lib/quiz/rounds";
+import { roundResult } from "../lib/quiz/round-results";
 import { buildCatalog } from "../lib/catalog/catalog";
 import { catalogKeyOf } from "../lib/catalog/store";
 

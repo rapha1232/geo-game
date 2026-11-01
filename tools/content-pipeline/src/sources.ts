@@ -56,3 +56,11 @@ export const WB_SNAPSHOT = {
   file: "data/snapshots/worldbank-indicators.json",
   version: "snapshot",
 };
+
+/** Wikidata labels in the R2 answer languages, committed like the other snapshots. */
+export const TRANSLATIONS_SNAPSHOT = {
+  id: "wikidata-translations",
+  source: "wd",
+  file: "data/snapshots/wikidata-translations.json",
+  version: "snapshot",
+};

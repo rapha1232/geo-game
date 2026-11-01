@@ -278,3 +278,4 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | Source re-pin (NE, Wikidata, GeoNames) | Quarterly, with a reviewed diff (names, capitals and sets diffs require a senior editor) |
 | Difficulty calibration | Nightly computation, shipped with the next patch |
 | Daily schedules | Extended monthly to keep ≥ 365 days ahead |
+

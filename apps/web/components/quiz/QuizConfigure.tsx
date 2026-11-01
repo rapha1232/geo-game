@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Button, Card } from "@meridian/ui";
 import {
   ALLOWED_FORMATS,
+  ANSWER_LANGUAGES,
   CONTINENT_NAMES,
   pbKey,
   timeLimitMs,
+  universeOf,
   type CountrySet,
   type Difficulty,
   type Format,
@@ -203,6 +205,27 @@ export function QuizConfigure({
               </select>
             </label>
           )}
+          {(c.format === "TYPE_ALL" || c.format === "TYPE_PROMPTED") &&
+            universeOf(c.template) === "country" && (
+              <fieldset className={styles.langs}>
+                <legend>{t("qz.config.languages")}</legend>
+                {ANSWER_LANGUAGES.map((l) => (
+                  <label key={l} className={styles.check}>
+                    <input
+                      type="checkbox"
+                      checked={c.languages?.includes(l) ?? false}
+                      onChange={(e) => {
+                        const next = (c.languages ?? []).filter((x) => x !== l);
+                        if (e.target.checked) next.push(l);
+                        const { languages: _drop, ...rest } = c;
+                        setC(next.length > 0 ? { ...rest, languages: next.sort() } : rest);
+                      }}
+                    />
+                    {t(`qz.lang.${l}` as MessageKey)}
+                  </label>
+                ))}
+              </fieldset>
+            )}
           {c.format === "MAP_CLICK" && (
             <label className={styles.check}>
               <input

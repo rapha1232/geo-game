@@ -26,6 +26,8 @@ import {
   takeHint,
   tick,
   timeLeftMs,
+  withLanguages,
+  buildQuizWorld,
   timeLimitMs,
   type QuizConfig,
 } from "../src";
@@ -705,5 +707,41 @@ describe("Lives modifier (R2)", () => {
     expect(s.lives).toBe(0);
     expect(s.endReason).toBe("lives_out");
     expect(target).toBeTruthy();
+  });
+});
+
+describe("Extra answer languages (R2)", () => {
+  const es = buildQuizWorld(
+    named.map((e) =>
+      e.id === "country:COD"
+        ? {
+            ...e,
+            aliases: [
+              ...e.aliases,
+              { text: "República Democrática del Congo", kind: "translation" as const, lang: "es" },
+            ],
+          }
+        : e,
+    ),
+  );
+  const q = generateQuiz(es, cfg({ countrySet: "sovereign-197" }), "LANGSEED01");
+  const run = (w: typeof es, text: string) =>
+    submitText(w, newQuizState(q), text, { submitted: true }, 1000);
+
+  it("English only by default: a translated name is not accepted", () => {
+    expect(run(es, "República Democrática del Congo").event.kind).not.toBe("accepted");
+  });
+  it("accepts the translation once its language is enabled, and not another language's", () => {
+    const withEs = withLanguages(es, ["es"]);
+    const r = run(withEs, "República Democrática del Congo");
+    expect(r.event.kind).toBe("accepted");
+    expect(run(withLanguages(es, ["fr"]), "República Democrática del Congo").event.kind).not.toBe(
+      "accepted",
+    );
+  });
+  it("returns the same world when nothing changes", () => {
+    expect(withLanguages(es, [])).toBe(es);
+    const w = withLanguages(es, ["es", "fr"]);
+    expect(withLanguages(w, ["fr", "es"])).toBe(w);
   });
 });

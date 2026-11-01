@@ -24,6 +24,7 @@ import {
 } from "./derive.ts";
 import { buildIndicators } from "./indicators.ts";
 import type { WbSnapshot } from "./worldbank.ts";
+import { addTranslations, type TranslationsSnapshot } from "./translations.ts";
 import type { Editorial } from "./editorial.ts";
 import { buildFacts, type authoredFile, type PopulatedPlace } from "./facts.ts";
 import type { z } from "zod";
@@ -61,6 +62,8 @@ export type BuildInput = {
   crossings?: readonly Crossing[];
   /** Pinned World Bank snapshot; adds the `core.indicators` pack. */
   worldBank?: WbSnapshot;
+  /** Wikidata labels in the answer languages; adds `translation` aliases to each country. */
+  translations?: TranslationsSnapshot;
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
   /** Curated fact files and populated places: adds the `facts.v1` pack (curated, capitals and cities). */
   factSources?: {
@@ -130,13 +133,16 @@ export function buildPacks(input: BuildInput): BuildOutput {
   );
   if (unknown.length > 0)
     throw new Error(`content/landlocked.yaml lists codes outside the set: ${unknown.join(", ")}`);
-  const priors = input.derive ? difficultyPriors(merged) : undefined;
+  const withNames = input.translations
+    ? addTranslations(merged, input.translations).entities
+    : merged;
+  const priors = input.derive ? difficultyPriors(withNames) : undefined;
   const entities: Entity[] = priors
-    ? merged.map((e) => ({
+    ? withNames.map((e) => ({
         ...e,
         difficulty: priors.get(e.id) as NonNullable<Entity["difficulty"]>,
       }))
-    : merged;
+    : withNames;
 
   const files: BuiltFile[] = [
     toFile("core.countries", {

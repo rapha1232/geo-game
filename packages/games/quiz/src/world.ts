@@ -17,11 +17,16 @@ export type QuizWorld = {
   groups: readonly QuizGroup[];
   groupById: ReadonlyMap<string, QuizGroup>;
   indexes: Record<Universe, NameIndex>;
+  /** Ambiguity groups, kept so the country index can be rebuilt for other answer languages. */
+  ambiguity: readonly AmbiguityGroup[];
+  /** Answer languages the country index accepts besides English. */
+  languages: readonly string[];
 };
 
 export function buildQuizWorld(
   entities: readonly QuizEntity[],
   ambiguity: readonly AmbiguityGroup[] = [],
+  languages: readonly string[] = [],
 ): QuizWorld {
   const continents = new Map<string, string[]>();
   const regions = new Map<string, { name: string; members: string[] }>();
@@ -66,11 +71,21 @@ export function buildQuizWorld(
     groups,
     groupById: new Map(groups.map((g) => [g.id, g])),
     indexes: {
-      country: new NameIndex(entities, ambiguity),
+      country: new NameIndex(entities, ambiguity, { languages }),
       capital: new NameIndex(capitalEntities),
       group: new NameIndex(groupEntities),
     },
+    ambiguity,
+    languages,
   };
+}
+
+/** The same world accepting names in these extra answer languages too (quiz-library §5.3, R2). */
+export function withLanguages(world: QuizWorld, languages: readonly string[]): QuizWorld {
+  const want = [...languages].sort();
+  return want.join() === [...world.languages].sort().join()
+    ? world
+    : buildQuizWorld(world.entities, world.ambiguity, want);
 }
 
 /** Which answer universe a template is typed against. */

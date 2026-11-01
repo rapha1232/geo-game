@@ -100,7 +100,7 @@ stateDiagram-v2
 | Timer | Timed, Untimed | Timed | |
 | Difficulty | Easy, Normal, Hard | Normal | Affects subsets and distractors (§6.3) |
 | Answer strictness | Lenient, Standard, Strict | Standard | §5.1 thresholds |
-| Extra answer languages | none, es, fr, de, pt, it, nl (multi) | none | R2 |
+| Extra answer languages | none, es, fr, de, pt, it, nl (multi) | none | R2 (built for country-name answers: Wikidata labels, CC0, pinned in `data/snapshots/wikidata-translations.json`; a label that would make a second country answerable is dropped at build time) |
 | Show map (TYPE_ALL) | On, Off (grid only) | On | |
 | Lives | ∞, 3, 1 | ∞ | R2 |
 

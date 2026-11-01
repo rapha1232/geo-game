@@ -27,7 +27,8 @@ import {
 import { fetchSources, lockText } from "./fetch.ts";
 import { parseLock, verifyAgainstLock, type LockFile } from "./lock.ts";
 import type { NeCollection } from "./ne.ts";
-import { SOURCES, WB_SNAPSHOT, WIKIDATA_SNAPSHOT } from "./sources.ts";
+import { SOURCES, TRANSLATIONS_SNAPSHOT, WB_SNAPSHOT, WIKIDATA_SNAPSHOT } from "./sources.ts";
+import { fetchTranslations, translationsBytes, type TranslationsSnapshot } from "./translations.ts";
 import { fetchWorldBank, wbSnapshotBytes, type WbSnapshot } from "./worldbank.ts";
 import { sha256, stableStringify } from "./util.ts";
 import { fetchWikidataSnapshot, snapshotBytes, type WdSnapshot } from "./wikidata.ts";
@@ -39,6 +40,7 @@ const path = {
   registry: join(root, "data/sources.registry.yaml"),
   snapshot: join(root, WIKIDATA_SNAPSHOT.file),
   wbSnapshot: join(root, WB_SNAPSHOT.file),
+  trSnapshot: join(root, TRANSLATIONS_SNAPSHOT.file),
   sets: join(root, "content/sets/sovereign-197.yaml"),
   countries: join(root, "content/countries.yaml"),
   ambiguity: join(root, "content/ambiguity.yaml"),
@@ -114,6 +116,29 @@ async function cmdFetch(args: string[]): Promise<void> {
     };
     log(`wikidata snapshot: ${snap.countries.length} countries, ${snap.capitals.length} capitals`);
   }
+  if (flag(args, "translations")) {
+    const names = JSON.parse(await readFile(path.snapshot, "utf8")) as WdSnapshot;
+    const snap = await fetchTranslations(names, new Date().toISOString().slice(0, 10), (u, i) =>
+      fetch(u, i as RequestInit),
+    );
+    const text = translationsBytes(snap);
+    await mkdir(dirname(path.trSnapshot), { recursive: true });
+    await writeFile(path.trSnapshot, text);
+    lock = {
+      entries: [
+        ...lock.entries.filter((e) => e.id !== TRANSLATIONS_SNAPSHOT.id),
+        {
+          id: TRANSLATIONS_SNAPSHOT.id,
+          source: "wd",
+          url: snap.endpoint,
+          version: `snapshot ${snap.retrieved_on}`,
+          sha256: sha256(text),
+          bytes: Buffer.byteLength(text),
+        },
+      ],
+    };
+    log(`translations snapshot: ${Object.keys(snap.labels).length} countries`);
+  }
   if (flag(args, "worldbank")) {
     const snap = await fetchWorldBank(new Date().toISOString().slice(0, 10), (u, i) =>
       fetch(u, i as RequestInit),
@@ -144,9 +169,15 @@ async function cmdFetch(args: string[]): Promise<void> {
     updateLock ||
     result.downloaded.length > 0 ||
     flag(args, "wikidata") ||
-    flag(args, "worldbank")
+    flag(args, "worldbank") ||
+    flag(args, "translations")
   ) {
-    if (updateLock || flag(args, "wikidata") || flag(args, "worldbank"))
+    if (
+      updateLock ||
+      flag(args, "wikidata") ||
+      flag(args, "worldbank") ||
+      flag(args, "translations")
+    )
       await writeFile(path.lock, lockText(lock));
   }
   log(`fetch done: ${result.downloaded.length} downloaded, ${result.cached.length} cached`);
@@ -191,6 +222,9 @@ async function loadInputs(args: string[]) {
   const wbSnapshot = JSON.parse(
     new TextDecoder().decode(await read(WB_SNAPSHOT.id, path.wbSnapshot)),
   ) as WbSnapshot;
+  const translations = JSON.parse(
+    new TextDecoder().decode(await read(TRANSLATIONS_SNAPSHOT.id, path.trSnapshot)),
+  ) as TranslationsSnapshot;
   const ne10 = await ne("ne-10m-countries", "10m");
   const ne10Iso2 = ne10.features
     .map((f) => f.properties["ISO_A2_EH"])
@@ -245,6 +279,7 @@ async function loadInputs(args: string[]) {
     },
     wikidata: snapshot,
     worldBank: wbSnapshot,
+    translations,
     registry: sourceRegistry.parse(
       parse(await readFile(path.registry, "utf8"), { schema: "core" }),
     ),

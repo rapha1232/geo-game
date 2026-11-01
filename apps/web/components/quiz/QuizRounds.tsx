@@ -13,12 +13,12 @@ import {
 } from "@meridian/quiz";
 import { t } from "../../lib/i18n";
 import { assembleQuiz, loadQuizPacks, type LoadedQuiz } from "../../lib/quiz/data";
+import { roundResult } from "../../lib/quiz/round-results";
 import {
   findRound,
   newRoundSession,
   roundPbKey,
   roundPoints,
-  roundResult,
   type RoundQuiz,
   type RoundSession,
 } from "../../lib/quiz/rounds";

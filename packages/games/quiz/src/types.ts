@@ -15,6 +15,8 @@ export type Template = (typeof TEMPLATES)[number];
 export const FORMATS = ["TYPE_ALL", "TYPE_PROMPTED", "MAP_CLICK", "MULTIPLE_CHOICE"] as const;
 export type Format = (typeof FORMATS)[number];
 
+export const ANSWER_LANGUAGES = ["es", "fr", "de", "pt", "it", "nl"] as const;
+
 export type Difficulty = "easy" | "normal" | "hard";
 export type CountrySet = "sovereign-197" | "un-193" | "sovereign+territories";
 export type Order = "random" | "alphabetical" | "largest";
@@ -67,6 +69,8 @@ export type QuizConfig = {
   hints?: boolean;
   /** Lives modifier (R2): a wrong answer costs one; at 0 the quiz ends. Absent means unlimited. */
   lives?: 1 | 3;
+  /** Extra answer languages (R2): translated country names are accepted too. Absent means English only. */
+  languages?: string[];
 };
 
 export type Prompt =

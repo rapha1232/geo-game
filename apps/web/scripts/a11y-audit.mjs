@@ -77,7 +77,7 @@ const STATES = [
     async drive(p) {
       await p.getByRole("button", { name: "Start", exact: true }).click();
       await p.getByRole("list", { name: "Countries" }).getByRole("button").first().click();
-      await p.getByRole("button", { name: "Done" }).click();
+      await p.getByRole("button", { name: "Done", exact: true }).first().click();
       await p.getByText(/Your score/).waitFor();
     },
   },

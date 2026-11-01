@@ -2,7 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Card } from "@meridian/ui";
-import { pause, resume, restoreQuiz, tick, timeLeftMs, type QuizConfig } from "@meridian/quiz";
+import {
+  pause,
+  resume,
+  restoreQuiz,
+  tick,
+  timeLeftMs,
+  withLanguages,
+  type QuizConfig,
+} from "@meridian/quiz";
 import { t } from "../../lib/i18n";
 import { assembleQuiz, loadQuizPacks } from "../../lib/quiz/data";
 import { defaultConfig, findQuiz, formatClock, type NamedQuiz } from "../../lib/quiz/library";
@@ -85,6 +93,7 @@ export function QuizRunner({ slug }: { slug: string }) {
           ...(remembered?.difficulty ? { difficulty: remembered.difficulty } : {}),
           ...(remembered?.strictness ? { strictness: remembered.strictness } : {}),
           ...(remembered?.lives ? { lives: remembered.lives } : {}),
+          ...(remembered?.languages?.length ? { languages: remembered.languages } : {}),
         });
         setData(loaded);
         const s = old?.state as QuizSession | undefined;
@@ -103,6 +112,14 @@ export function QuizRunner({ slug }: { slug: string }) {
       live = false;
     };
   }, [services, named, slug, attempt]);
+
+  // Extra answer languages (R2): the country name index is rebuilt to accept the chosen translations.
+  const languages = session?.state.quiz.config.languages?.join(",") ?? "";
+  useEffect(() => {
+    if (!data || !session) return;
+    const world = withLanguages(data.world, languages ? languages.split(",") : []);
+    if (world !== data.world) setData({ ...data, world });
+  }, [data, session, languages]);
 
   // Flag quizzes load the flags pack.
   useEffect(() => {
@@ -246,6 +263,7 @@ export function QuizRunner({ slug }: { slug: string }) {
                 difficulty: config.difficulty,
                 strictness: config.strictness,
                 ...(config.lives ? { lives: config.lives } : {}),
+                ...(config.languages?.length ? { languages: config.languages } : {}),
               },
             },
           })

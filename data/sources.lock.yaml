@@ -36,6 +36,12 @@ entries:
     version: snapshot 2026-10-30
     sha256: 5d5d7c7758b706353edf0ab7c935e58009fc483fe4d85b54b7644b25978573be
     bytes: 52698
+  - id: wikidata-translations
+    source: wd
+    url: https://query.wikidata.org/sparql
+    version: snapshot 2026-11-01
+    sha256: 8ed0487ebe495234c4a461c2c5a99789f98a75c7ccb809770175e4b490a93a88
+    bytes: 22020
   - id: worldbank-indicators
     source: wb
     url: https://api.worldbank.org/v2
