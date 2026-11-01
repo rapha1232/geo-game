@@ -1,0 +1,135 @@
+.page {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-4);
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: baseline;
+  justify-content: space-between;
+}
+.head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+}
+.meta,
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.prompt {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.options label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.options select {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.mapBox {
+  position: relative;
+  height: min(46vh, 28rem);
+  min-height: 15rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.chip {
+  margin: 0;
+  font-weight: 600;
+}
+.suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+.suggestions button {
+  width: 100%;
+  min-height: var(--touch-target);
+  text-align: left;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+.suggestions button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.reveal {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.reveal h2,
+.reveal h3 {
+  margin: 0;
+}
+.tiers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.tiers li {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+}
+.tiers li[data-yours="true"] {
+  border-width: 3px;
+  border-color: var(--color-focus);
+}
+.you {
+  font-weight: 700;
+}
+.share {
+  margin: 0;
+  padding: var(--space-3);
+  white-space: pre-wrap;
+  background: var(--color-land);
+  border-radius: var(--radius-control);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

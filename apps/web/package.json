@@ -20,6 +20,7 @@
     "offline": "node scripts/offline-check.mjs"
   },
   "dependencies": {
+    "@meridian/deep-cut": "workspace:*",
     "@meridian/fact-pin": "workspace:*",
     "@meridian/game-kit": "workspace:*",
     "@meridian/geo": "workspace:*",

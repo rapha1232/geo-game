@@ -35,6 +35,9 @@ importers:
       '@meridian/border-run':
         specifier: workspace:*
         version: link:../../packages/games/border-run
+      '@meridian/deep-cut':
+        specifier: workspace:*
+        version: link:../../packages/games/deep-cut
       '@meridian/fact-pin':
         specifier: workspace:*
         version: link:../../packages/games/fact-pin
@@ -166,6 +169,19 @@ importers:
       '@meridian/silhouette':
         specifier: workspace:*
         version: link:../silhouette
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.20.5
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(jsdom@25.0.1)
+
+  packages/games/deep-cut:
+    dependencies:
+      '@meridian/game-kit':
+        specifier: workspace:*
+        version: link:../../game-kit
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

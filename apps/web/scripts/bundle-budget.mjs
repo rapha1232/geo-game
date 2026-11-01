@@ -18,6 +18,7 @@ const GAMES = [
   "/play/fact-pin/page",
   "/play/border-run/page",
   "/play/rank-it/page",
+  "/play/deep-cut/page",
   "/explore/page",
   "/daily/page",
   "/me/page",

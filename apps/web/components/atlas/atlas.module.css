@@ -169,11 +169,12 @@
 .link {
   display: inline-flex;
   align-items: center;
+  min-width: var(--touch-target);
+  padding-inline: var(--space-2);
   min-height: var(--touch-target);
   color: var(--color-accent);
   background: none;
   border: 0;
-  padding: 0;
   font: inherit;
   text-decoration: underline;
   cursor: pointer;

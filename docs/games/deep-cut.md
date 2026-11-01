@@ -219,3 +219,11 @@ Typed input is a first-class alternative to the map. Tier glyphs plus text label
 | AC-DC-013 | Provisional rarity offline  | Offline → result flagged "provisional"                                                                 |
 | AC-DC-014 | Same country reusable       | Brazil valid for 2 prompts in a run → both scored                                                      |
 | AC-DC-015 | Daily schedule validation   | 365-day schedule, no prompt repeats within 180 days                                                    |
+
+## 13. As built (T2.10, first cut)
+
+- **Prompt pool:** about 140 prompts from data the pipeline already has: official languages (Wikidata P37 snapshot, unreviewed), "Borders X", continent and attribute pairs (landlocked, island nation, over 50 million, under 1 million), lines of latitude and longitude (computed from 1:10m outlines, with a sourced override for the equator in `content/deepcut-overrides.yaml`), name shapes and size rankings. The **Flags** and **Water** families need curated data and are not generated yet, so the pool is smaller than the 1,500 target. Every prompt is checked for 4 to 30 answers (`DEEPCUT_BOUNDS`).
+- **Rarity:** prior-only tiers (typicality is 0.5 for every family until editors set it), so runs are marked "provisional rarity". The telemetry blend (`w = min(1, n / 300)`) is implemented and tested; the calibration pack that feeds it comes with the calibration release job.
+- **Modes:** Run (60 s, 30 s or no timer) and Practice (untimed, answer count and one Solid answer, unscored). Daily, seeded challenge links and the Deep Dive variant are not built.
+- **Play:** map select or typing, Lock in, tiered reveal with the player's pick marked, a summary with a spoiler-free share. The result stores the tier at play time. With telemetry on, each answered prompt sends one anonymous prompt-answer event.
+

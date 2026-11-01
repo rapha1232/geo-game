@@ -92,6 +92,18 @@ export const RANK_IT: CatalogItem = {
   ],
 };
 
+export const DEEP_CUT: CatalogItem = {
+  key: "game:deep-cut",
+  kind: "game",
+  title: "Deep Cut",
+  pitch: "Name a country that fits. The rarer your answer, the more it scores.",
+  href: "/play/deep-cut",
+  topic: "countries",
+  format: "Map",
+  length: "short",
+  tags: ["countries", "rarity", "languages", "borders", "equator", "names", "recall", "farflung"],
+};
+
 /** Games and the named quizzes. With a loaded world, each quiz also matches the names of its countries and capitals. */
 export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
   const quizzes = LIBRARY.map((q): CatalogItem => {
@@ -138,7 +150,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       : {}),
     tags: [q.category, "choice", "quiz", q.kind === "tiles" ? "select" : "match", "tiles"],
   }));
-  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, ...quizzes, ...rounds];
+  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, DEEP_CUT, ...quizzes, ...rounds];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

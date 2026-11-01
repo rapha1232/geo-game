@@ -19,6 +19,7 @@ const ROUTES = [
   "/play/fact-pin",
   "/play/border-run",
   "/play/rank-it",
+  "/play/deep-cut",
   "/explore",
   "/play/quiz/daily",
   "/daily",
@@ -101,6 +102,17 @@ const STATES = [
       await p.getByRole("heading", { name: /Peru/ }).waitFor();
       await p.getByLabel("View").selectOption("table");
       await p.getByRole("table").waitFor();
+    },
+  },
+  {
+    name: "deep-cut prompt and reveal",
+    path: "/play/deep-cut",
+    async drive(p) {
+      await p.getByRole("button", { name: "Start", exact: true }).click();
+      await p.getByLabel("Or type a country").fill("Brazil");
+      await p.keyboard.press("Enter");
+      await p.getByRole("button", { name: "Lock in" }).click();
+      await p.getByText("Every valid answer").waitFor();
     },
   },
   {

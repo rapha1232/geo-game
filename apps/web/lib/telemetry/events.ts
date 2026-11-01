@@ -2,7 +2,7 @@ import type { GameResult, TelemetryEvent } from "@meridian/schemas";
 
 /** Rounds that teach rather than test never feed calibration. */
 const SKIP_MODES = new Set(["practice", "practice-misses", "learn"]);
-const SENT_GAMES = new Set(["quiz", "silhouette", "fact-pin"]);
+const SENT_GAMES = new Set(["quiz", "silhouette", "fact-pin", "deep-cut"]);
 
 /**
  * The anonymous answer events for one finished round (API_CONTRACTS §4.6, ARCHITECTURE §8.1). Only per-item outcomes
@@ -15,6 +15,24 @@ export function eventsFromResult(r: GameResult): TelemetryEvent[] {
       ? String((r.config as { difficulty: string }).difficulty).slice(0, 20)
       : "normal";
   const out: TelemetryEvent[] = [];
+  if (r.game_id === "deep-cut") {
+    // One event per answered prompt: which country was picked for which prompt, and whether it was valid.
+    for (const item of r.items) {
+      if (!item.entity_id || item.status === "skipped") continue;
+      out.push({
+        game_id: r.game_id,
+        item_kind: "prompt_answer",
+        item_id: item.entity_id,
+        prompt_id: item.item_id,
+        answer_entity_id: item.entity_id,
+        correct: item.status !== "invalid",
+        attempt: 1,
+        difficulty_setting: "normal",
+        t: r.ended_at,
+      });
+    }
+    return out;
+  }
   for (const item of r.items) {
     if (item.status === "skipped") continue;
     const id = item.entity_id ?? item.item_id;
