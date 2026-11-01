@@ -6,6 +6,7 @@ import type { GameResult } from "@meridian/schemas";
 import { t, type MessageKey } from "../../lib/i18n";
 import { formatDuration, history, overview, perGame, TREND_LENGTH } from "../../lib/results/stats";
 import styles from "./me.module.css";
+import "../../lib/messages/me";
 
 const gameName = (id: string): string => {
   const key = `me.game.${id}` as MessageKey;

@@ -19,6 +19,7 @@ import { loadBest, pbKey, rankItResult, saveRankIt } from "../../lib/results/ran
 import { randomUlid } from "../../lib/results/ulid";
 import { RankItView } from "./RankItView";
 import styles from "./rank-it.module.css";
+import "../../lib/messages/rk";
 
 export const GAME_ID = "rank-it";
 

@@ -7,6 +7,7 @@ import { resolveChallengeResponse } from "@meridian/schemas";
 import { parseSilhouetteChallenge, type ParsedChallenge } from "../../lib/challenges/silhouette";
 import { t } from "../../lib/i18n";
 import styles from "./challenge.module.css";
+import "../../lib/messages/ch";
 
 type State =
   | { kind: "loading" }

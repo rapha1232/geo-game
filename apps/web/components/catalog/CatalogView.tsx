@@ -17,6 +17,7 @@ import {
 } from "../../lib/catalog/catalog";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./catalog.module.css";
+import "../../lib/messages/cat";
 
 const TOPICS: Topic[] = ["countries", "capitals", "flags", "regions"];
 const FORMATS: CatalogFormat[] = ["Type", "Map", "Choice", "Deduction"];

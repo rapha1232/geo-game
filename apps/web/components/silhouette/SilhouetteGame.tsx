@@ -36,6 +36,9 @@ import {
 } from "../../lib/challenges/silhouette";
 import { SilhouetteView } from "./SilhouetteView";
 import styles from "./silhouette.module.css";
+import "../../lib/messages/ch";
+import "../../lib/messages/daily";
+import "../../lib/messages/sil";
 
 export const GAME_ID = "silhouette";
 

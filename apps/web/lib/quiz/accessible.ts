@@ -2,6 +2,7 @@ import { CONTINENT_NAMES, type QuizEntity, type QuizItem, type QuizWorld } from 
 import { Rng } from "@meridian/game-kit";
 import type { QuizFacts } from "./data";
 import { t } from "../i18n";
+import "../messages/qz";
 
 export type AccessibleItem = { description: string; options: string[]; correctIndex: number };
 

@@ -6,6 +6,7 @@ import { DEFAULT_CHALLENGE, encodeSilhouetteChallenge } from "../../lib/challeng
 import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./challenge.module.css";
+import "../../lib/messages/ch";
 
 const newSeed = (): string => {
   const bytes = new Uint8Array(10);

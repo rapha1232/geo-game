@@ -8,6 +8,7 @@ import { t } from "../../lib/i18n";
 import type { FollowUpState } from "../../lib/silhouette/controller";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./silhouette.module.css";
+import "../../lib/messages/sil";
 
 const LABELS = {
   zoomIn: "Zoom in",

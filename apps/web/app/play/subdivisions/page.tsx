@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { t } from "../../../lib/i18n";
 import { SUB_COUNTRIES, subTitle } from "../../../lib/subdivisions/list";
 import styles from "../../../components/subdivisions/subdivisions.module.css";
+import "../../../lib/messages/sb";
 
 export const metadata: Metadata = { title: t("sb.title") };
 

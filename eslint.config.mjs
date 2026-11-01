@@ -47,7 +47,7 @@ export default tseslint.config(
   },
   {
     // The offline check runs code inside the browser page.
-    files: ["apps/web/scripts/offline-check.mjs"],
+    files: ["apps/web/scripts/offline-check.mjs", "apps/web/scripts/i18n-audit.mjs"],
     languageOptions: {
       globals: { navigator: "readonly", caches: "readonly", document: "readonly" },
     },

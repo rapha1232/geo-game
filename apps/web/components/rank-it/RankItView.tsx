@@ -31,6 +31,9 @@ import {
 } from "../../lib/rank-it/controller";
 import { ReportButton } from "../report/ReportButton";
 import styles from "./rank-it.module.css";
+import "../../lib/messages/br";
+import "../../lib/messages/rk";
+import "../../lib/messages/sil";
 
 const CONTINENTS = ["AF", "AS", "EU", "NA", "OC", "SA"];
 const FORMATS: Format[] = ["order", "higher-lower", "top-picks"];

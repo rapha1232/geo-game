@@ -27,6 +27,7 @@ import { randomUlid } from "../../lib/results/ulid";
 import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const newSeed = (): string => {
   const bytes = new Uint8Array(10);

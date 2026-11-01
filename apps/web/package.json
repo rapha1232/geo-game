@@ -17,7 +17,8 @@
     "budget": "node scripts/bundle-budget.mjs",
     "network": "node scripts/network-audit.mjs",
     "lcp": "node scripts/lcp.mjs",
-    "offline": "node scripts/offline-check.mjs"
+    "offline": "node scripts/offline-check.mjs",
+    "i18n": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
     "@meridian/deep-cut": "workspace:*",

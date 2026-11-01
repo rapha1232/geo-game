@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SilhouetteGame } from "../../../../components/silhouette/SilhouetteGame";
 import { t } from "../../../../lib/i18n";
+import "../../../../lib/messages/daily";
 
 export const metadata: Metadata = { title: t("daily.silhouette") };
 

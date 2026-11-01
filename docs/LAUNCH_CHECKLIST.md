@@ -14,7 +14,7 @@ What the repository already does, what was checked locally, and what only the ow
 | No third-party requests at runtime (AC-PL-003)                                                                                                                  | `pnpm --filter @meridian/web network`                                             | Only the app's own origin                                                     |
 | Home LCP, indicative (simulated slow 4G, 4x CPU)                                                                                                                | `pnpm --filter @meridian/web lcp`                                                 | About 0.65 s                                                                  |
 
-Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web offline` checks that every R1 game opens with the network off (the service worker, T2.4).
+Run the audit scripts against `next start -p 3111`. `pnpm --filter @meridian/web i18n` visits every route and fails on a raw message key or a missing string (UI strings now live in `lib/messages/<game>.ts` and load with each game). `pnpm --filter @meridian/web offline` checks that every R1 game opens with the network off (the service worker, T2.4).
 
 ## Only the owner can do
 

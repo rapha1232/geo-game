@@ -35,6 +35,8 @@ import { silhouettePath, VIEW } from "../../lib/silhouette/draw";
 import type { Shape } from "../../lib/silhouette/data";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./silhouette.module.css";
+import "../../lib/messages/ch";
+import "../../lib/messages/sil";
 
 const ARROW: Record<string, string> = {
   N: "↑",

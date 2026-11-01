@@ -8,6 +8,7 @@ import { t, type MessageKey } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import { DailySummary } from "./DailySummary";
 import styles from "./daily.module.css";
+import "../../lib/messages/daily";
 
 export const DAILY_GAME_ID = "silhouette:daily";
 export const FACT_PIN_DAILY_GAME_ID = "fact-pin:daily";

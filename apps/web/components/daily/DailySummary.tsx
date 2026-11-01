@@ -13,6 +13,8 @@ import {
 } from "../../lib/daily/share";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./daily.module.css";
+import "../../lib/messages/daily";
+import "../../lib/messages/me";
 
 export type DailySummaryProps = {
   result: GameResult;

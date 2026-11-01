@@ -24,6 +24,8 @@ import { searchPlaces, type LoadedFactPin } from "../../lib/fact-pin/data";
 import { advance, finishRun, type FactSession } from "../../lib/fact-pin/session";
 import { FactPinMap } from "./FactPinMap";
 import styles from "./fact-pin.module.css";
+import "../../lib/messages/fp";
+import "../../lib/messages/sil";
 
 /** Where the answer is, for the map marker: the point itself, or the label point of the area. */
 function targetPoint(data: LoadedFactPin, fact: PinFact): { lat: number; lon: number } | null {

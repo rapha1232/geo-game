@@ -27,6 +27,8 @@ import { formatValue } from "../rank-it/RankItView";
 import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./atlas.module.css";
+import "../../lib/messages/at";
+import "../../lib/messages/sil";
 
 const LABELS = {
   zoomIn: "Zoom in",

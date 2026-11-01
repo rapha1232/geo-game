@@ -35,6 +35,8 @@ import { ReportButton } from "../report/ReportButton";
 import { FactPinConfigure } from "./FactPinConfigure";
 import { FactPinView } from "./FactPinView";
 import styles from "./fact-pin.module.css";
+import "../../lib/messages/daily";
+import "../../lib/messages/fp";
 
 export const GAME_ID = "fact-pin";
 const mono = (): number => performance.now();

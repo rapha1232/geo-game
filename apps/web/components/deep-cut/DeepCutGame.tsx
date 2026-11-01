@@ -24,6 +24,8 @@ import { DailySummary } from "../daily/DailySummary";
 import type { GameResult } from "@meridian/schemas";
 import { DeepCutView } from "./DeepCutView";
 import styles from "./deep-cut.module.css";
+import "../../lib/messages/dc";
+import "../../lib/messages/rk";
 
 export const GAME_ID = "deep-cut";
 const POOL_KEY = "all";

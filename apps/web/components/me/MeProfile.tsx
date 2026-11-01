@@ -12,6 +12,8 @@ import { computeStreak } from "../../lib/achievements/streak";
 import { loadSettings } from "../../lib/settings/settings";
 import { localDate } from "../../lib/daily/time";
 import styles from "./me.module.css";
+import "../../lib/messages/me";
+import "../../lib/messages/sil";
 
 type Pack = {
   entities: { id: string; names: { canonical: string }; label_point: [number, number] }[];

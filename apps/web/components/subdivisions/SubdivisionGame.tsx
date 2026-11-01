@@ -22,6 +22,8 @@ import { subPbKey, subdivisionResult } from "../../lib/results/subdivisions";
 import { loadBest, saveRankIt } from "../../lib/results/rank-it";
 import { randomUlid } from "../../lib/results/ulid";
 import styles from "./subdivisions.module.css";
+import "../../lib/messages/qz";
+import "../../lib/messages/sb";
 
 const LABELS = {
   zoomIn: "Zoom in",

@@ -19,6 +19,7 @@ import {
 import { FORMAT_LABEL, formatClock, itemCount, type NamedQuiz } from "../../lib/quiz/library";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const SCOPES: { value: string; scope: Scope }[] = [
   { value: "world", scope: { kind: "world" } },

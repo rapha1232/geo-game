@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@meridian/ui";
 import { t } from "../../lib/i18n";
 import { useServices } from "./StorageProvider";
+import "../../lib/messages/sil";
 
 /** Shows nothing for the first 300 ms, so a fast load never flashes a spinner (UX_AND_DESIGN §8). */
 export function LoadingState({

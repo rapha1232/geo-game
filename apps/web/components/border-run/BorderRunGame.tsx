@@ -28,6 +28,8 @@ import { BORDER_RUN_DAILY_GAME_ID } from "../daily/DailyHub";
 import { DailySummary } from "../daily/DailySummary";
 import { BorderRunView } from "./BorderRunView";
 import styles from "./border-run.module.css";
+import "../../lib/messages/br";
+import "../../lib/messages/daily";
 
 export const GAME_ID = "border-run";
 

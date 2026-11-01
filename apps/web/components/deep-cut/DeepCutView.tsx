@@ -21,6 +21,9 @@ import type { LoadedDeepCut } from "../../lib/deep-cut/data";
 import { lockIn, next, pick, tickTime, type Session } from "../../lib/deep-cut/controller";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./deep-cut.module.css";
+import "../../lib/messages/dc";
+import "../../lib/messages/rk";
+import "../../lib/messages/sil";
 
 const LABELS = {
   zoomIn: "Zoom in",

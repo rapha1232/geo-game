@@ -7,6 +7,7 @@ import type { GuessRow, World } from "@meridian/silhouette";
 import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./silhouette.module.css";
+import "../../lib/messages/sil";
 
 const LABELS = {
   zoomIn: "Zoom in",

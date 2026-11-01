@@ -9,6 +9,7 @@ import type { QuizSession } from "../../lib/quiz/session";
 import type { PbOutcome } from "../../lib/quiz/results";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 type Filter = "all" | "missed" | "spelling";
 

@@ -8,6 +8,7 @@ import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import type { LoadedFactPin } from "../../lib/fact-pin/data";
 import styles from "./fact-pin.module.css";
+import "../../lib/messages/fp";
 
 const LABELS = {
   zoomIn: "Zoom in",

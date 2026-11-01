@@ -39,6 +39,7 @@ import type { QuizSession } from "../../lib/quiz/session";
 import { t, type MessageKey } from "../../lib/i18n";
 import { QuizMap } from "./QuizMap";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const flagSrc = (svg: string): string =>
   `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

@@ -10,6 +10,7 @@ import {
 import { BRAND_NAME } from "../../lib/brand";
 import { t } from "../../lib/i18n";
 import styles from "./challenge.module.css";
+import "../../lib/messages/ch";
 
 export type ChallengeSummaryProps = {
   session: Session;

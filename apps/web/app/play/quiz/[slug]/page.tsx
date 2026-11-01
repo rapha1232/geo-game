@@ -4,6 +4,7 @@ import { QuizRunner } from "../../../../components/quiz/QuizRunner";
 import { findRound } from "../../../../lib/quiz/rounds";
 import { findQuiz } from "../../../../lib/quiz/library";
 import { t } from "../../../../lib/i18n";
+import "../../../../lib/messages/qz";
 
 export async function generateMetadata({
   params,

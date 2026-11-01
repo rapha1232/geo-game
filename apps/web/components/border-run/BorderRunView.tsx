@@ -33,6 +33,8 @@ import {
   type Session,
 } from "../../lib/border-run/controller";
 import styles from "./border-run.module.css";
+import "../../lib/messages/br";
+import "../../lib/messages/sil";
 
 const LABELS = {
   zoomIn: "Zoom in",

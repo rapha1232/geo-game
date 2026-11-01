@@ -23,6 +23,8 @@ import {
 } from "../../lib/settings/data";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./settings.module.css";
+import "../../lib/messages/rp";
+import "../../lib/messages/set";
 
 const UNITS: Units[] = ["auto", "km", "mi"];
 const STRICT: Strictness[] = ["lenient", "standard", "strict"];

@@ -1,0 +1,42 @@
+import { registerMessages } from "../i18n";
+
+/** The `cat.*` strings. They load with the code that uses them, not with the shell. */
+export const messages = {
+  "cat.search": "Search games and quizzes",
+  "cat.topic": "Topic",
+  "cat.format": "Format",
+  "cat.length": "Length",
+  "cat.region": "Region",
+  "cat.any": "Any",
+  "cat.favoritesOnly": "Favorites only",
+  "cat.sort": "Sort",
+  "cat.sort.recommended": "Recommended",
+  "cat.sort.az": "A to Z",
+  "cat.sort.recent": "Recently played",
+  "cat.topic.countries": "Countries",
+  "cat.topic.capitals": "Capitals",
+  "cat.topic.flags": "Flags",
+  "cat.topic.regions": "Regions",
+  "cat.topic.mixed": "Mixed",
+  "cat.length.short": "Under 2 min",
+  "cat.length.medium": "2 to 5 min",
+  "cat.length.long": "5 to 15 min",
+  "cat.length.endless": "Endless",
+  "cat.region.AF": "Africa",
+  "cat.region.AS": "Asia",
+  "cat.region.EU": "Europe",
+  "cat.region.NA": "North America",
+  "cat.region.OC": "Oceania",
+  "cat.region.SA": "South America",
+  "cat.fav": "Add {title} to favorites",
+  "cat.unfav": "Remove {title} from favorites",
+  "cat.noMatch": "No games match {filters}.",
+  "cat.clear": "Clear filters",
+  "cat.results": "{n} results",
+  "cat.game": "Game",
+  "cat.quiz": "Quiz",
+  "cat.played": "Played",
+  "cat.new": "New",
+} as const;
+
+registerMessages(messages);

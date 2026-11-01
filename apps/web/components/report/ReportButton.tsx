@@ -12,6 +12,7 @@ import {
   type ReportResult,
 } from "../../lib/report/client";
 import styles from "./report.module.css";
+import "../../lib/messages/rp";
 
 export type ReportButtonProps = {
   /** The entity or fact being reported, e.g. `country:CPV` or `fact:0042`. */

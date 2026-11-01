@@ -12,6 +12,7 @@ import type { QuizWorld } from "@meridian/quiz";
 import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const LABELS = {
   zoomIn: "Zoom in",

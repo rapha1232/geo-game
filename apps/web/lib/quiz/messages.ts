@@ -1,5 +1,6 @@
 import type { ClickEvent, HintEvent, QuizState, QuizWorld, TypeEvent } from "@meridian/quiz";
 import { t } from "../i18n";
+import "../messages/qz";
 
 export type Status = { tone: "neutral" | "success" | "error" | "hint"; text: string };
 

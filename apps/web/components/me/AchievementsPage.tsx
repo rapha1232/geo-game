@@ -7,6 +7,7 @@ import type { AchievementRecord } from "../../lib/storage/db";
 import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./me.module.css";
+import "../../lib/messages/sil";
 
 /** `/me/achievements`: every badge with what it takes, and when it was unlocked. */
 export function AchievementsPage() {

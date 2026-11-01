@@ -38,6 +38,7 @@ import { QuizMap } from "./QuizMap";
 import { QuizPlay } from "./QuizPlay";
 import { QuizReview } from "./QuizReview";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const GAME_ID = "quiz";
 export const DAILY_QUIZ_GAME_ID = "quiz:daily";

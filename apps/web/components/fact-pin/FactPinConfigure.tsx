@@ -4,6 +4,7 @@ import { Button, Card } from "@meridian/ui";
 import type { Difficulty, FactPinConfig } from "@meridian/fact-pin";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./fact-pin.module.css";
+import "../../lib/messages/fp";
 
 const label = (c: string): string => {
   const key = `fp.category.${c}` as MessageKey;

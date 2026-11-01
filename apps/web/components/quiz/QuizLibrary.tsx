@@ -16,6 +16,7 @@ import { pbKey } from "@meridian/quiz";
 import { t, type MessageKey } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./quiz.module.css";
+import "../../lib/messages/qz";
 
 const CATEGORIES: Category[] = ["countries", "capitals", "flags", "regions"];
 const FORMATS: Format[] = ["TYPE_ALL", "TYPE_PROMPTED", "MAP_CLICK", "MULTIPLE_CHOICE"];

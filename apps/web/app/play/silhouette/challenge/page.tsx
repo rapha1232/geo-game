@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ChallengeCreate } from "../../../../components/challenge/ChallengeCreate";
 import { SilhouetteGame } from "../../../../components/silhouette/SilhouetteGame";
 import { t } from "../../../../lib/i18n";
+import "../../../../lib/messages/ch";
 
 export const metadata: Metadata = { title: t("ch.landingTitle"), robots: { index: false } };
 

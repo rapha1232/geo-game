@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SubdivisionGame } from "../../../../components/subdivisions/SubdivisionGame";
 import { findSubCountry, subTitle } from "../../../../lib/subdivisions/list";
 import { t } from "../../../../lib/i18n";
+import "../../../../lib/messages/sb";
 
 export async function generateMetadata({
   params,
