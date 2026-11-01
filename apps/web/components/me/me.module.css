@@ -1,6 +1,6 @@
 .page {
   max-width: 64rem;
-  margin: 0 auto;
+  margin: 0;
   display: grid;
   gap: var(--space-5);
 }

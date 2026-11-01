@@ -202,8 +202,29 @@
 }
 
 .empty {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
   max-width: 34rem;
-  padding: var(--space-6) 0;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+.empty > * {
+  margin: 0;
+}
+.empty a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .toaster {
