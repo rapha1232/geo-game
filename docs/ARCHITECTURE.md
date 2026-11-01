@@ -181,7 +181,8 @@ Mercator is not used, because it distorts size and polar regions.
 
 - **SVG** for interactive feature layers (≤ about 3,000 paths on screen). Each feature is a `<path>` with `data-id`, and patterns are applied via `fill="url(#hatch-45)"`. SVG gives crisp patterns, focus outlines and simple accessibility hooks.
 - **Canvas 2D** underlay for dense, non-interactive layers (10m coastlines when zoomed in, graticule, historical blur).
-- **Zoom/pan:** d3-zoom transforms a `<g>`. During gestures, path redraws use CSS transforms. When the gesture ends, the renderer switches level of detail (110m → 50m → 10m) and recomputes tiny-target rings.
+- **Zoom/pan:** d3-zoom transforms a `<g>`. The land layer is memoised, so a gesture only re-renders the group transform and the screen-space overlays; decorative coast layers are hidden while moving at 50m/10m. When the gesture ends, the renderer switches level of detail (110m → 50m → 10m) and recomputes tiny-target rings. Button and reset zooms are eased flights that commit the level of detail once, at the end.
+- **Map styles:** colours come from `--map-*` variables selected by `data-map-style` on `<html>` ([UX_AND_DESIGN §5.3](UX_AND_DESIGN.md#53-map-styles)). Deviation from the Canvas underlay below: coasts are SVG (one merged path per pack), which keeps one rendering path and measured at frame rate in Chromium.
 - **Hit testing:** pointer events on SVG paths, plus a tiny-target overlay layer of `<circle>`s on top ([quiz-library §5.4](games/quiz-library.md#54-map-interaction-rules-map_click-and-type_prompted-with-highlight)). Free-pin mode converts screen → lon/lat with `projection.invert`.
 - **Keyboard spatial navigation:** a `flatbush` index of label points (projected). Arrow keys pick the nearest feature whose bearing from the current one is within ±60° of the arrow direction.
 - **Labels:** an optional label layer with collision avoidance (greedy, by priority = population rank), hidden in quiz modes.

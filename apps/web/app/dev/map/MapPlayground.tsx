@@ -13,6 +13,7 @@ import {
   type Pin,
 } from "@meridian/ui";
 import styles from "./MapPlayground.module.css";
+import { mapLabels } from "../../../lib/map/labels";
 
 type Manifest = {
   current: string;
@@ -22,14 +23,7 @@ type Pack = {
   entities: { id: string; names: { canonical: string }; label_point: [number, number] }[];
 };
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => `Focused: ${name}`,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `Pin at ${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 
 export function MapPlayground() {
   const [packs, setPacks] = useState<Partial<Record<Lod, never>>>({});

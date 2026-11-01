@@ -37,6 +37,11 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  /* Italic overhang would be clipped by the text-clipped background at line ends. */
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 @media (forced-colors: active) {
   .hero h1 em {

@@ -24,15 +24,9 @@ import styles from "./deep-cut.module.css";
 import "../../lib/messages/dc";
 import "../../lib/messages/rk";
 import "../../lib/messages/sil";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 const tierName = (tier: Tier): string => t(`dc.tier.${tier}` as MessageKey);
 
 /** Share text: one glyph per prompt and the total, never the prompts or answers. */

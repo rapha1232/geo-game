@@ -127,6 +127,7 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 | Answer strictness (global default) | Lenient, Standard, Strict                                           | Standard         | R1                                                                                     |
 | Country set (global default)       | sovereign-197, un-193 (+territories when the territories set ships) | sovereign-197    | R1                                                                                     |
 | High-contrast map palette          | On, Off                                                             | Off              | R1                                                                                     |
+| Map style                          | Atlas, Political, Midnight, Ink, Blueprint ([§5.3](#53-map-styles))  | Atlas            | R1 (also switchable from the layers button on every map)                               |
 | Accessible variants by default     | On, Off                                                             | Off              | R1                                                                                     |
 | Sounds                             | On, Off                                                             | Off              | R1.x (no audio assets yet; the toggle is not shown until there is something to switch) |
 | Extra answer languages             | es, fr, de, pt, it, nl                                              | none             | R2                                                                                     |
@@ -217,6 +218,20 @@ All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI co
 **Iconography:** a single outline icon set (Lucide, ISC license). Glyphs ✓ ✕ ◐ ⇆ ◆ are used as redundant feedback markers alongside color.
 
 **Motion:** durations 120 ms (micro), 200 ms (panels), 400 ms (reveals), 700 ms (entrances). Easing `cubic-bezier(.2,.8,.2,1)`, plus `--ease-spring` (a soft overshoot for presses, pops and selection) and `--ease-out` (a long tail for entrances). Pages cross-fade between navigations (cross-document View Transitions), and the page body rises in. Lists cascade in (`.fx-stagger`), and sections reveal on scroll where scroll-driven animations are supported (`.fx-reveal`). Feedback has motion as well as glyphs: correct pops, wrong shakes, the pin drops in and the target line marches. Blocks of text that appear mid-game move without fading (`fx-lift`), so they are never at partial contrast. All keyframes, and every `transform`, are declared only inside `prefers-reduced-motion: no-preference` (enforced by `packages/ui/test/motion.test.ts`). With reduced motion, from the OS or from Settings, there is no movement, only opacity or instant changes, and view transitions are off.
+
+### 5.3 Map styles
+
+Players choose how every map looks, from the layers button in the map controls or in Settings. The choice is saved on the device (`localStorage["meridian:map-style"]`, absent means Atlas), applied as `data-map-style` on `<html>` by the same pre-paint inline script as the theme, and every open map switches at once. Each style is only a block of `--map-*` variables in `GameMap.module.css`; feedback states, patterns and glyphs are the same in all of them (AC-PL-008), and the high-contrast palette overrides any style.
+
+| Style     | Look                                                                                       | Themes                  |
+| --------- | ------------------------------------------------------------------------------------------ | ----------------------- |
+| Atlas     | Warm paper land with faint per-country tones, stepped shallow-water coasts, a soft shadow | Light and dark variants |
+| Political | School-atlas pastels; a greedy colouring over the TopoJSON adjacency keeps neighbours apart | Light and dark variants |
+| Midnight  | A night globe: deep navy sea, slate land, glowing cyan coastlines                          | Always dark             |
+| Ink       | Flat grey land, paper-white borders, no graticule or coast effects                        | Light and dark variants |
+| Blueprint | Drafting-table blue, white linework and a solid graticule                                  | Always blue             |
+
+Map rendering details shared by all styles: the outer coastline is a TopoJSON `merge` of the pack, drawn under the land three times as widening translucent strokes (the shallows), once as a shadow and once as a crisp edge. At 50m and 10m the coast layer rests while the map moves, so panning stays at frame rate. Tiny targets are drawn as small island dots shaped by state (dot, ✕ cross, ring) and their dashed hit ring appears only on hover or keyboard focus. Zoom buttons, reset and keyboard zooms fly with a short ease (instant under reduced motion). Maps given a `focus` set open framed on it: a quiz whose answers all share a continent frames that whole continent (never just the answers, which would give them away), and Border Run frames its two endpoints; the reset button returns to that frame.
 
 ## 6. Responsive layouts
 

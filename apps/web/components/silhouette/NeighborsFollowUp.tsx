@@ -9,15 +9,9 @@ import type { FollowUpState } from "../../lib/silhouette/controller";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./silhouette.module.css";
 import "../../lib/messages/sil";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 
 /**
  * The Neighbors follow-up (silhouette §8.2): select every land neighbour on the map, or add them by name. Scored only if

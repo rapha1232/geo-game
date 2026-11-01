@@ -505,6 +505,7 @@ export function QuizPlay(p: QuizPlayProps) {
               ) : (
                 <QuizMap
                   world={world}
+                  items={s.quiz.items.map((it) => it.id)}
                   labelPoints={facts.labelPoints}
                   states={states}
                   markers={markers}

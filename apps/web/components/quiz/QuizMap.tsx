@@ -13,15 +13,9 @@ import { t } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./quiz.module.css";
 import "../../lib/messages/qz";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 
 /** The world map for quizzes. Loads the 110m outlines first and finer ones as the player zooms. */
 export function QuizMap({
@@ -31,8 +25,11 @@ export function QuizMap({
   markers,
   mode,
   onSelect,
+  items,
 }: {
   world: QuizWorld;
+  /** Ids of the quiz's answers; used only to pick the region to frame. */
+  items?: readonly string[];
   labelPoints: ReadonlyMap<string, readonly [number, number]>;
   states: Readonly<Record<string, MapFeatureState>>;
   markers?: ReadonlySet<string>;
@@ -69,6 +66,15 @@ export function QuizMap({
       })),
     [world, labelPoints],
   );
+  // Frame the map on the quiz's continent when all its answers share one. The whole continent, never just
+  // the answers, so the framing gives nothing away.
+  const focusKey = items?.join(",") ?? "";
+  const focus = useMemo(() => {
+    const continents = new Set((items ?? []).map((id) => world.byId.get(id)?.continent ?? ""));
+    if (continents.size !== 1 || continents.has("")) return undefined;
+    const [c] = continents;
+    return world.entities.filter((e) => e.continent === c).map((e) => e.id);
+  }, [focusKey, world]);
   return (
     <div className={styles.mapBox}>
       <GameMap
@@ -77,6 +83,7 @@ export function QuizMap({
         states={states}
         {...(markers ? { markers } : {})}
         mode={mode}
+        {...(focus ? { focus } : {})}
         {...(onSelect ? { onSelect } : {})}
         onNeedLod={onNeedLod}
         labels={LABELS}

@@ -10,6 +10,8 @@ export * from "./components/AnswerInput";
 export * from "./components/ProgressRing";
 export * from "./theme";
 export * from "./components/ThemeToggle";
+export * from "./components/MapStylePicker";
+export * from "./map/mapStyle";
 export { GameMap } from "./map/GameMap";
 export type {
   GameMapProps,

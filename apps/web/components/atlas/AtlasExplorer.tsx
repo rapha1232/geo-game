@@ -29,15 +29,9 @@ import { useServices } from "../shell/StorageProvider";
 import styles from "./atlas.module.css";
 import "../../lib/messages/at";
 import "../../lib/messages/sil";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 const SOURCE: Record<string, MessageKey> = {
   wb: "at.src.wb",
   wd: "at.src.wd",

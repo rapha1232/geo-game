@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button, Dialog } from "@meridian/ui";
+import { Button, Dialog, MapStylePicker } from "@meridian/ui";
 import { ThemeSwitch } from "../../app/ThemeSwitch";
 import { t, type MessageKey } from "../../lib/i18n";
 import {
@@ -21,6 +21,7 @@ import {
   importData,
   parseExport,
 } from "../../lib/settings/data";
+import { mapStyleDescriptions, mapStyleNames } from "../../lib/map/labels";
 import { useServices } from "../shell/StorageProvider";
 import styles from "./settings.module.css";
 import "../../lib/messages/rp";
@@ -121,6 +122,13 @@ export function SettingsPage() {
             <option value="reduce">{t("set.motion.reduce")}</option>
           </select>
         </label>
+        <div className={styles.field}>
+          <MapStylePicker
+            label={t("map.style")}
+            names={mapStyleNames()}
+            descriptions={mapStyleDescriptions()}
+          />
+        </div>
         <label className={styles.check}>
           <input
             type="checkbox"

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "@meridian/ui/styles";
-import { themeInitScript } from "@meridian/ui";
+import { mapStyleInitScript, themeInitScript } from "@meridian/ui";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { Nav } from "../components/shell/Nav";
 import { StorageProvider } from "../components/shell/StorageProvider";
@@ -34,7 +34,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {nonce && <meta name="csp-nonce" content={nonce} />}
-        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: `${themeInitScript};${mapStyleInitScript}` }}
+        />
       </head>
       <body>
         <StorageProvider contentHost={process.env.NEXT_PUBLIC_CONTENT_HOST ?? ""}>

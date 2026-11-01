@@ -35,15 +35,9 @@ import {
 import styles from "./border-run.module.css";
 import "../../lib/messages/br";
 import "../../lib/messages/sil";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `Pin at ${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 const REGIONS = ["world", "AF", "AS", "EU", "NA", "OC", "SA"] as const;
 const ICON: Record<Classification, string> = { "on-route": "✓", near: "◐", "off-route": "✕" };
 const STATE: Record<Classification, MapFeatureState> = {
@@ -224,6 +218,7 @@ export function BorderRunView({
             entities={data.mapEntities}
             states={states}
             mode="view"
+            focus={[r.a, r.b]}
             onNeedLod={onNeedLod}
             labels={LABELS}
             aria-label={t("br.mapAria")}

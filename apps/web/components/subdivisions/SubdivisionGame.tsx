@@ -24,15 +24,9 @@ import { randomUlid } from "../../lib/results/ulid";
 import styles from "./subdivisions.module.css";
 import "../../lib/messages/qz";
 import "../../lib/messages/sb";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 type Format = "name" | "find";
 type Played = { round: SubRound; seed: string; startedAt: number; resultId: string | null };
 

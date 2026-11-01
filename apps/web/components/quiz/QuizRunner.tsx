@@ -450,6 +450,7 @@ export function QuizRunner({
                 </label>
                 <QuizMap
                   world={data.world}
+                  items={session.state.quiz.items.map((it) => it.id)}
                   labelPoints={data.facts.labelPoints}
                   states={
                     Object.fromEntries(

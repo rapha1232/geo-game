@@ -2,7 +2,14 @@
 
 import { geoGraticule10, geoPath } from "d3-geo";
 import { select } from "d3-selection";
-import { zoom as d3zoom, zoomIdentity, type D3ZoomEvent, type ZoomBehavior } from "d3-zoom";
+import {
+  zoom as d3zoom,
+  zoomIdentity,
+  zoomTransform,
+  type D3ZoomEvent,
+  type ZoomBehavior,
+  type ZoomTransform,
+} from "d3-zoom";
 import {
   useCallback,
   useEffect,
@@ -12,9 +19,12 @@ import {
   useState,
   type KeyboardEvent,
   type PointerEvent,
+  type ReactNode,
 } from "react";
-import type { Topology } from "topojson-specification";
+import { merge, neighbors } from "topojson-client";
+import type { GeometryCollection, Topology } from "topojson-specification";
 import { Button } from "../components/Button";
+import { MapStylePicker } from "../components/MapStylePicker";
 import { cx } from "../components/cx";
 import { decodeFeatures, featureAt, round4, type MapFeature } from "./geo";
 import {
@@ -27,6 +37,7 @@ import {
   type Ring,
 } from "./hit";
 import { NavIndex, type Direction } from "./keynav";
+import { colourSlots, type MapStyle } from "./mapStyle";
 import { Patterns } from "./Patterns";
 import { worldProjection } from "./projection";
 import {
@@ -64,6 +75,8 @@ export type GameMapLabels = {
   loupeHint: string;
   /** Spoken when the pin moves. */
   pinAt: (lat: number, lon: number) => string;
+  /** Adds a map-style switcher to the controls when given (translated by the caller). */
+  mapStyle?: { label: string; names: Record<MapStyle, string> };
 };
 
 export type GameMapProps = {
@@ -90,6 +103,11 @@ export type GameMapProps = {
   labels: GameMapLabels;
   /** Overrides pointer detection (tests, accessibility settings). */
   pointer?: PointerKind;
+  /**
+   * Features the view should frame: the map opens fitted to their label points, and the reset button returns
+   * there. Used by regional quizzes so Europe opens on Europe. Omit (or pass the whole world) for the full map.
+   */
+  focus?: readonly string[];
   className?: string;
 };
 
@@ -111,6 +129,28 @@ const KEY_DIRECTION: Record<string, Direction> = {
 const LOUPE_SIZE = 56;
 /** A highlighted feature should fill at least 15% of the viewport (quiz-library §5.4). */
 const HIGHLIGHT_FILL = 0.15;
+
+const prefersReducedMotion = (): boolean =>
+  typeof window === "undefined" ||
+  typeof window.matchMedia !== "function" ||
+  typeof requestAnimationFrame !== "function" ||
+  document.documentElement.getAttribute("data-motion") === "reduce" ||
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Smooth-in-and-out curve for animated zooms. */
+const easeInOut = (x: number): number =>
+  x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+/** The outer coastline of a pack (internal borders removed), for the shadow and water lines. */
+function coastOf(topology: Topology | undefined) {
+  const object = topology?.objects["countries"] as GeometryCollection | undefined;
+  if (!topology || !object) return null;
+  try {
+    return merge(topology, object.geometries as never);
+  } catch {
+    return null;
+  }
+}
 
 function useElementSize() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -161,6 +201,7 @@ export function GameMap({
   onNeedLod,
   labels,
   pointer,
+  focus,
   className,
   ...rest
 }: GameMapProps) {
@@ -184,7 +225,14 @@ export function GameMap({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [loupe, setLoupe] = useState<{ x: number; y: number } | null>(null);
   const [announce, setAnnounce] = useState("");
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [moving, setMoving] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
   const down = useRef<{ x: number; y: number } | null>(null);
+  const anim = useRef<number | null>(null);
+  const animating = useRef(false);
+  /** Set once the player pans or zooms, so a late layout change never yanks the view back. */
+  const userMoved = useRef(false);
 
   const available = (Object.keys(lods) as Lod[]).filter((l) => lods[l]);
   const wanted = lodForZoom(committedK);
@@ -201,6 +249,28 @@ export function GameMap({
   const path = useMemo(() => geoPath(projection), [projection]);
   /** A 10° graticule under the land: decorative, gives the ocean depth and a sense of the projection. */
   const graticule = useMemo(() => path(geoGraticule10()) ?? "", [path]);
+  const sphere = useMemo(() => path({ type: "Sphere" }) ?? "", [path]);
+
+  /** Outer coastline for the land shadow and water lines. At 10m the 50m coast is close enough and far cheaper. */
+  const coastLod: Lod | null = lod === "10m" && lods["50m"] ? "50m" : lod;
+  const coastShape = useMemo(() => (coastLod ? coastOf(lods[coastLod]) : null), [coastLod, lods]);
+  const coast = useMemo(() => (coastShape ? (path(coastShape) ?? "") : ""), [coastShape, path]);
+
+  /**
+   * A colour slot (0–5) per feature so neighbours differ; styles map slots to colours (political) or to
+   * near-identical tones. Fixed the first time an id is seen, so colours never shuffle between detail levels.
+   */
+  const slotsRef = useRef<Map<string, number>>(new Map());
+  const slots = useMemo(() => {
+    const topo = lod ? lods[lod] : undefined;
+    const object = topo?.objects["countries"] as GeometryCollection | undefined;
+    if (object?.geometries.some((g) => g.id !== undefined && !slotsRef.current.has(String(g.id)))) {
+      const ids = object.geometries.map((g) => String(g.id ?? ""));
+      for (const [id, v] of colourSlots(ids, neighbors(object.geometries as never)))
+        if (!slotsRef.current.has(id)) slotsRef.current.set(id, v);
+    }
+    return slotsRef.current;
+  }, [lod, lods]);
 
   const drawn = useMemo(() => {
     return features.map((f) => {
@@ -235,6 +305,28 @@ export function GameMap({
       ),
     [entities, anchors, drawn],
   );
+
+  /** The framed view for `focus`: label points with outliers trimmed, padded, never past 8×. */
+  const focusKey = focus?.join(",") ?? "";
+  const home = useMemo((): ZoomTransform => {
+    const pts = (focus ?? []).flatMap((id) => anchors.get(id) ?? []);
+    if (pts.length < 2) return zoomIdentity;
+    const xs = pts.filter((_, i) => i % 2 === 0).sort((a, b) => a - b);
+    const ys = pts.filter((_, i) => i % 2 === 1).sort((a, b) => a - b);
+    const trim = Math.floor(xs.length * 0.04);
+    const [x0, x1] = [xs[trim] as number, xs[xs.length - 1 - trim] as number];
+    const [y0, y1] = [ys[trim] as number, ys[ys.length - 1 - trim] as number];
+    const pad = 0.28;
+    const bw = Math.max(x1 - x0, 1) * (1 + pad * 2);
+    const bh = Math.max(y1 - y0, 1) * (1 + pad * 2);
+    const k = Math.min(8, size.w / bw, size.h / bh);
+    if (k < 1.2) return zoomIdentity;
+    const [cx, cy] = [(x0 + x1) / 2, (y0 + y1) / 2];
+    // Keep the frame inside the world, like the pan limits do.
+    const tx = Math.min(0, Math.max(size.w - size.w * k, size.w / 2 - k * cx));
+    const ty = Math.min(0, Math.max(size.h - size.h * k, size.h / 2 - k * cy));
+    return zoomIdentity.translate(tx, ty).scale(k);
+  }, [focusKey, anchors, size.w, size.h]);
 
   /** Tiny-target rings in screen space, recomputed with the zoom. */
   const rings: Ring[] = useMemo(() => {
@@ -281,10 +373,19 @@ export function GameMap({
         [size.w, size.h],
       ])
       .clickDistance(DRAG_THRESHOLD_PX)
+      .on("start", (e: D3ZoomEvent<SVGSVGElement, unknown>) => {
+        if (e.sourceEvent) userMoved.current = true;
+        setMoving(true);
+      })
       .on("zoom", (e: D3ZoomEvent<SVGSVGElement, unknown>) =>
         setT({ k: e.transform.k, x: e.transform.x, y: e.transform.y }),
       )
-      .on("end", (e: D3ZoomEvent<SVGSVGElement, unknown>) => setCommittedK(e.transform.k));
+      .on("end", (e: D3ZoomEvent<SVGSVGElement, unknown>) => {
+        // Animated zooms commit once at the end, so the detail level never swaps mid-flight.
+        if (animating.current) return;
+        setMoving(false);
+        setCommittedK(e.transform.k);
+      });
     zoomRef.current = behavior;
     select(svg).call(behavior);
     return () => {
@@ -292,25 +393,90 @@ export function GameMap({
     };
   }, [size.w, size.h]);
 
-  const zoomBy = useCallback((factor: number) => {
-    const svg = svgRef.current;
-    if (svg && zoomRef.current) select(svg).call(zoomRef.current.scaleBy, factor);
-  }, []);
-  const zoomReset = useCallback(() => {
-    const svg = svgRef.current;
-    if (svg && zoomRef.current) select(svg).call(zoomRef.current.transform, zoomIdentity);
-  }, []);
-  const zoomTo = useCallback(
-    (bx: number, by: number, k: number) => {
+  /** Moves the view to `next`: a short eased flight, or an instant jump with reduced motion. */
+  const flyTo = useCallback(
+    (next: ZoomTransform) => {
       const svg = svgRef.current;
-      if (!svg || !zoomRef.current) return;
-      const kk = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, k));
-      select(svg).call(
-        zoomRef.current.transform,
-        zoomIdentity.translate(size.w / 2 - kk * bx, size.h / 2 - kk * by).scale(kk),
+      const behavior = zoomRef.current;
+      if (!svg || !behavior) return;
+      const sel = select(svg);
+      if (anim.current !== null) cancelAnimationFrame(anim.current);
+      anim.current = null;
+      if (prefersReducedMotion()) {
+        animating.current = false;
+        sel.call(behavior.transform, next);
+        return;
+      }
+      const from = zoomTransform(svg);
+      const mid: [number, number] = [size.w / 2, size.h / 2];
+      const [ax, ay] = from.invert(mid);
+      const [bx, by] = next.invert(mid);
+      const [lk0, lk1] = [Math.log(from.k), Math.log(next.k)];
+      const dur = Math.min(
+        600,
+        260 + 90 * Math.abs(lk1 - lk0) + Math.hypot(ax - bx, ay - by) * 0.15,
       );
+      const start = performance.now();
+      animating.current = true;
+      const step = (now: number) => {
+        const p = Math.min(1, (now - start) / dur);
+        const e = easeInOut(p);
+        const k = Math.exp(lk0 + (lk1 - lk0) * e);
+        const [cx, cy] = [ax + (bx - ax) * e, ay + (by - ay) * e];
+        sel.call(
+          behavior.transform,
+          zoomIdentity.translate(mid[0] - k * cx, mid[1] - k * cy).scale(k),
+        );
+        if (p < 1) {
+          anim.current = requestAnimationFrame(step);
+          return;
+        }
+        anim.current = null;
+        animating.current = false;
+        setMoving(false);
+        setCommittedK(zoomTransform(svg).k);
+      };
+      anim.current = requestAnimationFrame(step);
     },
     [size.w, size.h],
+  );
+  useEffect(
+    () => () => {
+      if (anim.current !== null) cancelAnimationFrame(anim.current);
+    },
+    [],
+  );
+
+  const zoomBy = useCallback(
+    (factor: number) => {
+      const svg = svgRef.current;
+      if (!svg) return;
+      userMoved.current = true;
+      const cur = zoomTransform(svg);
+      const k = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, cur.k * factor));
+      const [cx, cy] = cur.invert([size.w / 2, size.h / 2]);
+      flyTo(zoomIdentity.translate(size.w / 2 - k * cx, size.h / 2 - k * cy).scale(k));
+    },
+    [flyTo, size.w, size.h],
+  );
+  const zoomReset = useCallback(() => {
+    userMoved.current = false;
+    flyTo(home);
+  }, [flyTo, home]);
+  // Open on the focus frame, and follow it while the player hasn't moved the map themselves.
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || !zoomRef.current || userMoved.current) return;
+    const cur = zoomTransform(svg);
+    if (cur.k === home.k && cur.x === home.x && cur.y === home.y) return;
+    select(svg).call(zoomRef.current.transform, home);
+  }, [home]);
+  const zoomTo = useCallback(
+    (bx: number, by: number, k: number) => {
+      const kk = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, k));
+      flyTo(zoomIdentity.translate(size.w / 2 - kk * bx, size.h / 2 - kk * by).scale(kk));
+    },
+    [flyTo, size.w, size.h],
   );
 
   // A highlighted target that is tiny gets zoomed to, so it fills at least 15% of the viewport.
@@ -365,18 +531,21 @@ export function GameMap({
     down.current = { x: e.clientX, y: e.clientY };
   };
   const hovered = useRef<string | null>(null);
+  const tracksHover = !!onHover || mode === "select" || mode === "highlight";
   const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
-    if (!onHover || e.pointerType === "touch") return;
+    if (!tracksHover || e.pointerType === "touch" || down.current) return;
     const [sx, sy] = rel(e);
     const id = ringAt(rings, sx, sy)?.id ?? polygonAt(sx, sy) ?? null;
     if (id !== hovered.current) {
       hovered.current = id;
-      onHover(id);
+      setHoverId(id);
+      onHover?.(id);
     }
   };
   const onPointerLeave = () => {
     if (hovered.current !== null) {
       hovered.current = null;
+      setHoverId(null);
       onHover?.(null);
     }
   };
@@ -472,26 +641,63 @@ export function GameMap({
             ? `url(#${patternIds.light})`
             : undefined;
 
+  const interactive = mode === "select" || mode === "highlight";
   const drawFeatures = (keyPrefix: string) =>
     ordered.map((d) => {
       const s = states[d.id] ?? "idle";
       const fill = fillFor(s);
+      const cls = classes?.[d.id];
       return (
         <path
           key={`${keyPrefix}${d.id}`}
-          data-id={d.id}
+          {...(keyPrefix ? {} : { "data-id": d.id })}
           d={d.d}
           className={cx(
             styles.land,
+            s === "idle" && cls === undefined && styles[`slot${slots.get(d.id) ?? 0}`],
             stateClass(s),
-            s === "idle" && classes?.[d.id] !== undefined && styles[`cls${classes[d.id]}`],
+            s === "idle" && cls !== undefined && styles[`cls${cls}`],
             dimmed?.has(d.id) && styles.dimmed,
+            interactive && hoverId === d.id && !keyPrefix && styles.hovered,
             activeId === d.id && !keyPrefix && styles.active,
           )}
           {...(fill ? { fill } : {})}
         />
       );
     });
+  // The land layer is the heavy part of the map. Memoised, so panning and zooming only move its group.
+  const landLayer = useMemo(
+    () => drawFeatures(""),
+    [ordered, states, classes, dimmed, slots, hoverId, activeId, interactive, patternIds],
+  );
+
+  const hoverPath = interactive && hoverId ? drawn.find((d) => d.id === hoverId)?.d : undefined;
+
+  /** Tiny targets: a dot shaped by its state (filled ✓, cross ✕, ring ◐) plus a hit ring that shows on hover. */
+  const ringMark = (r: Ring, key: string) => {
+    const s = states[r.id] ?? "idle";
+    const hot = interactive && (hoverId === r.id || activeId === r.id);
+    return (
+      <g
+        key={key}
+        className={cx(
+          styles.tiny,
+          s !== "idle" && styles[`tiny_${s}`],
+          hot && styles.tinyHot,
+          dimmed?.has(r.id) && styles.dimmed,
+        )}
+        transform={`translate(${r.cx} ${r.cy})`}
+        {...(key === r.id ? { "data-ring": r.id } : {})}
+      >
+        <circle r={r.r} className={cx(styles.ring, s === "highlight" && styles.ringHighlight)} />
+        {s === "wrong" ? (
+          <path d="M-3 -3L3 3M3 -3L-3 3" className={styles.tinyCross} />
+        ) : (
+          <circle r={s === "idle" ? 2.6 : 3.6} className={styles.tinyDot} />
+        )}
+      </g>
+    );
+  };
 
   return (
     <div
@@ -501,6 +707,9 @@ export function GameMap({
       data-lod={lod ?? ""}
       data-zoom={t.k.toFixed(2)}
       data-pointer={pointerKind}
+      {...(moving ? { "data-moving": "" } : {})}
+      {...(interactive && hoverId ? { "data-hover": "" } : {})}
+      {...(features.length === 0 ? { "data-loading": "" } : {})}
     >
       <svg
         ref={svgRef}
@@ -525,24 +734,26 @@ export function GameMap({
         </defs>
         <rect width={size.w} height={size.h} className={styles.backdrop} />
         <g transform={`translate(${t.x} ${t.y}) scale(${t.k})`}>
-          <path
-            d={path({ type: "Sphere" }) ?? ""}
-            className={styles.sphere}
-            fill={`url(#${uid}-ocean)`}
-          />
+          <path d={sphere} className={styles.sphere} fill={`url(#${uid}-ocean)`} />
           <path d={graticule} className={styles.graticule} />
-          <g className={styles.landLayer}>{drawFeatures("")}</g>
+          {coast && (
+            <g className={styles.coastLayer} aria-hidden="true">
+              <path d={coast} className={cx(styles.waterline, styles.wl3)} />
+              <path d={coast} className={cx(styles.waterline, styles.wl2)} />
+              <path d={coast} className={cx(styles.waterline, styles.wl1)} />
+              <path
+                d={coast}
+                className={styles.landShadow}
+                transform={`translate(0 ${(1.8 / t.k).toFixed(3)})`}
+              />
+              <path d={coast} className={styles.coastEdge} />
+            </g>
+          )}
+          <g className={styles.landLayer}>{landLayer}</g>
+          {hoverPath && <path d={hoverPath} className={styles.hoverOutline} aria-hidden="true" />}
+          <path d={sphere} className={styles.sphereEdge} />
         </g>
-        {rings.map((r) => (
-          <circle
-            key={r.id}
-            cx={r.cx}
-            cy={r.cy}
-            r={r.r}
-            className={cx(styles.ring, states[r.id] === "highlight" && styles.ringHighlight)}
-            data-ring={r.id}
-          />
-        ))}
+        <g className={styles.rings}>{rings.map((r) => ringMark(r, r.id))}</g>
         {markers && markers.size > 0 && (
           <g className={styles.markers} data-markers="">
             {[...markers].flatMap((id) => {
@@ -600,15 +811,7 @@ export function GameMap({
                 transform={`translate(${loupeCenter.x} ${loupeCenter.y}) scale(${LOUPE_ZOOM}) translate(${-loupe.x} ${-loupe.y})`}
               >
                 <g transform={`translate(${t.x} ${t.y}) scale(${t.k})`}>{drawFeatures("loupe-")}</g>
-                {rings.map((r) => (
-                  <circle
-                    key={`loupe-${r.id}`}
-                    cx={r.cx}
-                    cy={r.cy}
-                    r={r.r}
-                    className={styles.ring}
-                  />
-                ))}
+                {rings.map((r) => ringMark(r, `loupe-${r.id}`))}
               </g>
             </g>
             <text
@@ -622,31 +825,128 @@ export function GameMap({
         )}
       </svg>
       <div className={styles.controls}>
+        {labels.mapStyle && (
+          <Button
+            className={cx(styles.zoomButton, styles.styleButton)}
+            aria-label={labels.mapStyle.label}
+            aria-expanded={styleOpen}
+            onPress={() => setStyleOpen((o) => !o)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              aria-hidden="true"
+              className={styles.icon}
+            >
+              <path d="M12 3 2.5 8 12 13l9.5-5L12 3Z" />
+              <path d="m2.5 12.5 9.5 5 9.5-5" />
+              <path d="m2.5 17 9.5 5 9.5-5" />
+            </svg>
+          </Button>
+        )}
+        {labels.mapStyle && <span className={styles.controlsSep} aria-hidden="true" />}
         <Button
           className={styles.zoomButton ?? ""}
           aria-label={labels.zoomIn}
           onPress={() => zoomBy(1.5)}
         >
-          <span aria-hidden="true">+</span>
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            className={styles.icon}
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
         </Button>
         <Button
           className={styles.zoomButton ?? ""}
           aria-label={labels.zoomOut}
           onPress={() => zoomBy(1 / 1.5)}
         >
-          <span aria-hidden="true">−</span>
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            className={styles.icon}
+          >
+            <path d="M5 12h14" />
+          </svg>
         </Button>
         <Button
           className={styles.zoomButton ?? ""}
           aria-label={labels.zoomReset}
           onPress={zoomReset}
         >
-          <span aria-hidden="true">⌂</span>
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            className={styles.icon}
+          >
+            <circle cx="12" cy="12" r="8.5" />
+            <path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5Z" />
+          </svg>
         </Button>
       </div>
+      {labels.mapStyle && styleOpen && (
+        <StylePopover
+          onClose={(viaKeyboard) => {
+            setStyleOpen(false);
+            if (viaKeyboard)
+              rootRef.current?.querySelector<HTMLElement>(`.${styles.styleButton}`)?.focus();
+          }}
+        >
+          <MapStylePicker
+            compact
+            autoFocus
+            label={labels.mapStyle.label}
+            names={labels.mapStyle.names}
+          />
+        </StylePopover>
+      )}
       <p className="visually-hidden" aria-live="polite">
         {announce}
       </p>
+    </div>
+  );
+}
+
+/** A light popover next to the map controls. Escape or a press outside closes it. */
+function StylePopover({
+  children,
+  onClose,
+}: {
+  children: ReactNode;
+  onClose: (viaKeyboard: boolean) => void;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const onDown = (e: globalThis.PointerEvent) => {
+      const el = ref.current;
+      const target = e.target as Node | null;
+      if (el && target && !el.contains(target) && !(target as Element).closest?.("[aria-expanded]"))
+        onClose(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [onClose]);
+  return (
+    <div
+      ref={ref}
+      className={styles.stylePopover}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          e.stopPropagation();
+          onClose(true);
+        }
+      }}
+    >
+      {children}
     </div>
   );
 }

@@ -9,15 +9,9 @@ import { useServices } from "../shell/StorageProvider";
 import type { LoadedFactPin } from "../../lib/fact-pin/data";
 import styles from "./fact-pin.module.css";
 import "../../lib/messages/fp";
+import { mapLabels } from "../../lib/map/labels";
 
-const LABELS = {
-  zoomIn: "Zoom in",
-  zoomOut: "Zoom out",
-  zoomReset: "Reset zoom",
-  focused: (name: string) => name,
-  loupeHint: "Tap again inside the circle",
-  pinAt: (lat: number, lon: number) => `Pin at ${lat}, ${lon}`,
-};
+const LABELS = mapLabels();
 
 /** The world map in free-pin mode. The 50m outlines come with the facts; the 110m and 10m levels load on demand. */
 export function FactPinMap({

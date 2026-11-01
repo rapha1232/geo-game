@@ -68,6 +68,8 @@
 | AC-PL-032 | Achievements: unlocking ACH-SH-FIRST happens immediately after a first-guess Silhouette solve, and it appears on `/me/achievements`                                               | R2    |
 | AC-PL-033 | Telemetry opt-out stops all calls to `/telemetry/answers` (network log)                                                                                                           | R2    |
 | AC-PL-034 | Admin routes return 403 for `role=player`                                                                                                                                         | R3    |
+| AC-PL-035 | Map styles: the five styles are selectable from the map controls and Settings, saved on the device, applied before first paint, and neighbours never share a Political colour | R1    |
+| AC-PL-036 | Regional framing: a map given a focus set opens framed on it (a continent quiz on its continent), and reset returns to that frame; without one it opens on the world     | R1    |
 
 ## 4. Content acceptance
 
