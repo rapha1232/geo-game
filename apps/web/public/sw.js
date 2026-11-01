@@ -30,6 +30,7 @@ const WARM_ROUTES = [
   "/play/fact-pin",
   "/play/border-run",
   "/play/rank-it",
+  "/explore",
   "/daily",
   "/me",
   "/settings",

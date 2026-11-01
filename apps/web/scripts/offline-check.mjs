@@ -11,6 +11,7 @@ const GAMES = [
   ["/play/fact-pin", /Fact Pin/],
   ["/play/border-run", /Border Run/],
   ["/play/rank-it", /Rank It/],
+  ["/explore", /Atlas/],
 ];
 
 const browser = await chromium.launch();

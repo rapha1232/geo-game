@@ -71,6 +71,12 @@ export type GameMapProps = {
   lods: Partial<Record<Lod, Topology>>;
   entities: readonly MapEntity[];
   states?: Readonly<Record<string, MapFeatureState>>;
+  /** Choropleth classes 0 to 4 for features whose state is idle (sequential fills; a legend belongs next to the map). */
+  classes?: Readonly<Record<string, number>>;
+  /** Features drawn faded and desaturated, e.g. the non-matches of a filter. */
+  dimmed?: ReadonlySet<string>;
+  /** The feature under the pointer, or focused with the keyboard; null when there is none. */
+  onHover?: (id: string | null) => void;
   mode: MapMode;
   onSelect?: (id: string) => void;
   pin?: Pin | null;
@@ -141,6 +147,9 @@ export function GameMap({
   lods,
   entities,
   states = {},
+  classes,
+  dimmed,
+  onHover,
   mode,
   onSelect,
   pin = null,
@@ -350,6 +359,22 @@ export function GameMap({
   const onPointerDown = (e: PointerEvent<SVGSVGElement>) => {
     down.current = { x: e.clientX, y: e.clientY };
   };
+  const hovered = useRef<string | null>(null);
+  const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
+    if (!onHover || e.pointerType === "touch") return;
+    const [sx, sy] = rel(e);
+    const id = ringAt(rings, sx, sy)?.id ?? polygonAt(sx, sy) ?? null;
+    if (id !== hovered.current) {
+      hovered.current = id;
+      onHover(id);
+    }
+  };
+  const onPointerLeave = () => {
+    if (hovered.current !== null) {
+      hovered.current = null;
+      onHover?.(null);
+    }
+  };
   const onPointerUp = (e: PointerEvent<SVGSVGElement>) => {
     const start = down.current;
     down.current = null;
@@ -375,6 +400,7 @@ export function GameMap({
     const next = activeId ? nav.next(from, dir) : from;
     if (!next) return;
     setActiveId(next);
+    onHover?.(next);
     setAnnounce(labels.focused(names.get(next) ?? next));
     // Keep the focused feature on screen.
     const a = anchors.get(next);
@@ -453,6 +479,8 @@ export function GameMap({
           className={cx(
             styles.land,
             stateClass(s),
+            s === "idle" && classes?.[d.id] !== undefined && styles[`cls${classes[d.id]}`],
+            dimmed?.has(d.id) && styles.dimmed,
             activeId === d.id && !keyPrefix && styles.active,
           )}
           {...(fill ? { fill } : {})}
@@ -479,6 +507,8 @@ export function GameMap({
         tabIndex={0}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
         onKeyDown={onKeyDown}
       >
         <Patterns ids={patternIds} />

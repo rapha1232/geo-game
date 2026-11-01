@@ -197,3 +197,24 @@
     stroke: Highlight;
   }
 }
+
+/* Choropleth classes (Atlas): five sequential steps, light to dark (ColorBrewer YlGnBu, colour-vision safe). */
+.cls0 {
+  fill: #edf8b1;
+}
+.cls1 {
+  fill: #7fcdbb;
+}
+.cls2 {
+  fill: #41b6c4;
+}
+.cls3 {
+  fill: #2c7fb8;
+}
+.cls4 {
+  fill: #253494;
+}
+.dimmed {
+  opacity: 0.25;
+  filter: grayscale(1);
+}

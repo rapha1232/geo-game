@@ -52,17 +52,21 @@ export function RankItGame() {
         const saved = await services.store.find(GAME_ID);
         seq.current = saved?.seq ?? 0;
         const now = Date.now();
+        // A link from the Atlas (`?stat=population`) starts a fresh round on that statistic.
+        const wanted = new URLSearchParams(window.location.search).get("stat");
+        const fromLink = wanted && loaded.world.statById.has(wanted) ? wanted : null;
         const restored =
-          saved && saved.content_version === manifest.current
+          !fromLink && saved && saved.content_version === manifest.current
             ? restore(saved.state as Session)
             : null;
+        const startConfig = fromLink ? { ...DEFAULT_CONFIG, stat: fromLink } : DEFAULT_CONFIG;
         const start =
           restored ??
           newSession(
             loaded.world,
             newSeed(),
-            DEFAULT_CONFIG,
-            await loadHistory(services.db, GAME_ID, poolKey(DEFAULT_CONFIG)),
+            startConfig,
+            await loadHistory(services.db, GAME_ID, poolKey(startConfig)),
             now,
           );
         if (!live) return;

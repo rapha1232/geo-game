@@ -19,6 +19,8 @@ const ROUTES = [
   "/play/fact-pin",
   "/play/border-run",
   "/play/rank-it",
+  "/explore",
+  "/play/quiz/daily",
   "/daily",
   "/me",
   "/me/achievements",
@@ -88,6 +90,17 @@ const STATES = [
       await p.getByRole("button", { name: "Start", exact: true }).click();
       await p.getByRole("list", { name: "Countries" }).getByRole("button").first().click();
       await p.getByText(/0 of 8 paired/).waitFor({ state: "attached" });
+    },
+  },
+  {
+    name: "atlas card and table",
+    path: "/explore?layer=population",
+    async drive(p) {
+      await p.getByLabel("Search places and capitals").fill("peru");
+      await p.keyboard.press("Enter");
+      await p.getByRole("heading", { name: /Peru/ }).waitFor();
+      await p.getByLabel("View").selectOption("table");
+      await p.getByRole("table").waitFor();
     },
   },
   {

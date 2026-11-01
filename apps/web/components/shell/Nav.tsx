@@ -8,6 +8,7 @@ import styles from "./shell.module.css";
 const ITEMS: { href: string; label: MessageKey }[] = [
   { href: "/play", label: "nav.play" },
   { href: "/daily", label: "nav.daily" },
+  { href: "/explore", label: "nav.explore" },
   { href: "/me", label: "nav.me" },
   { href: "/settings", label: "nav.settings" },
 ];

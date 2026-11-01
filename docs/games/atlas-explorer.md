@@ -147,3 +147,17 @@ Exploration is inherently unlimited. Generated challenges use the target game's 
 | AC-AE-012 | Search | Typing "lima" and pressing Enter flies to Lima and opens Peru's card with Lima marked as the capital |
 | AC-AE-013 | URL state round-trip | Copying the URL and opening it in a new session restores layer, filter and selection |
 | AC-AE-014 | Keyboard-only | Playwright: search → open card → add to compare → open the compare view, using only keys |
+
+## 13. As built (T2.11, first cut)
+
+What is in `/explore` and `/explore/<entity-id>`:
+
+- **Layers:** Countries, Population and Area (log classes), Population density, GDP per capita, Life expectancy and Capital latitude (quantile classes), and Landlocked. Five classes, a legend with a value label for each, and the hatched "no data" pattern. Classes use a colour-vision-safe sequential palette.
+- **Not built yet (needs data or more work):** urban population, forest area and highest-point layers; driving side, official language, currency and time-zone layers; cities and capitals point layers; continent and subregion fills; the true-size overlay (AC-AE-010); Natural Earth projection and label options; the "Practice this place" button. The indicator coverage rule (at least 90% of the 197) is enforced by the pipeline (`INDICATOR_COVERAGE` needs 150).
+- **Filter:** up to 3 clauses joined with AND, on any indicator or Landlocked; non-matches are faded and desaturated and a count is shown. The table shows matches only.
+- **Table view** with sortable columns (place, value) plus rank, year and source. Every capability works from the table.
+- **Cards** show capital, continent, coast, every indicator with its source and year, neighbours, published facts and Compare. Opening a card counts the place as Discovered and adds the card's facts to Fact Pin's seen lists.
+- **Compare** holds 3 and replaces the oldest with a notice; `C` adds the open place; `/` focuses search.
+- **Quiz me:** Rank It on the layer's statistic (`/play/rank-it?stat=…`), the landlocked tile quiz, or Silhouette. Disabled with an explanation under 4 filter matches. The filter itself is not passed to Rank It yet.
+- **URL state:** `layer`, `filter`, `sel`, `compare` and `view` round-trip; `/explore/country:PER` deep-links to a card.
+
