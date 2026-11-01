@@ -11,7 +11,6 @@ import {
   subScore,
   submitName,
   type FindRound,
-  type NameAllRound,
   type SubRound,
 } from "@meridian/quiz";
 import { t } from "../../lib/i18n";
