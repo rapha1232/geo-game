@@ -1,0 +1,28 @@
+# Fixed links between countries that share no land border (border-run §4). Only permanent, drivable or rail links
+# between the mainland parts count; ferries do not. `a` sorts before `b`. Each entry needs a source URL.
+# Spain-Morocco is not listed: the Ceuta and Melilla land borders already connect them (core.adjacency).
+crossings:
+  - a: country:BHR
+    b: country:SAU
+    type: causeway
+    name: King Fahd Causeway
+    length_km: 25
+    source: https://en.wikipedia.org/wiki/King_Fahd_Causeway
+  - a: country:DNK
+    b: country:SWE
+    type: bridge
+    name: Øresund Bridge
+    length_km: 7.8
+    source: https://en.wikipedia.org/wiki/%C3%98resund_Bridge
+  - a: country:FRA
+    b: country:GBR
+    type: tunnel
+    name: Channel Tunnel
+    length_km: 50.5
+    source: https://en.wikipedia.org/wiki/Channel_Tunnel
+  - a: country:MYS
+    b: country:SGP
+    type: causeway
+    name: Johor–Singapore Causeway
+    length_km: 1.056
+    source: https://en.wikipedia.org/wiki/Johor%E2%80%93Singapore_Causeway

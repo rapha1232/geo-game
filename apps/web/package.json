@@ -25,6 +25,7 @@
     "@meridian/name-matcher": "workspace:*",
     "@meridian/quiz": "workspace:*",
     "@meridian/schemas": "workspace:*",
+    "@meridian/border-run": "workspace:*",
     "@meridian/silhouette": "workspace:*",
     "@meridian/ui": "workspace:*",
     "@neondatabase/serverless": "^0.10.4",

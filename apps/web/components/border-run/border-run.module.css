@@ -1,0 +1,165 @@
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-4);
+}
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+}
+.meta,
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  align-items: end;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.options label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.options label.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+}
+.options select {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.route {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.mapBox {
+  position: relative;
+  height: min(52vh, 30rem);
+  min-height: 15rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.layout {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.side {
+  display: grid;
+  gap: var(--space-3);
+}
+.counter {
+  margin: 0;
+  font-weight: 600;
+}
+.hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.hintNotes,
+.rows,
+.groups,
+.suggestions,
+.paths {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.hintNotes {
+  font-size: var(--text-sm);
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+.row[data-cls="on-route"] {
+  border-style: solid;
+  border-width: 3px;
+  border-color: var(--color-correct);
+}
+.row[data-cls="near"] {
+  border-style: dotted;
+  border-width: 3px;
+}
+.row[data-cls="off-route"] {
+  border-style: dashed;
+}
+.rowName {
+  font-weight: 600;
+}
+.groups li {
+  font-size: var(--text-sm);
+}
+.suggestions button {
+  width: 100%;
+  min-height: var(--touch-target);
+  text-align: left;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+.suggestions button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+.result {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.result h2,
+.result h3 {
+  margin: 0;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

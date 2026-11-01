@@ -2,6 +2,7 @@ import { buildPacks, type BuildInput, type BuildOutput } from "../build.ts";
 import { capitalRules, decodePack, geometryRules, refPointRules } from "./geometry.ts";
 import {
   adjacencyRules,
+  crossingRules,
   aliasRules,
   dailyRules,
   disputeRules,
@@ -36,6 +37,7 @@ export function validate(c: ContentSet): Issue[] {
     ...refPointRules(c),
     ...capitalRules(c),
     ...adjacencyRules(c),
+    ...crossingRules(c),
     ...factRules(c),
     ...factNameRules(c),
     ...quotaRules(c),
@@ -87,6 +89,9 @@ export function contentSetFromBuild(
   const disputes = has("core.disputes")
     ? (json("core.disputes") as { disputes: ContentSet["disputes"] }).disputes
     : undefined;
+  const crossings = has("core.crossings")
+    ? (json("core.crossings") as { crossings: ContentSet["crossings"] }).crossings
+    : undefined;
   const daily = out.files
     .filter((f) => f.name.startsWith("daily."))
     .map((f) => json(f.name) as unknown as NonNullable<ContentSet["daily"]>[number]);
@@ -114,6 +119,7 @@ export function contentSetFromBuild(
     ...(ambiguity ? { ambiguity } : {}),
     ...(disputes ? { disputes } : {}),
     ...(adjacency ? { adjacency } : {}),
+    ...(crossings ? { crossings } : {}),
     ...(facts ? { facts } : {}),
     ...(flagIds ? { flagIds } : {}),
     ...(daily.length > 0 ? { daily } : {}),

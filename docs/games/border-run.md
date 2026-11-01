@@ -27,9 +27,9 @@ Learn neighbor relationships and regional layout by routing overland: "From Spai
 | Mode | Description | Phase |
 |---|---|---|
 | Unlimited | Endless rounds | R2 |
-| Daily | One route per local date | R2 |
+| Daily | One route per local date | R2 (after T2.9: needs a schedule generator) |
 | Practice | Unlimited budget, free hints | R2 |
-| Regional | Subdivision graphs (US states, etc.) | R2 |
+| Regional | Subdivision graphs (US states, etc.) | R2 (with T2.13) |
 
 | Option | Values | Default |
 |---|---|---|
@@ -40,7 +40,7 @@ Learn neighbor relationships and regional layout by routing overland: "From Spai
 ## 4. Data requirements
 
 - `core.adjacency`: an undirected land-border graph between countries in the active set, derived from 1:10m geometry intersection (a shared boundary ≥ 0.5 km) plus editorial overrides (e.g. the Spain–Morocco borders at Ceuta and Melilla count; France–Brazil and France–Suriname via French Guiana count). Each edge has `{a, b, length_km, via?: "French Guiana"}`.
-- `core.crossings`: curated sea, tunnel and bridge links, e.g. `GBR–FRA (Channel Tunnel)`, `DNK–SWE (Øresund Bridge)`, `ESP–MAR (Strait of Gibraltar, 14 km)`, `SAU–BHR (King Fahd Causeway)`, `MYS–SGP (Johor–Singapore Causeway)`. Each has a type and source.
+- `core.crossings`: curated sea, tunnel and bridge links, e.g. `GBR–FRA (Channel Tunnel)`, `DNK–SWE (Øresund Bridge)`, `SAU–BHR (King Fahd Causeway)`, `MYS–SGP (Johor–Singapore Causeway)`. Each has a type and source. Shipped in `content/crossings.yaml` as the `core.crossings` pack. Spain–Morocco is not listed: the Ceuta and Melilla land borders already connect them, and the validator (`CROSSING_INVALID`) rejects a crossing that duplicates a land border. Ferries are not crossings. Island countries stay out of reach unless a fixed link joins them, so the pack starts small (4 links) and grows with editorial review.
 - Pool: every pair (A, B) in the same connected component with m in the configured range. The world graph yields over 10,000 pairs.
 
 ## 5. Answer validation and interaction rules
@@ -88,7 +88,7 @@ States: `routing` → (`GUESS` | `HINT`) → `routing` | `won` | `lost` → `rev
 | Multiple shortest routes | Any of them completes the round. The review lists up to 5. |
 | The player completes a longer (non-shortest) path | Win. Score reflects guesses used. |
 | Guessing A or B | "Already on the map", not consumed |
-| Spain → Morocco with crossings off | Valid via the Ceuta/Melilla land border, so L = 1 is excluded (m ≥ 2 required) |
+| Spain → Morocco with crossings off | Valid via the Ceuta/Melilla land border, so L = 1: the pair is not playable (a route needs at least one country between, L ≥ 2) and the generator's range starts at m = 2 |
 
 ## 10. Accessibility and mobile behavior
 

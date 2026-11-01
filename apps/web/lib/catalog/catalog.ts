@@ -57,6 +57,18 @@ export const FACT_PIN: CatalogItem = {
   tags: ["facts", "history", "nature", "culture", "science", "sport", "map", "pin", "location"],
 };
 
+export const BORDER_RUN: CatalogItem = {
+  key: "game:border-run",
+  kind: "game",
+  title: "Border Run",
+  pitch: "Connect two countries by land through as few neighbours as you can.",
+  href: "/play/border-run",
+  topic: "countries",
+  format: "Type",
+  length: "short",
+  tags: ["countries", "borders", "neighbours", "neighbors", "route", "travle", "geography"],
+};
+
 /** Games and the named quizzes. With a loaded world, each quiz also matches the names of its countries and capitals. */
 export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
   const quizzes = LIBRARY.map((q): CatalogItem => {
@@ -88,7 +100,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       tags: [q.category, FORMAT_OF[q.format].toLowerCase(), "quiz", ...names],
     };
   });
-  return [SILHOUETTE, FACT_PIN, ...quizzes];
+  return [SILHOUETTE, FACT_PIN, BORDER_RUN, ...quizzes];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

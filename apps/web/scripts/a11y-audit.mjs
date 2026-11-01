@@ -17,6 +17,7 @@ const ROUTES = [
   "/play/silhouette",
   "/play/quiz",
   "/play/fact-pin",
+  "/play/border-run",
   "/daily",
   "/me",
   "/settings",
@@ -47,6 +48,17 @@ const STATES = [
       await p.keyboard.press("Enter");
       await p.keyboard.press("Enter");
       await p.getByText(/Answer:/).waitFor();
+    },
+  },
+  {
+    name: "border-run guess",
+    path: "/play/border-run",
+    async drive(p) {
+      const input = p.getByLabel("Country");
+      await input.waitFor();
+      await input.fill("France");
+      await p.keyboard.press("Enter");
+      await p.getByText(/Guess 2/).waitFor();
     },
   },
   {

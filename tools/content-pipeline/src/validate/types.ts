@@ -2,6 +2,7 @@ import type {
   AdjacencyEdge,
   AmbiguityGroup,
   DailySchedule,
+  Crossing,
   Dispute,
   Entity,
   Fact,
@@ -19,6 +20,7 @@ export type RuleCode =
   | "GEOM_MISSING"
   | "REF_POINT_OUTSIDE"
   | "ADJ_ASYMMETRIC"
+  | "CROSSING_INVALID"
   | "CAPITAL_OUTSIDE"
   | "DISPUTE_INVALID"
   | "FLAG_MISSING"
@@ -57,6 +59,7 @@ export type ContentSet = {
   fullSets?: boolean;
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
+  crossings?: readonly Crossing[];
   geometry?: GeometryByScale;
   /** Upstream defects to report as warnings, each with a reason. Anything not listed is still an error. */
   knownGeometryIssues?: readonly KnownGeometryIssue[];

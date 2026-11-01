@@ -25,6 +25,7 @@ export async function setFavorite(db: MeridianDb, key: string, on: boolean): Pro
 export function catalogKeyOf(r: GameResult): string | null {
   if (r.game_id === "silhouette") return "game:silhouette";
   if (r.game_id === "fact-pin") return "game:fact-pin";
+  if (r.game_id === "border-run") return "game:border-run";
   if (r.game_id !== "quiz") return null;
   const c = r.config as {
     template?: string;

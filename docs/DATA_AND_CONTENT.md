@@ -239,6 +239,7 @@ Computed in the pipeline (`derive` step), per entity, in [0, 1] where higher = h
 | `GEOM_MISSING` | Every entity in a playable set has geometry in 110m, 50m and 10m (for entities Natural Earth omits at 110m, the 110m pack uses the 50m outline) | error |
 | `REF_POINT_OUTSIDE` | `ref_point` inside its polygon | error |
 | `ADJ_ASYMMETRIC` | Adjacency is symmetric | error |
+| `CROSSING_INVALID` | Crossings join two real entities and do not duplicate a land border | error |
 | `CAPITAL_OUTSIDE` | Capital point inside its country's 10m polygon (tolerance 2 km) | error |
 | `DISPUTE_INVALID` | `content/disputes.yaml` entries have unique IDs and name only existing `country:` entities | error |
 | `FLAG_MISSING` | Every `sovereign-197` country has an SVG in the `flags.svg` pack, and each confusable flag is another existing entity | error |

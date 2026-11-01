@@ -160,6 +160,19 @@ export const adjacencyEdge = z
   });
 export type AdjacencyEdge = z.infer<typeof adjacencyEdge>;
 
+/** Curated fixed links between countries that do not touch (`content/crossings.yaml`, border-run §4). Canonical order: a < b. */
+export const crossing = z
+  .object({
+    a: countryId,
+    b: countryId,
+    type: z.enum(["tunnel", "bridge", "causeway", "sea"]),
+    name: z.string().min(1),
+    length_km: z.number().positive().optional(),
+    source: z.string().url(),
+  })
+  .refine((c) => c.a < c.b, { path: ["a"], message: "crossing is not in canonical order (a < b)" });
+export type Crossing = z.infer<typeof crossing>;
+
 /** Disputed areas (`content/disputes.yaml`, DATA_AND_CONTENT §6.3). */
 export const dispute = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),

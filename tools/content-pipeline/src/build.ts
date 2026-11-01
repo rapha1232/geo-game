@@ -7,6 +7,8 @@ import {
   topology as topologySchema,
   type AmbiguityGroup,
   type DailySchedule,
+  type Crossing,
+  crossing,
   type Dispute,
   type Entity,
   type Manifest,
@@ -54,6 +56,7 @@ export type BuildInput = {
   editorial?: Editorial;
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
+  crossings?: readonly Crossing[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
   /** Curated fact files and populated places: adds the `facts.v1` pack (curated, capitals and cities). */
   factSources?: {
@@ -178,6 +181,16 @@ export function buildPacks(input: BuildInput): BuildOutput {
         disputes: [...input.disputes]
           .map((d) => dispute.parse(d))
           .sort((a, b) => a.id.localeCompare(b.id)),
+      }),
+    );
+  if (input.crossings)
+    files.push(
+      toFile("core.crossings", {
+        pack: "core.crossings",
+        version: input.version,
+        crossings: [...input.crossings]
+          .map((c) => crossing.parse(c))
+          .sort((x, y) => `${x.a}${x.b}`.localeCompare(`${y.a}${y.b}`)),
       }),
     );
   const fallback110: string[] = [];

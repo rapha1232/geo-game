@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
-import { ambiguityGroup, dispute, sourceRegistry } from "@meridian/schemas";
+import { ambiguityGroup, crossing, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import { extendFactPinSchedule, extendSchedule } from "./daily.ts";
@@ -36,6 +36,7 @@ const path = {
   countries: join(root, "content/countries.yaml"),
   ambiguity: join(root, "content/ambiguity.yaml"),
   disputes: join(root, "content/disputes.yaml"),
+  crossings: join(root, "content/crossings.yaml"),
   silhouettes: join(root, "content/overrides/silhouettes.yaml"),
   dailySilhouette: join(root, "content/daily/silhouette.json"),
   dailyFactPin: join(root, "content/daily/fact-pin.json"),
@@ -164,6 +165,7 @@ async function loadInputs(args: string[]) {
     editorial,
     ambiguity: await list(ambiguityGroup, "groups")(path.ambiguity),
     disputes: await list(dispute, "disputes")(path.disputes),
+    crossings: await list(crossing, "crossings")(path.crossings),
     daily: await readDaily(),
     factSources: {
       authored: await Promise.all(

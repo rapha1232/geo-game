@@ -227,6 +227,26 @@ export function adjacencyRules(c: ContentSet): Issue[] {
   return issues;
 }
 
+/** CROSSING_INVALID: both ends are entities and the pair does not already share a land border. */
+export function crossingRules(c: ContentSet): Issue[] {
+  if (!c.crossings) return [];
+  const known = new Set(c.entities.map((e) => e.id));
+  const land = new Set((c.adjacency ?? []).map((e) => `${e.a}|${e.b}`));
+  const issues: Issue[] = [];
+  const seen = new Set<string>();
+  for (const x of c.crossings) {
+    const ref = `${x.a}~${x.b}`;
+    const bad = (message: string): void => {
+      issues.push({ code: "CROSSING_INVALID", level: "error", ref, message: `${ref}: ${message}` });
+    };
+    for (const id of [x.a, x.b]) if (!known.has(id)) bad(`${id} is not an entity`);
+    if (land.has(`${x.a}|${x.b}`)) bad("already a land border");
+    if (seen.has(ref)) bad("listed twice");
+    seen.add(ref);
+  }
+  return issues;
+}
+
 /** Entity-type rank used by FACT_NAMES_TARGET: facts at one precision may not name entities at the same rank. */
 const PRECISION_TYPES: Record<Fact["precision"], readonly string[]> = {
   exact: ["place", "city", "feature"],
