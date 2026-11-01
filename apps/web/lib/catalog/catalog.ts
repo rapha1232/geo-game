@@ -69,6 +69,28 @@ export const BORDER_RUN: CatalogItem = {
   tags: ["countries", "borders", "neighbours", "neighbors", "route", "travle", "geography"],
 };
 
+export const RANK_IT: CatalogItem = {
+  key: "game:rank-it",
+  kind: "game",
+  title: "Rank It",
+  pitch: "Put countries in order by population, area, wealth and more.",
+  href: "/play/rank-it",
+  topic: "countries",
+  format: "Choice",
+  length: "short",
+  tags: [
+    "countries",
+    "population",
+    "area",
+    "gdp",
+    "ranking",
+    "order",
+    "statistics",
+    "higher",
+    "lower",
+  ],
+};
+
 /** Games and the named quizzes. With a loaded world, each quiz also matches the names of its countries and capitals. */
 export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
   const quizzes = LIBRARY.map((q): CatalogItem => {
@@ -100,7 +122,7 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       tags: [q.category, FORMAT_OF[q.format].toLowerCase(), "quiz", ...names],
     };
   });
-  return [SILHOUETTE, FACT_PIN, BORDER_RUN, ...quizzes];
+  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, ...quizzes];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

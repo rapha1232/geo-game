@@ -247,6 +247,33 @@ export function crossingRules(c: ContentSet): Issue[] {
   return issues;
 }
 
+/** Every statistic needs enough countries to build a round of 16 from, and no value for an unknown entity. */
+export const MIN_INDICATOR_COVERAGE = 150;
+export function indicatorRules(c: ContentSet): Issue[] {
+  if (!c.indicators) return [];
+  const known = new Set(c.entities.map((e) => e.id));
+  const issues: Issue[] = [];
+  for (const s of c.indicators.stats) {
+    const rows = Object.keys(c.indicators.values[s.id] ?? {});
+    if (rows.length < MIN_INDICATOR_COVERAGE)
+      issues.push({
+        code: "INDICATOR_COVERAGE",
+        level: "error",
+        ref: s.id,
+        message: `${s.id}: ${rows.length} countries, need at least ${MIN_INDICATOR_COVERAGE}`,
+      });
+    for (const id of rows)
+      if (!known.has(id))
+        issues.push({
+          code: "INDICATOR_COVERAGE",
+          level: "error",
+          ref: s.id,
+          message: `${s.id}: ${id} is not an entity`,
+        });
+  }
+  return issues;
+}
+
 /** Entity-type rank used by FACT_NAMES_TARGET: facts at one precision may not name entities at the same rank. */
 const PRECISION_TYPES: Record<Fact["precision"], readonly string[]> = {
   exact: ["place", "city", "feature"],

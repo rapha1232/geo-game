@@ -18,6 +18,15 @@
     "attributionRequired": false
   },
   {
+    "id": "wb",
+    "name": "World Bank Open Data (World Development Indicators)",
+    "kind": "dataset",
+    "license": "CC BY 4.0 (default for World Bank produced datasets)",
+    "licenseUrl": "https://datacatalog.worldbank.org/public-licenses",
+    "attribution": "The World Bank, World Development Indicators, CC BY 4.0.",
+    "attributionRequired": true
+  },
+  {
     "id": "fi",
     "name": "flag-icons (lipis/flag-icons) v7.6.0",
     "kind": "icons",

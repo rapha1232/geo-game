@@ -18,6 +18,7 @@ const ROUTES = [
   "/play/quiz",
   "/play/fact-pin",
   "/play/border-run",
+  "/play/rank-it",
   "/daily",
   "/me",
   "/settings",
@@ -59,6 +60,14 @@ const STATES = [
       await input.fill("France");
       await p.keyboard.press("Enter");
       await p.getByText(/Guess 2/).waitFor();
+    },
+  },
+  {
+    name: "rank-it revealed",
+    path: "/play/rank-it",
+    async drive(p) {
+      await p.getByRole("button", { name: "Submit order" }).click();
+      await p.getByText(/Your score/).waitFor();
     },
   },
   {

@@ -22,6 +22,8 @@ import {
   type AdjacencyOverrides,
   type SilhouetteOverride,
 } from "./derive.ts";
+import { buildIndicators } from "./indicators.ts";
+import type { WbSnapshot } from "./worldbank.ts";
 import type { Editorial } from "./editorial.ts";
 import { buildFacts, type authoredFile, type PopulatedPlace } from "./facts.ts";
 import type { z } from "zod";
@@ -57,6 +59,8 @@ export type BuildInput = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   crossings?: readonly Crossing[];
+  /** Pinned World Bank snapshot; adds the `core.indicators` pack. */
+  worldBank?: WbSnapshot;
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
   /** Curated fact files and populated places: adds the `facts.v1` pack (curated, capitals and cities). */
   factSources?: {
@@ -182,6 +186,10 @@ export function buildPacks(input: BuildInput): BuildOutput {
           .map((d) => dispute.parse(d))
           .sort((a, b) => a.id.localeCompare(b.id)),
       }),
+    );
+  if (input.worldBank)
+    files.push(
+      toFile("core.indicators", buildIndicators(entities, input.worldBank, input.version)),
     );
   if (input.crossings)
     files.push(

@@ -17,6 +17,7 @@ const GAMES = [
   "/play/quiz/[slug]/page",
   "/play/fact-pin/page",
   "/play/border-run/page",
+  "/play/rank-it/page",
   "/daily/page",
   "/me/page",
   "/settings/page",

@@ -50,6 +50,9 @@ importers:
       '@meridian/quiz':
         specifier: workspace:*
         version: link:../../packages/games/quiz
+      '@meridian/rank-it':
+        specifier: workspace:*
+        version: link:../../packages/games/rank-it
       '@meridian/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -201,6 +204,19 @@ importers:
       '@meridian/name-matcher':
         specifier: workspace:*
         version: link:../../name-matcher
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.20.5
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(jsdom@25.0.1)
+
+  packages/games/rank-it:
+    dependencies:
+      '@meridian/game-kit':
+        specifier: workspace:*
+        version: link:../../game-kit
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

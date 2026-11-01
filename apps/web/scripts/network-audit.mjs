@@ -14,6 +14,7 @@ const ROUTES = [
   "/play/quiz/countries-of-the-world",
   "/play/fact-pin",
   "/play/border-run",
+  "/play/rank-it",
   "/daily",
   "/me",
   "/settings",

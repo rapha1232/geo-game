@@ -3,6 +3,7 @@ import { capitalRules, decodePack, geometryRules, refPointRules } from "./geomet
 import {
   adjacencyRules,
   crossingRules,
+  indicatorRules,
   aliasRules,
   dailyRules,
   disputeRules,
@@ -38,6 +39,7 @@ export function validate(c: ContentSet): Issue[] {
     ...capitalRules(c),
     ...adjacencyRules(c),
     ...crossingRules(c),
+    ...indicatorRules(c),
     ...factRules(c),
     ...factNameRules(c),
     ...quotaRules(c),
@@ -92,6 +94,9 @@ export function contentSetFromBuild(
   const crossings = has("core.crossings")
     ? (json("core.crossings") as { crossings: ContentSet["crossings"] }).crossings
     : undefined;
+  const indicators = has("core.indicators")
+    ? (json("core.indicators") as NonNullable<ContentSet["indicators"]>)
+    : undefined;
   const daily = out.files
     .filter((f) => f.name.startsWith("daily."))
     .map((f) => json(f.name) as unknown as NonNullable<ContentSet["daily"]>[number]);
@@ -120,6 +125,7 @@ export function contentSetFromBuild(
     ...(disputes ? { disputes } : {}),
     ...(adjacency ? { adjacency } : {}),
     ...(crossings ? { crossings } : {}),
+    ...(indicators ? { indicators } : {}),
     ...(facts ? { facts } : {}),
     ...(flagIds ? { flagIds } : {}),
     ...(daily.length > 0 ? { daily } : {}),

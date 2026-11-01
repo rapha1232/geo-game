@@ -43,8 +43,8 @@ sources:
     verification: done
     verified_on: 2026-10-30
     evidence: 'Data Catalog license page: "CC-BY 4.0, with the additional terms below, is the default license for all Datasets produced by the World Bank itself." Users must give appropriate credit and indicate changes.'
-    notes: Some datasets carry other licenses (ODbL, custom third-party). Each indicator shipped in R2 (T2.7) must have its own license note checked before it enters a pack.
-    used_in: []
+    notes: "Some datasets carry other licenses (ODbL, custom third-party). Each indicator shipped in R2 (T2.7) must have its own license note checked before it enters a pack. Checked for T2.7: NY.GDP.PCAP.CD and SP.DYN.LE00.IN are WDI series, CC BY 4.0, shown with the attribution text."
+    used_in: [core.indicators]
   - id: gn
     name: GeoNames (cities15000, alternateNamesV2)
     kind: dataset

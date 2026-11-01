@@ -24,6 +24,7 @@
     "@meridian/geo": "workspace:*",
     "@meridian/name-matcher": "workspace:*",
     "@meridian/quiz": "workspace:*",
+    "@meridian/rank-it": "workspace:*",
     "@meridian/schemas": "workspace:*",
     "@meridian/border-run": "workspace:*",
     "@meridian/silhouette": "workspace:*",

@@ -48,3 +48,11 @@ export const WIKIDATA_SNAPSHOT = {
   file: "data/snapshots/wikidata-countries.json",
   version: "snapshot",
 };
+
+/** The World Bank snapshot is committed like the Wikidata one: values change yearly, so a release pins one retrieval. */
+export const WB_SNAPSHOT = {
+  id: "worldbank-indicators",
+  source: "wb",
+  file: "data/snapshots/worldbank-indicators.json",
+  version: "snapshot",
+};

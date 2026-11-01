@@ -21,6 +21,7 @@ export type RuleCode =
   | "REF_POINT_OUTSIDE"
   | "ADJ_ASYMMETRIC"
   | "CROSSING_INVALID"
+  | "INDICATOR_COVERAGE"
   | "CAPITAL_OUTSIDE"
   | "DISPUTE_INVALID"
   | "FLAG_MISSING"
@@ -60,6 +61,10 @@ export type ContentSet = {
   ambiguity?: readonly AmbiguityGroup[];
   disputes?: readonly Dispute[];
   crossings?: readonly Crossing[];
+  indicators?: {
+    stats: readonly { id: string }[];
+    values: Record<string, Record<string, unknown>>;
+  };
   geometry?: GeometryByScale;
   /** Upstream defects to report as warnings, each with a reason. Anything not listed is still an error. */
   knownGeometryIssues?: readonly KnownGeometryIssue[];
