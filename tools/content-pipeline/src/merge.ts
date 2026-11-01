@@ -16,6 +16,8 @@ export type MergeInput = {
   capitals?: readonly WdCapital[];
   /** ISO alpha-3 codes with no ocean coast. */
   landlocked?: ReadonlySet<string>;
+  /** ISO alpha-3 codes with left-hand traffic. */
+  drivesLeft?: ReadonlySet<string>;
   /** Flag SVGs by ISO alpha-2 and editorial confusables by alpha-3. */
   flags?: { svg: ReadonlyMap<string, string>; confusables: ReadonlyMap<string, readonly string[]> };
 };
@@ -105,6 +107,7 @@ export function mergeCountries(input: MergeInput): Entity[] {
       ...(ne.subregion ? { subregion: ne.subregion } : {}),
       ...(edit ? { capitals: resolveCapitals(m.code, edit, input.capitals ?? []) } : {}),
       ...(input.landlocked?.has(m.code) ? { landlocked: true } : {}),
+      ...(input.drivesLeft?.has(m.code) ? { drives_left: true } : {}),
       ...(input.flags && ne.iso2 && input.flags.svg.has(ne.iso2.toUpperCase())
         ? {
             flag: {

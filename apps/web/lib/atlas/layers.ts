@@ -7,12 +7,13 @@ export type LayerId =
   | "gdp-per-capita"
   | "life-expectancy"
   | "capital-latitude"
-  | "landlocked";
+  | "landlocked"
+  | "driving";
 
 export type Layer =
-  | { id: "political" | "landlocked"; kind: "category"; label: string }
+  | { id: "political" | "landlocked" | "driving"; kind: "category"; label: string }
   | {
-      id: Exclude<LayerId, "political" | "landlocked">;
+      id: Exclude<LayerId, "political" | "landlocked" | "driving">;
       kind: "indicator";
       label: string;
       scheme: "quantile" | "log";
@@ -27,6 +28,7 @@ export const LAYERS: readonly Layer[] = [
   { id: "life-expectancy", kind: "indicator", label: "Life expectancy", scheme: "quantile" },
   { id: "capital-latitude", kind: "indicator", label: "Capital latitude", scheme: "quantile" },
   { id: "landlocked", kind: "category", label: "Landlocked" },
+  { id: "driving", kind: "category", label: "Driving side" },
 ];
 
 export const DEFAULT_LAYER: LayerId = "political";

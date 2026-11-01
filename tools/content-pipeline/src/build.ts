@@ -81,6 +81,8 @@ export type BuildInput = {
   };
   /** ISO alpha-3 codes with no ocean coast (content/landlocked.yaml). */
   landlocked?: ReadonlySet<string>;
+  /** ISO alpha-3 codes with left-hand traffic (content/driving-side.yaml). */
+  drivesLeft?: ReadonlySet<string>;
   /** Flag SVGs by ISO alpha-2 and the editorial confusables groups. Adds the `flags.svg` pack. */
   flags?: { svg: ReadonlyMap<string, string>; confusables: ReadonlyMap<string, readonly string[]> };
   /** Daily schedules (content/daily/*.json), shipped as `daily.<game>` packs. */
@@ -135,7 +137,16 @@ export function buildPacks(input: BuildInput): BuildOutput {
     capitals: input.wikidata.capitals,
     ...(input.flags ? { flags: input.flags } : {}),
     ...(input.landlocked ? { landlocked: input.landlocked } : {}),
+    ...(input.drivesLeft ? { drivesLeft: input.drivesLeft } : {}),
   });
+
+  const unknownLeft = [...(input.drivesLeft ?? [])].filter(
+    (c) => !input.members.some((m) => m.code === c),
+  );
+  if (unknownLeft.length > 0)
+    throw new Error(
+      `content/driving-side.yaml lists codes outside the set: ${unknownLeft.join(", ")}`,
+    );
 
   const unknown = [...(input.landlocked ?? [])].filter(
     (c) => !input.members.some((m) => m.code === c),

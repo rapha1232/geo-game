@@ -75,6 +75,8 @@ export const entity = z
     capitals: z.array(capital).optional(),
     /** No ocean coast (content/landlocked.yaml). Absent means false. */
     landlocked: z.boolean().optional(),
+    /** Traffic keeps to the left (content/driving-side.yaml). Absent means right-hand traffic. */
+    drives_left: z.boolean().optional(),
     flag: z
       .object({ svg: z.string(), aspect: z.number().positive(), confusables: z.array(countryId) })
       .optional(),

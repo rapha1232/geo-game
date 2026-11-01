@@ -62,6 +62,7 @@ const path = {
   deepcutOverrides: join(root, "content/deepcut-overrides.yaml"),
   confusables: join(root, "content/flags/confusables.yaml"),
   landlocked: join(root, "content/landlocked.yaml"),
+  drivingSide: join(root, "content/driving-side.yaml"),
   facts: join(root, "content/facts"),
   places: join(root, "data/raw/ne/ne_10m_populated_places_simple.geojson"),
   flagsTgz: join(root, "data/raw/fi/flag-icons-7.6.0.tgz"),
@@ -304,6 +305,12 @@ async function loadInputs(args: string[]) {
         .object({ landlocked: z.array(z.string().regex(/^[A-Z]{3}$/)) })
         .passthrough()
         .parse(await yaml(path.landlocked)).landlocked,
+    ),
+    drivesLeft: new Set(
+      z
+        .object({ left: z.array(z.string().regex(/^[A-Z]{3}$/)) })
+        .passthrough()
+        .parse(await yaml(path.drivingSide)).left,
     ),
     flags: {
       svg: extractFlags(await read("flag-icons", path.flagsTgz), ne10Iso2),

@@ -36,7 +36,7 @@ const packs: AtlasPacks = {
       ent("PER", "Peru"),
       ent("CHL", "Chile"),
       ent("BOL", "Bolivia", { landlocked: true }),
-      ent("ECU", "Ecuador"),
+      ent("ECU", "Ecuador", { drives_left: true }),
       ent("ARG", "Argentina"),
     ],
   },
@@ -168,6 +168,12 @@ describe("world and layers", () => {
     expect(v.states["country:BOL"]).toBe("near");
     expect(v.states["country:PER"]).toBeUndefined();
     expect(v.keyItems.map((k) => k.label)).toEqual(["Landlocked", "Has a coast"]);
+  });
+  it("shows left-hand traffic with a pattern and a text key", () => {
+    const v = layerView(world, "driving");
+    expect(v.states["country:ECU"]).toBe("near");
+    expect(v.states["country:PER"]).toBeUndefined();
+    expect(v.keyItems.map((k) => k.label)).toEqual(["Drives on the left", "Drives on the right"]);
   });
   it("carries neighbours, published facts and a flag", () => {
     expect(world.neighbors.get("country:PER")).toEqual(["country:BOL", "country:CHL"]);

@@ -234,6 +234,8 @@ export function AtlasExplorer({ initialEntity }: { initialEntity?: string | null
     }
     if (state.layer === "landlocked")
       return `${name}: ${world.byId.get(id)?.landlocked ? t("at.card.landlocked") : t("at.card.coastal")}`;
+    if (state.layer === "driving")
+      return `${name}: ${world.byId.get(id)?.drivesLeft ? t("at.card.left") : t("at.card.right")}`;
     return `${name}: ${t(`sil.continent.${world.byId.get(id)?.continent ?? "AF"}` as MessageKey)}`;
   };
 
@@ -434,7 +436,9 @@ export function AtlasExplorer({ initialEntity }: { initialEntity?: string | null
                   ...state.filter,
                   {
                     layer:
-                      state.layer === "political" || state.layer === "landlocked"
+                      state.layer === "political" ||
+                      state.layer === "landlocked" ||
+                      state.layer === "driving"
                         ? "population"
                         : (state.layer as Clause["layer"]),
                     op: ">",
@@ -590,11 +594,15 @@ export function AtlasExplorer({ initialEntity }: { initialEntity?: string | null
                           ? value === undefined
                             ? t("at.noData")
                             : formatValue(stat, value)
-                          : state.layer === "landlocked"
-                            ? p.landlocked
-                              ? t("at.card.landlocked")
-                              : t("at.card.coastal")
-                            : t(`sil.continent.${p.continent}` as MessageKey)}
+                          : state.layer === "driving"
+                            ? p.drivesLeft
+                              ? t("at.card.left")
+                              : t("at.card.right")
+                            : state.layer === "landlocked"
+                              ? p.landlocked
+                                ? t("at.card.landlocked")
+                                : t("at.card.coastal")
+                              : t(`sil.continent.${p.continent}` as MessageKey)}
                       </td>
                       <td>{rankOf.get(p.id) ?? ""}</td>
                       <td>{year ?? ""}</td>
@@ -729,6 +737,10 @@ function PlaceCard({
           <dt>{t("at.card.coast")}</dt>
           <dd>{place.landlocked ? t("at.card.landlocked") : t("at.card.coastal")}</dd>
         </div>
+        <div>
+          <dt>{t("at.card.driving")}</dt>
+          <dd>{place.drivesLeft ? t("at.card.left") : t("at.card.right")}</dd>
+        </div>
         {INDICATORS.map((l) => {
           const s = world.stats.get(l.id);
           const v = world.value(l.id, place.id);
@@ -797,7 +809,7 @@ function QuizMe({
   const target =
     layer === "landlocked"
       ? { href: "/play/quiz/landlocked-countries", label: t("at.quiz.tiles") }
-      : layer === "political"
+      : layer === "political" || layer === "driving"
         ? { href: "/play/silhouette", label: t("at.quiz.silhouette") }
         : {
             href: `/play/rank-it?stat=${layer}&origin=atlas`,

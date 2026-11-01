@@ -10,6 +10,7 @@ type PackEntity = {
   parent_ids: string[];
   sets?: string[];
   landlocked?: boolean;
+  drives_left?: boolean;
   external_ids?: Record<string, string>;
   capitals?: { name: string; role: string; point?: [number, number] }[];
   label_point: [number, number];
@@ -39,6 +40,8 @@ export type Place = {
   capital: string | null;
   /** The pack lists landlocked countries only (content/landlocked.yaml); every other country has a coast. */
   landlocked: boolean;
+  /** Traffic keeps to the left (content/driving-side.yaml); every other country drives on the right. */
+  drivesLeft: boolean;
   flag: string;
   labelPoint: readonly [number, number];
 };
@@ -72,6 +75,7 @@ export function assembleAtlas(p: AtlasPacks): AtlasWorld {
         e.parent_ids.find((x) => x.startsWith("continent:"))?.slice("continent:".length) ?? "",
       capital: e.capitals?.[0]?.name ?? null,
       landlocked: e.landlocked === true,
+      drivesLeft: e.drives_left === true,
       flag: flagEmoji(e.external_ids?.["iso2"]),
       labelPoint: e.label_point,
     }));
@@ -145,6 +149,10 @@ export function layerView(world: AtlasWorld, layer: LayerId): LayerView {
       for (const x of world.places) {
         if (x.landlocked) states[x.id] = "near";
       }
+    if (layer === "driving")
+      for (const x of world.places) {
+        if (x.drivesLeft) states[x.id] = "near";
+      }
     return {
       classes,
       legend: [],
@@ -156,7 +164,12 @@ export function layerView(world: AtlasWorld, layer: LayerId): LayerView {
               { mark: "◐", label: "Landlocked" },
               { mark: "□", label: "Has a coast" },
             ]
-          : [],
+          : layer === "driving"
+            ? [
+                { mark: "◐", label: "Drives on the left" },
+                { mark: "□", label: "Drives on the right" },
+              ]
+            : [],
     };
   }
   const vals = world.places.flatMap((x) => {
