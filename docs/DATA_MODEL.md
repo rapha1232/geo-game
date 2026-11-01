@@ -264,7 +264,7 @@ All timestamps are `timestamptz`. IDs are `uuid` (v7) unless noted.
 
 | Table | Columns | Notes |
 |---|---|---|
-| `answer_events` | `id bigserial`, `occurred_at`, `session_hash text` (random per play session, never linked to a user), `game_id`, `item_kind`, `item_id`, `prompt_id null`, `answer_entity_id null`, `correct bool`, `attempt smallint`, `difficulty_setting text`, `content_version` | Range-partitioned by month. Raw rows deleted after 90 days. |
+| `answer_events` | `id bigserial`, `occurred_at`, `session_hash text` (random per play session, never linked to a user), `game_id`, `item_kind`, `item_id`, `prompt_id null`, `answer_entity_id null`, `correct bool`, `attempt smallint`, `difficulty_setting text`, `content_version`, `aggregated_at null` | Plain table with an index on `occurred_at` (partitioning can follow when volume needs it). Raw rows deleted after 90 days. |
 | `calibration_stats` | `item_kind`, `item_id`, `prompt_id text default ''`, `n int`, `correct_first int`, `pick_counts jsonb`, `updated_at` | PK (`item_kind`, `item_id`, `prompt_id`) |
 
 ### 3.5 Editorial (R3)

@@ -33,3 +33,7 @@ export class RateLimiter {
 export const reportLimiter = new RateLimiter(
   RATE_LIMITS.filter((r) => r.path === "/api/v1/reports"),
 );
+
+export const telemetryLimiter = new RateLimiter(
+  RATE_LIMITS.filter((r) => r.path === "/api/v1/telemetry"),
+);

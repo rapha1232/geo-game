@@ -8,6 +8,7 @@ import { Nav } from "../components/shell/Nav";
 import { StorageProvider } from "../components/shell/StorageProvider";
 import { SettingsApplier } from "../components/shell/SettingsApplier";
 import { ServiceWorker } from "../components/shell/ServiceWorker";
+import { TelemetryWatcher } from "../components/shell/TelemetryWatcher";
 import { AchievementToaster } from "../components/shell/AchievementToaster";
 import { SystemBanners } from "../components/shell/SystemBanners";
 import { BRAND_NAME } from "../lib/brand";
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <StorageProvider contentHost={process.env.NEXT_PUBLIC_CONTENT_HOST ?? ""}>
           <SettingsApplier />
           <AchievementToaster />
+          <TelemetryWatcher />
           <ServiceWorker />
           <div className={styles.shell}>
             <Nav />

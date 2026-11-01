@@ -17,6 +17,8 @@ export type Settings = {
   streaks: boolean;
   /** Silhouette (unlimited play): add the Neighbors follow-up (silhouette §3). */
   neighborsFollowUp: boolean;
+  /** Share anonymous per-item answer statistics (API_CONTRACTS §4.6). Off by default; nothing is sent while it is off. */
+  telemetry: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -28,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   accessibleDefault: false,
   streaks: false,
   neighborsFollowUp: false,
+  telemetry: false,
 };
 
 /** The key inside the single `settings` record. Other keys there belong to games (`quiz:*`, `fact-pin`). */
@@ -51,6 +54,7 @@ export function sanitize(raw: unknown): Settings {
     accessibleDefault: r["accessibleDefault"] === true,
     streaks: r["streaks"] === true,
     neighborsFollowUp: r["neighborsFollowUp"] === true,
+    telemetry: r["telemetry"] === true,
   };
 }
 

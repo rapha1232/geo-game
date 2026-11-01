@@ -202,6 +202,16 @@ export function SettingsPage() {
           />
           {t("set.neighborsFollowUp")}
         </label>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={s.telemetry}
+            disabled={!ready}
+            onChange={(e) => change({ telemetry: e.target.checked })}
+          />
+          {t("set.telemetry")}
+        </label>
+        <p className={styles.note}>{t("set.telemetryNote")}</p>
         <p role="status" className={styles.note}>
           {saved === true ? t("set.saved") : saved === false ? t("set.saveFailed") : ""}
         </p>

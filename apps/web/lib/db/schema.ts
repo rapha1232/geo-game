@@ -1,5 +1,9 @@
 import { sql } from "drizzle-orm";
 import {
+  bigserial,
+  boolean,
+  primaryKey,
+  smallint,
   check,
   customType,
   index,
@@ -86,3 +90,48 @@ export const contentReleases = pgTable("content_releases", {
   manifestSha256: text("manifest_sha256").notNull(),
   notes: text("notes").notNull().default(""),
 });
+
+/** Anonymous answer events (DATA_MODEL §3.3). Never linked to a user; raw rows are deleted after 90 days. */
+export const answerEvents = pgTable(
+  "answer_events",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
+    /** Random per play session; identifies nobody. */
+    sessionHash: text("session_hash").notNull(),
+    gameId: text("game_id").notNull(),
+    itemKind: text("item_kind").notNull(),
+    itemId: text("item_id").notNull(),
+    promptId: text("prompt_id"),
+    answerEntityId: text("answer_entity_id"),
+    correct: boolean("correct").notNull(),
+    attempt: smallint("attempt").notNull(),
+    difficultySetting: text("difficulty_setting").notNull(),
+    contentVersion: text("content_version").notNull(),
+    /** Set when the event was rolled into `calibration_stats`. */
+    aggregatedAt: timestamp("aggregated_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("answer_events_occurred_idx").on(t.occurredAt),
+    index("answer_events_pending_idx")
+      .on(t.id)
+      .where(sql`${t.aggregatedAt} IS NULL`),
+  ],
+);
+
+/** Per-item calibration counts rolled up from `answer_events` (DATA_MODEL §3.3). */
+export const calibrationStats = pgTable(
+  "calibration_stats",
+  {
+    itemKind: text("item_kind").notNull(),
+    itemId: text("item_id").notNull(),
+    promptId: text("prompt_id").notNull().default(""),
+    n: integer("n").notNull().default(0),
+    correctFirst: integer("correct_first").notNull().default(0),
+    pickCounts: jsonb("pick_counts")
+      .notNull()
+      .default(sql`'{}'::jsonb`),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.itemKind, t.itemId, t.promptId] })],
+);

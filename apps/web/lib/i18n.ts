@@ -677,6 +677,9 @@ const en = {
   "sil.neighbors.wrong": "Not quite. The neighbours are: {list}.",
   "sil.neighbors.missed": "Missed: {list}.",
   "sil.neighbors.extra": "Not neighbours: {list}.",
+  "set.telemetry": "Share anonymous answer statistics",
+  "set.telemetryNote":
+    "Off by default. When on, which items were answered right or wrong is sent without your name, account or IP address, to help us tune difficulty. Turn it off any time and nothing more is sent.",
   "set.neighborsFollowUp": "Silhouette: also ask for the neighbours after each round",
   "sil.heat.show": "Show my guesses on a map",
   "sil.heat.hide": "Hide the map",

@@ -139,7 +139,7 @@ Up to 50 results per call. Each result is validated independently: schema, `scor
 {"session_hash": "c2f1…(random 128-bit, per play session)", "content_version": "2026.11.0",
  "events": [{"game_id":"deep-cut","item_kind":"prompt_answer","item_id":"country:TLS","prompt_id":"prompt:lang-portuguese","correct":true,"attempt":1,"difficulty_setting":"normal","t":"2026-11-05T08:03:11Z"}]}
 ```
-→ `204`. ≤ 100 events per call. Sent only if telemetry is enabled in Settings. Batched every 30 s and on `pagehide` via `navigator.sendBeacon`. No IP is stored (the edge handler strips it before logging).
+→ `204`. ≤ 100 events per call. Sent only if telemetry is enabled in Settings. **As built (T2.6): it is off by default**, so nothing leaves the device until the player opts in; the Privacy Policy says so. Only Silhouette, Fact Pin and quiz items are sent; practice and learn rounds never are. The server replaces a timestamp more than 24 h from its own clock, and rolls events into `calibration_stats` on ingest (at most hourly per instance) because the free plan has no cron. Batched every 30 s and on `pagehide` via `navigator.sendBeacon`. No IP is stored (the edge handler strips it before logging).
 
 ### 4.7 Progress sync: Session, R2
 

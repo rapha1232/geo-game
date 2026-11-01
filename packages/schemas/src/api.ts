@@ -109,3 +109,23 @@ export const resultsBatchResponse = z.object({
 export const resultsBatchRequest = z.object({ results: z.array(z.unknown()).min(1).max(50) });
 
 export { isoDateTime };
+
+/** `POST /api/v1/telemetry/answers` (API_CONTRACTS §4.6): anonymous, batched, at most 100 events. */
+export const telemetryEvent = z.object({
+  game_id: gameId,
+  item_kind: z.string().min(1).max(40),
+  item_id: z.string().min(1).max(80),
+  prompt_id: z.string().min(1).max(80).optional(),
+  answer_entity_id: z.string().min(1).max(80).optional(),
+  correct: z.boolean(),
+  attempt: z.number().int().min(1).max(20),
+  difficulty_setting: z.string().min(1).max(20),
+  t: z.string().datetime(),
+});
+export type TelemetryEvent = z.infer<typeof telemetryEvent>;
+export const telemetryRequest = z.object({
+  session_hash: z.string().regex(/^[0-9a-f]{32}$/, "128 random bits as hex"),
+  content_version: z.string().min(1).max(32),
+  events: z.array(telemetryEvent).min(1).max(100),
+});
+export type TelemetryRequest = z.infer<typeof telemetryRequest>;

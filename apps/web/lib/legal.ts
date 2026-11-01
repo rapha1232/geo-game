@@ -80,6 +80,7 @@ export const PRIVACY: readonly Section[] = [
     bullets: [
       "Challenge codes. When you create a short challenge link, we store the challenge settings (game, scope, seed and a few options) and a short code. It holds no name, email or account information. Codes expire two years after they were last used.",
       "Reports. When you report a problem we store what you tell us about the question or fact, and your email address only if you choose to give one so we can reply. Reports are kept for two years.",
+      "Answer statistics, only if you turn them on in Settings (they are off by default). Which items were answered right or wrong, on which attempt, with a random code that lasts for one visit and identifies nobody. No name, account, email or IP address is stored with them. Raw events are deleted after 90 days; only totals per item are kept.",
       "Analytics. We use Vercel Web Analytics to measure page views and performance in aggregate. It does not use cookies and does not follow you across sites or visits.",
       "Server logs. Our hosting provider keeps standard technical logs (such as IP address, time and requested page) for security and reliability. We do not use them to profile anyone.",
     ],
@@ -95,7 +96,7 @@ export const PRIVACY: readonly Section[] = [
   {
     heading: "Who processes data for us",
     paragraphs: [
-      "Our hosting and analytics run on Vercel, and our database (challenge codes and reports) runs on Neon. They process data only to provide those services to us.",
+      "Our hosting and analytics run on Vercel, and our database (challenge codes, reports and answer statistics) runs on Neon. They process data only to provide those services to us.",
     ],
   },
   {
