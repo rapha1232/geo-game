@@ -9,3 +9,6 @@ data/raw
 data/sources.lock.yaml
 tools/content-pipeline/test/fixtures/*.json
 content/daily/*.json
+# Built content packs are hashed byte-for-byte by the manifest
+apps/web/public/content
+public/content

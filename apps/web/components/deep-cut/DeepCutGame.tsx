@@ -60,7 +60,8 @@ export function DeepCutGame() {
             document.visibilityState === "visible" ? setClock(s, true, performance.now()) : s,
           );
         }
-      } catch {
+      } catch (e) {
+        console.error("deep-cut load failed", e);
         if (live) setError(true);
       }
     })();
