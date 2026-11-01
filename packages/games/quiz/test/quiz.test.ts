@@ -28,6 +28,8 @@ import {
   timeLeftMs,
   withLanguages,
   buildQuizWorld,
+  countryPool,
+  scopeLabel,
   timeLimitMs,
   type QuizConfig,
 } from "../src";
@@ -743,5 +745,30 @@ describe("Extra answer languages (R2)", () => {
     expect(withLanguages(es, [])).toBe(es);
     const w = withLanguages(es, ["es", "fr"]);
     expect(withLanguages(w, ["fr", "es"])).toBe(w);
+  });
+});
+
+describe("Rankings scopes (R2)", () => {
+  const withPop = buildQuizWorld(
+    named.map((e, i) => ({
+      ...e,
+      population: (i + 1) * 1_000_000,
+      areaKm2: (named.length - i) * 10_000,
+    })),
+  );
+  it("picks the N most populous countries, largest first, ties by id", () => {
+    const top = countryPool(withPop, "sovereign-197", { kind: "top", id: "population-3" });
+    expect(top).toHaveLength(3);
+    const pops = top.map((e) => e.population);
+    expect(pops).toEqual([...pops].sort((a, b) => (b ?? 0) - (a ?? 0)));
+    const sovereign = named.filter((e) => e.sets.includes("sovereign-197"));
+    expect(top[0]?.id).toBe(sovereign[sovereign.length - 1]!.id);
+  });
+  it("picks by area when asked, and makes a quiz of exactly those countries", () => {
+    const top = countryPool(withPop, "sovereign-197", { kind: "top", id: "area-4" });
+    expect(top[0]?.id).toBe(named.find((e) => e.sets.includes("sovereign-197"))!.id);
+    const q = generateQuiz(withPop, cfg({ scope: { kind: "top", id: "area-4" } }), "RANKSEED01");
+    expect(q.items.map((i) => i.id).sort()).toEqual(top.map((e) => e.id).sort());
+    expect(scopeLabel(withPop, { kind: "top", id: "area-4" })).toBe("the 4 largest countries");
   });
 });

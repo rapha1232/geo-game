@@ -24,7 +24,11 @@ export type Skill = "recall" | "locate" | "flag" | "capital" | "shape";
 
 /** `world`, a continent (`AF`…) or a UN subregion slug. */
 export type Scope =
-  { kind: "world" } | { kind: "continent"; id: string } | { kind: "region"; id: string };
+  | { kind: "world" }
+  | { kind: "continent"; id: string }
+  | { kind: "region"; id: string }
+  /** The N largest countries by population or area (Rankings templates, R2). `id` is `population-10` or `area-20`. */
+  | { kind: "top"; id: string };
 
 /** A country or territory as the quiz engine sees it. */
 export type QuizEntity = MatchEntity & {
@@ -33,6 +37,8 @@ export type QuizEntity = MatchEntity & {
   /** UN subregion id (slug) and display name. */
   region: { id: string; name: string } | null;
   areaKm2: number;
+  /** Residents, when known (Rankings scopes). */
+  population?: number;
   /** Accepted capitals with their roles, official first. */
   capitals: readonly { name: string; role: string }[];
   /** Skill priors in [0, 1], higher = harder. */

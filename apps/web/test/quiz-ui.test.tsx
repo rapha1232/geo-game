@@ -82,7 +82,8 @@ describe("the library (quiz-library §4.3, §8.1)", () => {
         "world-regions-map",
       ]),
     );
-    expect(LIBRARY).toHaveLength(1 + 6 + 7 + 7 + 1 + 7 + 1 + 2);
+    // R1: 32 named quizzes; R2 adds the four Rankings quizzes.
+    expect(LIBRARY).toHaveLength(1 + 6 + 7 + 7 + 1 + 7 + 1 + 2 + 4);
   });
   it("counts items live and shows the time limit from the formula", () => {
     const all = defaultConfig(findQuiz("countries-of-the-world")!);

@@ -13,6 +13,7 @@ type PackEntity = {
   parent_ids: string[];
   subregion?: string;
   area_km2?: { value: number };
+  population?: { value: number };
   capitals?: { name: string; role: string }[];
   difficulty?: Partial<Record<Skill, number>>;
   sets?: string[];
@@ -56,6 +57,7 @@ export function assembleQuiz(
           ? { id: regionParent.slice("region:".length), name: e.subregion }
           : null,
       areaKm2: e.area_km2?.value ?? 0,
+      ...(e.population ? { population: e.population.value } : {}),
       capitals: e.capitals ?? [],
       difficulty: e.difficulty ?? {},
       sets: e.sets ?? [],

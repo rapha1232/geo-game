@@ -118,19 +118,35 @@ export function inScope(e: QuizEntity, scope: Scope): boolean {
       return e.continent === scope.id;
     case "region":
       return e.region?.id === scope.id;
+    case "top":
+      // Which entities are on the list depends on the others, so `countryPool` decides; here it is everyone.
+      return true;
   }
 }
 
+/** `population-10` becomes `{ by: "population", n: 10 }`. */
+export const parseTop = (id: string): { by: "population" | "area"; n: number } => {
+  const [by, n] = id.split("-");
+  return { by: by === "area" ? "area" : "population", n: Math.max(1, Number(n) || 10) };
+};
+
 /** The pool of countries a quiz draws from. */
-export const countryPool = (world: QuizWorld, set: CountrySet, scope: Scope): QuizEntity[] =>
-  world.entities.filter((e) => inSet(e, set) && inScope(e, scope));
+export function countryPool(world: QuizWorld, set: CountrySet, scope: Scope): QuizEntity[] {
+  const pool = world.entities.filter((e) => inSet(e, set) && inScope(e, scope));
+  if (scope.kind !== "top") return pool;
+  const { by, n } = parseTop(scope.id);
+  const size = (e: QuizEntity): number => (by === "area" ? e.areaKm2 : (e.population ?? 0));
+  return [...pool].sort((a, b) => size(b) - size(a) || a.id.localeCompare(b.id)).slice(0, n);
+}
 
 export const scopeLabel = (world: QuizWorld, scope: Scope): string =>
   scope.kind === "world"
     ? "the world"
     : scope.kind === "continent"
       ? (CONTINENT_NAMES[scope.id] ?? scope.id)
-      : (world.groupById.get(`region:${scope.id}`)?.name ?? scope.id);
+      : scope.kind === "top"
+        ? `the ${parseTop(scope.id).n} ${parseTop(scope.id).by === "area" ? "largest" : "most populous"} countries`
+        : (world.groupById.get(`region:${scope.id}`)?.name ?? scope.id);
 
 /** Display text of an option or item in its universe: capitals show the capital, countries and groups their name. */
 export function optionLabel(world: QuizWorld, template: Template, id: string): string {
