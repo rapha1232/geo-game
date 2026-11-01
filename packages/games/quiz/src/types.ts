@@ -63,6 +63,8 @@ export type QuizConfig = {
   learn?: boolean;
   /** Hints are on unless Hard difficulty or a challenge turned them off. */
   hints?: boolean;
+  /** Lives modifier (R2): a wrong answer costs one; at 0 the quiz ends. Absent means unlimited. */
+  lives?: 1 | 3;
 };
 
 export type Prompt =
@@ -120,7 +122,7 @@ export type ItemState = {
 };
 
 export type Phase = "ready" | "playing" | "paused" | "review";
-export type EndReason = "complete" | "timeout" | "give_up";
+export type EndReason = "complete" | "timeout" | "give_up" | "lives_out";
 
 /** Plain JSON: saved after every action and restored on reload (AC-QZ-012). */
 export type QuizState = {
@@ -133,6 +135,8 @@ export type QuizState = {
   hintsUsed: number;
   /** MULTIPLE_CHOICE 50/50 uses so far. */
   fiftyUsed: number;
+  /** Lives left; absent when the quiz has unlimited lives. */
+  lives?: number;
   endReason?: EndReason;
 };
 

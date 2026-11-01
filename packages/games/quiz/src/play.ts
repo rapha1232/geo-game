@@ -31,6 +31,7 @@ export function newQuizState(quiz: Quiz): QuizState {
     queue: quiz.items.map((_, i) => i),
     hintsUsed: 0,
     fiftyUsed: 0,
+    ...(quiz.config.lives && !quiz.config.learn ? { lives: quiz.config.lives } : {}),
   };
 }
 
@@ -82,6 +83,14 @@ function markMissed(s: QuizState): QuizState {
     items: s.items.map((it) => (it.status === "pending" ? { ...it, status: "missed" } : it)),
     queue: [],
   };
+}
+
+/** A wrong answer costs a life (quiz-library §2.2); at none left the quiz ends and what remains counts as missed. */
+function loseLife(s: QuizState, now: number): QuizState {
+  if (s.lives === undefined) return s;
+  const lives = Math.max(0, s.lives - 1);
+  const next = { ...s, lives };
+  return lives === 0 ? end(markMissed(next), "lives_out", now) : next;
 }
 
 function finishIfDone(s: QuizState, now: number): QuizState {
@@ -306,13 +315,14 @@ export function clickMap(
   const attempts = attempt + 1;
   if (attempts >= MAX_ATTEMPTS && !learn(s0)) {
     const s = setItem(s0, cur, { status: "missed", score: 0, attempts });
+    const after = loseLife({ ...s, queue: s.queue.slice(1) }, now);
     return {
-      state: finishIfDone({ ...s, queue: s.queue.slice(1) }, now),
+      state: after.phase === "review" ? after : finishIfDone(after, now),
       event: { kind: "missed", answer: q.mapIds },
     };
   }
   return {
-    state: setItem(s0, cur, { attempts }),
+    state: loseLife(setItem(s0, cur, { attempts }), now),
     event: { kind: "wrong", clickedId: entityId, triesLeft: MAX_ATTEMPTS - attempts },
   };
 }
@@ -348,8 +358,12 @@ export function choose(
     attempts: 1,
     chosen: index,
   });
+  const after = right ? s : loseLife(s, now);
   return {
-    state: finishIfDone({ ...s, queue: s.queue.slice(1) }, now),
+    state:
+      after.phase === "review"
+        ? after
+        : finishIfDone({ ...after, queue: after.queue.slice(1) }, now),
     event: right
       ? { kind: "correct", score }
       : { kind: "wrong", correctIndex: q.correctIndex as number },

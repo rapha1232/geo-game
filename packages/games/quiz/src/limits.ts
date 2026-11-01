@@ -29,6 +29,7 @@ export function pbKey(c: QuizConfig, itemCount: number): string | null {
     c.countrySet,
     itemCount,
     c.timed ? "timed" : "untimed",
+    ...(c.lives ? [`lives${c.lives}`] : []),
   ].join("|");
 }
 

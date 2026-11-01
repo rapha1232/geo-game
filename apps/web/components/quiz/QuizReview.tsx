@@ -75,9 +75,11 @@ export function QuizReview({
   const why =
     s.endReason === "timeout"
       ? t("qz.reviewTimeout")
-      : s.endReason === "give_up"
-        ? t("qz.reviewGiveUp")
-        : t("qz.reviewComplete");
+      : s.endReason === "lives_out"
+        ? t("qz.reviewLivesOut")
+        : s.endReason === "give_up"
+          ? t("qz.reviewGiveUp")
+          : t("qz.reviewComplete");
   const learn = s.quiz.config.learn === true;
   const missedCount = sum.missed.length;
 

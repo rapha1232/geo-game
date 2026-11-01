@@ -318,6 +318,18 @@ export function QuizPlay(p: QuizPlayProps) {
         <p className={styles.count} aria-label={t("qz.progress", { done: doneCount, total })}>
           {t("qz.progress", { done: doneCount, total })}
         </p>
+        {s.lives !== undefined && (
+          <p
+            className={styles.count}
+            aria-label={s.lives === 1 ? t("qz.life") : t("qz.lives", { n: s.lives })}
+          >
+            <span aria-hidden="true">
+              {"♥".repeat(s.lives)}
+              {"♡".repeat(Math.max(0, (s.quiz.config.lives ?? 0) - s.lives))}
+            </span>{" "}
+            {s.lives === 1 ? t("qz.life") : t("qz.lives", { n: s.lives })}
+          </p>
+        )}
         <p className={`${styles.clock} ${warn ? styles.warn : ""}`} role="timer" aria-live="off">
           <span aria-hidden="true">{warn ? "⏱ " : ""}</span>
           {left === null

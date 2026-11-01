@@ -186,6 +186,23 @@ export function QuizConfigure({
               ))}
             </select>
           </label>
+          {(c.format === "MAP_CLICK" || c.format === "MULTIPLE_CHOICE") && !c.learn && (
+            <label>
+              {t("qz.config.lives")}
+              <select
+                value={c.lives ?? 0}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  const { lives: _drop, ...rest } = c;
+                  setC(v === 1 || v === 3 ? { ...rest, lives: v } : rest);
+                }}
+              >
+                <option value={0}>{t("qz.lives.unlimited")}</option>
+                <option value={3}>{t("qz.lives.three")}</option>
+                <option value={1}>{t("qz.lives.one")}</option>
+              </select>
+            </label>
+          )}
           {c.format === "MAP_CLICK" && (
             <label className={styles.check}>
               <input

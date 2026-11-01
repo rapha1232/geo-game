@@ -84,6 +84,7 @@ export function QuizRunner({ slug }: { slug: string }) {
           countrySet: prefs.countrySet,
           ...(remembered?.difficulty ? { difficulty: remembered.difficulty } : {}),
           ...(remembered?.strictness ? { strictness: remembered.strictness } : {}),
+          ...(remembered?.lives ? { lives: remembered.lives } : {}),
         });
         setData(loaded);
         const s = old?.state as QuizSession | undefined;
@@ -244,6 +245,7 @@ export function QuizRunner({ slug }: { slug: string }) {
               [`quiz:${named.template}`]: {
                 difficulty: config.difficulty,
                 strictness: config.strictness,
+                ...(config.lives ? { lives: config.lives } : {}),
               },
             },
           })

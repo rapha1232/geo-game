@@ -43,7 +43,13 @@ export function quizResult(
     score: sum.points,
     max_score: sum.total,
     outcome:
-      s.endReason === "timeout" ? "timeout" : s.endReason === "give_up" ? "gave_up" : "completed",
+      s.endReason === "timeout"
+        ? "timeout"
+        : s.endReason === "give_up"
+          ? "gave_up"
+          : s.endReason === "lives_out"
+            ? "lives_out"
+            : "completed",
     items: s.items.slice(0, 500).map((it, i) => ({
       item_id: s.quiz.items[i]?.id as string,
       ...(/^(country|territory):/.test(s.quiz.items[i]?.id ?? "")

@@ -634,3 +634,76 @@ describe("practice my misses (AC-QZ-017)", () => {
 });
 
 void named;
+
+describe("Lives modifier (R2)", () => {
+  const mc = generateQuiz(
+    world,
+    cfg({ template: "capitals.by-country", format: "MULTIPLE_CHOICE", count: "all", lives: 1 }),
+    "LIVES00001",
+  );
+  const wrongIndex = (s: ReturnType<typeof newQuizState>) => {
+    const q = s.quiz.items[currentIndex(s) as number]!;
+    return q.options!.findIndex((_, i) => i !== q.correctIndex);
+  };
+  it("is unlimited unless set, and absent in Learn", () => {
+    expect(
+      newQuizState(
+        generateQuiz(
+          world,
+          cfg({ template: "capitals.by-country", format: "MULTIPLE_CHOICE" }),
+          "LIVES00002",
+        ),
+      ).lives,
+    ).toBeUndefined();
+    expect(
+      newQuizState(
+        generateQuiz(
+          world,
+          cfg({
+            template: "capitals.by-country",
+            format: "MULTIPLE_CHOICE",
+            lives: 3,
+            learn: true,
+          }),
+          "LIVES00003",
+        ),
+      ).lives,
+    ).toBeUndefined();
+    expect(newQuizState(mc).lives).toBe(1);
+  });
+  it("sudden death: one wrong multiple-choice answer ends the quiz and the rest count as missed", () => {
+    const s = newQuizState(mc);
+    const r = choose(s, wrongIndex(s), 1000);
+    expect(r.state.lives).toBe(0);
+    expect(r.state.phase).toBe("review");
+    expect(r.state.endReason).toBe("lives_out");
+    expect(r.state.items.every((i) => i.status !== "pending")).toBe(true);
+  });
+  it("a right answer costs nothing", () => {
+    const s = newQuizState(mc);
+    const q = s.quiz.items[currentIndex(s) as number]!;
+    const r = choose(s, q.correctIndex!, 1000);
+    expect(r.state.lives).toBe(1);
+    expect(r.state.phase).not.toBe("review");
+  });
+  it("three lives: each wrong map click costs one and the third ends it", () => {
+    const q = generateQuiz(
+      world,
+      cfg({ format: "MAP_CLICK", count: "all", lives: 3 }),
+      "LIVES00004",
+    );
+    let s = newQuizState(q);
+    const target = q.items[currentIndex(s) as number]!.mapIds[0]!;
+    const wrong = world.entities.find(
+      (e) => !q.items[currentIndex(s) as number]!.mapIds.includes(e.id),
+    )!.id;
+    s = clickMap(s, wrong, 0).state;
+    expect(s.lives).toBe(2);
+    s = clickMap(s, wrong, 0).state;
+    expect(s.lives).toBe(1);
+    s = clickMap(s, wrong, 0).state;
+    expect(s.lives).toBe(0);
+    expect(s.endReason).toBe("lives_out");
+    expect(target).toBeTruthy();
+  });
+});
