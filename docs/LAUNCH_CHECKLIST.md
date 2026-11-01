@@ -45,7 +45,7 @@ What is in the code now, and what only the owner can do.
 
 **Owner to do:**
 
-1. **Database:** run `pnpm --filter @meridian/web db:migrate` again. Migration `0001_telemetry` adds `answer_events` and `calibration_stats`. Without a database the statistics endpoint answers 503 and nothing else is affected.
+1. **Database:** done on the Neon database behind `DATABASE_URL` (2026-11-01). Migration `0001_telemetry` added `answer_events` and `calibration_stats`, and the endpoint was checked end to end (insert, roll-up, cleanup). The migration journal was empty although `0000_init` had been applied some other way, so `0000` was recorded in it first; `db:migrate` now runs cleanly. Run `pnpm --filter @meridian/web db:migrate` for any other database (preview, production) before deploying. The `challenges` table still holds one test row from earlier checks.
 2. **Telemetry consent:** it is off by default and the Privacy Policy now describes it. Decide whether to keep it opt-in, and have the wording reviewed (Q-06). Rate limit for `/api/v1/telemetry`: 120 per minute per IP (see `rate-limits.ts`).
 3. **Reviews before launch:** the official-language data behind Deep Cut (Wikidata, unreviewed), the translated country names (Wikidata labels; collisions are dropped automatically), the four crossing links, and the Deep Cut equator override.
 4. **Content release:** rebuild with `pnpm content:build` and upload as before. New packs: `core.crossings`, `core.indicators`, `deepcut.prompts`, `daily.border-run`. New snapshots are pinned in `data/sources.lock.yaml`.
