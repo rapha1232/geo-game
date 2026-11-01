@@ -25,7 +25,12 @@ export function ServiceWorker() {
           /* storage blocked: warm again next time */
         }
         if (done) return;
-        ready.active?.postMessage({ type: "warm" });
+        // Loaded on demand: the quiz list is not part of the shell bundle.
+        const { LIBRARY } = await import("../../lib/quiz/library");
+        ready.active?.postMessage({
+          type: "warm",
+          routes: LIBRARY.map((q) => `/play/quiz/${q.slug}`),
+        });
         try {
           window.localStorage.setItem(WARMED, stamp);
         } catch {

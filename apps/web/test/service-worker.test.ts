@@ -14,6 +14,7 @@ function boot() {
   const files: Record<string, { body: string; type?: string }> = {
     "/play": { body: '<script src="/_next/static/chunks/play-abc.js"></script>' },
     "/": { body: '<link href="/_next/static/css/app.css">' },
+    "/play/quiz/a-quiz": { body: "quiz" },
     "/_next/static/chunks/play-abc.js": { body: "js" },
     "/_next/static/css/app.css": { body: "css" },
     "/content/manifest.json": {
@@ -76,10 +77,10 @@ function boot() {
     listeners.get("fetch")!({ request, respondWith: (p: Promise<Response>) => (out = p) });
     return out ? await out : null;
   };
-  const warm = async () => {
+  const warm = async (routes: string[] = []) => {
     let done: Promise<unknown> = Promise.resolve();
     listeners.get("message")!({
-      data: { type: "warm" },
+      data: { type: "warm", routes },
       waitUntil: (p: Promise<unknown>) => (done = p),
     });
     await done;
@@ -127,6 +128,14 @@ describe("service worker", () => {
       ))!.text(),
     ).toBe("{}");
     expect(sw.hits).not.toContain("/content/1/geo.world.10m.abcdef.json");
+  });
+
+  it("warms extra game routes the page names, and only under /play/", async () => {
+    const sw = boot();
+    await sw.warm(["/play/quiz/a-quiz", "/admin"]);
+    sw.setOnline(false);
+    expect(await (await sw.respond(sw.nav("/play/quiz/a-quiz")))!.text()).toBe("quiz");
+    expect(sw.hits).not.toContain("/admin");
   });
 
   it("serves hashed static files and packs from cache without asking the network again", async () => {

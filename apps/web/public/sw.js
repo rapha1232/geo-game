@@ -102,10 +102,10 @@ self.addEventListener("fetch", (event) => {
 /** Scripts, styles and fonts a page needs, read from its HTML. */
 const assetsOf = (html) => [...new Set(html.match(/\/_next\/static\/[^"'\\\s)]+/g) ?? [])];
 
-async function warm() {
+async function warm(extraRoutes) {
   const pages = await caches.open(PAGES);
   const statics = await caches.open(STATIC);
-  for (const route of WARM_ROUTES) {
+  for (const route of [...WARM_ROUTES, ...extraRoutes]) {
     try {
       const res = await fetch(route, { credentials: "same-origin" });
       if (!res.ok) continue;
@@ -138,5 +138,10 @@ async function warm() {
 }
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "warm") event.waitUntil(warm());
+  if (event.data && event.data.type === "warm") {
+    const extra = Array.isArray(event.data.routes)
+      ? event.data.routes.filter((r) => typeof r === "string" && r.startsWith("/play/"))
+      : [];
+    event.waitUntil(warm(extra));
+  }
 });
