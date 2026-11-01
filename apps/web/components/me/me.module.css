@@ -361,3 +361,44 @@
   font-weight: 330;
   letter-spacing: -0.03em;
 }
+
+/* ---------------------------------------------------------------- round 2 */
+.headRow {
+  margin: calc(var(--space-4) * -1) 0 0;
+}
+.pillLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-card), var(--edge-highlight);
+  transition:
+    border-color var(--motion-micro) var(--ease),
+    box-shadow var(--motion-panel) var(--ease),
+    transform var(--motion-panel) var(--ease-spring);
+}
+.pillLink span {
+  color: var(--color-accent);
+}
+.pillLink:hover {
+  border-color: var(--color-text);
+  box-shadow: var(--shadow-raised);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pillLink:hover {
+    transform: translateY(-2px);
+  }
+}
+.gameHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}

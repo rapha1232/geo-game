@@ -160,12 +160,38 @@
 .mapBox > * {
   border-radius: inherit;
 }
-.options:not(fieldset):not(:empty) {
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--fx-glass-strong);
-  box-shadow: var(--shadow-card), var(--edge-highlight);
+/* Options read as chips, like the quiz setup; the native radio or checkbox stays visible inside each one. */
+.option {
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition:
+    background-color var(--motion-panel) var(--ease),
+    color var(--motion-panel) var(--ease),
+    border-color var(--motion-micro) var(--ease);
+}
+.option:hover {
+  border-color: var(--color-text);
+}
+.option:has(input:checked) {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+.option:has(input:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+.fieldset legend {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 .options select {
   border-color: var(--color-border-strong);
@@ -211,4 +237,10 @@
   .fact {
     animation: fx-rise var(--motion-reveal) var(--ease-out);
   }
+}
+.card {
+  padding: clamp(var(--space-5), 4vw, var(--space-6));
+  border-radius: var(--radius-xl);
+  background-image: radial-gradient(36rem 14rem at 100% 0%, var(--fx-glow), transparent 70%);
+  box-shadow: var(--shadow-raised), var(--edge-highlight);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { Card } from "@meridian/ui";
+import { Card, ProgressRing } from "@meridian/ui";
 import type { GameResult } from "@meridian/schemas";
 import { t, type MessageKey } from "../../lib/i18n";
 import { formatDuration, history, overview, perGame, TREND_LENGTH } from "../../lib/results/stats";
@@ -113,9 +113,9 @@ export function MeView({
   return (
     <section className={styles.page}>
       <h1>{t("me.title")}</h1>
-      <p>
-        <a href="/me/achievements" className={styles.action}>
-          {t("ach.link")}
+      <p className={styles.headRow}>
+        <a href="/me/achievements" className={styles.pillLink}>
+          <span aria-hidden="true">★</span> {t("ach.link")}
         </a>
       </p>
       {streak}
@@ -145,7 +145,15 @@ export function MeView({
         <h2 id="me-pg">{t("me.perGame")}</h2>
         {games.map((g) => (
           <Card key={g.gameId} className={`${styles.game} fx-reveal`}>
-            <h3>{gameName(g.gameId)}</h3>
+            <div className={styles.gameHead}>
+              {/* No label: the "Solve rate" tile below carries the number. */}
+              <ProgressRing
+                value={g.solveRate}
+                size="sm"
+                tone={g.solveRate >= 0.8 ? "correct" : "accent"}
+              />
+              <h3>{gameName(g.gameId)}</h3>
+            </div>
             <dl className={styles.stats}>
               <div>
                 <dt>{t("me.roundsLabel")}</dt>

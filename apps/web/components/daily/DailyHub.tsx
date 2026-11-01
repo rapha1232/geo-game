@@ -7,6 +7,7 @@ import { browserOffsetMinutes, localDate, msToNextDay } from "../../lib/daily/ti
 import { t, type MessageKey } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import { DailySummary } from "./DailySummary";
+import { GameArt, artFor } from "../home/GameArt";
 import styles from "./daily.module.css";
 import "../../lib/messages/daily";
 
@@ -154,38 +155,44 @@ export function DailyHub() {
   return (
     <section className={styles.page}>
       <h1>{t("daily.title")}</h1>
-      {GAMES.map((g) => {
-        const state = states[g.id] ?? { kind: "loading" };
-        return (
-          <div key={g.id} className={styles.game}>
-            <Card className={styles.summary}>
-              <h2>{t(g.title)}</h2>
-              <p>{t(g.body)}</p>
-              {state.kind === "loading" && <p role="status">{t("daily.loading")}</p>}
-              {state.kind === "unavailable" && (
-                <>
-                  <p role="status">{t("daily.unavailable")}</p>
-                  <a className={styles.primary} href={g.keepPlaying}>
-                    {t("daily.keepPlaying")}
+      <div className={`${styles.grid} fx-stagger`}>
+        {GAMES.map((g) => {
+          const state = states[g.id] ?? { kind: "loading" };
+          return (
+            <div key={g.id} className={styles.game} data-state={state.kind}>
+              <Card className={styles.summary}>
+                <GameArt name={artFor(g.href)} className={styles.art} />
+                <h2>{t(g.title)}</h2>
+                <p>{t(g.body)}</p>
+                {state.kind === "loading" && <p role="status">{t("daily.loading")}</p>}
+                {state.kind === "unavailable" && (
+                  <>
+                    <p role="status">{t("daily.unavailable")}</p>
+                    <a className={styles.primary} href={g.keepPlaying}>
+                      {t("daily.keepPlaying")}
+                    </a>
+                  </>
+                )}
+                {state.kind === "ready" && (
+                  <a className={styles.primary} href={g.href}>
+                    {state.resumable ? t(g.resume) : t(g.play)}{" "}
+                    <span aria-hidden="true" className={styles.arrow}>
+                      →
+                    </span>
                   </a>
-                </>
+                )}
+              </Card>
+              {state.kind === "done" && (
+                <DailySummary
+                  result={state.result}
+                  link={typeof window === "undefined" ? "" : `${window.location.origin}/daily`}
+                  msToNext={msToNextDay(now, offset)}
+                />
               )}
-              {state.kind === "ready" && (
-                <a className={styles.primary} href={g.href}>
-                  {state.resumable ? t(g.resume) : t(g.play)}
-                </a>
-              )}
-            </Card>
-            {state.kind === "done" && (
-              <DailySummary
-                result={state.result}
-                link={typeof window === "undefined" ? "" : `${window.location.origin}/daily`}
-                msToNext={msToNextDay(now, offset)}
-              />
-            )}
-          </div>
-        );
-      })}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

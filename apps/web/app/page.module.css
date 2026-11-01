@@ -16,3 +16,144 @@
   color: var(--color-text-muted);
   max-width: 34rem;
 }
+
+/* ---------------------------------------------------------------- 404 */
+.lost {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6) 0;
+}
+@media (min-width: 800px) {
+  .lost {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: var(--space-8);
+    padding: var(--space-8) 0;
+  }
+}
+.lostText {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+.lostText > * {
+  margin: 0;
+}
+.compass {
+  width: min(60vw, 18rem);
+  filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--color-text) 16%, transparent));
+}
+.compassFace {
+  fill: var(--color-surface);
+  stroke: var(--color-border-strong);
+  stroke-width: 1.5;
+}
+.compassTicks {
+  stroke: var(--color-border-map);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.compassN {
+  fill: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 9px;
+  text-anchor: middle;
+}
+.needleN {
+  fill: var(--color-accent);
+}
+.needleS {
+  fill: var(--color-border-strong);
+}
+.hub {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 1.5;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Offsets from the 132° rest angle: swing past north, settle on it (-132°), then drift back. */
+  .needle {
+    transform-origin: 50px 50px;
+    animation: needle-hunt 6s var(--ease) infinite;
+  }
+  @keyframes needle-hunt {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-202deg);
+    }
+    45% {
+      transform: rotate(-92deg);
+    }
+    60% {
+      transform: rotate(-150deg);
+    }
+    72% {
+      transform: rotate(-124deg);
+    }
+    82%,
+    90% {
+      transform: rotate(-132deg);
+    }
+  }
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    box-shadow var(--motion-panel) var(--ease),
+    border-color var(--motion-micro) var(--ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .primary,
+  .secondary {
+    transition:
+      box-shadow var(--motion-panel) var(--ease),
+      border-color var(--motion-micro) var(--ease),
+      transform var(--motion-panel) var(--ease-spring);
+  }
+}
+.primary {
+  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
+  color: var(--color-text-on-accent);
+  box-shadow: var(--fx-accent-shadow);
+}
+.secondary {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.primary:hover,
+.secondary:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow-raised);
+}
+.secondary:hover {
+  border-color: var(--color-text);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .primary:hover,
+  .secondary:hover {
+    transform: translateY(-2px);
+  }
+}
+@media (forced-colors: active) {
+  .compass {
+    filter: none;
+  }
+}

@@ -24,6 +24,8 @@ const core = {
   "notFound.title": "Page not found",
   "notFound.body": "That page does not exist, or it has moved.",
   "notFound.home": "Back to the start",
+  "notFound.play": "Browse games",
+  "notFound.eyebrow": "Error 404",
   "theme.label": "Theme",
   "theme.system": "System",
   "theme.light": "Light",
