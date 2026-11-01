@@ -12,6 +12,7 @@ const ROUTES = [
   "/play/silhouette",
   "/play/quiz",
   "/play/quiz/countries-of-the-world",
+  "/play/quiz/landlocked-countries",
   "/play/fact-pin",
   "/play/border-run",
   "/play/rank-it",

@@ -72,6 +72,25 @@ const STATES = [
     },
   },
   {
+    name: "quiz tiles revealed",
+    path: "/play/quiz/landlocked-countries",
+    async drive(p) {
+      await p.getByRole("button", { name: "Start", exact: true }).click();
+      await p.getByRole("list", { name: "Countries" }).getByRole("button").first().click();
+      await p.getByRole("button", { name: "Done" }).click();
+      await p.getByText(/Your score/).waitFor();
+    },
+  },
+  {
+    name: "quiz match",
+    path: "/play/quiz/match-the-capitals",
+    async drive(p) {
+      await p.getByRole("button", { name: "Start", exact: true }).click();
+      await p.getByRole("list", { name: "Countries" }).getByRole("button").first().click();
+      await p.getByText(/0 of 8 paired/).waitFor({ state: "attached" });
+    },
+  },
+  {
     name: "quiz configure",
     path: "/play/quiz/countries-of-the-world",
     async drive(p) {

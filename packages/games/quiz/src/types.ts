@@ -36,6 +36,8 @@ export type QuizEntity = MatchEntity & {
   /** Skill priors in [0, 1], higher = harder. */
   difficulty: Partial<Record<Skill, number>>;
   sets: readonly string[];
+  /** No ocean coast (content/landlocked.yaml). */
+  landlocked?: boolean;
   /** Flags often confused with this one (country ids). */
   confusables?: readonly string[];
 };

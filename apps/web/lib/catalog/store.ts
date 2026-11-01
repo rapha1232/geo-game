@@ -27,6 +27,8 @@ export function catalogKeyOf(r: GameResult): string | null {
   if (r.game_id === "fact-pin") return "game:fact-pin";
   if (r.game_id === "border-run") return "game:border-run";
   if (r.game_id === "rank-it") return "game:rank-it";
+  if (r.game_id === "quiz" && typeof (r.config as { round?: unknown }).round === "string")
+    return `quiz:${(r.config as { round: string }).round}`;
   if (r.game_id !== "quiz") return null;
   const c = r.config as {
     template?: string;

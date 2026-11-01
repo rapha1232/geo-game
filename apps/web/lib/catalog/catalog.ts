@@ -1,5 +1,6 @@
 import { norm } from "@meridian/name-matcher";
 import { timeLimitMs, type Format, type QuizWorld } from "@meridian/quiz";
+import { ROUND_QUIZZES } from "../quiz/rounds";
 import { LIBRARY, defaultConfig, itemCount, type Category } from "../quiz/library";
 
 export type Topic = Category | "mixed";
@@ -122,7 +123,22 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       tags: [q.category, FORMAT_OF[q.format].toLowerCase(), "quiz", ...names],
     };
   });
-  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, ...quizzes];
+  const rounds = ROUND_QUIZZES.map((q): CatalogItem => ({
+    key: `quiz:${q.slug}`,
+    kind: "quiz",
+    title: q.title,
+    pitch:
+      q.kind === "tiles" ? "Select all that match · 24 tiles" : "Pair 8 countries and capitals",
+    href: `/play/quiz/${q.slug}`,
+    topic: q.category,
+    format: "Choice",
+    length: "short",
+    ...(q.kind === "tiles" && q.criterion.kind === "continent"
+      ? { region: q.criterion.id as Region }
+      : {}),
+    tags: [q.category, "choice", "quiz", q.kind === "tiles" ? "select" : "match", "tiles"],
+  }));
+  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, ...quizzes, ...rounds];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

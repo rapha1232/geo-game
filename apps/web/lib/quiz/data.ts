@@ -59,6 +59,7 @@ export function assembleQuiz(
       capitals: e.capitals ?? [],
       difficulty: e.difficulty ?? {},
       sets: e.sets ?? [],
+      ...(e.landlocked ? { landlocked: true } : {}),
       ...(e.flag?.confusables.length ? { confusables: e.flag.confusables } : {}),
     };
   });

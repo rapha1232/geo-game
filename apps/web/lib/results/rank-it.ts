@@ -72,7 +72,7 @@ export async function saveRankIt(
   db: MeridianDb,
   input: {
     result: GameResult;
-    history: { game_id: string; pool_key: string; target_ids: string[] };
+    history?: { game_id: string; pool_key: string; target_ids: string[] };
   },
 ): Promise<{ saved: boolean; newBest: boolean }> {
   const key = input.result.pb_key ?? null;
@@ -86,7 +86,7 @@ export async function saveRankIt(
         ...(key ? { pb_key: key } : {}),
         data: input.result,
       });
-      await db.history.put(input.history);
+      if (input.history) await db.history.put(input.history);
       if (key) {
         const prev = await db.pbs.get(key);
         if (!prev || input.result.score > prev.score) {

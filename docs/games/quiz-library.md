@@ -58,11 +58,11 @@ A **quiz slug** is a human-readable alias for a popular template+scope+format co
 2. One attempt per item. Selecting an option locks it and shows correct and incorrect markers for 0.9 s (configurable to "wait for Next").
 3. Keyboard: `1`–`4` select an option, and `Enter` advances when "wait for Next" is on.
 
-**TILE_SELECT (R2)**: the player selects all tiles matching a criterion ("Select the landlocked countries", 24 tiles, 9 correct), then presses **Done** or names all correct tiles. Score = (correct selected − incorrect selected) / total correct, floored at 0.
+**TILE_SELECT (R2)**: the player selects all tiles matching a criterion ("Select the landlocked countries", 24 tiles, 9 correct), then presses **Done**. Score = (correct selected − incorrect selected) / total correct, floored at 0, shown out of 100. Built (T2.12) as the round quizzes "Landlocked or Not" and "Pick the Countries of <continent>"; naming the correct tiles by typing is not built. They are untimed, have their own personal-best bucket per lives setting, and record `config.round` on the result.
 
-**MATCH (R2)**: two columns (for example countries and capitals, 8 pairs). The player selects one item from each column to pair them. Wrong pairs flash and unpair.
+**MATCH (R2)**: two columns (for example countries and capitals, 8 pairs). The player selects one item from each column to pair them. Wrong pairs flash and unpair. Built as "Match the Capitals": each wrong pairing costs one eighth of the score (out of 100), and only countries whose capital name is unique among the 197 are offered.
 
-**Lives modifier (R2):** `lives ∈ {∞, 1, 3}`. A wrong answer (a wrong MC option, a wrong MAP_CLICK attempt, or a wrong TILE_SELECT tile) costs a life. At 0 lives the quiz ends. "Sudden death" is `lives = 1`.
+**Lives modifier (R2, built):** `lives ∈ {∞, 1, 3}`, offered for Multiple choice, Map click and the round quizzes; a lives run has its own PB bucket (`…|lives3`). A wrong answer (a wrong MC option, a wrong MAP_CLICK attempt, or a wrong TILE_SELECT tile) costs a life. At 0 lives the quiz ends. "Sudden death" is `lives = 1`.
 
 ### 2.3 Session loop
 
