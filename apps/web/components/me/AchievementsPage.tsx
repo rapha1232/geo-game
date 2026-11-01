@@ -55,7 +55,9 @@ export function AchievementsPage() {
           );
         })}
       </ul>
-      <a href="/me">{t("ach.back")}</a>
+      <a href="/me" className={styles.action}>
+        {t("ach.back")}
+      </a>
     </div>
   );
 }

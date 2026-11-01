@@ -95,7 +95,9 @@ export function MeView({
     <section className={styles.page}>
       <h1>{t("me.title")}</h1>
       <p>
-        <a href="/me/achievements">{t("ach.link")}</a>
+        <a href="/me/achievements" className={styles.action}>
+          {t("ach.link")}
+        </a>
       </p>
       {streak}
 
