@@ -202,7 +202,7 @@ On desktop (≥ 1024 px) the shape is on the left (≥ 420 px) and the guess lis
 
 ### 8.2 Follow-up: Capital (R1)
 
-"What is the capital of France?": 4-option MC (distractors: 3 capitals from the same continent), 1 attempt. Flag: 4 flag images, 1 attempt, Normal-difficulty distractors from [quiz-library §6.3](quiz-library.md#63-difficulty). Neighbors (R2): a select-all on the map of the target's region; scored only if every neighbor is selected and nothing else.
+"What is the capital of France?": 4-option MC (distractors: 3 capitals from the same continent), 1 attempt. Flag: 4 flag images, 1 attempt, Normal-difficulty distractors from [quiz-library §6.3](quiz-library.md#63-difficulty). Neighbors (R2): a select-all on the world map (or by typing names); scored only if every neighbor is selected and nothing else. Built as an opt-in in Settings, and only for unlimited play, so dailies and challenge links stay identical for everyone. A target with no land neighbors skips it. The proximity heat-map assist is a "Show my guesses on a map" toggle that fills only the countries already guessed (solid at 66% or more, dotted at 33% or more, hatched below), so it never reveals the answer.
 
 ### 8.3 Daily summary
 

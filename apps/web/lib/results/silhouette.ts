@@ -1,8 +1,7 @@
 import { configHash, elapsedMs } from "@meridian/game-kit";
 import { gameResult, type GameResult } from "@meridian/schemas";
 import { freeHints, roundPoints } from "@meridian/silhouette";
-import { answerFollowUp } from "@meridian/silhouette";
-import { followUpsCorrect, type Session } from "../silhouette/controller";
+import { followUpCorrect, followUpsCorrect, type Session } from "../silhouette/controller";
 import type { MasteryRecord } from "../storage/db";
 import { updateMastery, type Mastery } from "@meridian/game-kit";
 
@@ -59,9 +58,8 @@ export function silhouetteResult(
       },
       ...s.followUps.map((f) => ({
         item_id: `followup:${f.prompt.kind}`,
-        status:
-          f.choice === null ? "skipped" : answerFollowUp(f.prompt, f.choice) ? "correct" : "wrong",
-        points: f.choice !== null && answerFollowUp(f.prompt, f.choice) ? 1 : 0,
+        status: f.choice === null ? "skipped" : followUpCorrect(f) ? "correct" : "wrong",
+        points: followUpCorrect(f) ? 1 : 0,
       })),
     ],
     meta: {
@@ -113,8 +111,8 @@ export function masteryUpdates(
             {
               entity: target,
               skill: f.prompt.kind,
-              score: answerFollowUp(f.prompt, f.choice) ? 1 : 0,
-              correct: answerFollowUp(f.prompt, f.choice),
+              score: followUpCorrect(f) ? 1 : 0,
+              correct: followUpCorrect(f),
             },
           ],
     ),

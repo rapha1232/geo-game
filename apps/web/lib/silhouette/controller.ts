@@ -9,6 +9,9 @@ import {
 import {
   answerFollowUp,
   followUp,
+  neighborsPrompt,
+  answerNeighbors,
+  type NeighborsPrompt,
   giveUp,
   guessEntity,
   openHint,
@@ -45,7 +48,18 @@ export const DEFAULT_CONFIG: Config = {
   unit: "km",
 };
 
-export type FollowUpState = { prompt: FollowUp; choice: number | null };
+export type FollowUpState = {
+  prompt: FollowUp | NeighborsPrompt;
+  /** Multiple choice: the option picked. Neighbors: 1 when every neighbour was selected and nothing else, else 0. */
+  choice: number | null;
+  /** Neighbors: the countries the player selected. */
+  picks?: string[];
+};
+
+/** Whether a follow-up was answered correctly. */
+export const followUpCorrect = (f: FollowUpState): boolean =>
+  f.choice !== null &&
+  (f.prompt.kind === "neighbors" ? f.choice === 1 : answerFollowUp(f.prompt, f.choice));
 
 /** The whole game in plain JSON: saved after every action and restored on reload (AC-SH-016). */
 export type Session = {
@@ -222,10 +236,13 @@ function finish(world: World, s: Session, now: number): Session {
   s = { ...s, timer };
   const rng = roundRng(s.seed, s.config, s.roundNo).fork("followups");
   const kinds = s.config.mode === "practice" ? [] : s.config.followUps;
-  const followUps = kinds.map((k) => ({
-    prompt: followUp(world, k, s.round.targetId, rng),
-    choice: null,
-  }));
+  const followUps: FollowUpState[] = kinds.flatMap((k): FollowUpState[] => {
+    if (k === "neighbors") {
+      const prompt = neighborsPrompt(world, s.round.targetId);
+      return prompt ? [{ prompt, choice: null }] : [];
+    }
+    return [{ prompt: followUp(world, k, s.round.targetId, rng), choice: null }];
+  });
   return { ...s, followUps, phase: followUps.length > 0 ? "followups" : "learn" };
 }
 
@@ -252,14 +269,33 @@ export const surrender = (world: World, s: Session, now = 0): Session =>
 /** One attempt per follow-up. After the last one the Learn card shows. */
 export function answer(s: Session, index: number, choice: number): Session {
   const f = s.followUps[index];
-  if (s.phase !== "followups" || !f || f.choice !== null) return s;
+  if (s.phase !== "followups" || !f || f.choice !== null || f.prompt.kind === "neighbors") return s;
   const followUps = s.followUps.map((x, i) => (i === index ? { ...x, choice } : x));
   const all = followUps.every((x) => x.choice !== null);
   return { ...s, followUps, phase: all ? "learn" : "followups" };
 }
 
-export const followUpsCorrect = (s: Session): number =>
-  s.followUps.filter((f) => f.choice !== null && answerFollowUp(f.prompt, f.choice)).length;
+/** Submits the Neighbors selection: scored only if every neighbour is selected and nothing else. */
+export function answerNeighborsAt(s: Session, index: number, picks: readonly string[]): Session {
+  const f = s.followUps[index];
+  if (s.phase !== "followups" || !f || f.choice !== null || f.prompt.kind !== "neighbors") return s;
+  const followUps = s.followUps.map((x, i) =>
+    i === index
+      ? {
+          ...x,
+          picks: [...picks],
+          choice: answerNeighbors(f.prompt as NeighborsPrompt, picks) ? 1 : 0,
+        }
+      : x,
+  );
+  return {
+    ...s,
+    followUps,
+    phase: followUps.every((x) => x.choice !== null) ? "learn" : "followups",
+  };
+}
+
+export const followUpsCorrect = (s: Session): number => s.followUps.filter(followUpCorrect).length;
 
 export const points = (s: Session): number => roundPoints(s.round, followUpsCorrect(s));
 

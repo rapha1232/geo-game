@@ -1,9 +1,9 @@
 import type { Rng } from "@meridian/game-kit";
-import type { FollowUpKind, SilEntity } from "./types";
+import type { ChoiceFollowUpKind, SilEntity } from "./types";
 import type { World } from "./world";
 
 export type FollowUp = {
-  kind: FollowUpKind;
+  kind: ChoiceFollowUpKind;
   targetId: string;
   /** Capital names, or entity ids whose flags are shown. */
   options: string[];
@@ -15,7 +15,12 @@ export type FollowUp = {
  * entities on the same continent, flag distractors are entities whose flags are confused with the target's
  * first, then others on the same continent. Fills from elsewhere if a continent is too small.
  */
-export function followUp(world: World, kind: FollowUpKind, targetId: string, rng: Rng): FollowUp {
+export function followUp(
+  world: World,
+  kind: ChoiceFollowUpKind,
+  targetId: string,
+  rng: Rng,
+): FollowUp {
   const t = world.byId.get(targetId) as SilEntity;
   const others = world.entities.filter((e) => e.id !== t.id && e.type === "country");
   const sameContinent = others.filter((e) => e.continent === t.continent);
@@ -42,3 +47,19 @@ export function followUp(world: World, kind: FollowUpKind, targetId: string, rng
 }
 
 export const answerFollowUp = (f: FollowUp, choice: number): boolean => choice === f.correctIndex;
+
+/** Neighbors follow-up (silhouette §8.2): select every land neighbour on the map; all of them and nothing else counts. */
+export type NeighborsPrompt = { kind: "neighbors"; targetId: string; correct: string[] };
+
+/** The prompt, or null for a target with no land neighbours (an island has nothing to select). */
+export function neighborsPrompt(world: World, targetId: string): NeighborsPrompt | null {
+  const correct = [...(world.neighbors.get(targetId) ?? [])]
+    .filter((id) => world.byId.get(id)?.type === "country")
+    .sort();
+  return correct.length === 0 ? null : { kind: "neighbors", targetId, correct };
+}
+
+export const answerNeighbors = (p: NeighborsPrompt, picks: readonly string[]): boolean => {
+  const chosen = new Set(picks);
+  return chosen.size === p.correct.length && p.correct.every((id) => chosen.has(id));
+};

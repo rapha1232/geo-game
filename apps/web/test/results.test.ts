@@ -29,8 +29,8 @@ const T0 = Date.parse("2026-11-05T08:00:00Z");
 const solveRound = (seed: string, now = T0): Session => {
   let s = newSession(world, seed, DEFAULT_CONFIG, [], now);
   s = guess(world, s, world.byId.get(s.round.targetId)!.name, now + 20_000);
-  s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-  s = answer(s, 1, (s.followUps[1]!.prompt.correctIndex + 1) % 4);
+  s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+  s = answer(s, 1, ((s.followUps[1]!.prompt as { correctIndex: number }).correctIndex + 1) % 4);
   return s;
 };
 

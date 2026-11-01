@@ -15,6 +15,8 @@ export type Settings = {
   accessibleDefault: boolean;
   /** Opt-in daily streak, shown only on /me (UX_AND_DESIGN §7.3). Off by default. */
   streaks: boolean;
+  /** Silhouette (unlimited play): add the Neighbors follow-up (silhouette §3). */
+  neighborsFollowUp: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -25,6 +27,7 @@ export const DEFAULT_SETTINGS: Settings = {
   highContrast: false,
   accessibleDefault: false,
   streaks: false,
+  neighborsFollowUp: false,
 };
 
 /** The key inside the single `settings` record. Other keys there belong to games (`quiz:*`, `fact-pin`). */
@@ -47,6 +50,7 @@ export function sanitize(raw: unknown): Settings {
     highContrast: r["highContrast"] === true,
     accessibleDefault: r["accessibleDefault"] === true,
     streaks: r["streaks"] === true,
+    neighborsFollowUp: r["neighborsFollowUp"] === true,
   };
 }
 

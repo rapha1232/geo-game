@@ -193,6 +193,15 @@ export function SettingsPage() {
           />
           {t("set.streaks")}
         </label>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={s.neighborsFollowUp}
+            disabled={!ready}
+            onChange={(e) => change({ neighborsFollowUp: e.target.checked })}
+          />
+          {t("set.neighborsFollowUp")}
+        </label>
         <p role="status" className={styles.note}>
           {saved === true ? t("set.saved") : saved === false ? t("set.saveFailed") : ""}
         </p>

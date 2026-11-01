@@ -96,8 +96,8 @@ describe("a challenge session", () => {
     for (let i = 0; i < 5; i++) {
       seen.push(s.round.targetId);
       s = guess(world, s, world.byId.get(s.round.targetId)!.name, 2000);
-      s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-      s = answer(s, 1, s.followUps[1]!.prompt.correctIndex);
+      s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+      s = answer(s, 1, (s.followUps[1]!.prompt as { correctIndex: number }).correctIndex);
       expect(s.phase).toBe("learn");
       s = next(world, s, 3000);
     }
@@ -143,8 +143,8 @@ describe("ChallengeSummary", () => {
     );
     for (let i = 0; i < 5; i++) {
       s = guess(world, s, world.byId.get(s.round.targetId)!.name, 10);
-      s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-      s = answer(s, 1, s.followUps[1]!.prompt.correctIndex);
+      s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+      s = answer(s, 1, (s.followUps[1]!.prompt as { correctIndex: number }).correctIndex);
       s = next(world, s, 20);
     }
     return s;

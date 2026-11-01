@@ -20,8 +20,8 @@ const solved = (i: number) => {
     T0 + i * 3_600_000,
   );
   s = guess(world, s, world.byId.get(s.round.targetId)!.name, T0 + i * 3_600_000 + 20_000);
-  s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-  s = answer(s, 1, s.followUps[1]!.prompt.correctIndex);
+  s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+  s = answer(s, 1, (s.followUps[1]!.prompt as { correctIndex: number }).correctIndex);
   return silhouetteResult(s, {
     id: ulid(T0 + i, new Uint8Array(16).fill(i)),
     contentVersion: "2026.10.0",

@@ -119,8 +119,8 @@ describe.skipIf(!haveRaw)("Silhouette on the real content packs", () => {
     expect(s.round.status).toBe("solved");
     expect(s.phase).toBe("followups");
     expect(s.followUps).toHaveLength(2);
-    s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-    s = answer(s, 1, (s.followUps[1]!.prompt.correctIndex + 1) % 4);
+    s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+    s = answer(s, 1, ((s.followUps[1]!.prompt as { correctIndex: number }).correctIndex + 1) % 4);
     expect(s.phase).toBe("learn");
     expect(followUpsCorrect(s)).toBe(1);
     expect(points(s)).toBe(7 - 1 - 1 + 1);

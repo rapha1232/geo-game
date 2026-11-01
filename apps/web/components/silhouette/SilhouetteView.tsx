@@ -19,6 +19,7 @@ import {
 } from "@meridian/silhouette";
 import {
   answer,
+  answerNeighborsAt,
   followUpsCorrect,
   guess,
   hint,
@@ -28,6 +29,8 @@ import {
   surrender,
   type Session,
 } from "../../lib/silhouette/controller";
+import { GuessHeatMap } from "./GuessHeatMap";
+import { NeighborsFollowUp } from "./NeighborsFollowUp";
 import { silhouettePath, VIEW } from "../../lib/silhouette/draw";
 import type { Shape } from "../../lib/silhouette/data";
 import { t, type MessageKey } from "../../lib/i18n";
@@ -232,6 +235,8 @@ export function SilhouetteView({
             ))}
           </ol>
 
+          <GuessHeatMap guesses={s.round.guesses} world={world} />
+
           {!over && (
             <>
               <AnswerInput
@@ -279,32 +284,42 @@ export function SilhouetteView({
           </h2>
 
           {s.followUps.map((f, i) => {
+            if (f.prompt.kind === "neighbors")
+              return (
+                <NeighborsFollowUp
+                  key="neighbors"
+                  world={world}
+                  state={f}
+                  onSubmit={(picks) => onChange(answerNeighborsAt(s, i, picks))}
+                />
+              );
+            const prompt = f.prompt;
             const answered = f.choice !== null;
-            const correctLabel = f.prompt.options[f.prompt.correctIndex] as string;
+            const correctLabel = prompt.options[prompt.correctIndex] as string;
             const label = (opt: string) =>
-              f.prompt.kind === "flag" ? (world.byId.get(opt)?.name ?? opt) : opt;
+              prompt.kind === "flag" ? (world.byId.get(opt)?.name ?? opt) : opt;
             return (
-              <div key={f.prompt.kind} className={styles.followUp}>
+              <div key={prompt.kind} className={styles.followUp}>
                 <h3>
-                  {t(f.prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag", {
+                  {t(prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag", {
                     name: target.name,
                   })}
                 </h3>
                 <ChoiceGrid
                   aria-label={t(
-                    f.prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag",
+                    prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag",
                     { name: target.name },
                   )}
                   stateLabels={{ correct: t("sil.followUpCorrect"), wrong: "✕", near: "" }}
                   shortcuts={false}
-                  choices={f.prompt.options.map((opt, oi) => ({
+                  choices={prompt.options.map((opt, oi) => ({
                     id: String(oi),
                     label: label(opt),
                     disabled: answered,
                     ...(answered
                       ? {
                           state:
-                            oi === f.prompt.correctIndex
+                            oi === prompt.correctIndex
                               ? ("correct" as const)
                               : oi === f.choice
                                 ? ("wrong" as const)
@@ -316,7 +331,7 @@ export function SilhouetteView({
                 />
                 {answered && (
                   <p role="status">
-                    {f.choice === f.prompt.correctIndex
+                    {f.choice === prompt.correctIndex
                       ? t("sil.followUpCorrect")
                       : t("sil.followUpWrong", { answer: label(correctLabel) })}
                   </p>

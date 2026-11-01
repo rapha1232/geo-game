@@ -38,8 +38,8 @@ async function play(db: MeridianDb, seed: string, offset: number): Promise<void>
   const now = T0 + offset;
   let s: Session = newSession(world, seed, DEFAULT_CONFIG, [], now);
   s = guess(world, s, world.byId.get(s.round.targetId)!.name, now + 20_000);
-  s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-  s = answer(s, 1, s.followUps[1]!.prompt.correctIndex);
+  s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+  s = answer(s, 1, (s.followUps[1]!.prompt as { correctIndex: number }).correctIndex);
   const id = `01JD${String(offset).padStart(22, "0")}`;
   const result = silhouetteResult(s, { id, contentVersion: "2026.10.0", endedAt: now + 60_000 });
   await saveRound(db, { result, mastery: masteryUpdates(s, new Map(), now + 60_000) });

@@ -41,8 +41,8 @@ const dailyResult = (date: string, firstGuess = "Germany") => {
   s = guess(world, s, firstGuess, 1_005_000);
   s = pick(world, s, "country:ESP", 1_006_000);
   s = guess(world, s, "France", 1_010_000);
-  s = answer(s, 0, s.followUps[0]!.prompt.correctIndex);
-  s = answer(s, 1, (s.followUps[1]!.prompt.correctIndex + 1) % 4);
+  s = answer(s, 0, (s.followUps[0]!.prompt as { correctIndex: number }).correctIndex);
+  s = answer(s, 1, ((s.followUps[1]!.prompt as { correctIndex: number }).correctIndex + 1) % 4);
   return silhouetteResult(s, {
     id: ulid(1_000_000, new Uint8Array(16)),
     contentVersion: "2026.10.0",

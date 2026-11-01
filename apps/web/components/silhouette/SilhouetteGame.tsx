@@ -194,8 +194,14 @@ export function SilhouetteGame({
             );
         }
         // Distance units come from Settings, so a change applies to a round already in progress too.
-        const unit = resolveUnits(await loadSettings(services.db), browserLocale());
-        start = { ...start, config: { ...start.config, unit } };
+        const prefs = await loadSettings(services.db);
+        const unit = resolveUnits(prefs, browserLocale());
+        // The Neighbors follow-up is opt-in and only for unlimited play, so dailies and challenges stay identical for everyone.
+        const followUps =
+          !restored && !daily && !challenge && prefs.neighborsFollowUp
+            ? ([...start.config.followUps, "neighbors"] as Config["followUps"])
+            : start.config.followUps;
+        start = { ...start, config: { ...start.config, unit, followUps } };
         setLoaded(data);
         setSession(document.visibilityState === "visible" ? setClock(start, true, now) : start);
       } catch {

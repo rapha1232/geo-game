@@ -4,7 +4,9 @@ import type { Sector8 } from "@meridian/geo";
 export type Difficulty = "easy" | "normal" | "hard";
 export type Mode = "unlimited" | "practice" | "daily" | "seeded";
 export type DistanceUnit = "km" | "mi";
-export type FollowUpKind = "capital" | "flag";
+export type FollowUpKind = "capital" | "flag" | "neighbors";
+/** The multiple-choice follow-ups; Neighbors is a select-all on the map. */
+export type ChoiceFollowUpKind = Exclude<FollowUpKind, "neighbors">;
 
 /** A guessable entity as the engine sees it (built from `core.countries` and the silhouette pack). */
 export type SilEntity = MatchEntity & {

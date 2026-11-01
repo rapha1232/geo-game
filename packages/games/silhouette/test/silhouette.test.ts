@@ -358,3 +358,23 @@ describe("describeShape", () => {
     );
   });
 });
+
+describe("Neighbors follow-up (silhouette §8.2, R2)", () => {
+  const world = baseWorld();
+  it("lists the land neighbours of the target and nothing else", async () => {
+    const { neighborsPrompt } = await import("../src");
+    expect(neighborsPrompt(world, RUS.id)?.correct).toEqual([KAZ.id]);
+    expect(neighborsPrompt(world, KAZ.id)?.correct).toEqual([RUS.id]);
+  });
+  it("has no prompt for a country with no land neighbours", async () => {
+    const { neighborsPrompt } = await import("../src");
+    expect(neighborsPrompt(world, FJI.id)).toBeNull();
+  });
+  it("counts only a selection of every neighbour and nothing more", async () => {
+    const { neighborsPrompt, answerNeighbors } = await import("../src");
+    const p = neighborsPrompt(world, RUS.id)!;
+    expect(answerNeighbors(p, [KAZ.id])).toBe(true);
+    expect(answerNeighbors(p, [])).toBe(false);
+    expect(answerNeighbors(p, [KAZ.id, FRA.id])).toBe(false);
+  });
+});
