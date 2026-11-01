@@ -11,6 +11,8 @@ import { ServiceWorker } from "../components/shell/ServiceWorker";
 import { TelemetryWatcher } from "../components/shell/TelemetryWatcher";
 import { AchievementToaster } from "../components/shell/AchievementToaster";
 import { SystemBanners } from "../components/shell/SystemBanners";
+import { PointerFX } from "../components/shell/PointerFX";
+import { BrandMark } from "../components/shell/NavIcons";
 import { BRAND_NAME } from "../lib/brand";
 import { t } from "../lib/i18n";
 import styles from "./layout.module.css";
@@ -40,14 +42,42 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <AchievementToaster />
           <TelemetryWatcher />
           <ServiceWorker />
+          <PointerFX />
           <div className={styles.shell}>
             <Nav />
             <SystemBanners />
             <main className={styles.main}>{children}</main>
             <footer className={styles.footer}>
               <div className={styles.footerInner}>
+                <div className={styles.footerBrand}>
+                  <a href="/" className={styles.footerMark}>
+                    <BrandMark />
+                    <span>{BRAND_NAME}</span>
+                  </a>
+                  <p>{t("app.tagline")}</p>
+                </div>
+                <nav aria-label={t("footer.colPlay")} className={styles.footerCol}>
+                  <h2>{t("footer.colPlay")}</h2>
+                  <a href="/play">{t("nav.play")}</a>
+                  <a href="/daily">{t("nav.daily")}</a>
+                  <a href="/explore">{t("nav.explore")}</a>
+                  <a href="/me">{t("nav.me")}</a>
+                </nav>
+                <nav aria-label={t("footer.colProject")} className={styles.footerCol}>
+                  <h2>{t("footer.colProject")}</h2>
+                  <a href="/about">{t("about.title")}</a>
+                  <a href="/about/rules">{t("rules.title")}</a>
+                  <a href="/about/sources">{t("sources.title")}</a>
+                  <a href="/about/corrections">{t("corrections.title")}</a>
+                </nav>
+                <div className={styles.footerCol}>
+                  <h2>{t("footer.colPrefs")}</h2>
+                  <ThemeSwitch />
+                  <a href="/settings">{t("nav.settings")}</a>
+                </div>
+              </div>
+              <div className={styles.footerBase}>
                 <p>{t("footer.rights", { year: new Date().getFullYear(), brand: BRAND_NAME })}</p>
-                <ThemeSwitch />
                 <nav aria-label={t("footer.legalNav")} className={styles.legal}>
                   <a href="/terms">{t("footer.terms")}</a>
                   <a href="/privacy">{t("footer.privacy")}</a>

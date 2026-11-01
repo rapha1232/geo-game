@@ -12,9 +12,11 @@
 
 .options {
   display: inline-flex;
+  gap: 2px;
+  padding: 3px;
   border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-control);
-  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--tint-bg);
 }
 
 .option {
@@ -24,16 +26,17 @@
   min-height: var(--touch-target);
   min-width: var(--touch-target);
   padding: 0 var(--space-3);
-  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--color-text);
   font-size: var(--text-sm);
   cursor: pointer;
-}
-.option + .option {
-  border-left: 1px solid var(--color-border-strong);
+  transition:
+    background-color var(--motion-panel) var(--ease),
+    color var(--motion-panel) var(--ease);
 }
 .option[data-hovered] {
-  background: var(--color-bg);
+  background: var(--tint-hover);
 }
 
 /* Selected: a tick and bold text on an inverted fill, so it never relies on colour alone. */
@@ -41,6 +44,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-weight: 700;
+  box-shadow: var(--shadow-card);
 }
 .option[data-selected]::before {
   content: "✓";
@@ -49,7 +53,7 @@
 
 .option[data-focus-visible] {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: -3px;
+  outline-offset: 2px;
 }
 
 @media (forced-colors: active) {

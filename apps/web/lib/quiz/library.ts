@@ -113,17 +113,15 @@ export const LIBRARY: readonly NamedQuiz[] = [
       ["area", 10, "10 Largest Countries by Area"],
       ["area", 20, "20 Largest Countries by Area"],
     ] as const
-  ).map(
-    ([by, n, title]): NamedQuiz => ({
-      slug: `top-${n}-${by}`,
-      title,
-      category: "countries",
-      template: "countries.by-name",
-      scope: { kind: "top", id: `${by}-${n}` },
-      format: "TYPE_ALL",
-      count: "all",
-    }),
-  ),
+  ).map(([by, n, title]): NamedQuiz => ({
+    slug: `top-${n}-${by}`,
+    title,
+    category: "countries",
+    template: "countries.by-name",
+    scope: { kind: "top", id: `${by}-${n}` },
+    format: "TYPE_ALL",
+    count: "all",
+  })),
   {
     slug: "continents-map",
     title: "Continents on the Map",

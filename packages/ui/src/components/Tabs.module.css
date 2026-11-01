@@ -1,8 +1,9 @@
 .list {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-5);
   border-bottom: 1px solid var(--color-border);
   overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .tab {
@@ -13,7 +14,7 @@
   font: inherit;
   font-weight: 600;
   color: var(--color-text-muted);
-  border-bottom: 3px solid transparent;
+  position: relative;
   margin-bottom: -1px;
   cursor: pointer;
   white-space: nowrap;
@@ -25,9 +26,37 @@
   color: var(--color-text);
 }
 /* Selected state: a heavier underline and full-contrast text, not colour alone. */
+.tab::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-accent);
+  opacity: 0;
+  transition: opacity var(--motion-micro) var(--ease);
+}
 .tab[data-selected] {
   color: var(--color-text);
-  border-bottom-color: var(--color-accent);
+}
+.tab[data-selected]::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tab::after {
+    transform: scaleX(0);
+    transition:
+      opacity var(--motion-micro) var(--ease),
+      transform var(--motion-panel) var(--ease-out);
+  }
+  .tab[data-selected]::after {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .panel {
+    animation: fx-rise var(--motion-reveal) var(--ease-out);
+  }
 }
 .tab[data-focus-visible] {
   outline: var(--focus-ring-width) solid var(--color-focus);
@@ -43,7 +72,7 @@
 }
 
 @media (forced-colors: active) {
-  .tab[data-selected] {
-    border-bottom-color: Highlight;
+  .tab[data-selected]::after {
+    background: Highlight;
   }
 }

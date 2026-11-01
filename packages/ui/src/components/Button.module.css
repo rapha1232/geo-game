@@ -1,16 +1,20 @@
 .button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   min-height: var(--touch-target);
   min-width: var(--touch-target);
-  padding: 0 var(--space-4);
+  padding: 0 var(--space-5);
   border: 1px solid transparent;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-pill);
   font: inherit;
   font-weight: 600;
   line-height: 1.2;
+  letter-spacing: 0.005em;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -18,7 +22,7 @@
     background-color var(--motion-micro) var(--ease),
     border-color var(--motion-micro) var(--ease),
     color var(--motion-micro) var(--ease),
-    box-shadow var(--motion-micro) var(--ease);
+    box-shadow var(--motion-panel) var(--ease);
 }
 @media (prefers-reduced-motion: no-preference) {
   .button {
@@ -26,38 +30,62 @@
       background-color var(--motion-micro) var(--ease),
       border-color var(--motion-micro) var(--ease),
       color var(--motion-micro) var(--ease),
-      box-shadow var(--motion-micro) var(--ease),
-      transform var(--motion-micro) var(--ease);
+      box-shadow var(--motion-panel) var(--ease),
+      transform var(--motion-panel) var(--ease-spring);
+  }
+  .button[data-hovered]:not([data-disabled]) {
+    transform: translateY(-1px);
   }
   .button[data-pressed]:not([data-disabled]) {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.97);
+    transition-duration: 80ms;
+  }
+  /* A light sheen sweeps across the primary button on hover. */
+  .primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgb(255 255 255 / 0.22) 50%,
+      transparent 70%
+    );
+    transform: translateX(-120%);
+    transition: transform var(--motion-slow) var(--ease-out);
+  }
+  .primary[data-hovered]::after {
+    transform: translateX(120%);
   }
 }
 
+/* The gradient moves away from the label colour, so label contrast is never lower than on the flat accent. */
 .primary {
-  background: var(--color-accent);
+  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
   color: var(--color-text-on-accent);
-  box-shadow: 0 1px 2px rgb(26 36 51 / 0.18);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    var(--fx-accent-shadow);
 }
 .primary[data-hovered] {
-  filter: brightness(1.08);
-  box-shadow: var(--shadow-card);
-}
-.primary[data-pressed] {
-  filter: brightness(0.94);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 12px 28px -10px color-mix(in srgb, var(--color-accent) 80%, transparent);
 }
 
 .secondary {
   background: var(--color-surface);
   color: var(--color-text);
   border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card), var(--edge-highlight);
 }
 .secondary[data-hovered] {
   border-color: var(--color-text);
-  background: var(--tint-bg);
+  box-shadow: var(--shadow-raised);
 }
 .secondary[data-pressed] {
-  background: var(--color-bg);
+  background: var(--tint-bg);
 }
 
 .ghost {
@@ -69,8 +97,9 @@
 }
 
 .button[data-disabled] {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .button[data-focus-visible] {
@@ -81,5 +110,8 @@
 @media (forced-colors: active) {
   .button {
     border-color: ButtonText;
+  }
+  .primary::after {
+    display: none;
   }
 }

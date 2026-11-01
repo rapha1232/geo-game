@@ -1,6 +1,6 @@
 "use client";
 
-import { geoPath } from "d3-geo";
+import { geoGraticule10, geoPath } from "d3-geo";
 import { select } from "d3-selection";
 import { zoom as d3zoom, zoomIdentity, type D3ZoomEvent, type ZoomBehavior } from "d3-zoom";
 import {
@@ -199,6 +199,8 @@ export function GameMap({
   );
   const projection = useMemo(() => worldProjection(size.w, size.h), [size.w, size.h]);
   const path = useMemo(() => geoPath(projection), [projection]);
+  /** A 10° graticule under the land: decorative, gives the ocean depth and a sense of the projection. */
+  const graticule = useMemo(() => path(geoGraticule10()) ?? "", [path]);
 
   const drawn = useMemo(() => {
     return features.map((f) => {
@@ -515,10 +517,21 @@ export function GameMap({
         onKeyDown={onKeyDown}
       >
         <Patterns ids={patternIds} />
-        <rect width={size.w} height={size.h} className={styles.sphere} />
+        <defs>
+          <radialGradient id={`${uid}-ocean`} cx="50%" cy="40%" r="75%">
+            <stop offset="0%" className={styles.oceanHi} />
+            <stop offset="100%" className={styles.oceanLo} />
+          </radialGradient>
+        </defs>
+        <rect width={size.w} height={size.h} className={styles.backdrop} />
         <g transform={`translate(${t.x} ${t.y}) scale(${t.k})`}>
-          <path d={path({ type: "Sphere" }) ?? ""} className={styles.sphere} />
-          {drawFeatures("")}
+          <path
+            d={path({ type: "Sphere" }) ?? ""}
+            className={styles.sphere}
+            fill={`url(#${uid}-ocean)`}
+          />
+          <path d={graticule} className={styles.graticule} />
+          <g className={styles.landLayer}>{drawFeatures("")}</g>
         </g>
         {rings.map((r) => (
           <circle

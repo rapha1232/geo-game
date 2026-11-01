@@ -16,6 +16,7 @@ import {
   type Topic,
 } from "../../lib/catalog/catalog";
 import { t, type MessageKey } from "../../lib/i18n";
+import { GameArt, artFor } from "../home/GameArt";
 import styles from "./catalog.module.css";
 import "../../lib/messages/cat";
 
@@ -148,12 +149,13 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
           {isFiltered(f) && <Button onPress={() => setF(EMPTY_FILTER)}>{t("cat.clear")}</Button>}
         </Card>
       ) : (
-        <ul className={styles.grid}>
+        <ul className={`${styles.grid} fx-stagger`}>
           {results.map((i) => {
             const fav = state.favorites.has(i.key);
             return (
               <li key={i.key}>
-                <Card as="article" className={styles.card}>
+                <Card as="article" className={styles.card} data-kind={i.kind}>
+                  <GameArt name={artFor(i.href, i.format)} className={styles.art} />
                   <div className={styles.cardHead}>
                     <h2>
                       <a href={i.href} className={styles.stretched}>
@@ -172,8 +174,10 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
                   </div>
                   <p className={styles.pitch}>{i.pitch}</p>
                   <p className={styles.meta}>
-                    {t(i.kind === "game" ? "cat.game" : "cat.quiz")} · {i.format} ·{" "}
-                    {t(`cat.length.${i.length}` as MessageKey)} ·{" "}
+                    <span className={styles.badge}>
+                      {t(i.kind === "game" ? "cat.game" : "cat.quiz")}
+                    </span>{" "}
+                    {i.format} · {t(`cat.length.${i.length}` as MessageKey)} ·{" "}
                     {state.played.has(i.key) ? t("cat.played") : t("cat.new")}
                   </p>
                 </Card>

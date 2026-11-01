@@ -173,3 +173,110 @@
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: 2px;
 }
+
+/* ---------------------------------------------------------------- polish layer (shared look across games) */
+.head h1 {
+  font-size: clamp(2rem, 1.5rem + 1.8vw, 2.75rem);
+  font-weight: 330;
+  letter-spacing: -0.035em;
+}
+.meta {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.neighborMap {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-raised);
+}
+.neighborMap > * {
+  border-radius: inherit;
+}
+.suggestions button {
+  border-radius: var(--radius-pill);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card);
+  transition:
+    background-color var(--motion-micro) var(--ease),
+    border-color var(--motion-micro) var(--ease),
+    transform var(--motion-panel) var(--ease-spring);
+}
+.suggestions button:hover {
+  border-color: var(--color-text);
+  background: var(--tint-accent);
+}
+.row {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.result {
+  position: relative;
+}
+.counter {
+  display: inline-flex;
+  width: fit-content;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-variant-numeric: tabular-nums;
+}
+.shapeCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(
+    circle at 50% 40%,
+    color-mix(in srgb, var(--color-ocean) 55%, var(--color-surface)),
+    var(--color-ocean) 70%
+  );
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 0 60px color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+.shapeCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 39px,
+      color-mix(in srgb, var(--color-border-map) 30%, transparent) 39px 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 39px,
+      color-mix(in srgb, var(--color-border-map) 30%, transparent) 39px 40px
+    );
+  mask-image: radial-gradient(circle, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+.shape {
+  position: relative;
+  filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--color-text) 22%, transparent));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .row {
+    animation: fx-rise var(--motion-reveal) var(--ease-out);
+  }
+  .result {
+    animation: fx-lift var(--motion-slow) var(--ease-out);
+  }
+  .suggestions button:active {
+    transform: scale(0.96);
+  }
+  .shape {
+    animation: shape-in var(--motion-slow) var(--ease-spring);
+  }
+  @keyframes shape-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85) rotate(-6deg);
+    }
+  }
+}

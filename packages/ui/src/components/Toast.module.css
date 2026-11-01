@@ -16,11 +16,13 @@
   gap: var(--space-3);
   max-width: min(28rem, 100%);
   padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
-  background: var(--color-surface);
+  background: var(--fx-glass-strong);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
   color: var(--color-text);
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--fx-glass-border);
   border-left-width: 4px;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-overlay);
 }
 
@@ -71,12 +73,12 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .toast {
-    animation: slide-in var(--motion-panel) var(--ease);
+    animation: slide-in var(--motion-reveal) var(--ease-spring);
   }
   @keyframes slide-in {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(16px) scale(0.95);
     }
   }
 }

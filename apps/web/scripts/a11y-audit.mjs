@@ -167,6 +167,20 @@ async function audit(label, page, viewport) {
     if (overflow <= 0) console.log(`✓ ${label} [${tag}] no horizontal scroll`);
     return;
   }
+  // Measure the settled page: wait for finite animations and transitions (entrances, the press spring after a click)
+  // to end, so a mid-animation frame is never reported as a contrast or size failure. Endless ones are skipped.
+  await page.evaluate(() =>
+    Promise.race([
+      Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().endTime !== Infinity)
+          .map((a) => a.finished.catch(() => undefined)),
+      ),
+      // eslint-disable-next-line no-undef
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+    ]),
+  );
   await page.addScriptTag({ content: axeSource });
   const result = await page.evaluate(() =>
     // eslint-disable-next-line no-undef
