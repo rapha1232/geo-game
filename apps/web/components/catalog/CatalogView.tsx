@@ -155,7 +155,7 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
             return (
               <li key={i.key}>
                 <Card as="article" className={styles.card} data-kind={i.kind}>
-                  <GameArt name={artFor(i.href, i.format)} className={styles.art} />
+                  <GameArt name={artFor(i.href, i.format)} badge={i.badge} className={styles.art} />
                   <div className={styles.cardHead}>
                     <h2>
                       <a href={i.href} className={styles.stretched}>
@@ -177,8 +177,14 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
                     <span className={styles.badge}>
                       {t(i.kind === "game" ? "cat.game" : "cat.quiz")}
                     </span>{" "}
-                    {i.format} · {t(`cat.length.${i.length}` as MessageKey)} ·{" "}
-                    {state.played.has(i.key) ? t("cat.played") : t("cat.new")}
+                    {i.format} · {t(`cat.length.${i.length}` as MessageKey)}
+                    {/* Only a played mark: an "unplayed" label on every card for a new player is noise. */}
+                    {state.played.has(i.key) && (
+                      <>
+                        {" · "}
+                        <span className={styles.played}>✓ {t("cat.played")}</span>
+                      </>
+                    )}
                   </p>
                 </Card>
               </li>

@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { ContentLoader } from "../../lib/content/loader";
 import { MeridianDb } from "../../lib/storage/db";
 import { SessionStore, type StoreStatus } from "../../lib/storage/session-store";
+import { requestPersistence } from "../../lib/storage/persist";
+import { cue } from "../../lib/sound/cue";
 
 type Services = {
   db: MeridianDb;
@@ -45,6 +47,17 @@ export function StorageProvider({
     const store = new SessionStore({ db, local, now: () => Date.now(), onStatus: setStatus });
     const loader = new ContentLoader({ host: contentHost, db });
     void db.open().catch(() => setStatus("unavailable"));
+    // The first result written in this tab asks for persistent storage (R-13); later ones need not ask again.
+    // A round that just ended also plays the "finished" sound when sounds are on. An import (many old results at
+    // once) stays silent: only a result that ended in the last few seconds counts.
+    let asked = false;
+    db.results.hook("creating", (_key, obj: { ended_at?: string }) => {
+      const ended = Date.parse(obj.ended_at ?? "");
+      if (Date.now() - ended < 10_000) setTimeout(() => cue("complete"), 250);
+      if (asked) return;
+      asked = true;
+      setTimeout(() => void requestPersistence(), 0);
+    });
     return { db, store, loader };
   }, [contentHost]);
 

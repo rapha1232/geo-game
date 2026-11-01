@@ -221,7 +221,16 @@ describe("Home (AC-PL-001, AC-PL-024)", () => {
       .getAllByRole("link")
       .filter((a) => a.getAttribute("href")!.startsWith("/play/quiz/"));
     expect(popular).toHaveLength(6);
-    expect(screen.getByRole("link", { name: "Silhouette daily" })).toHaveAttribute(
+    // Every daily is listed, each linking straight to its own daily page, plus the hub.
+    for (const [name, href] of [
+      ["Silhouette daily", "/play/silhouette/daily"],
+      ["Daily Quiz", "/play/quiz/daily"],
+      ["Fact Pin daily", "/play/fact-pin/daily"],
+      ["Border Run daily", "/play/border-run/daily"],
+      ["Deep Cut daily", "/play/deep-cut/daily"],
+    ] as const)
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+    expect(screen.getByRole("link", { name: /Open the Daily hub/ })).toHaveAttribute(
       "href",
       "/daily",
     );

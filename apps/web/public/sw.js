@@ -7,7 +7,7 @@
  *   after one online visit (AC-PL-030).
  * Results are stored on the device; syncing them arrives with accounts (T2.1, T2.2).
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const PAGES = `meridian-pages-${VERSION}`;
 const STATIC = `meridian-static-${VERSION}`;
 const CONTENT = `meridian-content-${VERSION}`;
@@ -48,7 +48,15 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-const isStatic = (url) => url.pathname.startsWith("/_next/static/") || url.pathname === "/icon.svg";
+const ICONS = new Set([
+  "/icon.svg",
+  "/favicon.ico",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icon-maskable-512.png",
+  "/apple-touch-icon.png",
+]);
+const isStatic = (url) => url.pathname.startsWith("/_next/static/") || ICONS.has(url.pathname);
 const isContent = (url) => url.pathname.startsWith("/content/");
 
 async function cacheFirst(request, cacheName) {

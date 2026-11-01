@@ -18,6 +18,15 @@ const QUIZ_LIBRARY = {
   pitch: "Name them all, find them on the map, or choose.",
 };
 
+/** Today's optional puzzles, in the order of the Daily hub. Each links straight to its daily. */
+const DAILIES = [
+  { id: "silhouette", href: "/play/silhouette/daily", label: "home.todaySil" },
+  { id: "quiz", href: "/play/quiz/daily", label: "home.todayQuiz" },
+  { id: "fact-pin", href: "/play/fact-pin/daily", label: "home.todayFactPin" },
+  { id: "border-run", href: "/play/border-run/daily", label: "home.todayBorderRun" },
+  { id: "deep-cut", href: "/play/deep-cut/daily", label: "home.todayDeepCut" },
+] as const;
+
 /** The default country set (DATA_AND_CONTENT §6): UN 193 + 4. */
 const COUNTRY_COUNT = 197;
 
@@ -39,7 +48,8 @@ function twoTone(text: string) {
 export function HomeModules() {
   const services = useServices();
   const [href, setHref] = useState("/play/silhouette");
-  const [dailyDone, setDailyDone] = useState<boolean | null>(null);
+  // The game ids with a daily result for today; null until IndexedDB answers.
+  const [dailyDone, setDailyDone] = useState<Set<string> | null>(null);
 
   useEffect(() => {
     if (!services) return;
@@ -53,13 +63,15 @@ export function HomeModules() {
         if (live)
           setDailyDone(
             // A light shape check: the full result schema (zod) stays out of the Home bundle.
-            rows.some((r) => {
-              const d = r.data as { game_id?: unknown; mode?: unknown } | null;
-              return d?.game_id === "silhouette" && d.mode === "daily";
-            }),
+            new Set(
+              rows.flatMap((r) => {
+                const d = r.data as { game_id?: unknown; mode?: unknown } | null;
+                return d?.mode === "daily" && typeof d.game_id === "string" ? [d.game_id] : [];
+              }),
+            ),
           );
       })
-      .catch(() => live && setDailyDone(false));
+      .catch(() => live && setDailyDone(new Set()));
     return () => {
       live = false;
     };
@@ -170,20 +182,40 @@ export function HomeModules() {
       </section>
 
       <section aria-labelledby="home-today" className="fx-reveal">
-        <h2 id="home-today">{t("home.today")}</h2>
-        <div className={styles.today} data-fx-card="">
-          <GameArt name="silhouette" className={styles.todayArt} />
-          <a href="/daily" className={styles.stretched}>
-            {t("home.todaySil")}
-          </a>
-          <span className={styles.pill} data-done={dailyDone ? "" : undefined}>
+        <div className={styles.sectionHead}>
+          <h2 id="home-today">{t("home.today")}</h2>
+          <p>
             {dailyDone === null
               ? ""
-              : dailyDone
-                ? `✓ ${t("home.todayDone")}`
-                : `○ ${t("home.todayOpen")}`}
-          </span>
+              : t("home.todayCount", {
+                  done: DAILIES.filter((d) => dailyDone.has(d.id)).length,
+                  total: DAILIES.length,
+                })}
+          </p>
         </div>
+        <ul className={`${styles.todayList} fx-stagger`}>
+          {DAILIES.map((d) => {
+            const done = dailyDone?.has(d.id) ?? null;
+            return (
+              <li key={d.id} className={styles.today} data-fx-card="">
+                <GameArt name={artFor(d.href)} className={styles.todayArt} />
+                <a href={d.href} className={styles.stretched}>
+                  {t(d.label)}
+                </a>
+                <span className={styles.pill} data-done={done ? "" : undefined}>
+                  {done === null
+                    ? ""
+                    : done
+                      ? `✓ ${t("home.todayDone")}`
+                      : `○ ${t("home.todayOpen")}`}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <a href="/daily" className={styles.more}>
+          {t("home.todayAll")} <span aria-hidden="true">→</span>
+        </a>
       </section>
     </div>
   );

@@ -36,7 +36,6 @@ export const messages = {
   "cat.game": "Game",
   "cat.quiz": "Quiz",
   "cat.played": "Played",
-  "cat.new": "New",
 } as const;
 
 registerMessages(messages);

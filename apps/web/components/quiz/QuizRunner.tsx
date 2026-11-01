@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { cue, quizStepCue } from "../../lib/sound/cue";
 import { Button, Card } from "@meridian/ui";
 import type { GameResult } from "@meridian/schemas";
 import { browserOffsetMinutes, msToNextDay } from "../../lib/daily/time";
@@ -181,8 +182,13 @@ export function QuizRunner({
     },
     [services, named, slug, gameId],
   );
+  // The session as last rendered, so an update can tell what one step changed (for the answer sound).
+  const latest = useRef(session);
+  latest.current = session;
   const update = useCallback(
     (next: QuizSession) => {
+      const step = quizStepCue(latest.current?.state.items, next.state.items);
+      if (step) cue(step);
       setSession(next);
       persist(next);
     },

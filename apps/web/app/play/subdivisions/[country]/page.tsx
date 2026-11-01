@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { SubdivisionGame } from "../../../../components/subdivisions/SubdivisionGame";
 import { findSubCountry, subTitle } from "../../../../lib/subdivisions/list";
 import { t } from "../../../../lib/i18n";
@@ -14,5 +15,7 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params }: { params: Promise<{ country: string }> }) {
-  return <SubdivisionGame code={(await params).country} />;
+  const { country } = await params;
+  if (!findSubCountry(country)) notFound();
+  return <SubdivisionGame code={country} />;
 }

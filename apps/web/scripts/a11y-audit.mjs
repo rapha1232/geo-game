@@ -102,7 +102,8 @@ const STATES = [
       await p.getByLabel("Search places and capitals").fill("peru");
       await p.keyboard.press("Enter");
       await p.getByRole("heading", { name: /Peru/ }).waitFor();
-      await p.getByLabel("View").selectOption("table");
+      // The label also holds the option names, and the map has a "Reset view" button: anchor on the start.
+      await p.getByRole("combobox", { name: /^View/ }).selectOption("table");
       await p.getByRole("table").waitFor();
     },
   },

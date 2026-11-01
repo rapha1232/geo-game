@@ -38,6 +38,9 @@ export const messages = {
   "daily.moreFacts": "More facts: Endless",
   "daily.result": "{outcome} · {score} of {max} points",
   "daily.share": "Share your result",
+  "daily.shareAll": "Copy all of today's results",
+  "daily.shareAllBody":
+    "You've played {count} of {total} dailies today. Share them in one message, spoiler-free.",
   "daily.copy": "Copy result",
   "daily.copied": "Copied to your clipboard.",
   "daily.copyFailed": "Couldn't copy. Select the text and copy it yourself.",

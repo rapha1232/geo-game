@@ -13,13 +13,31 @@ import { AchievementToaster } from "../components/shell/AchievementToaster";
 import { SystemBanners } from "../components/shell/SystemBanners";
 import { PointerFX } from "../components/shell/PointerFX";
 import { BrandMark } from "../components/shell/NavIcons";
-import { BRAND_NAME } from "../lib/brand";
+import { BRAND_NAME, PRODUCTION_URL } from "../lib/brand";
 import { t } from "../lib/i18n";
 import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
-  title: BRAND_NAME,
+  // Absolute URLs for share images and canonical links. Preview deploys still point previews at production.
+  metadataBase: new URL(process.env["NEXT_PUBLIC_SITE_URL"] ?? PRODUCTION_URL),
+  title: { default: BRAND_NAME, template: `%s · ${BRAND_NAME}` },
   description: t("app.tagline"),
+  applicationName: BRAND_NAME,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  openGraph: {
+    type: "website",
+    siteName: BRAND_NAME,
+    title: BRAND_NAME,
+    description: t("app.tagline"),
+    locale: "en",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

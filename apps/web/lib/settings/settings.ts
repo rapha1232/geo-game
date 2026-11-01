@@ -21,6 +21,8 @@ export type Settings = {
   missedDotsOnly: boolean;
   /** Share anonymous per-item answer statistics (API_CONTRACTS §4.6). Off by default; nothing is sent while it is off. */
   telemetry: boolean;
+  /** Short synthesised sounds for answers and finished rounds (UX_AND_DESIGN §3.6). Off by default. */
+  sounds: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -34,6 +36,7 @@ export const DEFAULT_SETTINGS: Settings = {
   neighborsFollowUp: false,
   missedDotsOnly: false,
   telemetry: false,
+  sounds: false,
 };
 
 /** The key inside the single `settings` record. Other keys there belong to games (`quiz:*`, `fact-pin`). */
@@ -59,6 +62,7 @@ export function sanitize(raw: unknown): Settings {
     neighborsFollowUp: r["neighborsFollowUp"] === true,
     missedDotsOnly: r["missedDotsOnly"] === true,
     telemetry: r["telemetry"] === true,
+    sounds: r["sounds"] === true,
   };
 }
 
@@ -96,6 +100,8 @@ export function applySettings(s: Settings, root: HTMLElement = document.document
   else root.removeAttribute("data-motion");
   if (s.highContrast) root.setAttribute("data-contrast", "high");
   else root.removeAttribute("data-contrast");
+  if (s.sounds) root.setAttribute("data-sounds", "on");
+  else root.removeAttribute("data-sounds");
 }
 
 export const browserLocale = (): string | undefined =>

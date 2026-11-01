@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { t } from "../../lib/i18n";
+import { cue, guessStepCue } from "../../lib/sound/cue";
 import { LoadFailure, LoadingState } from "../shell/LoadState";
 import { useServices } from "../shell/StorageProvider";
 import { assemble, loadSilhouettePacks, type Loaded } from "../../lib/silhouette/data";
@@ -239,8 +240,13 @@ export function SilhouetteGame({
     [services, persistent, gameId, daily, challenge],
   );
 
+  // The session as last rendered, so an update can tell whether it was a guess (for the answer sound).
+  const latest = useRef(session);
+  latest.current = session;
   const update = useCallback(
     (next: Session) => {
+      const step = guessStepCue(latest.current?.round, next.round);
+      if (step) cue(step);
       setSession(next);
       persist(next);
     },

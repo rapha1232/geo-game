@@ -3,6 +3,16 @@
   display: block;
   overflow: visible;
 }
+.badge rect {
+  fill: var(--color-text);
+}
+.badge text {
+  fill: var(--color-surface);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
 @media (prefers-reduced-motion: no-preference) {
   .art [data-move] {
     transform-box: fill-box;
