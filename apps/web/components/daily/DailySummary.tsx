@@ -4,7 +4,13 @@ import { useState } from "react";
 import { Button, Card } from "@meridian/ui";
 import type { GameResult } from "@meridian/schemas";
 import { formatCountdown } from "../../lib/daily/time";
-import { borderRunShare, factPinShare, quizShare, silhouetteShare } from "../../lib/daily/share";
+import {
+  borderRunShare,
+  deepCutShare,
+  factPinShare,
+  quizShare,
+  silhouetteShare,
+} from "../../lib/daily/share";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./daily.module.css";
 
@@ -36,7 +42,9 @@ export function DailySummary({
     ? "/play/fact-pin"
     : result.game_id === "border-run"
       ? "/play/border-run"
-      : "/play/silhouette",
+      : result.game_id === "deep-cut"
+        ? "/play/deep-cut"
+        : "/play/silhouette",
   practiceHref = result.game_id === "silhouette" ? "/play/silhouette/daily?practice=1" : null,
   quizTitle,
   writeClipboard = (text) => navigator.clipboard.writeText(text),
@@ -45,13 +53,16 @@ export function DailySummary({
   const fact = result.game_id === "fact-pin";
   const border = result.game_id === "border-run";
   const quiz = result.game_id === "quiz";
-  const text = fact
-    ? factPinShare(result, link)
-    : border
-      ? borderRunShare(result, link)
-      : quiz
-        ? quizShare(result, link, quizTitle ?? "")
-        : silhouetteShare(result, link);
+  const deep = result.game_id === "deep-cut";
+  const text = deep
+    ? deepCutShare(result, link)
+    : fact
+      ? factPinShare(result, link)
+      : border
+        ? borderRunShare(result, link)
+        : quiz
+          ? quizShare(result, link, quizTitle ?? "")
+          : silhouetteShare(result, link);
   return (
     <Card className={styles.summary}>
       <h2>
@@ -62,7 +73,9 @@ export function DailySummary({
               ? "daily.doneBorderRun"
               : quiz
                 ? "daily.doneQuiz"
-                : "daily.done",
+                : deep
+                  ? "daily.doneDeepCut"
+                  : "daily.done",
         )}
       </h2>
       <p>

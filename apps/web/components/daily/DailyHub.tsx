@@ -13,6 +13,7 @@ export const DAILY_GAME_ID = "silhouette:daily";
 export const FACT_PIN_DAILY_GAME_ID = "fact-pin:daily";
 export const BORDER_RUN_DAILY_GAME_ID = "border-run:daily";
 export const QUIZ_DAILY_GAME_ID = "quiz:daily";
+export const DEEP_CUT_DAILY_GAME_ID = "deep-cut:daily";
 
 type State =
   | { kind: "loading" }
@@ -21,7 +22,7 @@ type State =
   | { kind: "done"; date: string; result: GameResult };
 
 type DailyGame = {
-  id: "silhouette" | "fact-pin" | "border-run" | "quiz";
+  id: "silhouette" | "fact-pin" | "border-run" | "quiz" | "deep-cut";
   /** The schedule pack; the daily quiz has none, it rotates by date. */
   pack: string | null;
   sessionId: string;
@@ -77,6 +78,17 @@ const GAMES: DailyGame[] = [
     body: "daily.quizBody",
     play: "daily.playQuiz",
     resume: "daily.resumeQuiz",
+  },
+  {
+    id: "deep-cut",
+    pack: null,
+    sessionId: DEEP_CUT_DAILY_GAME_ID,
+    href: "/play/deep-cut/daily",
+    keepPlaying: "/play/deep-cut",
+    title: "daily.deepCut",
+    body: "daily.deepCutBody",
+    play: "daily.playDeepCut",
+    resume: "daily.resumeDeepCut",
   },
 ];
 

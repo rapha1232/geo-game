@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { AnswerInput, Button, Card, GameMap, type Lod, type MapFeatureState } from "@meridian/ui";
 import type { Topology } from "topojson-specification";
 import {
@@ -45,10 +45,12 @@ export type DeepCutViewProps = {
   onChange: (s: Session) => void;
   onAgain: () => void;
   contentVersion?: string;
+  /** Shown under the summary instead of Play again (a finished daily shows its own summary). */
+  endSlot?: ReactNode;
 };
 
 /** The whole play screen. Pure over a Session; the timer's ticks come from the container through `onChange`. */
-export function DeepCutView({ session: s, data, onChange, onAgain }: DeepCutViewProps) {
+export function DeepCutView({ session: s, data, onChange, onAgain, endSlot }: DeepCutViewProps) {
   const services = useServices();
   const [text, setText] = useState("");
   const [lods, setLods] = useState<Partial<Record<Lod, Topology>>>({});
@@ -192,12 +194,13 @@ export function DeepCutView({ session: s, data, onChange, onAgain }: DeepCutView
             >
               {t("dc.copy")}
             </Button>
-            <Button onPress={onAgain}>{t("dc.again")}</Button>
+            {!endSlot && <Button onPress={onAgain}>{t("dc.again")}</Button>}
           </div>
           <p role="status" className={styles.note}>
             {copied ? t("dc.copied") : ""}
           </p>
         </Card>
+        {endSlot}
       </div>
     );
 

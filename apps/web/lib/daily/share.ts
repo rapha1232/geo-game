@@ -47,6 +47,24 @@ export function factPinShare(result: GameResult, link: string): string {
   ].join("\n");
 }
 
+/** Spoiler-free share text for the Deep Cut daily: one tier glyph per prompt and the total, never the prompts or answers. */
+export function deepCutShare(result: GameResult, link: string): string {
+  const glyph: Record<string, string> = {
+    "deep-cut": "◆",
+    deep: "●",
+    sharp: "◕",
+    solid: "◑",
+    obvious: "◔",
+  };
+  const prompts = (result.meta?.prompts ?? []) as { tier: string | null }[];
+  return [
+    `${BRAND_NAME} · Deep Cut · ${result.daily_date ?? result.ended_at.slice(0, 10)}`,
+    prompts.map((p) => (p.tier ? (glyph[p.tier] ?? "?") : "✕")).join(" "),
+    `${result.score}/${result.max_score}`,
+    link,
+  ].join("\n");
+}
+
 /** Spoiler-free share text for the daily quiz: the quiz title, the score and the time, never the items. */
 export function quizShare(result: GameResult, link: string, title: string): string {
   const pct = result.max_score > 0 ? Math.round((100 * result.score) / result.max_score) : 0;

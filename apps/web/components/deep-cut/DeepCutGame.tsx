@@ -18,6 +18,10 @@ import { loadHistory } from "../../lib/results/save";
 import { deepCutResult } from "../../lib/results/deep-cut";
 import { saveRankIt } from "../../lib/results/rank-it";
 import { randomUlid } from "../../lib/results/ulid";
+import { browserOffsetMinutes, localDate, msToNextDay } from "../../lib/daily/time";
+import { DEEP_CUT_DAILY_GAME_ID } from "../daily/DailyHub";
+import { DailySummary } from "../daily/DailySummary";
+import type { GameResult } from "@meridian/schemas";
 import { DeepCutView } from "./DeepCutView";
 import styles from "./deep-cut.module.css";
 
@@ -31,7 +35,8 @@ const newSeed = (): string => {
 };
 
 /** Loads the data, resumes an unfinished run after a reload, saves after every action and writes the result at the end. */
-export function DeepCutGame() {
+export function DeepCutGame({ daily = false }: { daily?: boolean }) {
+  const gameId = daily ? DEEP_CUT_DAILY_GAME_ID : GAME_ID;
   const services = useServices();
   const [data, setData] = useState<LoadedDeepCut | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -39,6 +44,7 @@ export function DeepCutGame() {
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const seq = useRef(0);
+  const [finished, setFinished] = useState<GameResult | null>(null);
   const version = useRef("");
 
   useEffect(() => {
@@ -50,14 +56,48 @@ export function DeepCutGame() {
         const manifest = await services.loader.manifest();
         const loaded = await loadDeepCut(services.loader);
         version.current = manifest.current;
-        const saved = await services.store.find(GAME_ID);
+        const saved = await services.store.find(gameId);
         seq.current = saved?.seq ?? 0;
         if (!live) return;
         setData(loaded);
-        if (saved && saved.content_version === manifest.current) {
-          const s = restore(saved.state as Session);
+        const today = daily ? localDate(Date.now(), browserOffsetMinutes()) : null;
+        if (today) {
+          const rows = await services.db.results
+            .where("daily_date")
+            .equals(today)
+            .toArray()
+            .catch(() => []);
+          if (
+            rows.some(
+              (r) => r.game_id === "deep-cut" && (r.data as { mode?: string }).mode === "daily",
+            )
+          ) {
+            window.location.replace("/daily");
+            return;
+          }
+        }
+        const old = saved?.state as Session | undefined;
+        if (
+          saved &&
+          old &&
+          saved.content_version === manifest.current &&
+          (!today || old.config.date === today)
+        ) {
+          const s = restore(old);
           setSession(
             document.visibilityState === "visible" ? setClock(s, true, performance.now()) : s,
+          );
+        } else if (today) {
+          // Today's daily: the same five prompts for everyone, made from the date alone.
+          const seed = today.replaceAll("-", "").padEnd(10, "0");
+          setSession(
+            newSession(
+              loaded,
+              seed,
+              { mode: "daily", timer: 60, date: today },
+              [],
+              performance.now(),
+            ),
           );
         }
       } catch (e) {
@@ -68,13 +108,13 @@ export function DeepCutGame() {
     return () => {
       live = false;
     };
-  }, [services, attempt]);
+  }, [services, attempt, daily, gameId]);
 
   const persist = useCallback(
     (next: Session) => {
       if (!services) return;
       services.store.save({
-        game_id: GAME_ID,
+        game_id: gameId,
         seq: ++seq.current,
         updated_at: Date.now(),
         content_version: version.current,
@@ -83,11 +123,11 @@ export function DeepCutGame() {
           n: Math.min(5, next.run.index + 1),
           total: next.run.prompts.length,
         }),
-        href: "/play/deep-cut",
+        href: daily ? "/play/deep-cut/daily" : "/play/deep-cut",
         state: next,
       });
     },
-    [services],
+    [services, gameId, daily],
   );
   const update = useCallback(
     (next: Session) => {
@@ -115,8 +155,10 @@ export function DeepCutGame() {
     const marked: Session = { ...session, resultId: id };
     setSession(marked);
     persist(marked);
+    const result = deepCutResult(session, { id, contentVersion: version.current, endedAt: now });
+    setFinished(result);
     void saveRankIt(services.db, {
-      result: deepCutResult(session, { id, contentVersion: version.current, endedAt: now }),
+      result,
       ...(session.config.mode === "daily"
         ? {}
         : { history: { game_id: GAME_ID, pool_key: POOL_KEY, target_ids: session.history } }),
@@ -188,8 +230,19 @@ export function DeepCutGame() {
       data={data}
       contentVersion={version.current}
       onChange={update}
+      {...(daily && finished
+        ? {
+            endSlot: (
+              <DailySummary
+                result={finished}
+                link={`${window.location.origin}/daily`}
+                msToNext={msToNextDay(Date.now(), browserOffsetMinutes())}
+              />
+            ),
+          }
+        : {})}
       onAgain={() => {
-        void services?.store.discard(GAME_ID);
+        void services?.store.discard(gameId);
         setSession(null);
       }}
     />

@@ -97,6 +97,11 @@ const en = {
   "daily.unavailable":
     "Today's daily isn't available right now. You can still play Silhouette without limits.",
   "daily.done": "You've played today's Silhouette.",
+  "daily.deepCut": "Deep Cut: Daily 5",
+  "daily.deepCutBody": "The same five prompts for everyone today. Find the rarest answer you can.",
+  "daily.playDeepCut": "Play today's Deep Cut",
+  "daily.resumeDeepCut": "Resume today's Deep Cut",
+  "daily.doneDeepCut": "Today's Deep Cut is done",
   "daily.quiz": "Daily Quiz",
   "daily.quizBody":
     "One short quiz a day, the same for everyone. A different kind of question each day.",

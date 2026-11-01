@@ -176,3 +176,63 @@ describe("Deep Cut results and telemetry", () => {
     expect(events[0]!.prompt_id).toBe(s.run.prompts[0]!.promptId);
   });
 });
+
+describe("Deep Cut daily", () => {
+  it("gives everyone the same five prompts for a date, whatever their history", async () => {
+    const a = newSession(
+      data,
+      "2026110500",
+      { mode: "daily", timer: 60, date: "2026-11-05" },
+      [],
+      0,
+    );
+    const b = newSession(
+      data,
+      "2026110500",
+      { mode: "daily", timer: 60, date: "2026-11-05" },
+      ["prompt:p1", "prompt:p2"],
+      0,
+    );
+    expect(a.run.prompts.map((p) => p.promptId)).toEqual(b.run.prompts.map((p) => p.promptId));
+    expect(a.history).toEqual([]);
+    const c = newSession(
+      data,
+      "2026110600",
+      { mode: "daily", timer: 60, date: "2026-11-06" },
+      [],
+      0,
+    );
+    expect(c.run.prompts.map((p) => p.promptId)).not.toEqual(a.run.prompts.map((p) => p.promptId));
+  });
+
+  it("records a daily result with its date and a share of glyphs only", async () => {
+    const { deepCutShare } = await import("../lib/daily/share");
+    let s = newSession(data, "2026110500", { mode: "daily", timer: 60, date: "2026-11-05" }, [], 0);
+    s = {
+      ...s,
+      run: {
+        ...s.run,
+        status: "done",
+        prompts: s.run.prompts.map((p, i) => ({
+          ...p,
+          locked: true,
+          answer: "country:BRA",
+          tier: i % 2 ? ("deep" as const) : null,
+          points: i % 2 ? 700 : 0,
+        })),
+      },
+    };
+    const result = deepCutResult(s, {
+      id: "01J00000000000000000000000",
+      contentVersion: "2026.10.0",
+      endedAt: 5000,
+    });
+    expect(result.mode).toBe("daily");
+    expect(result.daily_date).toBe("2026-11-05");
+    const text = deepCutShare(result, "https://x.test/daily");
+    expect(text).toContain("Deep Cut · 2026-11-05");
+    expect(text).toContain("● ");
+    expect(text).toContain("✕");
+    expect(text).not.toMatch(/Brazil|BRA/);
+  });
+});
