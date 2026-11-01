@@ -24,6 +24,7 @@ import {
 } from "./derive.ts";
 import { buildIndicators } from "./indicators.ts";
 import type { WbSnapshot } from "./worldbank.ts";
+import { SUBDIVISION_QUANTIZATION, buildSubdivisions, type Admin1 } from "./subdivisions.ts";
 import { generatePrompts, type DeepCutOverride } from "./deepcut.ts";
 import type { LanguagesSnapshot } from "./languages.ts";
 import { addTranslations, type TranslationsSnapshot } from "./translations.ts";
@@ -68,6 +69,8 @@ export type BuildInput = {
   translations?: TranslationsSnapshot;
   /** Official languages (Wikidata P37); with the derived data this adds the `deepcut.prompts` pack. */
   languages?: LanguagesSnapshot;
+  /** Natural Earth admin-1; adds `core.subdivisions` and one `geo.sub.<iso3>` outline pack per country. */
+  admin1?: Admin1;
   /** Editorial additions to the computed Deep Cut prompts. */
   deepcutOverrides?: readonly DeepCutOverride[];
   /** Derived packs (T1.2): silhouettes, adjacency and difficulty priors. Needs `editorial`. */
@@ -236,6 +239,17 @@ export function buildPacks(input: BuildInput): BuildOutput {
           .sort((x, y) => `${x.a}${x.b}`.localeCompare(`${y.a}${y.b}`)),
       }),
     );
+  if (input.admin1) {
+    const subs = buildSubdivisions(input.admin1, input.version);
+    files.push(toFile("core.subdivisions", subs.index));
+    for (const [code, fc] of [...subs.outlines].sort(([a], [b]) => a.localeCompare(b)))
+      files.push(
+        toFile(
+          `geo.sub.${code.toLowerCase()}`,
+          topologySchema.parse(topology({ subdivisions: fc as never }, SUBDIVISION_QUANTIZATION)),
+        ),
+      );
+  }
   const fallback110: string[] = [];
 
   for (const scale of ["110m", "50m", "10m"] as const) {

@@ -16,6 +16,7 @@ import {
   type CatalogState,
 } from "../lib/catalog/catalog";
 import { catalogKeyOf, playedFrom, readFavorites, setFavorite } from "../lib/catalog/store";
+import { SUB_COUNTRIES } from "../lib/subdivisions/list";
 import { ROUND_QUIZZES } from "../lib/quiz/rounds";
 import { LIBRARY, defaultConfig } from "../lib/quiz/library";
 import { quizResult } from "../lib/quiz/results";
@@ -94,7 +95,7 @@ describe("search and filters (AC-PL-019)", () => {
   });
   it("without content it still lists everything by title", () => {
     const bare = buildCatalog(null);
-    expect(bare).toHaveLength(5 + LIBRARY.length + ROUND_QUIZZES.length);
+    expect(bare).toHaveLength(5 + LIBRARY.length + ROUND_QUIZZES.length + SUB_COUNTRIES.length);
     expect(
       searchCatalog(bare, { ...EMPTY_FILTER, search: "flags multiple" }, none).map((i) => i.title),
     ).toContain("Flags (Multiple Choice)");

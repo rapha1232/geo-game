@@ -135,3 +135,100 @@ describe("MATCH", () => {
     expect(r.status).toBe("lives_out");
   });
 });
+
+import {
+  FIND_ATTEMPTS,
+  clickSub,
+  currentPrompt,
+  giveUpSub,
+  newFind,
+  newNameAll,
+  subIndex,
+  subScore,
+  submitName,
+  type SubItem,
+} from "../src";
+
+describe("subdivision quizzes", () => {
+  const items: SubItem[] = [
+    { id: "subdivision:US-CA", name: "California", aliases: [{ text: "CA", kind: "code" }] },
+    { id: "subdivision:US-NY", name: "New York", aliases: [{ text: "NY", kind: "code" }] },
+    { id: "subdivision:US-VA", name: "Virginia", aliases: [] },
+    { id: "subdivision:US-WV", name: "West Virginia", aliases: [] },
+  ];
+  const index = subIndex(items);
+
+  it("Name them all: exact names count, repeats do not, and naming all ends it", () => {
+    let r = newNameAll("USA", items);
+    r = submitName(r, index, "california", false).round;
+    expect(r.found).toEqual(["subdivision:US-CA"]);
+    expect(submitName(r, index, "california", true).event.kind).toBe("already");
+    expect(submitName(r, index, "narnia", true).event.kind).toBe("not-recognized");
+    r = submitName(r, index, "NY", true).round;
+    r = submitName(r, index, "west virginia", true).round;
+    r = submitName(r, index, "virginia", true).round;
+    expect(r.status).toBe("done");
+    expect(subScore(r)).toBe(100);
+  });
+
+  it("holds while the typed name could still become a longer one (Niger / Nigeria)", () => {
+    const two: SubItem[] = [
+      { id: "subdivision:NG-NI", name: "Niger", aliases: [] },
+      { id: "subdivision:NG-NA", name: "Nigeria Capital", aliases: [] },
+    ];
+    expect(submitName(newNameAll("NGA", two), subIndex(two), "niger", false).event.kind).toBe(
+      "hold",
+    );
+    expect(submitName(newNameAll("NGA", two), subIndex(two), "niger", true).event.kind).toBe(
+      "accepted",
+    );
+  });
+
+  it("Give up keeps what was found and scores it", () => {
+    let r = submitName(newNameAll("USA", items), index, "new york", true).round;
+    r = giveUpSub(r);
+    expect(r.status).toBe("gave_up");
+    expect(subScore(r)).toBe(25);
+    expect(submitName(r, index, "california", true).event.kind).toBe("ignored");
+  });
+
+  it("Find it: the order is seeded; 1, 0.5 and 0.25 for the first, second and third try; the fourth miss moves on", () => {
+    const a = newFind("USA", items, "SEED000001");
+    expect(newFind("USA", items, "SEED000001")).toEqual(a);
+    expect(a.order).toHaveLength(4);
+    let r = a;
+    const wrongFor = (target: string) => items.find((i) => i.id !== target)!.id;
+    const t0 = currentPrompt(r)!;
+    r = clickSub(r, t0).round;
+    expect(r.scores[t0]).toBe(1);
+    const t1 = currentPrompt(r)!;
+    r = clickSub(r, wrongFor(t1)).round;
+    r = clickSub(r, t1).round;
+    expect(r.scores[t1]).toBe(0.5);
+    const t2 = currentPrompt(r)!;
+    r = clickSub(r, wrongFor(t2)).round;
+    r = clickSub(r, wrongFor(t2)).round;
+    r = clickSub(r, t2).round;
+    expect(r.scores[t2]).toBe(0.25);
+    const t3 = currentPrompt(r)!;
+    for (let i = 0; i < FIND_ATTEMPTS - 1; i++) r = clickSub(r, wrongFor(t3)).round;
+    const last = clickSub(r, wrongFor(t3));
+    expect(last.event).toEqual({ kind: "missed", answer: t3 });
+    expect(last.round.status).toBe("done");
+    expect(subScore(last.round)).toBe(Math.round((100 * 1.75) / 4));
+  });
+});
+
+describe("subdivision codes", () => {
+  const items: SubItem[] = [
+    { id: "subdivision:US-NE", name: "Nebraska", aliases: [{ text: "NE", kind: "code" }] },
+    { id: "subdivision:US-NY", name: "New York", aliases: [{ text: "NY", kind: "code" }] },
+  ];
+  it('a postal code counts on Enter but not while typing, so New York is not cut short at "ne"', () => {
+    const idx = subIndex(items);
+    expect(submitName(newNameAll("USA", items), idx, "ne", false).event.kind).toBe(
+      "not-recognized",
+    );
+    expect(submitName(newNameAll("USA", items), idx, "ne", true).event.kind).toBe("accepted");
+  });
+});

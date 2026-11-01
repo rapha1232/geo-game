@@ -6,6 +6,12 @@ entries:
     version: 7.6.0
     sha256: 99d6feb80562dcaa83700ef184094d7c7b6587cc216b3fab1546cb1643e611a9
     bytes: 1081405
+  - id: ne-10m-admin1
+    source: ne
+    url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_1_states_provinces.geojson
+    version: v5.1.2
+    sha256: 22d0e3ad85eb3e27f17cabf8ba2d50e554fbc27a87796ff891d958185da62fb5
+    bytes: 40726851
   - id: ne-10m-countries
     source: ne
     url: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_countries.geojson

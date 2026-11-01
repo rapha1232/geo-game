@@ -12,6 +12,7 @@ const GAMES = [
   ["/play/border-run", /Border Run/],
   ["/play/rank-it", /Rank It/],
   ["/play/deep-cut", /Deep Cut/],
+  ["/play/subdivisions/usa", /United States/],
   ["/explore", /Atlas/],
 ];
 

@@ -19,6 +19,7 @@ const GAMES = [
   "/play/border-run/page",
   "/play/rank-it/page",
   "/play/deep-cut/page",
+  "/play/subdivisions/[country]/page",
   "/explore/page",
   "/daily/page",
   "/me/page",

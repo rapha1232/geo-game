@@ -21,6 +21,7 @@ sources:
         geo.silhouettes,
         core.adjacency,
         core.countries,
+        core.subdivisions,
       ]
   - id: wd
     name: Wikidata (structured data)

@@ -33,6 +33,13 @@ export const SOURCES: SourceDef[] = [
     file: "ne/ne_10m_populated_places_simple.geojson",
   },
   {
+    id: "ne-10m-admin1",
+    source: "ne",
+    url: `${NE}/ne_10m_admin_1_states_provinces.geojson`,
+    version: "v5.1.2",
+    file: "ne/ne_10m_admin_1_states_provinces.geojson",
+  },
+  {
     id: "flag-icons",
     source: "fi",
     url: "https://registry.npmjs.org/flag-icons/-/flag-icons-7.6.0.tgz",

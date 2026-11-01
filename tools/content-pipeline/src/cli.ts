@@ -3,6 +3,7 @@ import { dirname, join, resolve } from "node:path";
 import { parse } from "yaml";
 import { ambiguityGroup, countryId, crossing, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
+import type { Admin1 } from "./subdivisions.ts";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
 import {
   borderRunPairs,
@@ -262,6 +263,11 @@ async function loadInputs(args: string[]) {
   const languages = JSON.parse(
     new TextDecoder().decode(await read(LANGUAGES_SNAPSHOT.id, path.langSnapshot)),
   ) as LanguagesSnapshot;
+  const admin1 = JSON.parse(
+    new TextDecoder().decode(
+      await read("ne-10m-admin1", join(path.raw, "ne/ne_10m_admin_1_states_provinces.geojson")),
+    ),
+  ) as Admin1;
   const ne10 = await ne("ne-10m-countries", "10m");
   const ne10Iso2 = ne10.features
     .map((f) => f.properties["ISO_A2_EH"])
@@ -318,6 +324,7 @@ async function loadInputs(args: string[]) {
     worldBank: wbSnapshot,
     translations,
     languages,
+    admin1,
     deepcutOverrides: z
       .array(
         z.object({

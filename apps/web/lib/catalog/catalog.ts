@@ -1,6 +1,7 @@
 import { norm } from "@meridian/name-matcher";
 import { timeLimitMs, type Format, type QuizWorld } from "@meridian/quiz";
 import { ROUND_QUIZZES } from "../quiz/rounds";
+import { SUB_COUNTRIES, pluralKind, subSlug, subTitle } from "../subdivisions/list";
 import { LIBRARY, defaultConfig, itemCount, type Category } from "../quiz/library";
 
 export type Topic = Category | "mixed";
@@ -150,7 +151,35 @@ export function buildCatalog(world: QuizWorld | null): CatalogItem[] {
       : {}),
     tags: [q.category, "choice", "quiz", q.kind === "tiles" ? "select" : "match", "tiles"],
   }));
-  return [SILHOUETTE, FACT_PIN, BORDER_RUN, RANK_IT, DEEP_CUT, ...quizzes, ...rounds];
+  const subdivisions = SUB_COUNTRIES.map((c): CatalogItem => ({
+    key: `quiz:${subSlug(c)}`,
+    kind: "quiz",
+    title: subTitle(c),
+    pitch: `${c.count} ${pluralKind(c.kind)} · Type or find on the map`,
+    href: `/play/subdivisions/${c.code.toLowerCase()}`,
+    topic: "regions",
+    format: "Type",
+    length: c.count > 30 ? "long" : "medium",
+    tags: [
+      "regions",
+      "subdivisions",
+      "states",
+      "provinces",
+      c.name.toLowerCase(),
+      pluralKind(c.kind),
+      "quiz",
+    ],
+  }));
+  return [
+    SILHOUETTE,
+    FACT_PIN,
+    BORDER_RUN,
+    RANK_IT,
+    DEEP_CUT,
+    ...quizzes,
+    ...rounds,
+    ...subdivisions,
+  ];
 }
 
 const itemCountText = (count: "all" | number, n: number | null): string =>

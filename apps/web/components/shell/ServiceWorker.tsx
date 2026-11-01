@@ -29,7 +29,11 @@ export function ServiceWorker() {
         const { LIBRARY } = await import("../../lib/quiz/library");
         ready.active?.postMessage({
           type: "warm",
-          routes: LIBRARY.map((q) => `/play/quiz/${q.slug}`),
+          routes: [
+            ...LIBRARY.map((q) => `/play/quiz/${q.slug}`),
+            "/play/subdivisions",
+            "/play/subdivisions/usa",
+          ],
         });
         try {
           window.localStorage.setItem(WARMED, stamp);

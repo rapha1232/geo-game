@@ -28,6 +28,8 @@ export function catalogKeyOf(r: GameResult): string | null {
   if (r.game_id === "border-run") return "game:border-run";
   if (r.game_id === "rank-it") return "game:rank-it";
   if (r.game_id === "deep-cut") return "game:deep-cut";
+  if (r.game_id === "quiz" && typeof (r.config as { sub?: unknown }).sub === "string")
+    return `quiz:subdivisions-${(r.config as { sub: string }).sub.toLowerCase()}`;
   if (r.game_id === "quiz" && typeof (r.config as { round?: unknown }).round === "string")
     return `quiz:${(r.config as { round: string }).round}`;
   if (r.game_id !== "quiz") return null;
