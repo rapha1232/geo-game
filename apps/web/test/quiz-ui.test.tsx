@@ -45,7 +45,15 @@ const sessionOf = (c: QuizConfig, seed = "UISEED0001"): QuizSession => ({
   resultId: null,
 });
 
-function Harness({ initial, accessible = false }: { initial: QuizSession; accessible?: boolean }) {
+function Harness({
+  initial,
+  accessible = false,
+  missedDotsOnly,
+}: {
+  initial: QuizSession;
+  accessible?: boolean;
+  missedDotsOnly?: boolean;
+}) {
   const [s, set] = useState(initial);
   return (
     <>
@@ -58,7 +66,17 @@ function Harness({ initial, accessible = false }: { initial: QuizSession; access
         now={0}
         accessible={accessible}
         onSession={set}
-        renderMap={() => <div data-testid="map" />}
+        {...(missedDotsOnly !== undefined ? { missedDotsOnly, onMissedDotsOnly: () => {} } : {})}
+        renderMap={({ states, markers }) => (
+          <div
+            data-testid="map"
+            data-states={Object.entries(states)
+              .map(([k, v]) => `${k}=${v}`)
+              .sort()
+              .join(",")}
+            data-markers={[...(markers ?? [])].sort().join(",")}
+          />
+        )}
       />
       <span data-testid="phase">{s.state.phase}</span>
     </>
@@ -266,6 +284,37 @@ describe("QuizPlay: TYPE_PROMPTED", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/Starts with [A-Z]/);
     await user.click(screen.getByRole("button", { name: "Hint" }));
     expect(screen.getByRole("status")).toHaveTextContent(/(_ ?)+/);
+  });
+});
+
+describe("QuizPlay: dots for missed only (AC-QZ-026)", () => {
+  const give = async (user: ReturnType<typeof userEvent.setup>) => {
+    await user.click(screen.getByRole("button", { name: "Give up" }));
+    await user.click(screen.getByRole("button", { name: "Yes, give up" }));
+  };
+  it("by default correct countries are green and missed ones are hatched, with no dots", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={sessionOf(cfg())} missedDotsOnly={false} />);
+    await user.type(screen.getByRole("textbox", { name: "Name a country" }), "france");
+    await give(user);
+    const map = screen.getByTestId("map");
+    expect(map.dataset["states"]).toContain("country:FRA=correct");
+    expect(map.dataset["states"]).toContain("country:BRA=wrong");
+    expect(map.dataset["markers"]).toBe("");
+  });
+  it("with the toggle on, correct countries stay uncoloured and only the missed ones carry a dot", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={sessionOf(cfg())} missedDotsOnly />);
+    await user.type(screen.getByRole("textbox", { name: "Name a country" }), "france");
+    expect(screen.getByTestId("map").dataset["states"]).toBe("");
+    await give(user);
+    const map = screen.getByTestId("map");
+    expect(map.dataset["states"]).toBe("");
+    const dots = (map.dataset["markers"] ?? "").split(",");
+    expect(dots).toContain("country:BRA");
+    expect(dots).not.toContain("country:FRA");
+    expect(dots).toHaveLength(13);
+    expect(screen.getByRole("checkbox", { name: "Dots for missed only" })).toBeChecked();
   });
 });
 

@@ -11,14 +11,18 @@
 }
 
 .input {
-  min-height: var(--touch-target);
+  min-height: 52px;
   padding: 0 var(--space-4);
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-control);
   font: inherit;
-  font-size: var(--text-lg);
+  font-size: max(16px, var(--text-lg));
+  box-shadow: var(--shadow-card);
+}
+.input:focus {
+  border-color: var(--color-focus);
 }
 .input::placeholder {
   color: var(--color-text-muted);

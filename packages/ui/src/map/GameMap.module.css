@@ -218,3 +218,20 @@
   opacity: 0.25;
   filter: grayscale(1);
 }
+
+/* A small dot over a feature (e.g. a country the player missed). Ring plus fill keeps it visible on any land colour. */
+.markers {
+  pointer-events: none;
+}
+.marker {
+  fill: var(--color-wrong);
+  stroke: var(--color-surface);
+  stroke-width: 1.5;
+  paint-order: stroke;
+}
+@media (forced-colors: active) {
+  .marker {
+    fill: Mark;
+    stroke: Canvas;
+  }
+}

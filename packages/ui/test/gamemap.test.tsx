@@ -40,6 +40,18 @@ const base = { lods: { "110m": topology }, entities, labels, "aria-label": "Worl
 afterEach(cleanup);
 
 describe("GameMap", () => {
+  it("AC-QZ-026: marked features carry a dot at their label point and nothing else changes", () => {
+    const { container, rerender } = render(<GameMap {...base} mode="view" />);
+    expect(container.querySelectorAll("[data-marker]")).toHaveLength(0);
+    rerender(<GameMap {...base} mode="view" markers={new Set(["country:BBB", "country:ZZZ"])} />);
+    const dots = container.querySelectorAll("[data-marker]");
+    expect(dots).toHaveLength(1);
+    expect((dots[0] as HTMLElement).dataset["marker"]).toBe("country:BBB");
+    expect(container.querySelectorAll("path[data-id]")[0]?.getAttribute("class")).not.toMatch(
+      /correct|wrong/,
+    );
+  });
+
   it("draws every feature and asks for a finer level of detail only when zoomed in", () => {
     const onNeedLod = vi.fn();
     const { container } = render(<GameMap {...base} mode="view" onNeedLod={onNeedLod} />);

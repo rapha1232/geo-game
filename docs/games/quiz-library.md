@@ -7,7 +7,7 @@
 | Phase         | **R1**: engine, formats `TYPE_ALL`, `TYPE_PROMPTED`, `MAP_CLICK`, `MULTIPLE_CHOICE`, families Countries, Capitals, Flags, Continents & Regions. R2: formats `TILE_SELECT`, `MATCH`, lives modifier, families Subdivisions, Subdivision capitals, Cities, Rankings. R3: physical features, historical countries. R4: landmarks.       |
 | Inspiration   | JetPunk (Observed: secondary sources), Seterra (Observed: secondary sources). See [REFERENCE_RESEARCH §1](../REFERENCE_RESEARCH.md#1-jetpunk).                                                                                                                                                                                       |
 | Depends on    | `GameMap`, `AnswerInput`, `ChoiceGrid`, Name Matcher, Seeded RNG and Repeat Guard, Timer service ([ARCHITECTURE §5](../ARCHITECTURE.md#5-shared-game-infrastructure-vs-game-specific-logic)). Content packs `core.countries`, `geo.world.110m`, `geo.world.50m`, `flags` ([DATA_MODEL §2](../DATA_MODEL.md#2-content-pack-schemas)). |
-| Governing ACs | AC-QZ-001 … AC-QZ-024                                                                                                                                                                                                                                                                                                                |
+| Governing ACs | AC-QZ-001 … AC-QZ-026                                                                                                                                                                                                                                                                                                                |
 
 This spec also defines the **Name Matcher** (§5.1), which every game with typed answers uses.
 
@@ -240,7 +240,7 @@ Accept only if (a) the best candidate is within its threshold, (b) **no other en
 - Prefix-hold considers every alias key of the other remaining items, so `uk` is held while Ukraine remains.
 - In TYPE_PROMPTED, ambiguity groups resolve against the _remaining_ items, not just the current prompt, so `congo` is rejected while both Congos are still to be asked.
 
-**Never accepted:** prefixes ("Austr"), substrings, numeric codes (ISO codes like "FRA" are accepted only if listed as an alias kind `code`, which is enabled only for TYPE_ALL in Lenient mode).
+**Never accepted:** prefixes ("Austr"), substrings, numeric codes. ISO codes (`FR`, `FRA`) never name a country: `FR` must not give France. Only curated shortcuts that JetPunk also takes (`NZ`, `DR`, `UK`, `USA`, `UAE`, `DRC`, `CAR`, `PNG`, `ROK`, `RSA`, `KSA`, `S Korea`, `N Korea`, …) count, and they are ordinary `common` aliases in `content/countries.yaml`, valid on every strictness. The `code` kind stays for subdivisions, where postal codes (`NY`) are how people write the place, on Enter only.
 
 ### 5.2 Prefix-hold rule (TYPE_ALL keystroke acceptance)
 
@@ -495,6 +495,8 @@ Map: missed = hatched + ✕     Filter: (All)(Missed)(Spelling corrected)
 | AC-QZ-022 | Untimed PB bucket is separate                                                                                                                                                                 | A 100% untimed run does not change the timed PB                                                                                                                                        |
 | AC-QZ-023 | Non-Latin input in R1                                                                                                                                                                         | Typing `日本` → "Try the English name", no acceptance                                                                                                                                  |
 | AC-QZ-024 | Keyboard-only completion                                                                                                                                                                      | Playwright completes a 10-item MC flags quiz using only keys `1–4` and `Enter`, and reaches Review                                                                                     |
+| AC-QZ-025 | Country shortcuts | `nz` names New Zealand and `dr` the Dominican Republic on any strictness; `fr` and `fra` never name France, even on Lenient |
+| AC-QZ-026 | Dots for missed only (map option) | With "Dots for missed only" on, a correct country stays the plain land colour and each missed or revealed country carries a small dot, on the play map and the review map; off (default) keeps green and hatch |
 
 ## 13. Subdivision quizzes as built (T2.13, first cut)
 

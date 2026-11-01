@@ -28,12 +28,14 @@ export function QuizMap({
   world,
   labelPoints,
   states,
+  markers,
   mode,
   onSelect,
 }: {
   world: QuizWorld;
   labelPoints: ReadonlyMap<string, readonly [number, number]>;
   states: Readonly<Record<string, MapFeatureState>>;
+  markers?: ReadonlySet<string>;
   mode: MapMode;
   onSelect?: (id: string) => void;
 }) {
@@ -73,6 +75,7 @@ export function QuizMap({
         lods={lods}
         entities={entities}
         states={states}
+        {...(markers ? { markers } : {})}
         mode={mode}
         {...(onSelect ? { onSelect } : {})}
         onNeedLod={onNeedLod}

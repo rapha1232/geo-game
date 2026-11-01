@@ -27,7 +27,7 @@ import {
   replaySame,
   type QuizSession,
 } from "../../lib/quiz/session";
-import { loadSettings } from "../../lib/settings/settings";
+import { loadSettings, saveSettings } from "../../lib/settings/settings";
 import { loadMastery } from "../../lib/results/save";
 import { randomUlid } from "../../lib/results/ulid";
 import type { MasteryRecord } from "../../lib/storage/db";
@@ -67,6 +67,7 @@ export function QuizRunner({
   const [stage, setStage] = useState<Stage>("configure");
   const [resumeOffer, setResumeOffer] = useState<QuizSession | null>(null);
   const [accessible, setAccessible] = useState(false);
+  const [missedDotsOnly, setMissedDotsOnly] = useState(false);
   const [now, setNow] = useState(0);
   const [pb, setPb] = useState<PbOutcome | null>(null);
   const [saved, setSaved] = useState(true);
@@ -96,6 +97,7 @@ export function QuizRunner({
         const prefs = await loadSettings(services.db);
         if (!live) return;
         setAccessible(prefs.accessibleDefault);
+        setMissedDotsOnly(prefs.missedDotsOnly);
         version.current = manifest.current;
         seq.current = old?.seq ?? 0;
         history.current = hist?.target_ids ?? [];
@@ -148,6 +150,17 @@ export function QuizRunner({
       .then((p) => setFlags(p.flags))
       .catch(() => undefined);
   }, [services, session, flags]);
+
+  const changeMissedDotsOnly = useCallback(
+    (on: boolean) => {
+      setMissedDotsOnly(on);
+      if (!services) return;
+      void loadSettings(services.db).then((cur) =>
+        saveSettings(services.db, { ...cur, missedDotsOnly: on }),
+      );
+    },
+    [services],
+  );
 
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
@@ -426,19 +439,46 @@ export function QuizRunner({
           }}
           mapSlot={
             session.state.quiz.config.format === "TYPE_ALL" ? (
-              <QuizMap
-                world={data.world}
-                labelPoints={data.facts.labelPoints}
-                states={
-                  Object.fromEntries(
-                    session.state.items.map((it, i) => [
-                      session.state.quiz.items[i]?.id as string,
-                      it.status === "correct" ? "correct" : "wrong",
-                    ]),
-                  ) as never
-                }
-                mode="view"
-              />
+              <>
+                <label className={styles.dotToggle}>
+                  <input
+                    type="checkbox"
+                    checked={missedDotsOnly}
+                    onChange={(e) => changeMissedDotsOnly(e.target.checked)}
+                  />
+                  {t("qz.missedDots")}
+                </label>
+                <QuizMap
+                  world={data.world}
+                  labelPoints={data.facts.labelPoints}
+                  states={
+                    Object.fromEntries(
+                      session.state.items.flatMap((it, i) =>
+                        missedDotsOnly
+                          ? []
+                          : [
+                              [
+                                session.state.quiz.items[i]?.id as string,
+                                it.status === "correct" ? "correct" : "wrong",
+                              ],
+                            ],
+                      ),
+                    ) as never
+                  }
+                  {...(missedDotsOnly
+                    ? {
+                        markers: new Set(
+                          session.state.items.flatMap((it, i) =>
+                            it.status === "correct"
+                              ? []
+                              : [session.state.quiz.items[i]?.id as string],
+                          ),
+                        ),
+                      }
+                    : {})}
+                  mode="view"
+                />
+              </>
             ) : null
           }
         />
@@ -464,6 +504,8 @@ export function QuizRunner({
         session={session}
         now={now}
         accessible={accessible}
+        missedDotsOnly={missedDotsOnly}
+        onMissedDotsOnly={changeMissedDotsOnly}
         onSession={update}
       />
     </section>

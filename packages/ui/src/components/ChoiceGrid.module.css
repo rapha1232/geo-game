@@ -32,12 +32,25 @@
   font-weight: 600;
   cursor: pointer;
   text-align: center;
+  box-shadow: var(--shadow-card);
   transition:
     background-color var(--motion-micro) var(--ease),
     border-color var(--motion-micro) var(--ease);
 }
 .choice:hover:not(:disabled) {
   border-color: var(--color-text);
+  background: var(--tint-bg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .choice {
+    transition:
+      background-color var(--motion-micro) var(--ease),
+      border-color var(--motion-micro) var(--ease),
+      transform var(--motion-micro) var(--ease);
+  }
+  .choice:active:not(:disabled) {
+    transform: scale(0.98);
+  }
 }
 .choice:disabled {
   cursor: default;

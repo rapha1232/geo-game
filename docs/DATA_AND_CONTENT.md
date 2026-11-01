@@ -96,7 +96,7 @@ graph LR
 | `former`      | Previous name of the same entity                                             | Swaziland, Burma, Zaire (→ DR Congo), Ceylon  | ✅, with a "former name" note            |
 | `endonym`     | Native-language name (Latin script or official romanization)                 | Deutschland, Nippon, Suomi, Hrvatska          | ✅                                       |
 | `translation` | Name in an opt-in answer language (es, fr, de, pt, it, nl)                   | Alemania, Allemagne                           | ✅ only if that language is enabled (R2) |
-| `code`        | ISO alpha-2/alpha-3                                                          | FR, FRA                                       | Only in Lenient TYPE_ALL                 |
+| `code`        | ISO alpha-2/alpha-3                                                          | FR, FRA                                       | Subdivisions only (postal codes); never countries |
 | `misspelling` | Known frequent misspelling that fuzzy matching can't reach                   | — (rarely needed)                             | ✅                                       |
 | `metonym`     | Historical usage (Lost Borders)                                              | Sublime Porte                                 | ✅ in history only                       |
 

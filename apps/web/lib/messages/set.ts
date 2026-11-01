@@ -21,6 +21,7 @@ export const messages = {
   "set.countrySet": "Countries in quizzes",
   "set.countrySet.sovereign-197": "197 sovereign countries",
   "set.countrySet.un-193": "193 UN members",
+  "set.missedDots": "Quiz map: mark only missed countries with a dot (don't colour correct ones)",
   "set.accessible": "Use the accessible, map-free variants by default",
   "set.saved": "Saved on this device.",
   "set.saveFailed":

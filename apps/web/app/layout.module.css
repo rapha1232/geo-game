@@ -7,14 +7,15 @@
 .main {
   flex: 1;
   width: 100%;
-  max-width: 80rem;
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: var(--space-7) var(--space-4);
+  padding: clamp(var(--space-5), 4vw, var(--space-7)) var(--page-pad) var(--space-8);
 }
 
 .footer {
   border-top: 1px solid var(--color-border);
-  padding: var(--space-5) var(--space-4);
+  background: var(--tint-bg);
+  padding: var(--space-6) var(--page-pad);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
@@ -24,8 +25,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  max-width: 80rem;
+  gap: var(--space-4);
+  max-width: var(--page-max);
   margin: 0 auto;
 }
 
@@ -35,19 +36,32 @@
 
 .legal {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-2);
 }
 
 .legal a {
   display: inline-flex;
   align-items: center;
   min-height: var(--touch-target);
+  padding: 0 var(--space-2);
   color: var(--color-text);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.legal a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 639px) {
+  .main {
+    padding-top: var(--space-5);
+  }
   /* Keep the footer clear of the fixed bottom tab bar. */
   .footer {
-    padding-bottom: calc(var(--space-5) + var(--touch-target) + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--space-5) + var(--tabbar-h) + env(safe-area-inset-bottom));
+  }
+  .footerInner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

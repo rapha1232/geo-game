@@ -50,6 +50,29 @@ describe.skipIf(!haveRaw)("T1.1 real country content", () => {
   const codesOf = (issues: Issue[]) => [...new Set(issues.map((i) => i.code))];
   const known = (f: string) => (yaml(f).issues as never[]) ?? [];
 
+  it("AC-QZ-025: the JetPunk-style shortcuts are aliases, and ISO codes such as FR stay out of the quiz aliases", () => {
+    const keys = (code: string) =>
+      new Set(
+        byId(code)
+          .names.aliases.filter((a) => a.kind !== "code")
+          .map((a) => norm(a.text)),
+      );
+    const shortcuts: Record<string, string[]> = {
+      NZL: ["nz"],
+      DOM: ["dr"],
+      GBR: ["uk"],
+      USA: ["us", "usa"],
+      ARE: ["uae"],
+      COD: ["drc"],
+      CAF: ["car"],
+      PNG: ["png"],
+    };
+    for (const [code, want] of Object.entries(shortcuts))
+      for (const w of want) expect(keys(code), `${code} ${w}`).toContain(w);
+    expect(keys("FRA")).not.toContain("fr");
+    expect(keys("COD")).not.toContain("dr");
+  });
+
   it("covers every member of sovereign-197 and nothing else", () => {
     expect(() =>
       checkEditorialCoverage(

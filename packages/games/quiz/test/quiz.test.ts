@@ -246,6 +246,21 @@ describe("TYPE_ALL (AC-QZ-001..009)", () => {
       "pending",
     );
   });
+  it("AC-QZ-025: curated shortcuts name a country on every strictness, but ISO codes never do", () => {
+    for (const strictness of ["lenient", "standard", "strict"] as const) {
+      const s = start({ strictness });
+      expect(type(s, "py", false).event).toMatchObject({
+        kind: "accepted",
+        itemId: "country:PRY",
+      });
+      for (const code of ["fr", "fra"]) {
+        for (const submitted of [false, true])
+          expect(type(s, code, submitted).state.items.every((i) => i.status === "pending")).toBe(
+            true,
+          );
+      }
+    }
+  });
   it("AC-QZ-006/007: 'congo' is ambiguous while both remain, and resolves once one is named", () => {
     const r = type(s0, "congo", false);
     expect(r.event).toMatchObject({ kind: "ambiguous" });

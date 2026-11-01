@@ -58,13 +58,24 @@ export const named = [
     capital: "N'Djamena",
     confusables: ["country:ROU"],
   }),
-  mk("FRA", "France", "EU", { regionId: "western-europe", capital: "Paris", areaKm2: 640_000 }),
+  mk("FRA", "France", "EU", {
+    regionId: "western-europe",
+    capital: "Paris",
+    areaKm2: 640_000,
+    aliases: [
+      { text: "FRA", kind: "code" },
+      { text: "FR", kind: "code" },
+    ],
+  }),
   mk("ROU", "Romania", "EU", { regionId: "eastern-europe", capital: "Bucharest" }),
   mk("BOL", "Bolivia", "SA", { regionId: "south-america", capital: ["Sucre", "La Paz"] }),
   mk("PRY", "Paraguay", "SA", {
     regionId: "south-america",
     capital: "Asunción",
-    aliases: [{ text: "Paraguai", kind: "endonym" }],
+    aliases: [
+      { text: "Paraguai", kind: "endonym" },
+      { text: "PY", kind: "common" },
+    ],
   }),
   mk("URY", "Uruguay", "SA", { regionId: "south-america", capital: "Montevideo" }),
   mk("BRA", "Brazil", "SA", { regionId: "south-america", capital: "Brasília", areaKm2: 8_500_000 }),

@@ -134,7 +134,8 @@ export function matchContext(s: QuizState): MatchContext {
     remaining,
     named,
     strictness: quiz.config.strictness,
-    enableCodes: quiz.config.strictness === "lenient",
+    // ISO codes (FR, FRA) never name a country; only the curated shortcuts in the aliases do (NZ, DR, UK, USA).
+    enableCodes: false,
     learn: learn(s),
   };
   if (quiz.config.format === "TYPE_ALL") return { ...base, mode: "type_all" };

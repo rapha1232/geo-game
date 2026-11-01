@@ -3,40 +3,42 @@
 import { usePathname } from "next/navigation";
 import { BRAND_NAME } from "../../lib/brand";
 import { t, type MessageKey } from "../../lib/i18n";
+import { BrandMark, NavIcon } from "./NavIcons";
 import styles from "./shell.module.css";
 
-const ITEMS: { href: string; label: MessageKey }[] = [
-  { href: "/play", label: "nav.play" },
-  { href: "/daily", label: "nav.daily" },
-  { href: "/explore", label: "nav.explore" },
-  { href: "/me", label: "nav.me" },
-  { href: "/settings", label: "nav.settings" },
+const ITEMS: { href: string; label: MessageKey; icon: Parameters<typeof NavIcon>[0]["name"] }[] = [
+  { href: "/play", label: "nav.play", icon: "play" },
+  { href: "/daily", label: "nav.daily", icon: "daily" },
+  { href: "/explore", label: "nav.explore", icon: "explore" },
+  { href: "/me", label: "nav.me", icon: "me" },
+  { href: "/settings", label: "nav.settings", icon: "settings" },
 ];
 
 const isActive = (path: string, href: string) => path === href || path.startsWith(`${href}/`);
 
-/** Top bar on every size; the same links become a bottom tab bar under 640 px (UX_AND_DESIGN §2). */
+/** Sticky top bar from 640 px up; the same links become an icon tab bar at the bottom of the phone (UX_AND_DESIGN §2). */
 export function Nav() {
   const path = usePathname() ?? "/";
-  const links = (
-    <ul className={styles.links}>
-      {ITEMS.map((i) => (
-        <li key={i.href}>
-          <a href={i.href} aria-current={isActive(path, i.href) ? "page" : undefined}>
-            {t(i.label)}
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
   return (
     <header className={styles.header}>
-      <a href="/" className={styles.brand}>
-        {BRAND_NAME}
-      </a>
-      <nav aria-label={t("nav.main")} className={styles.nav}>
-        {links}
-      </nav>
+      <div className={styles.headerInner}>
+        <a href="/" className={styles.brand}>
+          <BrandMark />
+          <span>{BRAND_NAME}</span>
+        </a>
+        <nav aria-label={t("nav.main")} className={styles.nav}>
+          <ul className={styles.links}>
+            {ITEMS.map((i) => (
+              <li key={i.href}>
+                <a href={i.href} aria-current={isActive(path, i.href) ? "page" : undefined}>
+                  <NavIcon name={i.icon} />
+                  <span>{t(i.label)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }

@@ -170,7 +170,7 @@ countries:
   DOM:
     {
       name: Dominican Republic,
-      common: [Dominicana],
+      common: [Dominicana, DR],
       endonym: [República Dominicana],
       capitals: [Santo Domingo],
     }
@@ -278,7 +278,7 @@ countries:
   KOR:
     {
       name: South Korea,
-      common: [Korea],
+      common: [Korea, S Korea, ROK],
       official: [Republic of Korea],
       endonym: [Hanguk],
       capitals: [Seoul],
@@ -387,7 +387,7 @@ countries:
           },
         ],
     }
-  NZL: { name: New Zealand, endonym: [Aotearoa], capitals: [Wellington] }
+  NZL: { name: New Zealand, common: [NZ], endonym: [Aotearoa], capitals: [Wellington] }
   OMN: { name: Oman, official: [Sultanate of Oman], capitals: [Muscat] }
   PAK: { name: Pakistan, official: [Islamic Republic of Pakistan], capitals: [Islamabad] }
   PAN: { name: Panama, official: [Republic of Panama], capitals: [Panama City] }
@@ -411,7 +411,7 @@ countries:
   PRK:
     {
       name: North Korea,
-      common: [Korea, DPRK],
+      common: [Korea, N Korea, DPRK],
       official: [Democratic People's Republic of Korea],
       endonym: [Chosŏn],
       capitals: [Pyongyang],
@@ -429,7 +429,8 @@ countries:
   ROU: { name: Romania, endonym: [România], capitals: [Bucharest] }
   RUS: { name: Russia, official: [Russian Federation], endonym: [Rossiya], capitals: [Moscow] }
   RWA: { name: Rwanda, official: [Republic of Rwanda], capitals: [Kigali] }
-  SAU: { name: Saudi Arabia, official: [Kingdom of Saudi Arabia], capitals: [Riyadh] }
+  SAU:
+    { name: Saudi Arabia, common: [KSA], official: [Kingdom of Saudi Arabia], capitals: [Riyadh] }
   SDN: { name: Sudan, official: [Republic of the Sudan], capitals: [Khartoum] }
   SEN: { name: Senegal, official: [Republic of Senegal], endonym: [Sénégal], capitals: [Dakar] }
   SGP: { name: Singapore, official: [Republic of Singapore], capitals: [Singapore] }
@@ -439,10 +440,12 @@ countries:
   SMR: { name: San Marino, official: [Republic of San Marino], capitals: [San Marino] }
   SOM: { name: Somalia, official: [Federal Republic of Somalia], capitals: [Mogadishu] }
   SRB: { name: Serbia, official: [Republic of Serbia], endonym: [Srbija], capitals: [Belgrade] }
-  SSD: { name: South Sudan, official: [Republic of South Sudan], capitals: [Juba] }
+  SSD:
+    { name: South Sudan, common: [S Sudan], official: [Republic of South Sudan], capitals: [Juba] }
   STP:
     {
       name: São Tomé and Príncipe,
+      common: [STP],
       official: [Democratic Republic of São Tomé and Príncipe],
       capitals: [São Tomé],
     }
@@ -487,6 +490,7 @@ countries:
   TTO:
     {
       name: Trinidad and Tobago,
+      common: [T&T],
       official: [Republic of Trinidad and Tobago],
       capitals: [Port of Spain],
     }
@@ -517,7 +521,8 @@ countries:
       official: [Vatican City State],
       capitals: [Vatican City],
     }
-  VCT: { name: Saint Vincent and the Grenadines, common: [Saint Vincent], capitals: [Kingstown] }
+  VCT:
+    { name: Saint Vincent and the Grenadines, common: [Saint Vincent, SVG], capitals: [Kingstown] }
   VEN: { name: Venezuela, official: [Bolivarian Republic of Venezuela], capitals: [Caracas] }
   VNM:
     {
@@ -547,6 +552,7 @@ countries:
         }
   ZAF:
     name: South Africa
+    common: [RSA, S Africa]
     official: [Republic of South Africa]
     capitals:
       - { name: Pretoria, role: seat_of_government, note: Executive capital. }

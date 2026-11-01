@@ -189,6 +189,15 @@ export function SettingsPage() {
         <label className={styles.check}>
           <input
             type="checkbox"
+            checked={s.missedDotsOnly}
+            disabled={!ready}
+            onChange={(e) => change({ missedDotsOnly: e.target.checked })}
+          />
+          {t("set.missedDots")}
+        </label>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
             checked={s.streaks}
             disabled={!ready}
             onChange={(e) => change({ streaks: e.target.checked })}

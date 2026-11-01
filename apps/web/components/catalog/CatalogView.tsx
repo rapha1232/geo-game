@@ -46,17 +46,19 @@ function Chips<T extends string>({
   return (
     <div role="group" aria-label={label} className={styles.chips}>
       <span className={styles.chipLabel}>{label}</span>
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          aria-pressed={value === o}
-          className={styles.chip}
-          onClick={() => onChange(value === o ? "" : o)}
-        >
-          {show(o)}
-        </button>
-      ))}
+      <div className={styles.chipRow}>
+        {options.map((o) => (
+          <button
+            key={o}
+            type="button"
+            aria-pressed={value === o}
+            className={styles.chip}
+            onClick={() => onChange(value === o ? "" : o)}
+          >
+            {show(o)}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -76,66 +78,70 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
   ].filter(Boolean) as string[];
   return (
     <section className={styles.page}>
-      <h1>{t("nav.play")}</h1>
-      <div className={styles.controls}>
-        <label className={styles.search}>
-          {t("cat.search")}
+      <header className={styles.head}>
+        <h1>{t("nav.play")}</h1>
+        <p className={styles.count} role="status">
+          {t("cat.results", { n: results.length })}
+        </p>
+      </header>
+      <div className={styles.panel}>
+        <div className={styles.controls}>
+          <label className={styles.search}>
+            {t("cat.search")}
+            <input
+              type="search"
+              value={f.search}
+              onChange={(e) => setF({ ...f, search: e.target.value })}
+            />
+          </label>
+          <label className={styles.sort}>
+            {t("cat.sort")}
+            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+              {(["recommended", "az", "recent"] as const).map((s) => (
+                <option key={s} value={s}>
+                  {t(`cat.sort.${s}` as MessageKey)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <Chips
+          label={t("cat.topic")}
+          value={f.topic}
+          options={TOPICS}
+          show={(v) => t(`cat.topic.${v}` as MessageKey)}
+          onChange={(topic) => setF({ ...f, topic })}
+        />
+        <Chips
+          label={t("cat.format")}
+          value={f.format}
+          options={FORMATS}
+          show={(v) => v}
+          onChange={(format) => setF({ ...f, format })}
+        />
+        <Chips
+          label={t("cat.length")}
+          value={f.length}
+          options={LENGTHS}
+          show={(v) => t(`cat.length.${v}` as MessageKey)}
+          onChange={(length) => setF({ ...f, length })}
+        />
+        <Chips
+          label={t("cat.region")}
+          value={f.region}
+          options={REGIONS}
+          show={(v) => t(`cat.region.${v}` as MessageKey)}
+          onChange={(region) => setF({ ...f, region })}
+        />
+        <label className={styles.check}>
           <input
-            type="search"
-            value={f.search}
-            onChange={(e) => setF({ ...f, search: e.target.value })}
+            type="checkbox"
+            checked={f.favoritesOnly}
+            onChange={(e) => setF({ ...f, favoritesOnly: e.target.checked })}
           />
-        </label>
-        <label className={styles.sort}>
-          {t("cat.sort")}
-          <select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
-            {(["recommended", "az", "recent"] as const).map((s) => (
-              <option key={s} value={s}>
-                {t(`cat.sort.${s}` as MessageKey)}
-              </option>
-            ))}
-          </select>
+          {t("cat.favoritesOnly")}
         </label>
       </div>
-      <Chips
-        label={t("cat.topic")}
-        value={f.topic}
-        options={TOPICS}
-        show={(v) => t(`cat.topic.${v}` as MessageKey)}
-        onChange={(topic) => setF({ ...f, topic })}
-      />
-      <Chips
-        label={t("cat.format")}
-        value={f.format}
-        options={FORMATS}
-        show={(v) => v}
-        onChange={(format) => setF({ ...f, format })}
-      />
-      <Chips
-        label={t("cat.length")}
-        value={f.length}
-        options={LENGTHS}
-        show={(v) => t(`cat.length.${v}` as MessageKey)}
-        onChange={(length) => setF({ ...f, length })}
-      />
-      <Chips
-        label={t("cat.region")}
-        value={f.region}
-        options={REGIONS}
-        show={(v) => t(`cat.region.${v}` as MessageKey)}
-        onChange={(region) => setF({ ...f, region })}
-      />
-      <label className={styles.check}>
-        <input
-          type="checkbox"
-          checked={f.favoritesOnly}
-          onChange={(e) => setF({ ...f, favoritesOnly: e.target.checked })}
-        />
-        {t("cat.favoritesOnly")}
-      </label>
-      <p className={styles.count} role="status">
-        {t("cat.results", { n: results.length })}
-      </p>
       {results.length === 0 ? (
         <Card className={styles.empty}>
           <p>{t("cat.noMatch", { filters: active.join(" + ") })}</p>
@@ -150,7 +156,9 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
                 <Card as="article" className={styles.card}>
                   <div className={styles.cardHead}>
                     <h2>
-                      <a href={i.href}>{i.title}</a>
+                      <a href={i.href} className={styles.stretched}>
+                        {i.title}
+                      </a>
                     </h2>
                     <button
                       type="button"

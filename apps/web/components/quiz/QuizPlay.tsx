@@ -55,10 +55,14 @@ export type QuizPlayProps = {
   now: number;
   /** "Choose without the map" for Find-it quizzes. */
   accessible: boolean;
+  /** Leave correct answers uncoloured and mark only missed countries with a dot. */
+  missedDotsOnly?: boolean;
+  onMissedDotsOnly?: (on: boolean) => void;
   onSession: (s: QuizSession) => void;
   /** Test seam: replaces the real map. */
   renderMap?: (p: {
     states: Record<string, MapFeatureState>;
+    markers?: ReadonlySet<string>;
     mode: MapMode;
     onSelect?: ((id: string) => void) | undefined;
   }) => ReactNode;
@@ -213,22 +217,26 @@ export function QuizPlay(p: QuizPlayProps) {
   };
 
   // --- map states -------------------------------------------------------------------------------------------------
-  const states = useMemo(() => {
+  const dotsOnly = p.missedDotsOnly === true;
+  const { states, markers } = useMemo(() => {
     const out: Record<string, MapFeatureState> = {};
+    const markers = new Set<string>();
     const countriesOf = (id: string): string[] => world.groupById.get(id)?.members.slice() ?? [id];
     s.items.forEach((it, i) => {
       const q = s.quiz.items[i] as QuizItem;
       const ids = format === "TYPE_ALL" ? [q.id] : countriesOf(q.id);
-      if (it.status === "correct") for (const id of ids) out[id] = "correct";
-      else if (it.status === "missed" || it.status === "revealed")
-        for (const id of ids) out[id] = "wrong";
-      else if (it.highlighted) for (const id of ids) out[id] = "highlight";
+      if (it.status === "correct") {
+        if (!dotsOnly) for (const id of ids) out[id] = "correct";
+      } else if (it.status === "missed" || it.status === "revealed") {
+        if (dotsOnly) for (const id of ids) markers.add(id);
+        else for (const id of ids) out[id] = "wrong";
+      } else if (it.highlighted) for (const id of ids) out[id] = "highlight";
     });
     if (item && s.phase !== "review" && item.prompt.kind === "highlight")
       for (const id of countriesOf(item.prompt.target)) out[id] = "highlight";
     if (flash) out[flash.id] = flash.state;
-    return out;
-  }, [s, world, format, item, flash]);
+    return { states: out, markers };
+  }, [s, world, format, item, flash, dotsOnly]);
 
   const left = timeLeftMs(s, now);
   const warn =
@@ -331,6 +339,9 @@ export function QuizPlay(p: QuizPlayProps) {
             {s.lives === 1 ? t("qz.life") : t("qz.lives", { n: s.lives })}
           </p>
         )}
+        <div className={styles.progress} aria-hidden="true">
+          <span style={{ width: `${total === 0 ? 0 : (doneCount / total) * 100}%` }} />
+        </div>
         <p className={`${styles.clock} ${warn ? styles.warn : ""}`} role="timer" aria-live="off">
           <span aria-hidden="true">{warn ? "⏱ " : ""}</span>
           {left === null
@@ -343,11 +354,21 @@ export function QuizPlay(p: QuizPlayProps) {
             : t("qz.timeLeft", { time: formatClock(left) })}
         </p>
         <div className={styles.headActions}>
+          {p.onMissedDotsOnly && showMap && (
+            <label className={styles.dotToggle}>
+              <input
+                type="checkbox"
+                checked={dotsOnly}
+                onChange={(e) => p.onMissedDotsOnly?.(e.target.checked)}
+              />
+              {t("qz.missedDots")}
+            </label>
+          )}
           <Button onPress={() => withState(paused ? resume(s, mono()) : pause(s, mono()))}>
             {paused ? t("qz.continue") : t("qz.pause")}
           </Button>
           {confirming ? (
-            <span role="group" aria-label={t("qz.giveUpConfirm")}>
+            <span role="group" className={styles.confirmGroup} aria-label={t("qz.giveUpConfirm")}>
               <Button variant="primary" onPress={() => withState(giveUp(s, mono()))}>
                 {t("qz.giveUpYes")}
               </Button>
@@ -477,6 +498,7 @@ export function QuizPlay(p: QuizPlayProps) {
               {p.renderMap ? (
                 p.renderMap({
                   states,
+                  markers,
                   mode: mapMode,
                   onSelect: format === "MAP_CLICK" ? clicked : undefined,
                 })
@@ -485,6 +507,7 @@ export function QuizPlay(p: QuizPlayProps) {
                   world={world}
                   labelPoints={facts.labelPoints}
                   states={states}
+                  markers={markers}
                   mode={mapMode}
                   {...(format === "MAP_CLICK" ? { onSelect: clicked } : {})}
                 />

@@ -75,6 +75,8 @@ export type GameMapProps = {
   classes?: Readonly<Record<string, number>>;
   /** Features drawn faded and desaturated, e.g. the non-matches of a filter. */
   dimmed?: ReadonlySet<string>;
+  /** Features that carry a small dot at their label point (e.g. the countries a player missed). */
+  markers?: ReadonlySet<string>;
   /** The feature under the pointer, or focused with the keyboard; null when there is none. */
   onHover?: (id: string | null) => void;
   mode: MapMode;
@@ -149,6 +151,7 @@ export function GameMap({
   states = {},
   classes,
   dimmed,
+  markers,
   onHover,
   mode,
   onSelect,
@@ -527,6 +530,25 @@ export function GameMap({
             data-ring={r.id}
           />
         ))}
+        {markers && markers.size > 0 && (
+          <g className={styles.markers} data-markers="">
+            {[...markers].flatMap((id) => {
+              const a = anchors.get(id);
+              if (!a) return [];
+              const [cx, cy] = baseToScreen(t, a[0], a[1]);
+              return [
+                <circle
+                  key={id}
+                  cx={cx}
+                  cy={cy}
+                  r={4.5}
+                  className={styles.marker}
+                  data-marker={id}
+                />,
+              ];
+            })}
+          </g>
+        )}
         {pinScreen && targetScreen && (
           <line
             x1={pinScreen[0]}

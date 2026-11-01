@@ -43,7 +43,7 @@ export type ColorToken = keyof (typeof colorTokens)["light"];
 
 /** 4 px base scale (px). */
 export const space = [4, 8, 12, 16, 24, 32, 48, 64] as const;
-export const radius = { control: 6, card: 12 } as const;
+export const radius = { control: 10, card: 16 } as const;
 /** Type scale (rem). */
 export const fontScale = [0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25] as const;
 export const motion = {

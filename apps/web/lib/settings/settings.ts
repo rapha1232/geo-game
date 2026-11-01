@@ -17,6 +17,8 @@ export type Settings = {
   streaks: boolean;
   /** Silhouette (unlimited play): add the Neighbors follow-up (silhouette §3). */
   neighborsFollowUp: boolean;
+  /** Quiz map: leave correct answers uncoloured and mark only the missed countries with a dot. */
+  missedDotsOnly: boolean;
   /** Share anonymous per-item answer statistics (API_CONTRACTS §4.6). Off by default; nothing is sent while it is off. */
   telemetry: boolean;
 };
@@ -30,6 +32,7 @@ export const DEFAULT_SETTINGS: Settings = {
   accessibleDefault: false,
   streaks: false,
   neighborsFollowUp: false,
+  missedDotsOnly: false,
   telemetry: false,
 };
 
@@ -54,6 +57,7 @@ export function sanitize(raw: unknown): Settings {
     accessibleDefault: r["accessibleDefault"] === true,
     streaks: r["streaks"] === true,
     neighborsFollowUp: r["neighborsFollowUp"] === true,
+    missedDotsOnly: r["missedDotsOnly"] === true,
     telemetry: r["telemetry"] === true,
   };
 }

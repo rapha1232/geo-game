@@ -26,8 +26,11 @@
   --space-7: 48px;
   --space-8: 64px;
 
-  --radius-control: 6px;
-  --radius-card: 12px;
+  --radius-sm: 6px;
+  --radius-control: 10px;
+  --radius-md: 10px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
 
   --font-ui:
     "Source Sans 3 Variable", "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -40,6 +43,14 @@
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;
+  /* Fluid display sizes for page titles and the home hero. */
+  --text-title: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-display: clamp(2.5rem, 1.2rem + 6vw, 5.25rem);
+
+  --page-max: 80rem;
+  --page-pad: clamp(16px, 4vw, 40px);
+  --header-h: 64px;
+  --tabbar-h: 60px;
 
   --motion-micro: 120ms;
   --motion-panel: 200ms;
@@ -49,6 +60,8 @@
   --focus-ring-width: 3px;
   --touch-target: 44px;
   --shadow-overlay: 0 12px 40px rgb(26 36 51 / 0.18);
+  --shadow-card: 0 1px 2px rgb(26 36 51 / 0.05), 0 4px 14px rgb(26 36 51 / 0.05);
+  --shadow-raised: 0 2px 4px rgb(26 36 51 / 0.06), 0 12px 28px rgb(26 36 51 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -70,6 +83,8 @@
     --color-focus: #93c5fd;
     color-scheme: dark;
     --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.5);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.25);
+    --shadow-raised: 0 2px 4px rgb(0 0 0 / 0.35), 0 12px 28px rgb(0 0 0 / 0.4);
   }
 }
 
@@ -91,6 +106,8 @@
   --color-focus: #93c5fd;
   color-scheme: dark;
   --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.5);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.25);
+  --shadow-raised: 0 2px 4px rgb(0 0 0 / 0.35), 0 12px 28px rgb(0 0 0 / 0.4);
 }
 
 /* High-contrast map palette (Settings, UX_AND_DESIGN §3.6): land and sea far apart, strong outlines. */

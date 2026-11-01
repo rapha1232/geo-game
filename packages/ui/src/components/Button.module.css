@@ -10,19 +10,38 @@
   border-radius: var(--radius-control);
   font: inherit;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background-color var(--motion-micro) var(--ease),
     border-color var(--motion-micro) var(--ease),
-    color var(--motion-micro) var(--ease);
+    color var(--motion-micro) var(--ease),
+    box-shadow var(--motion-micro) var(--ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .button {
+    transition:
+      background-color var(--motion-micro) var(--ease),
+      border-color var(--motion-micro) var(--ease),
+      color var(--motion-micro) var(--ease),
+      box-shadow var(--motion-micro) var(--ease),
+      transform var(--motion-micro) var(--ease);
+  }
+  .button[data-pressed]:not([data-disabled]) {
+    transform: scale(0.98);
+  }
 }
 
 .primary {
   background: var(--color-accent);
   color: var(--color-text-on-accent);
+  box-shadow: 0 1px 2px rgb(26 36 51 / 0.18);
 }
 .primary[data-hovered] {
   filter: brightness(1.08);
+  box-shadow: var(--shadow-card);
 }
 .primary[data-pressed] {
   filter: brightness(0.94);
@@ -35,6 +54,7 @@
 }
 .secondary[data-hovered] {
   border-color: var(--color-text);
+  background: var(--tint-bg);
 }
 .secondary[data-pressed] {
   background: var(--color-bg);
@@ -45,8 +65,7 @@
   color: var(--color-text);
 }
 .ghost[data-hovered] {
-  background: var(--color-surface);
-  border-color: var(--color-border);
+  background: var(--tint-hover);
 }
 
 .button[data-disabled] {

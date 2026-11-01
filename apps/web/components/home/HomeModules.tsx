@@ -8,6 +8,7 @@ import { LIBRARY } from "../../lib/quiz/library";
 import { t } from "../../lib/i18n";
 import { ContinueCard } from "../shell/ContinueCard";
 import { useServices } from "../shell/StorageProvider";
+import { HeroGlobe } from "./HeroGlobe";
 import styles from "./home.module.css";
 
 const GAMES = [
@@ -57,18 +58,26 @@ export function HomeModules() {
   return (
     <div className={styles.modules}>
       <section className={styles.hero}>
-        <h1>{t("home.hero")}</h1>
-        <p className={styles.lede}>{t("app.tagline")}</p>
-        <a
-          className={styles.cta}
-          href={href}
-          onClick={() => setHref(pickPlaySomething(items, Math.random).href)}
-          onMouseEnter={() => setHref(pickPlaySomething(items, Math.random).href)}
-          onFocus={() => setHref(pickPlaySomething(items, Math.random).href)}
-        >
-          <span aria-hidden="true">▶ </span>
-          {t("home.playNow")}
-        </a>
+        <div className={styles.heroText}>
+          <h1>{t("home.hero")}</h1>
+          <p className={styles.lede}>{t("app.tagline")}</p>
+          <div className={styles.ctaRow}>
+            <a
+              className={styles.cta}
+              href={href}
+              onClick={() => setHref(pickPlaySomething(items, Math.random).href)}
+              onMouseEnter={() => setHref(pickPlaySomething(items, Math.random).href)}
+              onFocus={() => setHref(pickPlaySomething(items, Math.random).href)}
+            >
+              <span aria-hidden="true">▶ </span>
+              {t("home.playNow")}
+            </a>
+            <a className={styles.ctaGhost} href="/play">
+              {t("home.allQuizzes")}
+            </a>
+          </div>
+        </div>
+        <HeroGlobe />
       </section>
 
       <ContinueCard />
@@ -80,14 +89,18 @@ export function HomeModules() {
             <li key={g.href}>
               <Card as="article" className={styles.card}>
                 <h3>
-                  <a href={g.href}>{g.title}</a>
+                  <a href={g.href} className={styles.stretched}>
+                    {g.title}
+                  </a>
                 </h3>
                 <p>{g.pitch}</p>
+                <span className={styles.arrow} aria-hidden="true">
+                  →
+                </span>
               </Card>
             </li>
           ))}
         </ul>
-        <a href="/play">{t("home.allQuizzes")}</a>
       </section>
 
       <section aria-labelledby="home-popular">
@@ -106,16 +119,18 @@ export function HomeModules() {
 
       <section aria-labelledby="home-today">
         <h2 id="home-today">{t("home.today")}</h2>
-        <p>
-          <a href="/daily">{t("home.todaySil")}</a>{" "}
-          <span>
+        <div className={styles.today}>
+          <a href="/daily" className={styles.stretched}>
+            {t("home.todaySil")}
+          </a>
+          <span className={styles.pill}>
             {dailyDone === null
               ? ""
               : dailyDone
                 ? `✓ ${t("home.todayDone")}`
                 : `○ ${t("home.todayOpen")}`}
           </span>
-        </p>
+        </div>
       </section>
     </div>
   );

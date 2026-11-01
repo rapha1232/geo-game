@@ -95,6 +95,7 @@ export const messages = {
   "qz.giveUpYes": "Yes, give up",
   "qz.giveUpNo": "Keep playing",
   "qz.pause": "Pause",
+  "qz.missedDots": "Dots for missed only",
   "qz.paused": "Paused",
   "qz.continue": "Continue",
   "qz.timeLeft": "{time} left",
