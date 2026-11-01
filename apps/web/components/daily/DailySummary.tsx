@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, Card } from "@meridian/ui";
 import type { GameResult } from "@meridian/schemas";
 import { formatCountdown } from "../../lib/daily/time";
-import { factPinShare, silhouetteShare } from "../../lib/daily/share";
+import { borderRunShare, factPinShare, silhouetteShare } from "../../lib/daily/share";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./daily.module.css";
 
@@ -30,16 +30,25 @@ export function DailySummary({
   result,
   link,
   msToNext,
-  unlimitedHref = result.game_id === "fact-pin" ? "/play/fact-pin" : "/play/silhouette",
-  practiceHref = result.game_id === "fact-pin" ? null : "/play/silhouette/daily?practice=1",
+  unlimitedHref = result.game_id === "fact-pin"
+    ? "/play/fact-pin"
+    : result.game_id === "border-run"
+      ? "/play/border-run"
+      : "/play/silhouette",
+  practiceHref = result.game_id === "silhouette" ? "/play/silhouette/daily?practice=1" : null,
   writeClipboard = (text) => navigator.clipboard.writeText(text),
 }: DailySummaryProps) {
   const [copy, setCopy] = useState<"idle" | "ok" | "failed">("idle");
   const fact = result.game_id === "fact-pin";
-  const text = fact ? factPinShare(result, link) : silhouetteShare(result, link);
+  const border = result.game_id === "border-run";
+  const text = fact
+    ? factPinShare(result, link)
+    : border
+      ? borderRunShare(result, link)
+      : silhouetteShare(result, link);
   return (
     <Card className={styles.summary}>
-      <h2>{t(fact ? "daily.doneFactPin" : "daily.done")}</h2>
+      <h2>{t(fact ? "daily.doneFactPin" : border ? "daily.doneBorderRun" : "daily.done")}</h2>
       <p>
         {t("daily.result", {
           outcome: t(`me.outcome.${result.outcome}` as MessageKey),
@@ -53,7 +62,7 @@ export function DailySummary({
       </pre>
       <div className={styles.actions}>
         <a className={styles.primary} href={unlimitedHref}>
-          {fact ? t("daily.moreFacts") : t("daily.keepPlaying")}
+          {fact ? t("daily.moreFacts") : border ? t("daily.moreRoutes") : t("daily.keepPlaying")}
         </a>
         <Button
           onPress={() => {

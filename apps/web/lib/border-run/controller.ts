@@ -17,7 +17,11 @@ import {
 } from "@meridian/border-run";
 import type { LoadedBorderRun } from "./data";
 
-export type Config = BrConfig & { mode: Extract<Mode, "unlimited" | "practice"> };
+export type Config = BrConfig & {
+  mode: Extract<Mode, "unlimited" | "practice" | "daily">;
+  /** Local calendar date of a daily route (`YYYY-MM-DD`). */
+  date?: string;
+};
 
 export const DEFAULT_CONFIG: Config = { ...ENGINE_DEFAULT, mode: "unlimited" };
 
@@ -86,6 +90,34 @@ export function newSession(
   };
 }
 
+/** Today's daily: the route comes from the schedule, so nobody's history matters and everyone gets the same one. */
+export function newDailySession(
+  data: LoadedBorderRun,
+  seed: string,
+  a: string,
+  b: string,
+  date: string,
+  now = 0,
+  mode: "daily" | "practice" = "daily",
+): Session {
+  const config: Config = { ...DEFAULT_CONFIG, mode, date };
+  return {
+    seed,
+    config,
+    roundNo: 1,
+    round: startRound(data.bw(false), { a, b, mode, config }),
+    history: [],
+    guardRelaxed: false,
+    done: [],
+    phase: "routing",
+    lastEvent: null,
+    timer: startTimer(newTimer(), now),
+    startedAt: now,
+    resultId: null,
+    resumed: false,
+  };
+}
+
 /** True when the options can produce at least one route (e.g. a small continent on Hard has none). */
 export const hasRoutes = (data: LoadedBorderRun, config: Config): boolean =>
   pairPool(data.bw(config.crossings).graph, config, data.continentOf).length > 0;
@@ -134,7 +166,7 @@ export const points = (s: Session): number => roundPoints(s.round);
 
 /** Records the finished round and starts the next one. */
 export function next(data: LoadedBorderRun, s: Session, now = 0): Session {
-  if (s.phase !== "review") return s;
+  if (s.phase !== "review" || s.config.mode === "daily") return s;
   const roundNo = s.roundNo + 1;
   return {
     ...s,

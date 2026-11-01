@@ -415,7 +415,11 @@ export function quotaRules(c: ContentSet): Issue[] {
 }
 
 /** Repeat windows in days (silhouette §11, fact-pin §11; Fact Pin is 14 days until the bank grows). */
-export const DAILY_WINDOWS: Record<string, number> = { silhouette: 150, "fact-pin": 14 };
+export const DAILY_WINDOWS: Record<string, number> = {
+  silhouette: 150,
+  "fact-pin": 14,
+  "border-run": 14,
+};
 
 /** DAILY_REPEAT: no target twice within the game's window, no two consecutive same-continent silhouettes, five distinct categories per Fact Pin day. */
 export function dailyRules(c: ContentSet): Issue[] {
@@ -487,6 +491,36 @@ export function dailyRules(c: ContentSet): Issue[] {
               message: `silhouette: the 7-day mean difficulty from ${dates[i]} is ${m.toFixed(3)}, more than 0.1 from the pool mean ${poolMean.toFixed(3)}`,
             });
         }
+      }
+    }
+    if (s.game === "border-run" && c.adjacency) {
+      const land = c.adjacency.filter((e) => !e.crossing);
+      const adj = new Map<string, string[]>();
+      for (const e of land) {
+        (adj.get(e.a) ?? adj.set(e.a, []).get(e.a)!).push(e.b);
+        (adj.get(e.b) ?? adj.set(e.b, []).get(e.b)!).push(e.a);
+      }
+      const hops = (from: string, to: string): number | null => {
+        const dist = new Map<string, number>([[from, 0]]);
+        const queue = [from];
+        for (let i = 0; i < queue.length; i++)
+          for (const n of adj.get(queue[i] as string) ?? [])
+            if (!dist.has(n)) {
+              dist.set(n, (dist.get(queue[i] as string) as number) + 1);
+              queue.push(n);
+            }
+        return dist.get(to) ?? null;
+      };
+      for (const d of dates) {
+        const [a, b] = s.days[d] ?? [];
+        const len = a && b ? hops(a, b) : null;
+        if (len === null || len - 1 < 3 || len - 1 > 5)
+          issues.push({
+            code: "DAILY_REPEAT",
+            level: "error",
+            ref: d,
+            message: `border-run ${d}: ${a} to ${b} is not a Normal land route (3 to 5 countries in between)`,
+          });
       }
     }
     if (s.game === "fact-pin") {

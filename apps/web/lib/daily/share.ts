@@ -46,3 +46,19 @@ export function factPinShare(result: GameResult, link: string): string {
     link,
   ].join("\n");
 }
+
+/**
+ * Spoiler-free share text for a finished Border Run daily: one mark per guess (on route, close, off route) and the
+ * verdict, never the countries.
+ */
+export function borderRunShare(result: GameResult, link: string): string {
+  const guesses = (result.meta?.guesses ?? []) as { cls: string }[];
+  const mark: Record<string, string> = { "on-route": "■", near: "◐", "off-route": "✕" };
+  const solved = result.outcome === "solved";
+  return [
+    `${BRAND_NAME} · Border Run · ${result.daily_date ?? result.ended_at.slice(0, 10)}`,
+    guesses.map((g) => mark[g.cls] ?? "?").join(" "),
+    `${solved ? "✓" : "✕"} ${guesses.length} guesses · ${result.score}/${result.max_score}`,
+    link,
+  ].join("\n");
+}

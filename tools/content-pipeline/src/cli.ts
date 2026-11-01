@@ -4,7 +4,12 @@ import { parse } from "yaml";
 import { ambiguityGroup, crossing, dispute, sourceRegistry } from "@meridian/schemas";
 import { z } from "zod";
 import { adjacencyOverrides, silhouetteOverrides } from "./derive.ts";
-import { extendFactPinSchedule, extendSchedule } from "./daily.ts";
+import {
+  borderRunPairs,
+  extendBorderRunSchedule,
+  extendFactPinSchedule,
+  extendSchedule,
+} from "./daily.ts";
 import { authoredFile, readPopulatedPlaces } from "./facts.ts";
 import { readdir } from "node:fs/promises";
 import { confusablesByCode, confusablesFile, extractFlags } from "./flags.ts";
@@ -42,6 +47,7 @@ const path = {
   silhouettes: join(root, "content/overrides/silhouettes.yaml"),
   dailySilhouette: join(root, "content/daily/silhouette.json"),
   dailyFactPin: join(root, "content/daily/fact-pin.json"),
+  dailyBorderRun: join(root, "content/daily/border-run.json"),
   confusables: join(root, "content/flags/confusables.yaml"),
   landlocked: join(root, "content/landlocked.yaml"),
   facts: join(root, "content/facts"),
@@ -158,6 +164,7 @@ async function readDailyFile(file: string) {
 const readDaily = async () => [
   ...(await readDailyFile(path.dailySilhouette)),
   ...(await readDailyFile(path.dailyFactPin)),
+  ...(await readDailyFile(path.dailyBorderRun)),
 ];
 
 async function loadInputs(args: string[]) {
@@ -373,6 +380,21 @@ async function cmdDaily(args: string[]): Promise<void> {
       seed: "FACT-PIN-DAILY-1",
     });
     file = path.dailyFactPin;
+  } else if (game === "border-run") {
+    const adjacency = JSON.parse(
+      new TextDecoder().decode(out.files.find((f) => f.name === "core.adjacency")?.bytes),
+    ) as { edges: { a: string; b: string }[] };
+    schedule = extendBorderRunSchedule({
+      pairs: borderRunPairs(
+        pool.map((p) => p.id),
+        adjacency.edges,
+      ),
+      existing,
+      from,
+      to,
+      seed: "BORDER-RUN-DAILY-1",
+    });
+    file = path.dailyBorderRun;
   } else schedule = extendSchedule({ pool, existing, from, to, seed: "SILHOUETTE-DAILY-1" });
   await mkdir(dirname(file), { recursive: true });
   await writeFile(file, `${stableStringify(schedule)}\n`);

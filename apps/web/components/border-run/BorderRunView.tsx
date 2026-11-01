@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { AnswerInput, Button, Card, GameMap, type Lod, type MapFeatureState } from "@meridian/ui";
 import type { Topology } from "topojson-specification";
 import {
@@ -56,6 +56,8 @@ export type BorderRunViewProps = {
   onChange: (s: Session) => void;
   onConfig: (c: Config) => void;
   contentVersion?: string;
+  /** A daily has one fixed route: no options, no next round. */
+  endSlot?: ReactNode;
 };
 
 /** The whole play screen. A pure view over a Session: every action is a controller call that returns the next one. */
@@ -65,6 +67,7 @@ export function BorderRunView({
   onChange,
   onConfig,
   contentVersion,
+  endSlot,
 }: BorderRunViewProps) {
   const services = useServices();
   const [text, setText] = useState("");
@@ -158,48 +161,50 @@ export function BorderRunView({
         </p>
       </header>
 
-      <fieldset className={styles.options}>
-        <legend className={styles.srOnly}>{t("br.options")}</legend>
-        <label>
-          {t("br.opt.route")}
-          <select
-            value={s.config.route}
-            onChange={(e) => set({ route: e.target.value as RouteLength })}
-          >
-            {(Object.keys(M_RANGE) as RouteLength[]).map((k) => (
-              <option key={k} value={k}>
-                {t(`br.opt.route.${k}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t("br.opt.region")}
-          <select value={s.config.region} onChange={(e) => set({ region: e.target.value })}>
-            {REGIONS.map((k) => (
-              <option key={k} value={k}>
-                {k === "world" ? t("br.opt.region.world") : t(`sil.continent.${k}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.check}>
-          <input
-            type="checkbox"
-            checked={s.config.crossings}
-            onChange={(e) => set({ crossings: e.target.checked })}
-          />
-          {t("br.opt.crossings")}
-        </label>
-        <label className={styles.check}>
-          <input
-            type="checkbox"
-            checked={s.config.mode === "practice"}
-            onChange={(e) => set({ mode: e.target.checked ? "practice" : "unlimited" })}
-          />
-          {t("br.opt.practice")}
-        </label>
-      </fieldset>
+      {s.config.mode !== "daily" && (
+        <fieldset className={styles.options}>
+          <legend className={styles.srOnly}>{t("br.options")}</legend>
+          <label>
+            {t("br.opt.route")}
+            <select
+              value={s.config.route}
+              onChange={(e) => set({ route: e.target.value as RouteLength })}
+            >
+              {(Object.keys(M_RANGE) as RouteLength[]).map((k) => (
+                <option key={k} value={k}>
+                  {t(`br.opt.route.${k}` as MessageKey)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t("br.opt.region")}
+            <select value={s.config.region} onChange={(e) => set({ region: e.target.value })}>
+              {REGIONS.map((k) => (
+                <option key={k} value={k}>
+                  {k === "world" ? t("br.opt.region.world") : t(`sil.continent.${k}` as MessageKey)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.check}>
+            <input
+              type="checkbox"
+              checked={s.config.crossings}
+              onChange={(e) => set({ crossings: e.target.checked })}
+            />
+            {t("br.opt.crossings")}
+          </label>
+          <label className={styles.check}>
+            <input
+              type="checkbox"
+              checked={s.config.mode === "practice"}
+              onChange={(e) => set({ mode: e.target.checked ? "practice" : "unlimited" })}
+            />
+            {t("br.opt.practice")}
+          </label>
+        </fieldset>
+      )}
 
       {noRoutes && (
         <p role="alert" className={styles.note}>
@@ -366,9 +371,11 @@ export function BorderRunView({
               to: r.b,
             }}
           />
-          <Button variant="primary" onPress={() => onChange(next(data, s, Date.now()))}>
-            {t("br.next")}
-          </Button>
+          {endSlot ?? (
+            <Button variant="primary" onPress={() => onChange(next(data, s, Date.now()))}>
+              {t("br.next")}
+            </Button>
+          )}
         </Card>
       )}
     </div>

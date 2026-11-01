@@ -138,3 +138,72 @@ export function extendFactPinSchedule(opts: {
     days,
   } as DailySchedule;
 }
+
+/** Border Run daily rules (border-run §11): one route a day, no endpoint reused within 14 days. */
+export const BORDER_RUN_NO_REPEAT_DAYS = 14;
+
+/** Every land-border pair whose route needs 3 to 5 countries in between (the Normal range), as `a|b` with a < b. */
+export function borderRunPairs(
+  ids: readonly string[],
+  edges: readonly { a: string; b: string }[],
+  range: readonly [number, number] = [3, 5],
+): string[] {
+  const nodes = new Set(ids);
+  const adj = new Map<string, string[]>([...nodes].map((id) => [id, []]));
+  for (const e of edges)
+    if (nodes.has(e.a) && nodes.has(e.b)) {
+      adj.get(e.a)?.push(e.b);
+      adj.get(e.b)?.push(e.a);
+    }
+  const out: string[] = [];
+  for (const a of [...nodes].sort()) {
+    const dist = new Map<string, number>([[a, 0]]);
+    const queue = [a];
+    for (let i = 0; i < queue.length; i++) {
+      const cur = queue[i] as string;
+      for (const n of adj.get(cur) ?? [])
+        if (!dist.has(n)) {
+          dist.set(n, (dist.get(cur) as number) + 1);
+          queue.push(n);
+        }
+    }
+    for (const [b, d] of dist)
+      if (b > a && d - 1 >= range[0] && d - 1 <= range[1]) out.push(`${a}|${b}`);
+  }
+  return out;
+}
+
+/**
+ * Extends the Border Run daily schedule to `to`: one route a day as [A, B], no endpoint used within the window.
+ * Deterministic for the same pool, history and seed.
+ */
+export function extendBorderRunSchedule(opts: {
+  pairs: readonly string[];
+  existing?: DailySchedule | undefined;
+  from: string;
+  to: string;
+  seed: string;
+  window?: number;
+}): DailySchedule {
+  const window = opts.window ?? BORDER_RUN_NO_REPEAT_DAYS;
+  const days: Record<string, string[]> = { ...(opts.existing?.days ?? {}) };
+  const first = opts.existing?.from ?? opts.from;
+  const rng = new Rng(`${opts.seed}|border-run-daily`);
+  let date = opts.existing ? addDays(opts.existing.to, 1) : opts.from;
+  for (; date <= opts.to; date = addDays(date, 1)) {
+    const used = new Set<string>();
+    for (let i = 1; i <= window; i++) for (const id of days[addDays(date, -i)] ?? []) used.add(id);
+    const fresh = opts.pairs.filter((p) => !p.split("|").some((id) => used.has(id)));
+    if (fresh.length === 0)
+      throw new Error(`${date}: no Border Run route is free of recent endpoints`);
+    const pair = fresh[rng.nextInt(fresh.length)] as string;
+    const [x, y] = pair.split("|") as [string, string];
+    days[date] = rng.nextInt(2) === 1 ? [y, x] : [x, y];
+  }
+  return {
+    game: "border-run",
+    from: first,
+    to: opts.to < first ? first : opts.to,
+    days,
+  } as DailySchedule;
+}

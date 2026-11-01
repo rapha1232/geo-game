@@ -192,14 +192,14 @@ describe("DailyHub", () => {
         <DailyHub />
       </ServicesContext.Provider>,
     );
-    // Both dailies (Silhouette and Fact Pin) are missing for today in this fixture.
+    // All three dailies (Silhouette, Fact Pin and Border Run) are missing for today in this fixture.
     await waitFor(() =>
-      expect(screen.getAllByText(/Today's daily isn't available/)).toHaveLength(2),
+      expect(screen.getAllByText(/Today's daily isn't available/)).toHaveLength(3),
     );
     expect(
       screen
         .getAllByRole("link", { name: "Keep playing: Unlimited" })
         .map((a) => a.getAttribute("href")),
-    ).toEqual(["/play/silhouette", "/play/fact-pin"]);
+    ).toEqual(["/play/silhouette", "/play/fact-pin", "/play/border-run"]);
   });
 });

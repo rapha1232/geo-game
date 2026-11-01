@@ -21,6 +21,7 @@ export function borderRunResult(
     config,
     config_hash: configHash(config),
     seed: s.seed,
+    ...(s.config.mode === "daily" && s.config.date ? { daily_date: s.config.date } : {}),
     content_version: ctx.contentVersion,
     score: roundPoints(r),
     max_score: MAX_SCORE,

@@ -128,3 +128,36 @@ describe("Border Run content", () => {
     expect(data.bw(true).graph.get("country:GBR")).toEqual(["country:FRA"]);
   });
 });
+
+describe("Border Run daily", () => {
+  it("AC-PL-024 starts the scheduled route, ends after it, and shares without naming a country", async () => {
+    const { newDailySession, next, guess } = await import("../lib/border-run/controller");
+    const { borderRunResult } = await import("../lib/results/border-run");
+    const { borderRunShare } = await import("../lib/daily/share");
+    const s0 = newDailySession(
+      data,
+      "2026110500",
+      "country:ESP",
+      "country:POL",
+      "2026-11-05",
+      1000,
+    );
+    expect(s0.round.a).toBe("country:ESP");
+    expect(s0.config.mode).toBe("daily");
+    const done = guess(data, guess(data, s0, "Italy", 2000), "France", 3000);
+    const won = guess(data, done, "Germany", 4000);
+    expect(won.round.status).toBe("won");
+    expect(next(data, won, 5000)).toBe(won);
+    const result = borderRunResult(won, {
+      id: "01J00000000000000000000000",
+      contentVersion: "2026.10.0",
+      endedAt: 5000,
+    });
+    expect(result.daily_date).toBe("2026-11-05");
+    expect(result.mode).toBe("daily");
+    const text = borderRunShare(result, "https://x.test/daily");
+    expect(text).toContain("Border Run · 2026-11-05");
+    expect(text).not.toMatch(/Spain|Poland|France|Germany|Italy/);
+    expect(text).toMatch(/✕ ◐|✕ ■|■/);
+  });
+});

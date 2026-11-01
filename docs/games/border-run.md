@@ -27,7 +27,7 @@ Learn neighbor relationships and regional layout by routing overland: "From Spai
 | Mode | Description | Phase |
 |---|---|---|
 | Unlimited | Endless rounds | R2 |
-| Daily | One route per local date | R2 (after T2.9: needs a schedule generator) |
+| Daily | One route per local date | R2 (built: `/play/border-run/daily`, schedule in `content/daily/border-run.json`) |
 | Practice | Unlimited budget, free hints | R2 |
 | Regional | Subdivision graphs (US states, etc.) | R2 (with T2.13) |
 
@@ -96,7 +96,7 @@ Typed input is primary, so the game is fully keyboard and screen-reader playable
 
 ## 11. Unlimited-play and repeat-prevention behavior
 
-Pairs are drawn uniformly within the configured m range. The Repeat Guard excludes pairs seen in the last 200 rounds and any endpoint used in the last 5 rounds. The daily schedule is precomputed for 365 days (with no endpoint repeated within 14 days).
+Pairs are drawn uniformly within the configured m range. The Repeat Guard excludes pairs seen in the last 200 rounds and any endpoint used in the last 5 rounds. The daily schedule is precomputed for 730 days (Normal length, land only, with no endpoint repeated within 14 days, checked by `DAILY_REPEAT` in the validator). Extend it with `content daily --game border-run --extend-to YYYY-MM-DD`.
 
 ## 12. Acceptance criteria
 

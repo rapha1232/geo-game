@@ -11,6 +11,7 @@ import styles from "./daily.module.css";
 
 export const DAILY_GAME_ID = "silhouette:daily";
 export const FACT_PIN_DAILY_GAME_ID = "fact-pin:daily";
+export const BORDER_RUN_DAILY_GAME_ID = "border-run:daily";
 
 type State =
   | { kind: "loading" }
@@ -19,7 +20,7 @@ type State =
   | { kind: "done"; date: string; result: GameResult };
 
 type DailyGame = {
-  id: "silhouette" | "fact-pin";
+  id: "silhouette" | "fact-pin" | "border-run";
   pack: string;
   sessionId: string;
   href: string;
@@ -52,6 +53,17 @@ const GAMES: DailyGame[] = [
     body: "daily.factPinBody",
     play: "daily.playFactPin",
     resume: "daily.resumeFactPin",
+  },
+  {
+    id: "border-run",
+    pack: "daily.border-run",
+    sessionId: BORDER_RUN_DAILY_GAME_ID,
+    href: "/play/border-run/daily",
+    keepPlaying: "/play/border-run",
+    title: "daily.borderRun",
+    body: "daily.borderRunBody",
+    play: "daily.playBorderRun",
+    resume: "daily.resumeBorderRun",
   },
 ];
 
