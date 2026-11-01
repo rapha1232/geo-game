@@ -17,6 +17,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The content-pipeline tests read the pinned source downloads (gitignored), as the Vercel build does.
+      - run: pnpm content:fetch
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
