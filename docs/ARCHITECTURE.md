@@ -33,7 +33,7 @@ The repository `rapha1232/geo-game` was **empty** when this blueprint was writte
 | ORM / migrations | **Drizzle ORM** + drizzle-kit | Type-safe, SQL-first, light |
 | Auth (R2) | **Auth.js v5** (email magic link via Resend + Google OAuth), database sessions | No passwords. Guest-first. |
 | Validation | **zod** schemas in `packages/schemas` | One source for pack, API and DB-boundary validation |
-| Hosting | **Vercel** (web + API + cron), **Vercel Blob** (content packs) | Previews per PR. Immutable versioned assets on a CDN. |
+| Hosting | **Vercel** (web + API; no cron on the free plan), **Vercel Blob** (content packs) | Previews per PR. Immutable versioned assets on a CDN. |
 | Testing | **Vitest**, **fast-check**, **Playwright**, **@axe-core/playwright**, **Lighthouse CI** | [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md) |
 | CI | **GitHub Actions** | Lint, typecheck, test, content validation, preview deploy |
 | Analytics | Cookieless aggregate analytics (Vercel Web Analytics) | Product metrics without personal tracking |
@@ -273,9 +273,9 @@ sequenceDiagram
 
 | Job | Schedule | Phase | Action |
 |---|---|---|---|
-| `aggregate-telemetry` | Nightly 02:17 UTC (Vercel Cron) | R2 | Roll raw `answer_events` into `calibration_stats`. Delete raw events older than 90 days. |
-| `content-calibration-release` | Nightly 03:23 UTC (GitHub Actions schedule) | R2 | Pipeline reads `calibration_stats` (read-only role) and builds a patch release if the changes are significant (any tier change or a difficulty shift > 0.05) |
-| `report-dedupe` | Hourly | R1 | Group duplicate reports |
+| `aggregate-telemetry` | Opportunistic: on telemetry ingest, at most hourly per instance (no cron on the free plan) | R2 | Roll raw `answer_events` into `calibration_stats`. Delete raw events older than 90 days. |
+| `content-calibration-release` | Manual (`pnpm` script; no scheduled CI) | R2 | Pipeline reads `calibration_stats` (read-only role) and builds a patch release if the changes are significant (any tier change or a difficulty shift > 0.05) |
+| `report-dedupe` | On report submission, at most hourly per instance | R1 | Group duplicate reports |
 | `fact-review-due` | Weekly | R1 | Open a GitHub issue listing facts within 30 days of `review_due` |
 | `daily-schedule-extend` | Monthly | R1 | Ensure ≥ 365 days of schedule (an automated content PR) |
 | `expire-challenges` | Weekly | R1 | Remove short codes unused for more than 2 years |

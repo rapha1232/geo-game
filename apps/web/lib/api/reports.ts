@@ -58,6 +58,7 @@ export async function createReport(req: Request, deps: ReportDeps): Promise<Resp
     contentVersion: typeof version === "string" && version ? version.slice(0, 32) : "unknown",
     reporterEmail: body.reporter_email ?? null,
   });
+  await maybeDedupe(deps.store, deps.now());
   return jsonResponse(createReportResponse.parse({ id: row.id, status: row.status }), {
     status: 202,
   });
@@ -113,4 +114,21 @@ export async function runDedupe(store: ReportStore, nowMs: number): Promise<numb
   const dups = findDuplicates(rows);
   for (const d of dups) await store.markDuplicate(d.id, d.of);
   return dups.length;
+}
+
+const DEDUPE_EVERY_MS = 3_600_000;
+let lastDedupe = 0;
+
+/**
+ * No cron on the free hosting plan, so the dedupe job piggybacks on report submission: at most once an hour per warm
+ * instance, and a failure never fails the report.
+ */
+export async function maybeDedupe(store: ReportStore, nowMs: number): Promise<void> {
+  if (nowMs - lastDedupe < DEDUPE_EVERY_MS) return;
+  lastDedupe = nowMs;
+  try {
+    await runDedupe(store, nowMs);
+  } catch {
+    lastDedupe = 0;
+  }
 }

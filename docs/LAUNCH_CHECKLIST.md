@@ -19,7 +19,7 @@ Run the audit scripts against `next start -p 3111`.
 ## Only the owner can do
 
 1. **Neon**: set `DATABASE_URL` in Vercel (production and preview), then `pnpm --filter @meridian/web db:migrate`. Reports and short-code challenges need it. Without it both answer 503 and the games still work with long links.
-2. **Cron secret**: set `CRON_SECRET` in Vercel. `vercel.json` schedules `/api/internal/dedupe-reports` daily; it answers 401 without the secret.
+2. **No cron** (free hosting plan): the report dedupe runs on report submission, at most hourly per warm instance. Other scheduled jobs in ARCHITECTURE §10 run as manual `pnpm` commands or in CI-free local scripts.
 3. **Content release**: run `pnpm content:build --out <dir>` for `2026.10.0` and upload with the pipeline's upload command (needs the Blob token). Set `NEXT_PUBLIC_CONTENT_HOST` to the content origin. Until then the app serves the packs from `/content` of its own origin only in development; a production build needs them uploaded or copied into `apps/web/public/content`.
 4. **Vercel WAF rate limits**: create the rules listed in `apps/web/lib/api/rate-limits.ts` (reports 10/min and 50/day per IP, challenges 30/min). The in-app limiter is best-effort for one warm instance only.
 5. **Sentry** and **analytics**: not wired. Both need an account and a DSN or site ID from the owner, and a decision on consent wording before any telemetry is sent (Privacy page currently says none is collected). Add `NEXT_PUBLIC_SENTRY_DSN` and the analytics script only after the Privacy Policy is updated in the same change.
