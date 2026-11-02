@@ -21,16 +21,31 @@ const context = await browser.newContext();
 const page = await context.newPage();
 await page.goto(`${base}/play`, { waitUntil: "networkidle" });
 await page.evaluate(() => navigator.serviceWorker.ready);
-// The worker fetches routes and packs in the background; wait until the last one is stored.
-await page.waitForFunction(
-  async () => {
-    const c = await caches.open("meridian-pages-v1");
-    return !!(await c.match("/play/rank-it")) && (await caches.keys()).length >= 3;
-  },
-  null,
-  { timeout: 60_000 },
-);
-await page.waitForTimeout(3000);
+// The worker fetches routes and packs in the background; wait until the last route and every pack it warms (all but
+// the 10m map, per sw.js SKIP_WARM) are stored. Cache names are found by prefix, so a worker version bump can't make
+// this wait on an empty cache. Polled with page.evaluate: waitForFunction treats an async predicate's Promise as
+// truthy and returns at once, which let this check go offline mid-warm and fail on whichever pages were not stored yet.
+const warmed = () =>
+  page.evaluate(async () => {
+    const names = await caches.keys();
+    const pagesName = names.find((n) => n.startsWith("meridian-pages-"));
+    const contentName = names.find((n) => n.startsWith("meridian-content-"));
+    if (!pagesName || !contentName) return false;
+    if (!(await (await caches.open(pagesName)).match("/settings"))) return false;
+    const m = await (await globalThis.fetch("/content/manifest.json")).json();
+    const content = await caches.open(contentName);
+    for (const e of Object.values(m.versions?.[m.current]?.packs ?? {})) {
+      const href = new URL(e.url, globalThis.location.origin).href;
+      if (!/geo\.world\.10m/.test(href) && !(await content.match(href))) return false;
+    }
+    return true;
+  });
+const deadline = Date.now() + 180_000;
+while (!(await warmed())) {
+  if (Date.now() > deadline)
+    throw new Error("The service worker did not finish warming its caches in 3 minutes.");
+  await page.waitForTimeout(1000);
+}
 
 await context.setOffline(true);
 let failed = 0;
