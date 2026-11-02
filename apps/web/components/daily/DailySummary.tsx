@@ -13,6 +13,7 @@ import {
 } from "../../lib/daily/share";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./daily.module.css";
+import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/daily";
 import "../../lib/messages/me";
 
@@ -98,7 +99,10 @@ export function DailySummary({
         <Button
           onPress={() => {
             writeClipboard(text).then(
-              () => setCopy("ok"),
+              () => {
+                setCopy("ok");
+                track("result_shared", { game: result.game_id, what: "daily" });
+              },
               () => setCopy("failed"),
             );
           }}

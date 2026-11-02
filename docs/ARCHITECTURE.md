@@ -36,8 +36,8 @@ The repository `rapha1232/geo-game` was **empty** when this blueprint was writte
 | Hosting           | **Vercel** (web + API; no cron on the free plan), **Vercel Blob** (content packs)               | Previews per PR. Immutable versioned assets on a CDN.                                                    |
 | Testing           | **Vitest**, **fast-check**, **Playwright**, **@axe-core/playwright**, **Lighthouse CI**         | [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md)                                                   |
 | CI                | **GitHub Actions**                                                                              | Lint, typecheck, test, content validation, preview deploy                                                |
-| Analytics         | Cookieless aggregate analytics (Vercel Web Analytics)                                           | Product metrics without personal tracking                                                                |
-| Errors            | Sentry (browser + server), PII scrubbing on                                                     | Crash visibility                                                                                         |
+| Analytics         | **PostHog** in cookieless mode, proxied through `/ingest` (owner choice, 2026-11); **Vercel Speed Insights** for field Core Web Vitals | Product metrics without personal tracking; on by default, off in Settings or with Global Privacy Control |
+| Errors            | Sentry (browser + server + edge), PII off, browser events tunnelled through `/monitoring`; logs to **Axiom**; uptime on **Better Stack** | Crash visibility; 30-day log search (Vercel Hobby keeps logs 1 h and has no log drains)                  |
 
 ## 4. System overview and boundaries
 
@@ -333,10 +333,18 @@ The full strategy is in [TESTING_AND_ACCEPTANCE.md](TESTING_AND_ACCEPTANCE.md).
 
 ## 14. Observability
 
-- Sentry for errors, with the release tagged by git SHA and content version.
-- API logs: structured JSON (request ID, route, status, latency). No PII.
-- Health endpoint `GET /api/v1/health` → `{status, db, contentVersion}`.
-- Uptime check on `/` and `/api/v1/health` every 5 minutes.
+Every piece is off until its environment variable is set, so local builds, tests and previews send nothing. All browser traffic stays first-party (AC-PL-003): the network audit allows only our own origin.
+
+| Concern | Provider | Where it lives | Configured by |
+| --- | --- | --- | --- |
+| Errors (browser) | Sentry | `lib/observability/errors-client.ts`: the SDK loads when the page is idle (outside the shell budget); errors thrown before that are buffered (max 20). Envelopes go to `/monitoring` (`app/monitoring/route.ts`), which forwards only envelopes for our own DSN, at most 256 KB, 60/min per IP. `app/error.tsx` and `app/global-error.tsx` report what error boundaries catch and show a retry. | `NEXT_PUBLIC_SENTRY_DSN` |
+| Errors (server, edge) | Sentry | `instrumentation.ts` (`register`, `onRequestError`), `sentry.server.config.ts`, `sentry.edge.config.ts`; unexpected 500s in `handle()` | `SENTRY_DSN` or the public DSN |
+| Readable stack traces | Sentry | `withSentryConfig` in `next.config.ts` uploads source maps at build and deletes them, so they are never served | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` |
+| API and request logs | stdout (Vercel, 1 h) + Axiom (30 days) | `lib/observability/log.ts`: one JSON line per API request from `handle()` (`request_id`, method, path, status, ms) and per render error from `onRequestError`; batched to Axiom after the response. Responses carry `X-Request-Id`. No bodies, IPs or answers. | `AXIOM_TOKEN`, `AXIOM_DATASET` (optional `AXIOM_URL`) |
+| Usage statistics | PostHog | `lib/observability/analytics.ts`: the `no-external` build loaded when idle, `cookieless_mode: "always"`, memory persistence, no autocapture, no recordings, no flags. Page views plus the typed events in `AnalyticsEvents` (`round_finished` with a 10-point score band, `result_shared`, `challenge_created`, `challenge_opened`, `report_sent`). Proxied by rewrites at `/ingest`. Off with Settings → "Share anonymous usage statistics" or Global Privacy Control. | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_REGION` (`us` or `eu`) |
+| Field performance | Vercel Speed Insights | `components/shell/Observability.tsx`, on Vercel deployments only, same switch as usage statistics | Enable in the Vercel project |
+| Health | — | `GET /api/v1/health` → `{status, db, content_version, app_version}` | — |
+| Uptime | Better Stack | Monitors on `/` and `/api/v1/health` every 3 minutes, a public status page | Better Stack dashboard (no code) |
 
 ## 15. Architecture decision records (summary)
 

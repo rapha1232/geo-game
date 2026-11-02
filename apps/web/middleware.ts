@@ -20,7 +20,8 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      source: "/((?!_next/static|_next/image|favicon.ico).*)",
+      // Not the analytics proxy or the error tunnel: they are not pages and need no CSP.
+      source: "/((?!_next/static|_next/image|favicon.ico|ingest|monitoring).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

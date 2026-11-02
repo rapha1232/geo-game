@@ -12,6 +12,7 @@ import { TelemetryWatcher } from "../components/shell/TelemetryWatcher";
 import { AchievementToaster } from "../components/shell/AchievementToaster";
 import { SystemBanners } from "../components/shell/SystemBanners";
 import { PointerFX } from "../components/shell/PointerFX";
+import { Observability } from "../components/shell/Observability";
 import { BrandMark } from "../components/shell/NavIcons";
 import { BRAND_NAME, PRODUCTION_URL } from "../lib/brand";
 import { t } from "../lib/i18n";
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <SettingsApplier />
           <AchievementToaster />
           <TelemetryWatcher />
+          <Observability />
           <ServiceWorker />
           <PointerFX />
           <div className={styles.shell}>

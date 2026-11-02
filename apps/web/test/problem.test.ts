@@ -62,7 +62,10 @@ describe("handle", () => {
     const text = JSON.stringify(await res.json());
     expect(text).not.toContain("hunter2");
     expect(text).toContain("req_");
-    expect(String(log.mock.calls[0]?.[0])).toContain("requestId");
+    const line = JSON.parse(String(log.mock.calls[0]?.[0]));
+    expect(line).toMatchObject({ level: "error", event: "api_request", status: 500 });
+    expect(line.request_id).toBe(res.headers.get("X-Request-Id"));
+    expect(line.error_message).toContain("connection refused");
     log.mockRestore();
   });
 });

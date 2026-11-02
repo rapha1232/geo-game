@@ -10,6 +10,7 @@ import {
 import { BRAND_NAME } from "../../lib/brand";
 import { t } from "../../lib/i18n";
 import styles from "./challenge.module.css";
+import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/ch";
 
 export type ChallengeSummaryProps = {
@@ -62,7 +63,11 @@ export function ChallengeSummary({
 
   useEffect(() => {
     let live = true;
-    void createShort(long, contentVersion).then((c) => live && setShort(c));
+    void createShort(long, contentVersion).then((c) => {
+      if (!live) return;
+      setShort(c);
+      if (c) track("challenge_created", { game: "silhouette" });
+    });
     return () => {
       live = false;
     };
@@ -104,7 +109,10 @@ export function ChallengeSummary({
           isDisabled={short === undefined}
           onPress={() => {
             writeClipboard(text).then(
-              () => setCopy("ok"),
+              () => {
+                setCopy("ok");
+                track("result_shared", { game: "silhouette", what: "challenge" });
+              },
               () => setCopy("failed"),
             );
           }}

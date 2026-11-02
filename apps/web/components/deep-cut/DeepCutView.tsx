@@ -25,6 +25,7 @@ import "../../lib/messages/dc";
 import "../../lib/messages/rk";
 import "../../lib/messages/sil";
 import { mapLabels } from "../../lib/map/labels";
+import { track } from "../../lib/observability/analytics";
 
 const LABELS = mapLabels();
 const tierName = (tier: Tier): string => t(`dc.tier.${tier}` as MessageKey);
@@ -184,7 +185,10 @@ export function DeepCutView({ session: s, data, onChange, onAgain, endSlot }: De
               variant="primary"
               onPress={() => {
                 void navigator.clipboard.writeText(shareText(s)).then(
-                  () => setCopied(true),
+                  () => {
+                    setCopied(true);
+                    track("result_shared", { game: "deep-cut", what: "run" });
+                  },
                   () => undefined,
                 );
               }}

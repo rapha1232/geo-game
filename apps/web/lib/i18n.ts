@@ -26,6 +26,12 @@ const core = {
   "notFound.home": "Back to the start",
   "notFound.play": "Browse games",
   "notFound.eyebrow": "Error 404",
+  "error.eyebrow": "Something went wrong",
+  "error.title": "This page hit a snag",
+  "error.body":
+    "Your progress is saved on this device. Try again, and if it keeps happening, the error has been reported to us.",
+  "error.retry": "Try again",
+  "error.reference": "Reference: {id}",
   "theme.label": "Theme",
   "theme.system": "System",
   "theme.light": "Light",

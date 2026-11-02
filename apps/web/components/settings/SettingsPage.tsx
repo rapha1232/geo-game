@@ -5,6 +5,7 @@ import { Button, Dialog, MapStylePicker } from "@meridian/ui";
 import { ThemeSwitch } from "../../app/ThemeSwitch";
 import { t, type MessageKey } from "../../lib/i18n";
 import { cue } from "../../lib/sound/cue";
+import { gpcOn, setAnalyticsEnabled } from "../../lib/observability/analytics";
 import {
   DEFAULT_SETTINGS,
   applySettings,
@@ -37,6 +38,9 @@ export function SettingsPage() {
   const services = useServices();
   const [s, setS] = useState<Settings>(DEFAULT_SETTINGS);
   const [ready, setReady] = useState(false);
+  // Read after mount: the server render cannot know the browser's privacy signal.
+  const [gpc, setGpc] = useState(false);
+  useEffect(() => setGpc(gpcOn()), []);
   const [saved, setSaved] = useState<boolean | null>(null);
   const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -244,6 +248,19 @@ export function SettingsPage() {
           {t("set.telemetry")}
         </label>
         <p className={styles.note}>{t("set.telemetryNote")}</p>
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={s.analytics && !gpc}
+            disabled={!ready || gpc}
+            onChange={(e) => {
+              change({ analytics: e.target.checked });
+              setAnalyticsEnabled(e.target.checked);
+            }}
+          />
+          {t("set.analytics")}
+        </label>
+        <p className={styles.note}>{gpc ? t("set.analyticsGpc") : t("set.analyticsNote")}</p>
         <p role="status" className={styles.note}>
           {saved === true ? t("set.saved") : saved === false ? t("set.saveFailed") : ""}
         </p>

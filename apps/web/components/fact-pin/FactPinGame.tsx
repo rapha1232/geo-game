@@ -35,6 +35,7 @@ import { ReportButton } from "../report/ReportButton";
 import { FactPinConfigure } from "./FactPinConfigure";
 import { FactPinView } from "./FactPinView";
 import styles from "./fact-pin.module.css";
+import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/daily";
 import "../../lib/messages/fp";
 
@@ -391,7 +392,10 @@ export function FactPinGame({ daily = false }: { daily?: boolean }) {
       onShare={(text) => {
         void navigator.clipboard
           ?.writeText(`${text} ${window.location.origin}/play/fact-pin`)
-          .then(() => setShared(true))
+          .then(() => {
+            setShared(true);
+            track("result_shared", { game: "fact-pin", what: "run" });
+          })
           .catch(() => undefined);
       }}
     />
