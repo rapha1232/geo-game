@@ -47,6 +47,11 @@ export const messages = {
   "set.deleted": "All data on this device was deleted.",
   "set.streaks": "Show my daily streak on my profile",
   "set.sounds": "Play sounds for answers and finished rounds",
+  "set.analytics": "Share anonymous usage statistics",
+  "set.analyticsNote":
+    "Page views and a few events such as a finished round, with no cookies and nothing that identifies you. It helps us see which games people play. Turn it off any time.",
+  "set.analyticsGpc":
+    "Your browser sends a Global Privacy Control signal, so usage statistics stay off.",
   "set.telemetry": "Share anonymous answer statistics",
   "set.telemetryNote":
     "Off by default. When on, which items were answered right or wrong is sent without your name, account or IP address, to help us tune difficulty. Turn it off any time and nothing more is sent.",

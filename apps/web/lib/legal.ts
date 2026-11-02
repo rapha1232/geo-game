@@ -2,7 +2,7 @@ import { BRAND_NAME, CONTACT_URL, PRODUCTION_URL } from "./brand";
 import type { Section } from "../components/Prose";
 
 /** Bump when either document changes in substance. */
-export const LEGAL_UPDATED = "2026-10-30";
+export const LEGAL_UPDATED = "2026-11-02";
 
 export const TERMS: readonly Section[] = [
   {
@@ -65,7 +65,8 @@ export const PRIVACY: readonly Section[] = [
     bullets: [
       "No account is needed and no sign-in cookies are set.",
       "Your progress, settings and results stay on your device.",
-      "We count visits with cookieless, aggregate analytics that do not identify you.",
+      "We count visits and a few in-game events with cookieless usage statistics that do not identify you. You can turn them off in Settings.",
+      "When something breaks, an error report is sent so we can fix it. It holds no personal information.",
       "We only receive personal information if you choose to send it, for example an email address with a report.",
     ],
   },
@@ -81,8 +82,10 @@ export const PRIVACY: readonly Section[] = [
       "Challenge codes. When you create a short challenge link, we store the challenge settings (game, scope, seed and a few options) and a short code. It holds no name, email or account information. Codes expire two years after they were last used.",
       "Reports. When you report a problem we store what you tell us about the question or fact, and your email address only if you choose to give one so we can reply. Reports are kept for two years.",
       "Answer statistics, only if you turn them on in Settings (they are off by default). Which items were answered right or wrong, on which attempt, with a random code that lasts for one visit and identifies nobody. No name, account, email or IP address is stored with them. Raw events are deleted after 90 days; only totals per item are kept.",
-      "Analytics. We use Vercel Web Analytics to measure page views and performance in aggregate. It does not use cookies and does not follow you across sites or visits.",
-      "Server logs. Our hosting provider keeps standard technical logs (such as IP address, time and requested page) for security and reliability. We do not use them to profile anyone.",
+      "Usage statistics, on unless you turn them off in Settings (or your browser sends a Global Privacy Control signal, which we honour). We use PostHog in its cookieless mode: nothing is stored on your device, and visitors are counted with a code derived from your connection that changes every day, so no one can be followed from one day to the next or across sites. We receive the pages you open and a few events (a round finished with its game, mode and score rounded to 10%, a result shared, a challenge created or opened, a report sent). Never your answers, anything you type or your email. Requests go through our own website. Raw events are kept for up to one year.",
+      "Page speed. On our live site, Vercel Speed Insights measures how quickly pages load (timings, page path, device type and country) without cookies. It follows the same Settings switch as usage statistics.",
+      "Error reports. If the site hits an error, Sentry receives the error message, where in our code it happened, the page path, and your browser and operating system versions. No IP address, cookies or game answers are included. Reports go through our own website and are kept for up to 90 days.",
+      "Server logs. Our hosting provider keeps standard technical logs (such as IP address, time and requested page) for security and reliability. Our own logs record which of our services was called, the result and how long it took, with a random request number; they hold no IP address or personal information and are kept for up to 30 days. We do not use logs to profile anyone.",
     ],
   },
   {
@@ -96,7 +99,7 @@ export const PRIVACY: readonly Section[] = [
   {
     heading: "Who processes data for us",
     paragraphs: [
-      "Our hosting and analytics run on Vercel, and our database (challenge codes, reports and answer statistics) runs on Neon. They process data only to provide those services to us.",
+      "Hosting and page-speed measurement: Vercel. Database (challenge codes, reports and answer statistics): Neon. Usage statistics: PostHog. Error reports: Sentry. Server logs: Axiom. They process data only to provide those services to us.",
     ],
   },
   {

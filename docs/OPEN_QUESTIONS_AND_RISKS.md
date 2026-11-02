@@ -61,7 +61,7 @@ Each question has a **default** that the blueprint already uses, so implementati
 
 ### Q-08: Analytics vendor
 
-> **Decided (owner):** Vercel Web Analytics.
+> **Decided (owner):** Vercel Web Analytics. **Revised (owner, 2026-11-02):** PostHog in cookieless mode, proxied through our own origin, on by default with an opt-out in Settings (and Global Privacy Control honoured); Vercel Speed Insights for field performance. Errors: Sentry. Logs: Axiom. Uptime: Better Stack. See [ARCHITECTURE §14](ARCHITECTURE.md#14-observability).
 
 - **Question:** Use Vercel Web Analytics, or a self-hosted cookieless alternative (e.g. Plausible or Umami)?
 - **Default:** Vercel Web Analytics (cookieless, aggregate).

@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 /** The content release this build serves (the Vercel build packs it into /content). `/api/v1/health` reports it. */
 function readContentVersion(): string {
@@ -14,10 +15,25 @@ function readContentVersion(): string {
 }
 const contentVersion = readContentVersion();
 
+/** PostHog's region for the first-party proxy (`/ingest`): "us" (default) or "eu", set by the owner. */
+const posthogHost = process.env["NEXT_PUBLIC_POSTHOG_REGION"] === "eu" ? "eu" : "us";
+
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   env: { CONTENT_VERSION: contentVersion },
+  // PostHog's API paths end in a slash; Next must not redirect them.
+  skipTrailingSlashRedirect: true,
+  // Usage statistics leave through our own origin, so no page talks to a third party (AC-PL-003).
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: `https://${posthogHost}-assets.i.posthog.com/static/:path*`,
+      },
+      { source: "/ingest/:path*", destination: `https://${posthogHost}.i.posthog.com/:path*` },
+    ];
+  },
   // `ANALYZE=1 pnpm build` writes source maps so a bundle explorer can attribute bytes (T1.20).
   productionBrowserSourceMaps: process.env["ANALYZE"] === "1",
   // Workspace packages ship TypeScript and CSS sources.
@@ -65,4 +81,16 @@ const config: NextConfig = {
   ],
 };
 
-export default config;
+/**
+ * Sentry's build step uploads source maps (so stack traces show our code) when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and
+ * `SENTRY_PROJECT` are set, then deletes them so they are never served. Without the token it uploads nothing.
+ */
+export default withSentryConfig(config, {
+  silent: !process.env["CI"],
+  telemetry: false,
+  sourcemaps: {
+    disable: !process.env["SENTRY_AUTH_TOKEN"],
+    deleteSourcemapsAfterUpload: true,
+  },
+  widenClientFileUpload: true,
+});

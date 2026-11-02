@@ -1,4 +1,5 @@
 import { REPORT_CATEGORIES } from "@meridian/schemas";
+import { track } from "../observability/analytics";
 
 export type ReportCategory = (typeof REPORT_CATEGORIES)[number];
 export const CATEGORIES = REPORT_CATEGORIES;
@@ -60,7 +61,10 @@ export async function sendReport(
         ...(input.email.trim() ? { reporter_email: input.email.trim() } : {}),
       }),
     });
-    if (res.status === 202) return { ok: true };
+    if (res.status === 202) {
+      track("report_sent", { category: input.category });
+      return { ok: true };
+    }
     if (res.status === 429)
       return {
         ok: false,

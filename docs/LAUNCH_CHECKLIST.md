@@ -23,8 +23,13 @@ What the repository already does, what was checked locally, and what only the ow
 3. **Content on Vercel**: the build command now runs `pnpm content:fetch && pnpm content:dev` first, so every deployment serves its own `/content` (about 11 MB, built from the pinned sources). Setting `NEXT_PUBLIC_CONTENT_HOST` to a separate host is optional and only needed if you later move packs to Blob storage.
 3b. **Content release (Blob, optional)**: run `pnpm content:build --out <dir>` for `2026.10.0` and upload with the pipeline's upload command (needs the Blob token). Set `NEXT_PUBLIC_CONTENT_HOST` to the content origin. Until then the app serves the packs from `/content` of its own origin only in development; a production build needs them uploaded or copied into `apps/web/public/content`.
 4. **Vercel WAF rate limits**: create the rules listed in `apps/web/lib/api/rate-limits.ts` (reports 10/min and 50/day per IP, challenges 30/min). The in-app limiter is best-effort for one warm instance only.
-5. **Sentry** and **analytics**: not wired. Both need an account and a DSN or site ID from the owner, and a decision on consent wording before any telemetry is sent (Privacy page currently says none is collected). Add `NEXT_PUBLIC_SENTRY_DSN` and the analytics script only after the Privacy Policy is updated in the same change.
-6. **Uptime checks**: point a monitor at `/api/v1/health`.
+5. **Observability** (wired in code, dormant until configured; see ARCHITECTURE §14 and `apps/web/.env.example`):
+   - **Sentry**: create a Next.js project. Set `NEXT_PUBLIC_SENTRY_DSN` in Vercel (all environments). For readable stack traces also set `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT`. In the project's settings, turn on "Prevent storing of IP addresses".
+   - **PostHog**: create a project in the US or EU cloud. Set `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_REGION`. In the project settings, turn on **cookieless server hash mode**; without it PostHog drops cookieless events. Also turn on "Discard client IP data".
+   - **Vercel Speed Insights**: enable it on the project (Speed Insights tab). Free plan: 10,000 events per month.
+   - **Axiom**: create a dataset and an ingest-only API token; set `AXIOM_DATASET` and `AXIOM_TOKEN`.
+   - Redeploy after setting variables (`NEXT_PUBLIC_*` values are built into the page).
+6. **Uptime checks** (Better Stack, free): monitors on `https://meridian-quiz.vercel.app/` and `/api/v1/health` (expect status 200 and the text `"status":"ok"`), email alerts, and optionally the free public status page.
 7. **Domain and legal**: set the production domain in `lib/brand.ts` if it is not final, and have the Terms and Privacy text reviewed (Q-06).
 8. **Manual accessibility pass**: `docs/MANUAL_A11Y_CHECKLIST.md`, with NVDA and VoiceOver.
 9. **Lighthouse**: run the Moto G Power mobile profile on Home and the three game hubs for the AC-PL-002 gate; the local LCP script is only a guard.

@@ -7,6 +7,7 @@ import { resolveChallengeResponse } from "@meridian/schemas";
 import { parseSilhouetteChallenge, type ParsedChallenge } from "../../lib/challenges/silhouette";
 import { t } from "../../lib/i18n";
 import styles from "./challenge.module.css";
+import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/ch";
 
 type State =
@@ -40,7 +41,10 @@ export function ChallengeLanding({ code }: { code: string }) {
       }
       try {
         const parsed = parseSilhouetteChallenge(long);
-        if (live) setState({ kind: "ready", long, parsed });
+        if (live) {
+          setState({ kind: "ready", long, parsed });
+          track("challenge_opened", { game: "silhouette", short_code: Boolean(short) });
+        }
       } catch {
         if (live) setState({ kind: "invalid" });
       }

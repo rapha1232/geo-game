@@ -1,6 +1,7 @@
 import { ZodError } from "zod";
 import { ERROR_STATUS, type Problem } from "@meridian/schemas";
 import { PRODUCTION_URL } from "../brand";
+import { log } from "../observability/log";
 
 type ErrorCode = keyof typeof ERROR_STATUS;
 
@@ -75,36 +76,79 @@ export class ApiError extends Error {
 export const zodErrors = (e: ZodError): { path: string; message: string }[] =>
   e.issues.map((i) => ({ path: i.path.join("."), message: i.message }));
 
+/** The method and path of a handler's request, when its first argument is one (health has none). */
+function routeOf(args: unknown[]): { method: string; path: string } {
+  const req = args[0];
+  if (req instanceof Request) {
+    try {
+      return { method: req.method, path: new URL(req.url).pathname };
+    } catch {
+      /* fall through */
+    }
+  }
+  return { method: "GET", path: "unknown" };
+}
+
+/** Reports an unexpected server error to Sentry when it is configured. Loaded on demand: most requests never need it. */
+function reportToSentry(e: unknown, requestId: string): void {
+  if (!process.env["SENTRY_DSN"] && !process.env["NEXT_PUBLIC_SENTRY_DSN"]) return;
+  void import("@sentry/nextjs")
+    .then((Sentry) => Sentry.captureException(e, { tags: { request_id: requestId } }))
+    .catch(() => undefined);
+}
+
 /**
  * Wraps a route handler: validation errors become 422, malformed JSON 400, `ApiError` its own code, and anything
- * else a 500 that carries only a request id (details go to the server log, never to the client).
+ * else a 500 that carries only a request id (details go to the server log and Sentry, never to the client). Every
+ * request writes one structured log line (method, path, status, duration, request id) and answers with
+ * `X-Request-Id`, so a player's report can be matched to the log.
  */
 export function handle<A extends unknown[]>(
   fn: (...args: A) => Promise<Response> | Response,
 ): (...args: A) => Promise<Response> {
   return async (...args: A) => {
     const requestId = newRequestId();
+    const t0 = Date.now();
+    const { method, path } = routeOf(args);
+    let res: Response;
+    let failure: unknown = null;
     try {
-      return await fn(...args);
+      res = await fn(...args);
     } catch (e) {
-      if (e instanceof ApiError) return problemResponse(e.code, { ...e.init, requestId });
-      if (e instanceof ZodError)
-        return problemResponse("VALIDATION_FAILED", { errors: zodErrors(e), requestId });
-      if (e instanceof SyntaxError)
-        return problemResponse("BAD_REQUEST", {
+      if (e instanceof ApiError) res = problemResponse(e.code, { ...e.init, requestId });
+      else if (e instanceof ZodError)
+        res = problemResponse("VALIDATION_FAILED", { errors: zodErrors(e), requestId });
+      else if (e instanceof SyntaxError)
+        res = problemResponse("BAD_REQUEST", {
           detail: "Request body is not valid JSON.",
           requestId,
         });
-      console.error(
-        JSON.stringify({
-          level: "error",
-          requestId,
-          name: e instanceof Error ? e.name : "unknown",
-          message: e instanceof Error ? e.message : String(e),
-        }),
-      );
-      return problemResponse("INTERNAL", { requestId });
+      else {
+        failure = e;
+        res = problemResponse("INTERNAL", { requestId });
+      }
     }
+    const level = res.status >= 500 ? "error" : res.status >= 400 ? "warn" : "info";
+    log(level, "api_request", {
+      request_id: requestId,
+      method,
+      path,
+      status: res.status,
+      ms: Date.now() - t0,
+      ...(failure
+        ? {
+            error_name: failure instanceof Error ? failure.name : "unknown",
+            error_message: failure instanceof Error ? failure.message : String(failure),
+          }
+        : {}),
+    });
+    if (failure) reportToSentry(failure, requestId);
+    try {
+      res.headers.set("X-Request-Id", requestId);
+    } catch {
+      /* immutable headers: the body still carries the id on errors */
+    }
+    return res;
   };
 }
 

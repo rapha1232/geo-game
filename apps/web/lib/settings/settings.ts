@@ -23,6 +23,8 @@ export type Settings = {
   telemetry: boolean;
   /** Short synthesised sounds for answers and finished rounds (UX_AND_DESIGN §3.6). Off by default. */
   sounds: boolean;
+  /** Anonymous, cookieless usage statistics (page views and a few product events). On by default, off on request. */
+  analytics: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -37,6 +39,7 @@ export const DEFAULT_SETTINGS: Settings = {
   missedDotsOnly: false,
   telemetry: false,
   sounds: false,
+  analytics: true,
 };
 
 /** The key inside the single `settings` record. Other keys there belong to games (`quiz:*`, `fact-pin`). */
@@ -63,6 +66,8 @@ export function sanitize(raw: unknown): Settings {
     missedDotsOnly: r["missedDotsOnly"] === true,
     telemetry: r["telemetry"] === true,
     sounds: r["sounds"] === true,
+    // On unless the player turned it off: a record saved before this setting existed keeps the default.
+    analytics: r["analytics"] !== false,
   };
 }
 

@@ -10,6 +10,7 @@ import { DailySummary } from "./DailySummary";
 import { dailyBundleShare } from "../../lib/daily/share";
 import { GameArt, artFor } from "../home/GameArt";
 import styles from "./daily.module.css";
+import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/daily";
 
 export const DAILY_GAME_ID = "silhouette:daily";
@@ -227,7 +228,10 @@ function ShareAll({ text, count, total }: { text: string; count: number; total: 
           const write =
             navigator.clipboard?.writeText(text) ?? Promise.reject(new Error("no clipboard"));
           write.then(
-            () => setCopy("ok"),
+            () => {
+              setCopy("ok");
+              track("result_shared", { game: "all", what: "daily_bundle" });
+            },
             () => setCopy("failed"),
           );
         }}
