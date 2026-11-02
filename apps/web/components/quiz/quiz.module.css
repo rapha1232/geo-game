@@ -348,6 +348,29 @@
     font-size: var(--text-lg);
   }
 }
+/* Small phones: the progress strip takes its own row under the controls, so the bar never scrolls sideways at 320 px. */
+@media (max-width: 479px) {
+  .play {
+    --game-bar-h: 68px;
+  }
+  .gameBar {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+    padding-bottom: var(--space-2);
+  }
+  .track {
+    order: 10;
+    flex-basis: 100%;
+    height: 4px;
+  }
+  .clock {
+    margin-right: auto;
+  }
+  .count,
+  .clock {
+    font-size: var(--text-base);
+  }
+}
 
 .stage {
   position: relative;
@@ -844,5 +867,18 @@
 @media (prefers-reduced-motion: no-preference) {
   .pb {
     animation: fx-pop var(--motion-reveal) var(--ease-spring) 900ms backwards;
+  }
+}
+
+/* Small phones: Hint and Skip go under the answer field instead of beside it. Kept last so it wins over the dock rules above. */
+@media (max-width: 479px) {
+  .dock[data-kind="float"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dock[data-kind="float"] > .row {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    align-items: center;
   }
 }
