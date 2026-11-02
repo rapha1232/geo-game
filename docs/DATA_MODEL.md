@@ -258,7 +258,7 @@ Example (Silhouette):
 | `achievements` | `id`                 | —                                       | Unlock records (R2)                              |
 | `settings`     | `'settings'`         | —                                       | Settings object                                  |
 | `syncQueue`    | `id`                 | `created_at`                            | Pending uploads (R2)                             |
-| `packs`        | `url`                | —                                       | Cached pack JSON (R1 without a service worker)   |
+| `packs`        | `url`                | —                                       | Cached packs as raw bytes (`bytes`; the manifest and older entries keep parsed `json`), parsed on read (R1 without a service worker) |
 
 Schema versioning: the Dexie `version(n).upgrade()` migrations are tested with fixture databases from each previous version.
 
