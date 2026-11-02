@@ -11,7 +11,6 @@ import {
 } from "@meridian/ui";
 import { onInput, onTick, type Hold } from "@meridian/name-matcher";
 import {
-  CONTINENT_NAMES,
   applyMatch,
   choose,
   clickMap,
@@ -38,6 +37,7 @@ import { clickStatus, hintStatus, typeStatus, type Status } from "../../lib/quiz
 import type { QuizSession } from "../../lib/quiz/session";
 import { t, type MessageKey } from "../../lib/i18n";
 import { QuizMap } from "./QuizMap";
+import { QuizSlots } from "./QuizSlots";
 import styles from "./quiz.module.css";
 import "../../lib/messages/qz";
 
@@ -45,6 +45,10 @@ const flagSrc = (svg: string): string =>
   `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 
 export type QuizPlayProps = {
+  /** The quiz name for the game bar. */
+  title?: string;
+  /** Where the game bar's back button goes. The session is saved, so leaving keeps the round. */
+  exitHref?: string;
   world: QuizWorld;
   facts: QuizFacts;
   neighbors: ReadonlyMap<string, ReadonlySet<string>>;
@@ -70,7 +74,10 @@ export type QuizPlayProps = {
 
 const mono = (): number => performance.now();
 
-/** The play screen for every format: header, prompt, input or choices, hints and the map. */
+/**
+ * The play screen for every format (UX_AND_DESIGN §5.4): a docked game bar, the map filling the screen with the
+ * prompt and answer field floating over it, and for Type-all quizzes the answer board under the map.
+ */
 export function QuizPlay(p: QuizPlayProps) {
   const { world, facts, session, now, accessible } = p;
   const s = session.state;
@@ -125,6 +132,17 @@ export function QuizPlay(p: QuizPlayProps) {
     },
     [],
   );
+
+  // The site header and tab bar step aside while a round is on screen (UX_AND_DESIGN §5.4).
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset["immersive"] = "quiz";
+    // Focusing the answer field can scroll the page; a round always opens with the whole map in view.
+    document.scrollingElement?.scrollTo?.({ top: 0 });
+    return () => {
+      delete root.dataset["immersive"];
+    };
+  }, []);
 
   // Wrong-click tooltip for 1.2 s and the pulse on a missed item for 1.5 s.
   const flashFor = (id: string, state: MapFeatureState, ms: number) => {
@@ -243,19 +261,6 @@ export function QuizPlay(p: QuizPlayProps) {
     left !== null && s.quiz.limitMs !== null && left <= Math.max(10_000, s.quiz.limitMs * 0.1);
   const paused = s.phase === "paused";
 
-  const continents = useMemo(() => {
-    if (format !== "TYPE_ALL") return null;
-    const m = new Map<string, { done: number; all: number }>();
-    s.items.forEach((it, i) => {
-      const c = world.byId.get((s.quiz.items[i] as QuizItem).id)?.continent ?? "";
-      const row = m.get(c) ?? { done: 0, all: 0 };
-      row.all++;
-      if (it.status !== "pending") row.done++;
-      m.set(c, row);
-    });
-    return [...m.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [format, s, world]);
-
   const askLabel =
     s.quiz.universe === "capital"
       ? "qz.typeLabelCapital"
@@ -321,27 +326,60 @@ export function QuizPlay(p: QuizPlayProps) {
     [accessible, format, item, world, facts, p.neighbors, s.quiz.seed],
   );
 
+  const pct = total === 0 ? 0 : (doneCount / total) * 100;
+  const dotToggle = p.onMissedDotsOnly && showMap && (
+    <label className={styles.dotToggle}>
+      <input
+        type="checkbox"
+        checked={dotsOnly}
+        onChange={(e) => p.onMissedDotsOnly?.(e.target.checked)}
+      />
+      {t("qz.missedDots")}
+    </label>
+  );
+
   return (
     <div className={styles.play}>
-      <header className={styles.playHead}>
+      <header className={styles.gameBar}>
+        {p.exitHref && (
+          <a
+            href={p.exitHref}
+            className={styles.iconBtn as string}
+            aria-label={t("qz.exit")}
+            title={t("qz.exit")}
+          >
+            <Glyph name="back" />
+          </a>
+        )}
+        {p.title && <p className={styles.gameTitle}>{p.title}</p>}
+        {/* One segment per answer up to 60, a continuous bar beyond; the count beside it carries the number. */}
+        <div
+          className={styles.track}
+          data-mode={total <= 60 ? "segments" : "bar"}
+          aria-hidden="true"
+        >
+          {total <= 60 ? (
+            Array.from({ length: total }, (_, i) => (
+              <span key={i} {...(i < doneCount ? { "data-on": "" } : {})} />
+            ))
+          ) : (
+            <span style={{ width: `${pct}%` }} />
+          )}
+        </div>
         <p className={styles.count} aria-label={t("qz.progress", { done: doneCount, total })}>
           {t("qz.progress", { done: doneCount, total })}
         </p>
         {s.lives !== undefined && (
           <p
-            className={styles.count}
+            className={styles.lives}
             aria-label={s.lives === 1 ? t("qz.life") : t("qz.lives", { n: s.lives })}
           >
             <span aria-hidden="true">
               {"♥".repeat(s.lives)}
               {"♡".repeat(Math.max(0, (s.quiz.config.lives ?? 0) - s.lives))}
-            </span>{" "}
-            {s.lives === 1 ? t("qz.life") : t("qz.lives", { n: s.lives })}
+            </span>
           </p>
         )}
-        <div className={styles.progress} aria-hidden="true">
-          <span style={{ width: `${total === 0 ? 0 : (doneCount / total) * 100}%` }} />
-        </div>
         <p className={`${styles.clock} ${warn ? styles.warn : ""}`} role="timer" aria-live="off">
           <span aria-hidden="true">{warn ? "⏱ " : ""}</span>
           {left === null
@@ -354,148 +392,61 @@ export function QuizPlay(p: QuizPlayProps) {
             : t("qz.timeLeft", { time: formatClock(left) })}
         </p>
         <div className={styles.headActions}>
-          {p.onMissedDotsOnly && showMap && (
-            <label className={styles.dotToggle}>
-              <input
-                type="checkbox"
-                checked={dotsOnly}
-                onChange={(e) => p.onMissedDotsOnly?.(e.target.checked)}
-              />
-              {t("qz.missedDots")}
-            </label>
-          )}
-          <Button onPress={() => withState(paused ? resume(s, mono()) : pause(s, mono()))}>
-            {paused ? t("qz.continue") : t("qz.pause")}
+          <Button
+            variant="ghost"
+            className={styles.iconBtn as string}
+            aria-label={paused ? t("qz.continue") : t("qz.pause")}
+            onPress={() => withState(paused ? resume(s, mono()) : pause(s, mono()))}
+          >
+            <Glyph name={paused ? "play" : "pause"} />
           </Button>
-          {confirming ? (
-            <span role="group" className={styles.confirmGroup} aria-label={t("qz.giveUpConfirm")}>
-              <Button variant="primary" onPress={() => withState(giveUp(s, mono()))}>
-                {t("qz.giveUpYes")}
-              </Button>
-              <Button onPress={() => setConfirming(false)}>{t("qz.giveUpNo")}</Button>
-            </span>
-          ) : (
+          <Button
+            variant="ghost"
+            className={styles.iconBtn as string}
+            aria-label={t("qz.giveUp")}
+            aria-expanded={confirming}
+            onPress={() => {
+              if (confirming) return setConfirming(false);
+              const big =
+                left === null ||
+                (s.quiz.limitMs ?? 0) === 0 ||
+                left / (s.quiz.limitMs as number) > 0.1;
+              if (big && doneCount > 0 && format === "TYPE_ALL") setConfirming(true);
+              else withState(giveUp(s, mono()));
+            }}
+          >
+            <Glyph name="flag" />
+          </Button>
+        </div>
+        {confirming && (
+          <div role="group" className={styles.confirmGroup} aria-label={t("qz.giveUpConfirm")}>
+            <p>{t("qz.giveUpConfirm")}</p>
             <Button
-              variant="ghost"
+              variant="primary"
               onPress={() => {
-                const big =
-                  left === null ||
-                  (s.quiz.limitMs ?? 0) === 0 ||
-                  left / (s.quiz.limitMs as number) > 0.1;
-                if (big && doneCount > 0 && format === "TYPE_ALL") setConfirming(true);
-                else withState(giveUp(s, mono()));
+                setConfirming(false);
+                withState(giveUp(s, mono()));
               }}
             >
-              {t("qz.giveUp")}
+              {t("qz.giveUpYes")}
             </Button>
-          )}
-        </div>
+            <Button onPress={() => setConfirming(false)}>{t("qz.giveUpNo")}</Button>
+          </div>
+        )}
       </header>
 
-      {paused ? (
-        <Card className={styles.card} role="status">
-          <h2>{t("qz.paused")}</h2>
-          <Button variant="primary" onPress={() => withState(resume(s, mono()))}>
-            {t("qz.continue")}
-          </Button>
-        </Card>
-      ) : (
-        <div className={styles.body}>
-          <div className={styles.controls}>
-            {showItem && format !== "TYPE_ALL" && promptNode(showItem)}
-
-            {(format === "TYPE_ALL" || format === "TYPE_PROMPTED") && (
-              <AnswerInput
-                label={t(askLabel as MessageKey)}
-                value={text}
-                onChange={typedChange}
-                onSubmit={typedSubmit}
-                status={status}
-                autoFocus
-              />
-            )}
-
-            {format === "MULTIPLE_CHOICE" && showItem?.options && (
-              <>
-                <ChoiceGrid
-                  aria-label={t("qz.choose")}
-                  stateLabels={{
-                    correct: t("qz.stateCorrect"),
-                    wrong: t("qz.stateWrong"),
-                    near: "",
-                  }}
-                  choices={showItem.options.map((id, i) => {
-                    const removed = !shown && s.items[currentIndex(s) ?? 0]?.removed?.includes(i);
-                    return {
-                      id: String(i),
-                      label: optionLabel(world, template, id),
-                      disabled: !!shown || !!removed,
-                      ...(shown
-                        ? {
-                            state:
-                              i === shown.correct
-                                ? ("correct" as const)
-                                : i === shown.chosen
-                                  ? ("wrong" as const)
-                                  : ("idle" as const),
-                          }
-                        : {}),
-                    };
-                  })}
-                  onChoose={(id) => chosen(Number(id))}
-                />
-                <p role="status" className={styles.status}>
-                  {status?.text ?? ""}
-                </p>
-              </>
-            )}
-
-            {format === "MAP_CLICK" && (
-              <>
-                {acc ? (
-                  <>
-                    <p className={styles.describe}>
-                      <strong>{t("qz.accDescription")}: </strong>
-                      {acc.description}
-                    </p>
-                    <ChoiceGrid
-                      aria-label={t("qz.choose")}
-                      stateLabels={{
-                        correct: t("qz.stateCorrect"),
-                        wrong: t("qz.stateWrong"),
-                        near: "",
-                      }}
-                      choices={acc.options.map((id, i) => ({
-                        id: String(i),
-                        label: world.byId.get(id)?.name ?? world.groupById.get(id)?.name ?? id,
-                      }))}
-                      onChoose={(i) => clicked(acc.options[Number(i)] as string)}
-                    />
-                  </>
-                ) : null}
-                <p role="status" className={styles.status}>
-                  {status?.text ?? ""}
-                </p>
-              </>
-            )}
-
-            <div className={styles.row}>
-              {format === "TYPE_PROMPTED" && (
-                <Button onPress={() => withState(skip(s, mono()))}>
-                  {skipIsReveal(s) ? t("qz.reveal") : t("qz.skip")}
-                </Button>
-              )}
-              {hintsAllowed(s) && (
-                <Button onPress={doHint}>
-                  {hintLeft === null ? t("qz.hint") : t("qz.hintsLeft", { n: hintLeft })}
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {showMap && (
-            <div className={styles.mapCol}>
-              {p.renderMap ? (
+      <div className={styles.stage} data-map={showMap && !paused ? "on" : "off"}>
+        {paused ? (
+          <Card className={styles.dock} role="status">
+            <h2>{t("qz.paused")}</h2>
+            <Button variant="primary" onPress={() => withState(resume(s, mono()))}>
+              {t("qz.continue")}
+            </Button>
+          </Card>
+        ) : (
+          <>
+            {showMap &&
+              (p.renderMap ? (
                 p.renderMap({
                   states,
                   markers,
@@ -512,23 +463,139 @@ export function QuizPlay(p: QuizPlayProps) {
                   mode={mapMode}
                   {...(format === "MAP_CLICK" ? { onSelect: clicked } : {})}
                 />
+              ))}
+            {showMap && format !== "TYPE_ALL" && dotToggle && (
+              <div className={styles.mapChip}>{dotToggle}</div>
+            )}
+
+            <div className={styles.dock} data-kind={showMap ? "float" : "card"}>
+              {showItem && format !== "TYPE_ALL" && promptNode(showItem)}
+
+              {(format === "TYPE_ALL" || format === "TYPE_PROMPTED") && (
+                <div className={styles.answerRow}>
+                  <AnswerInput
+                    label={t(askLabel as MessageKey)}
+                    value={text}
+                    onChange={typedChange}
+                    onSubmit={typedSubmit}
+                    status={status}
+                    autoFocus
+                  />
+                </div>
               )}
-              {continents && (
-                <ul className={styles.counts} aria-label={t("qz.countsHeading")}>
-                  {continents.map(([c, v]) => (
-                    <li key={c}>
-                      {CONTINENT_NAMES[c] ?? c}{" "}
-                      <strong>
-                        {v.done}/{v.all}
-                      </strong>
-                    </li>
-                  ))}
-                </ul>
+
+              {format === "MULTIPLE_CHOICE" && showItem?.options && (
+                <>
+                  <ChoiceGrid
+                    aria-label={t("qz.choose")}
+                    stateLabels={{
+                      correct: t("qz.stateCorrect"),
+                      wrong: t("qz.stateWrong"),
+                      near: "",
+                    }}
+                    choices={showItem.options.map((id, i) => {
+                      const removed = !shown && s.items[currentIndex(s) ?? 0]?.removed?.includes(i);
+                      return {
+                        id: String(i),
+                        label: optionLabel(world, template, id),
+                        disabled: !!shown || !!removed,
+                        ...(shown
+                          ? {
+                              state:
+                                i === shown.correct
+                                  ? ("correct" as const)
+                                  : i === shown.chosen
+                                    ? ("wrong" as const)
+                                    : ("idle" as const),
+                            }
+                          : {}),
+                      };
+                    })}
+                    onChoose={(id) => chosen(Number(id))}
+                  />
+                  <p role="status" className={styles.status}>
+                    {status?.text ?? ""}
+                  </p>
+                </>
+              )}
+
+              {format === "MAP_CLICK" && (
+                <>
+                  {acc ? (
+                    <>
+                      <p className={styles.describe}>
+                        <strong>{t("qz.accDescription")}: </strong>
+                        {acc.description}
+                      </p>
+                      <ChoiceGrid
+                        aria-label={t("qz.choose")}
+                        stateLabels={{
+                          correct: t("qz.stateCorrect"),
+                          wrong: t("qz.stateWrong"),
+                          near: "",
+                        }}
+                        choices={acc.options.map((id, i) => ({
+                          id: String(i),
+                          label: world.byId.get(id)?.name ?? world.groupById.get(id)?.name ?? id,
+                        }))}
+                        onChoose={(i) => clicked(acc.options[Number(i)] as string)}
+                      />
+                    </>
+                  ) : null}
+                  <p role="status" className={styles.status}>
+                    {status?.text ?? ""}
+                  </p>
+                </>
+              )}
+
+              {(format === "TYPE_PROMPTED" || hintsAllowed(s)) && (
+                <div className={styles.row}>
+                  {format === "TYPE_PROMPTED" && (
+                    <Button onPress={() => withState(skip(s, mono()))}>
+                      {skipIsReveal(s) ? t("qz.reveal") : t("qz.skip")}
+                    </Button>
+                  )}
+                  {hintsAllowed(s) && (
+                    <Button onPress={doHint}>
+                      {hintLeft === null ? t("qz.hint") : t("qz.hintsLeft", { n: hintLeft })}
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
+          </>
+        )}
+      </div>
+
+      {format === "TYPE_ALL" && (
+        <QuizSlots world={world} session={session} itemName={itemName} aside={dotToggle} />
       )}
     </div>
+  );
+}
+
+const GLYPHS = {
+  back: <path d="m15 18-6-6 6-6" />,
+  pause: <path d="M9 5v14M15 5v14" />,
+  play: <path d="M8 5.5v13l10-6.5z" />,
+  flag: <path d="M5 21V4h11l-2 4 2 4H5" />,
+} as const;
+
+/** Outline glyphs for the game bar, drawn like the Lucide set the rest of the UI uses. Decorative. */
+function Glyph({ name }: { name: keyof typeof GLYPHS }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      aria-hidden="true"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {GLYPHS[name]}
+    </svg>
   );
 }

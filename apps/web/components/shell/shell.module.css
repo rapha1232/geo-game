@@ -343,3 +343,8 @@
     }
   }
 }
+
+/* A quiz round takes the whole screen: the header and the phone tab bar step aside (UX_AND_DESIGN §5.4). */
+:global(html[data-immersive]) .header {
+  display: none;
+}

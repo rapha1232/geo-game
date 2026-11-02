@@ -150,3 +150,12 @@
     align-items: flex-start;
   }
 }
+
+/* During a quiz round the game bar replaces the header and the map runs edge to edge (UX_AND_DESIGN §5.4). */
+:global(html[data-immersive]) .main {
+  max-width: none;
+  padding: 0;
+}
+:global(html[data-immersive]) .footer {
+  margin-top: 0;
+}

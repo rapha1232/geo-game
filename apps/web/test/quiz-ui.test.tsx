@@ -260,6 +260,56 @@ describe("QuizPlay: TYPE_ALL (AC-QZ-001)", () => {
   });
 });
 
+describe("QuizPlay: game bar and answer board (quiz-library §8.3, AC-QZ-001, AC-QZ-014)", () => {
+  it("AC-QZ-001: the board has one blank box per answer, fills a box with ✓ and the name, and never shows a blank's name", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={sessionOf(cfg())} />);
+    const board = screen.getByRole("list", { name: "By continent" });
+    const boxes = () => board.querySelectorAll("li[data-state]");
+    expect(boxes()).toHaveLength(14);
+    expect([...boxes()].every((b) => b.getAttribute("data-state") === "empty")).toBe(true);
+    expect(board.textContent).not.toMatch(/France|Brazil/);
+    await user.type(screen.getByRole("textbox", { name: "Name a country" }), "france");
+    const europe = screen.getByRole("list", { name: "Europe answers" });
+    expect(within(europe).getByText("France").closest("li")).toHaveAttribute(
+      "data-state",
+      "correct",
+    );
+    expect(within(europe).getByText("France").closest("li")).toHaveTextContent("✓ France");
+    expect(board.textContent).not.toMatch(/Brazil/);
+  });
+  it("AC-QZ-014: after give-up the board marks missed answers with ✕, not colour alone", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={sessionOf(cfg())} />);
+    await user.click(screen.getByRole("button", { name: "Give up" }));
+    const missed = screen.getByText("Brazil").closest("li");
+    expect(missed).toHaveAttribute("data-state", "missed");
+    expect(missed).toHaveTextContent("✕ Brazil");
+  });
+  it("shows the quiz name and a back link, and hides the site header during the round", () => {
+    const { unmount } = render(
+      <QuizPlay
+        title="Countries of the World"
+        exitHref="/play/quiz"
+        world={world}
+        facts={facts}
+        neighbors={neighbors}
+        flags={null}
+        session={sessionOf(cfg())}
+        now={0}
+        accessible={false}
+        onSession={() => {}}
+        renderMap={() => <div />}
+      />,
+    );
+    expect(screen.getByText("Countries of the World")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Leave quiz" })).toHaveAttribute("href", "/play/quiz");
+    expect(document.documentElement.dataset["immersive"]).toBe("quiz");
+    unmount();
+    expect(document.documentElement.dataset["immersive"]).toBeUndefined();
+  });
+});
+
 describe("QuizPlay: TYPE_PROMPTED", () => {
   it("asks for a capital, takes the capital, and shows Skip then Reveal", async () => {
     const user = userEvent.setup();
