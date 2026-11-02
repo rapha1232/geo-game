@@ -324,7 +324,7 @@ Full-scope quizzes ("All") ignore subset weighting. Difficulty then affects only
 
 | Format          | Hint 1                                                      | Hint 2                                                                   | Hint 3                 | Cost                                     |
 | --------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------- | ---------------------------------------- |
-| TYPE_ALL        | Per-continent remaining counts (always visible, not a hint) | **Highlight one random unnamed item** on the map (`H`), up to 5 per quiz | —                      | A highlighted item scores 0.5 when named |
+| TYPE_ALL        | Per-continent remaining counts (on the answer board under the map, not a hint) | **Highlight one random unnamed item** on the map (`H`), up to 5 per quiz | —                      | A highlighted item scores 0.5 when named |
 | TYPE_PROMPTED   | First letter                                                | Letter count with blanks (`_ _ _ _ _ _ _`)                               | Continent or subregion | Item scores 0.5 after any hint           |
 | MAP_CLICK       | Zoom to the item's subregion                                | Show neighbors' outlines in bold                                         | —                      | Max item score becomes 0.5               |
 | MULTIPLE_CHOICE | 50/50: remove 2 wrong options (once per 10 items)           | —                                                                        | —                      | Item scores 0.5                          |
@@ -375,26 +375,32 @@ More options ▸ (difficulty, strictness, map on/off)
 [ Start ]   [ Learn mode ]   Your best: 84% in 12:02
 ```
 
-### 8.3 TYPE_ALL play (desktop ≥ 1024 px)
+### 8.3 TYPE_ALL play
+
+Layout follows [UX_AND_DESIGN §5.4](../UX_AND_DESIGN.md#54-quiz-play-screen) (2026-11 owner request: "the map is the screen", with JetPunk-style answer boxes under the map). The site header steps aside during a round.
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│ ← Countries of the World      88 / 197      ⏱ 06:41   [Give up]│
-├───────────────────────────────────────────────────────────────┤
-│ [ Type a country…                                        ]    │
-│ Accepted as Kyrgyzstan                                        │
-├────────────────────────────────────────────┬──────────────────┤
-│                                            │ Africa   21/54   │
-│              WORLD MAP                     │ Asia     30/48   │
-│   (named = filled + ✓, others outlined)    │ Europe   29/45   │
-│                                            │ N. Amer.  5/23   │
-│                                            │ S. Amer.  3/12   │
-│                                            │ Oceania   0/14   │
-│                                            │ [Highlight one H]│
-└────────────────────────────────────────────┴──────────────────┘
+┌───────────────────────────────────────────────────────────────────────┐
+│ ‹  Countries of the World  ▬▬▬▬▬▬▬▬▬▬▭▭▭▭▭▭▭▭▭  88 / 197  6:41  ⏸  ⚑ │  game bar (sticky)
+├───────────────────────────────────────────────────────────────────────┤
+│                                                               [⊕][−]  │
+│                    WORLD MAP (fills the screen)                       │
+│              (named = filled + ✓, others outlined)                    │
+│          ┌──────────────────────────────────────────┐                 │
+│          │ Name a country [ Kyrg…            ] [Hint (5 left)] │       │  floating dock
+│          │ ✓ Accepted as Kyrgyzstan                 │                 │
+│          └──────────────────────────────────────────┘                 │
+└───────────────────────────────────────────────────────────────────────┘
+  Answers                                         [ ] Dots for missed only
+  AFRICA ─────────────────────────────────────────────────────── 21/54
+  [✓ Algeria ] [         ] [✓ Angola  ] [         ] [         ] …
+  ASIA ───────────────────────────────────────────────────────── 30/48
+  …
 ```
 
-On mobile (< 640 px), the input is pinned above the virtual keyboard, the map takes the remaining height, and continent counts collapse into a single "Africa 21/54 ▸" chip row that scrolls horizontally. `autocomplete`, `autocorrect`, `autocapitalize` and `spellcheck` are off on the input.
+- **Game bar:** back to the library, the quiz name, a progress strip with one segment per answer (a continuous bar above 60 answers), the `done / total` count, the clock, and Pause and Give up as icon buttons with labels for assistive tech. Give up asks first in a small panel under the bar (same rule as before).
+- **Answer board** (under the map, reached by scrolling the page): one box per answer, grouped by continent with a `done/total` count on each group heading, sorted by name. Blank boxes are all the same width and carry no text, so they never hint at a name or its length. A named answer fills its box with ✓ and the name; after give-up, missed answers show ✕ on a hatched box; a highlighted hint shows ◆ "Hint". The per-continent counts move here from the old side column.
+- **Mobile (< 640 px):** the game bar keeps exit, the progress strip, the count, the clock, Pause and Give up (the title is dropped). The map takes a fixed share of the screen and the dock sits directly under it, so it never covers the map. `autocomplete`, `autocorrect`, `autocapitalize` and `spellcheck` are off on the input.
 
 ### 8.4 Review
 

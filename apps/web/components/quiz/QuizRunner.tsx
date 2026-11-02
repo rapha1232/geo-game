@@ -504,6 +504,8 @@ export function QuizRunner({
   return (
     <section className={styles.page}>
       <QuizPlay
+        title={named?.title ?? ""}
+        exitHref={daily ? "/daily" : "/play/quiz"}
         world={data.world}
         facts={data.facts}
         neighbors={data.neighbors}

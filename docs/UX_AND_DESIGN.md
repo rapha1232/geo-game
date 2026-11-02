@@ -233,13 +233,24 @@ Players choose how every map looks, from the layers button in the map controls o
 
 Map rendering details shared by all styles: the outer coastline is a TopoJSON `merge` of the pack, drawn under the land three times as widening translucent strokes (the shallows), once as a shadow and once as a crisp edge. At 50m and 10m the coast layer rests while the map moves, so panning stays at frame rate. Tiny targets are drawn as small island dots shaped by state (dot, ✕ cross, ring) and their dashed hit ring appears only on hover or keyboard focus. Zoom buttons, reset and keyboard zooms fly with a short ease (instant under reduced motion). Maps given a `focus` set open framed on it: a quiz whose answers all share a continent frames that whole continent (never just the answers, which would give them away), and Border Run frames its two endpoints; the reset button returns to that frame.
 
+### 5.4 Quiz play screen
+
+**2026-11 redesign (owner request: option B, "Open map", with option C's answer slots under the map, JetPunk-style, and option A's docked progress bar).** It replaces the old layout: a floating capsule header, a 380 px left column holding only the input, and a map card. That column was mostly empty, the header strip wrapped into three rows on phones, and choice quizzes used a third of the screen.
+
+- **The site header steps aside.** While a round is on screen, `QuizPlay` sets `data-immersive` on `<html>`. The header and the phone tab bar are hidden, and `main` drops its max width and padding. Review, configure and every other page are unchanged.
+- **Docked game bar** (sticky, solid surface, 60 px; 52 px on phones): back to the library (or Daily), the quiz name (hidden on phones), a progress strip, the `done / total` count, lives, the clock, and Pause and Give up as round icon buttons (44 px, `aria-label`, tooltip). The strip has one segment per answer up to 60 answers and a continuous bar beyond. It is decorative (`aria-hidden`), because the count beside it carries the number.
+- **Stage.** Map formats fill the rest of the screen with the map, edge to edge. The prompt, answer field, status and Hint/Skip sit in a floating glass dock at the bottom centre: prompt and input on the left, the buttons on the right. "Dots for missed only" is a glass chip in the map's top-left corner, or in the answer board's heading for Type all. Formats without a map (flags, capitals, multiple choice, the accessible variant) put the same dock in the centre of the screen as a solid card, with the prompt centred and larger.
+- **Answer board** (Type all): under the map, reached by scrolling the page ([quiz-library §8.3](games/quiz-library.md#83-type_all-play)). The boxes are uniform and empty until named, grouped by continent with counts, and use the shared feedback rules: ✓ plus a solid correct border, ✕ plus a hatch for missed, ◆ for a hint.
+- **Phones (< 640 px).** A full-height portrait frame would run past the top of the world map and leave the dock covering most of it. So the map takes `min(112vw, 100dvh − bar − 9rem)` and the dock sits under it as a solid band.
+- **Pause** replaces the dock with a "Paused" card; the map is hidden so the clock can't be gamed.
+
 ## 6. Responsive layouts
 
 | Breakpoint | Width       | Layout rules                                                                                                                                                          |
 | ---------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sm`       | < 640 px    | Single column, bottom tab bar, game header 48 px. The map fills the available height. Input pinned above the keyboard via `visualViewport`. Bottom sheets for panels. |
 | `md`       | 640–1023 px | Tablet: the map is the main area, with side panels as overlays (portrait) or a right rail of 320 px (landscape)                                                       |
-| `lg`       | ≥ 1024 px   | Full top nav, right rail of 360 px for game panels, max content width of 1280 px for non-map pages                                                                    |
+| `lg`       | ≥ 1024 px   | Full top nav, right rail of 360 px for game panels (quizzes use the full-screen stage of §5.4), max content width of 1280 px for non-map pages                                                                    |
 
 Rules: no horizontal page scroll at 320 px or wider. Touch targets ≥ 44×44 px. Maps are never inside a scrolling container on touch devices (game screens use a fixed `100dvh` layout).
 

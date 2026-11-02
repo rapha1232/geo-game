@@ -174,6 +174,11 @@ export const messages = {
   "qz.status.pending": "✕ missed",
   "qz.noRows": "Nothing here.",
   "qz.mapAria": "World map",
+  "qz.exit": "Leave quiz",
+  "qz.answersHeading": "Answers",
+  "qz.answersNote": "Each box is one answer. Names fill in as you get them.",
+  "qz.slotHint": "Hint",
+  "qz.slotsAria": "{continent} answers",
   "qz.saveFailed": "Your result couldn't be saved on this device. It is still shown here.",
 } as const;
 
