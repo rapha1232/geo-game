@@ -1,6 +1,6 @@
 "use client";
 
-import { geoGraticule10, geoPath } from "d3-geo";
+import { geoClipRectangle, geoGraticule10, geoPath, type GeoProjection } from "d3-geo";
 import { select } from "d3-selection";
 import {
   zoom as d3zoom,
@@ -14,6 +14,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -42,6 +43,7 @@ import { Patterns } from "./Patterns";
 import { worldProjection } from "./projection";
 import {
   DRAG_THRESHOLD_PX,
+  IDENTITY,
   MAX_ZOOM,
   MIN_ZOOM,
   baseToScreen,
@@ -141,15 +143,75 @@ const prefersReducedMotion = (): boolean =>
 const easeInOut = (x: number): number =>
   x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 
+/** [x0, y0, x1, y1] in base (unzoomed) map coordinates. */
+type Rect = readonly [number, number, number, number];
+const transformAttr = (t: Transform): string => `translate(${t.x} ${t.y}) scale(${t.k})`;
+/** The part of the base map on screen under transform `t`. */
+const viewRect = (t: Transform, w: number, h: number): Rect => [
+  -t.x / t.k,
+  -t.y / t.k,
+  (w - t.x) / t.k,
+  (h - t.y) / t.k,
+];
+const grow = ([x0, y0, x1, y1]: Rect, by: number): Rect => {
+  const [dx, dy] = [(x1 - x0) * by, (y1 - y0) * by];
+  return [x0 - dx, y0 - dy, x1 + dx, y1 + dy];
+};
+const inside = (a: Rect, b: Rect): boolean =>
+  a[0] >= b[0] && a[1] >= b[1] && a[2] <= b[2] && a[3] <= b[3];
+const overlaps = (a: Rect, b: Rect): boolean =>
+  a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1];
+/**
+ * Coordinate precision of path strings, in base units. One decimal is under 0.4 px of error up to the 7x zoom where
+ * 50m hands over to 10m, and two decimals stay under 0.1 px at the 12x maximum. It roughly halves the path data.
+ */
+const DIGITS: Record<Lod, number> = { "110m": 1, "50m": 1, "10m": 2 };
+/** Finer packs only draw what is near the view: the view plus this share of it on every side. */
+const CULL_MARGIN = 0.5;
+
+/**
+ * A cheap projected bounding box from a feature's geographic bounds, used only to cull. Equal Earth is
+ * pseudo-cylindrical, so sampling the box edges (and the equator when it is inside) bounds the outline closely.
+ * Features across the antimeridian get the whole width.
+ */
+function approxBox(projection: GeoProjection, f: MapFeature): Rect {
+  const [[w, s], [e, n]] = f.bounds;
+  const lons = w <= e ? [w, (w + e) / 2, e] : [-180, 0, 180];
+  const lats = [s, (s + n) / 2, n, ...(s < 0 && n > 0 ? [0] : [])];
+  let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const lon of lons)
+    for (const lat of lats) {
+      const p = projection([lon, lat]);
+      if (!p) continue;
+      x0 = Math.min(x0, p[0]);
+      x1 = Math.max(x1, p[0]);
+      y0 = Math.min(y0, p[1]);
+      y1 = Math.max(y1, p[1]);
+    }
+  return [x0, y0, x1, y1];
+}
+
+/** Merged coastlines per pack: the merge is the costliest step of a level-of-detail change, so it runs once. */
+const coasts = new WeakMap<Topology, ReturnType<typeof merge> | null>();
+/** Whether a feature crosses the antimeridian or reaches a pole, and so needs d3's antimeridian clip. */
+const wraps = (f: MapFeature): boolean => {
+  const [[w, s], [e, n]] = f.bounds;
+  return w > e || w <= -179.9 || e >= 179.9 || s <= -89.9 || n >= 89.9;
+};
+
 /** The outer coastline of a pack (internal borders removed), for the shadow and water lines. */
 function coastOf(topology: Topology | undefined) {
   const object = topology?.objects["countries"] as GeometryCollection | undefined;
   if (!topology || !object) return null;
+  if (coasts.has(topology)) return coasts.get(topology) ?? null;
+  let shape: ReturnType<typeof merge> | null = null;
   try {
-    return merge(topology, object.geometries as never);
+    shape = merge(topology, object.geometries as never);
   } catch {
-    return null;
+    shape = null;
   }
+  coasts.set(topology, shape);
+  return shape;
 }
 
 function useElementSize() {
@@ -217,11 +279,22 @@ export function GameMap({
   );
   const { ref: rootRef, size } = useElementSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+  const zoomRef = useRef<ZoomBehavior<HTMLDivElement, unknown> | null>(null);
   const pointerKind = usePointerKind(pointer);
 
-  const [t, setT] = useState<Transform>({ k: 1, x: 0, y: 0 });
-  const [committedK, setCommittedK] = useState(1);
+  /**
+   * The transform React last rendered. While a gesture or flight runs, the already-drawn SVG is moved as one
+   * GPU layer (`paint`), and React redraws it only when the movement settles, so panning never re-renders or
+   * re-rasterises the map.
+   */
+  const [t, setT] = useState<Transform>(IDENTITY);
+  const committedK = t.k;
+  /** The transform on screen right now, including a gesture in progress. */
+  const live = useRef<Transform>(IDENTITY);
+  const worldRef = useRef<SVGGElement | null>(null);
+  const softCommit = useRef<number | null>(null);
+  const rendered = useRef<Transform>(IDENTITY);
+  rendered.current = t;
   const [activeId, setActiveId] = useState<string | null>(null);
   const [loupe, setLoupe] = useState<{ x: number; y: number } | null>(null);
   const [announce, setAnnounce] = useState("");
@@ -240,21 +313,124 @@ export function GameMap({
   useEffect(() => {
     if (!available.includes(wanted)) onNeedLod?.(wanted);
   }, [wanted, available.join(","), onNeedLod]);
+  // The first zoom past 3x needs the 50m pack. Fetch, parse and decode it while the browser is idle, so that
+  // zoom doesn't stall on it.
+  const has110 = !!lods["110m"];
+  const has50 = !!lods["50m"];
+  useEffect(() => {
+    if (!has110 || typeof requestIdleCallback !== "function") return;
+    const id = requestIdleCallback(
+      () => {
+        if (!has50) onNeedLod?.("50m");
+        else {
+          decode(lods["50m"]);
+          coastOf(lods["50m"]);
+        }
+      },
+      { timeout: 4000 },
+    );
+    return () => cancelIdleCallback(id);
+  }, [has110, has50, onNeedLod]);
 
+  /** Decoded packs, kept per topology so going back to a level of detail costs nothing. */
+  const decoded = useRef(new WeakMap<Topology, MapFeature[]>());
+  const decode = useCallback((topo: Topology | undefined): MapFeature[] => {
+    if (!topo) return [];
+    let f = decoded.current.get(topo);
+    if (!f) decoded.current.set(topo, (f = decodeFeatures(topo)));
+    return f;
+  }, []);
   const features = useMemo<MapFeature[]>(
-    () => (lod && lods[lod] ? decodeFeatures(lods[lod] as Topology) : []),
-    [lod, lods],
+    () => decode(lod ? lods[lod] : undefined),
+    [lod, lods, decode],
+  );
+  /** Hover runs on every pointer move, so it tests against 50m outlines at most. */
+  const hoverFeatures = useMemo<MapFeature[]>(
+    () => (lod === "10m" && lods["50m"] ? decode(lods["50m"]) : features),
+    [lod, lods, features, decode],
   );
   const projection = useMemo(() => worldProjection(size.w, size.h), [size.w, size.h]);
-  const path = useMemo(() => geoPath(projection), [projection]);
+  /** The sphere outline and graticule: long curved lines, so they keep d3's adaptive resampling. */
+  const framePath = useMemo(() => geoPath(projection).digits(1), [projection]);
+  /**
+   * Land and coast. 50m and 10m outlines are already denser than a pixel, so adaptive resampling (the costliest
+   * step of building their paths in profiling) is turned off for them.
+   */
+  const landProjection = useCallback(
+    (wraps = true) => {
+      const p = worldProjection(size.w, size.h);
+      if (lod && lod !== "110m") p.precision(0);
+      // Countries that neither cross the antimeridian nor touch a pole skip d3's antimeridian clip, whose
+      // per-ring spherical inside test was the single costliest step of drawing them.
+      if (!wraps) p.preclip((stream) => stream);
+      return p;
+    },
+    [size.w, size.h, lod],
+  );
+  const path = useMemo(
+    () => geoPath(landProjection()).digits(DIGITS[lod ?? "110m"]),
+    [landProjection, lod],
+  );
+  const plainPath = useMemo(
+    () => geoPath(landProjection(false)).digits(DIGITS[lod ?? "110m"]),
+    [landProjection, lod],
+  );
   /** A 10° graticule under the land: decorative, gives the ocean depth and a sense of the projection. */
-  const graticule = useMemo(() => path(geoGraticule10()) ?? "", [path]);
-  const sphere = useMemo(() => path({ type: "Sphere" }) ?? "", [path]);
+  const graticule = useMemo(() => framePath(geoGraticule10()) ?? "", [framePath]);
+  const sphere = useMemo(() => framePath({ type: "Sphere" }) ?? "", [framePath]);
 
   /** Outer coastline for the land shadow and water lines. At 10m the 50m coast is close enough and far cheaper. */
   const coastLod: Lod | null = lod === "10m" && lods["50m"] ? "50m" : lod;
   const coastShape = useMemo(() => (coastLod ? coastOf(lods[coastLod]) : null), [coastLod, lods]);
-  const coast = useMemo(() => (coastShape ? (path(coastShape) ?? "") : ""), [coastShape, path]);
+
+  /**
+   * The area drawn at 50m and 10m: the view grown by CULL_MARGIN, kept until the view leaves it or zooms in past
+   * 1.5 times its scale, so small pans reuse the same paths. At 110m the whole world is drawn.
+   */
+  const cullRef = useRef<{ rect: Rect; k: number; lod: Lod; w: number; h: number } | null>(null);
+  const cull: Rect | null = (() => {
+    if (!lod || lod === "110m") return (cullRef.current = null);
+    const view = viewRect(t, size.w, size.h);
+    const c = cullRef.current;
+    if (
+      c &&
+      c.lod === lod &&
+      c.w === size.w &&
+      c.h === size.h &&
+      inside(view, c.rect) &&
+      t.k < c.k * 1.5
+    )
+      return c.rect;
+    cullRef.current = { rect: grow(view, CULL_MARGIN), k: t.k, lod, w: size.w, h: size.h };
+    return cullRef.current.rect;
+  })();
+
+  /**
+   * Paths clipped to the culled area. Countries and the coast are drawn through it, so a corner of Russia on screen
+   * costs a corner of Russia, not its whole 10m outline (and the coast, drawn five times over, the same).
+   */
+  const clippedPath = useMemo(
+    () =>
+      cull
+        ? geoPath(
+            landProjection().postclip(geoClipRectangle(cull[0], cull[1], cull[2], cull[3])),
+          ).digits(DIGITS[lod ?? "110m"])
+        : path,
+    [cull, path, lod, landProjection],
+  );
+  const clippedPlainPath = useMemo(
+    () =>
+      cull
+        ? geoPath(
+            landProjection(false).postclip(geoClipRectangle(cull[0], cull[1], cull[2], cull[3])),
+          ).digits(DIGITS[lod ?? "110m"])
+        : plainPath,
+    [cull, plainPath, lod, landProjection],
+  );
+  const coast = useMemo(
+    () => (coastShape ? (clippedPath(coastShape) ?? "") : ""),
+    [coastShape, clippedPath],
+  );
 
   /**
    * A colour slot (0–5) per feature so neighbours differ; styles map slots to colours (political) or to
@@ -272,12 +448,45 @@ export function GameMap({
     return slotsRef.current;
   }, [lod, lods]);
 
+  /**
+   * Path and on-screen size per feature, built the first time a feature is drawn at this detail, size and culled
+   * area. The size comes from the whole outline, so a partly clipped country still counts as large.
+   */
+  type Shape = { id: string; d: string; base: number };
+  /** Whole outlines, kept for as long as the detail level and size hold, whatever the culled area. */
+  const wholeShapes = useMemo(() => new Map<string, Shape>(), [features, path]);
+  /** Outlines that cross the culled area's edge, clipped to it; rebuilt when the area changes. */
+  const clippedShapes = useMemo(() => new Map<string, Shape>(), [features, clippedPath]);
+  const bases = useMemo(() => new Map<string, number>(), [features, path]);
+  const shapeOf = useCallback(
+    (f: MapFeature, box?: Rect) => {
+      const clip = !!cull && !!box && !inside(box, cull);
+      const cache = clip ? clippedShapes : wholeShapes;
+      let sh = cache.get(f.id);
+      if (!sh) {
+        let base = bases.get(f.id);
+        if (base === undefined) {
+          const [[x0, y0], [x1, y1]] = (wraps(f) ? path : plainPath).bounds(f.geometry);
+          bases.set(f.id, (base = Math.max(x1 - x0, y1 - y0)));
+        }
+        const draw = wraps(f) ? (clip ? clippedPath : path) : clip ? clippedPlainPath : plainPath;
+        sh = { id: f.id, d: draw(f.geometry) ?? "", base };
+        cache.set(f.id, sh);
+      }
+      return sh;
+    },
+    [cull, clippedShapes, wholeShapes, bases, path, plainPath, clippedPath, clippedPlainPath],
+  );
   const drawn = useMemo(() => {
-    return features.map((f) => {
-      const [[x0, y0], [x1, y1]] = path.bounds(f.geometry);
-      return { id: f.id, d: path(f.geometry) ?? "", base: Math.max(x1 - x0, y1 - y0) };
-    });
-  }, [features, path]);
+    if (!cull) return features.map((f) => shapeOf(f));
+    const out: Shape[] = [];
+    for (const f of features) {
+      const box = approxBox(projection, f);
+      if (overlaps(box, cull)) out.push(shapeOf(f, box));
+    }
+    return out;
+  }, [features, cull, projection, shapeOf]);
+  const featureIds = useMemo(() => new Set(features.map((f) => f.id)), [features]);
 
   const names = useMemo(() => new Map(entities.map((e) => [e.id, e.name] as const)), [entities]);
   const anchors = useMemo(() => {
@@ -292,7 +501,7 @@ export function GameMap({
     () =>
       new NavIndex(
         entities.flatMap((e) =>
-          anchors.has(e.id) && drawn.some((d) => d.id === e.id)
+          anchors.has(e.id) && featureIds.has(e.id)
             ? [
                 {
                   id: e.id,
@@ -303,7 +512,7 @@ export function GameMap({
             : [],
         ),
       ),
-    [entities, anchors, drawn],
+    [entities, anchors, featureIds],
   );
 
   /** The framed view for `focus`: label points with outliers trimmed, padded, never past 8×. */
@@ -350,19 +559,65 @@ export function GameMap({
 
   /** Geographic hit test at a screen point. */
   const polygonAt = useCallback(
-    (sx: number, sy: number): string | null => {
-      const [bx, by] = screenToBase(t, sx, sy);
+    (sx: number, sy: number, among: readonly MapFeature[] = features): string | null => {
+      const [bx, by] = screenToBase(live.current, sx, sy);
       const ll = projection.invert?.([bx, by]);
-      return ll ? featureAt(features, ll[0], ll[1]) : null;
+      return ll ? featureAt(among, ll[0], ll[1]) : null;
     },
-    [t, projection, features],
+    [projection, features],
   );
 
-  // d3-zoom owns the gesture; React state follows it.
-  useEffect(() => {
+  const commit = useCallback((n: Transform) => {
+    live.current = n;
+    setT((cur) => (cur.k === n.k && cur.x === n.x && cur.y === n.y ? cur : n));
+  }, []);
+  /**
+   * Puts transform `n` on screen without React or raster work: the SVG as drawn for the last rendered transform is
+   * moved and scaled with a CSS transform, which the compositor does on the GPU. Once the view has drifted a third
+   * of the screen or zoomed 1.6x from what was drawn, it is redrawn for real, so long drags never show much bare sea.
+   */
+  const paint = useCallback(
+    (n: Transform) => {
+      live.current = n;
+      const svg = svgRef.current;
+      if (!svg) return;
+      const c = rendered.current;
+      const s = n.k / c.k;
+      const [dx, dy] = [n.x - s * c.x, n.y - s * c.y];
+      svg.style.transform = `translate(${dx}px, ${dy}px) scale(${s})`;
+      const far = Math.abs(dx) > size.w / 3 || Math.abs(dy) > size.h / 3 || s > 1.6 || s < 1 / 1.6;
+      if (
+        far &&
+        !animating.current &&
+        softCommit.current === null &&
+        typeof requestAnimationFrame === "function"
+      )
+        softCommit.current = requestAnimationFrame(() => {
+          softCommit.current = null;
+          commit(live.current);
+        });
+    },
+    [size.w, size.h, commit],
+  );
+  // Once React has drawn a transform, the SVG needs no CSS correction. In a layout effect, so the redraw and the
+  // reset land in the same frame.
+  useLayoutEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return;
-    const behavior = d3zoom<SVGSVGElement, unknown>()
+    if (svg) svg.style.transform = "";
+  }, [t]);
+  useEffect(
+    () => () => {
+      if (softCommit.current !== null) cancelAnimationFrame(softCommit.current);
+    },
+    [],
+  );
+
+  // d3-zoom owns the gesture; React state follows it. It listens on the root, not the SVG, because the SVG is
+  // moved with a CSS transform mid-gesture and pointer maths on it would feed back into the gesture.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const behavior = d3zoom<HTMLDivElement, unknown>()
       .scaleExtent([MIN_ZOOM, MAX_ZOOM])
       .extent([
         [0, 0],
@@ -373,30 +628,30 @@ export function GameMap({
         [size.w, size.h],
       ])
       .clickDistance(DRAG_THRESHOLD_PX)
-      .on("start", (e: D3ZoomEvent<SVGSVGElement, unknown>) => {
+      .on("start", (e: D3ZoomEvent<HTMLDivElement, unknown>) => {
         if (e.sourceEvent) userMoved.current = true;
         setMoving(true);
       })
-      .on("zoom", (e: D3ZoomEvent<SVGSVGElement, unknown>) =>
-        setT({ k: e.transform.k, x: e.transform.x, y: e.transform.y }),
+      .on("zoom", (e: D3ZoomEvent<HTMLDivElement, unknown>) =>
+        paint({ k: e.transform.k, x: e.transform.x, y: e.transform.y }),
       )
-      .on("end", (e: D3ZoomEvent<SVGSVGElement, unknown>) => {
+      .on("end", (e: D3ZoomEvent<HTMLDivElement, unknown>) => {
         // Animated zooms commit once at the end, so the detail level never swaps mid-flight.
         if (animating.current) return;
         setMoving(false);
-        setCommittedK(e.transform.k);
+        commit({ k: e.transform.k, x: e.transform.x, y: e.transform.y });
       });
     zoomRef.current = behavior;
-    select(svg).call(behavior);
+    select(root).call(behavior);
     return () => {
-      select(svg).on(".zoom", null);
+      select(root).on(".zoom", null);
     };
-  }, [size.w, size.h]);
+  }, [size.w, size.h, paint, commit]);
 
   /** Moves the view to `next`: a short eased flight, or an instant jump with reduced motion. */
   const flyTo = useCallback(
     (next: ZoomTransform) => {
-      const svg = svgRef.current;
+      const svg = rootRef.current;
       const behavior = zoomRef.current;
       if (!svg || !behavior) return;
       const sel = select(svg);
@@ -434,11 +689,12 @@ export function GameMap({
         anim.current = null;
         animating.current = false;
         setMoving(false);
-        setCommittedK(zoomTransform(svg).k);
+        const end = zoomTransform(svg);
+        commit({ k: end.k, x: end.x, y: end.y });
       };
       anim.current = requestAnimationFrame(step);
     },
-    [size.w, size.h],
+    [size.w, size.h, commit],
   );
   useEffect(
     () => () => {
@@ -449,10 +705,10 @@ export function GameMap({
 
   const zoomBy = useCallback(
     (factor: number) => {
-      const svg = svgRef.current;
-      if (!svg) return;
+      const root = rootRef.current;
+      if (!root) return;
       userMoved.current = true;
-      const cur = zoomTransform(svg);
+      const cur = zoomTransform(root);
       const k = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, cur.k * factor));
       const [cx, cy] = cur.invert([size.w / 2, size.h / 2]);
       flyTo(zoomIdentity.translate(size.w / 2 - k * cx, size.h / 2 - k * cy).scale(k));
@@ -465,11 +721,11 @@ export function GameMap({
   }, [flyTo, home]);
   // Open on the focus frame, and follow it while the player hasn't moved the map themselves.
   useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg || !zoomRef.current || userMoved.current) return;
-    const cur = zoomTransform(svg);
+    const root = rootRef.current;
+    if (!root || !zoomRef.current || userMoved.current) return;
+    const cur = zoomTransform(root);
     if (cur.k === home.k && cur.x === home.x && cur.y === home.y) return;
-    select(svg).call(zoomRef.current.transform, home);
+    select(root).call(zoomRef.current.transform, home);
   }, [home]);
   const zoomTo = useCallback(
     (bx: number, by: number, k: number) => {
@@ -486,7 +742,8 @@ export function GameMap({
   );
   useEffect(() => {
     if (mode !== "highlight" || !highlightId) return;
-    const d = drawn.find((x) => x.id === highlightId);
+    const f = features.find((x) => x.id === highlightId);
+    const d = f ? shapeOf(f) : undefined;
     const a = anchors.get(highlightId);
     if (!d || !a) return;
     const need = (HIGHLIGHT_FILL * Math.min(size.w, size.h)) / Math.max(d.base, 0.5);
@@ -494,14 +751,15 @@ export function GameMap({
   }, [highlightId, mode]);
 
   const rel = (e: { clientX: number; clientY: number }): [number, number] => {
-    const r = svgRef.current?.getBoundingClientRect();
+    // The root, not the SVG: the SVG may carry a CSS transform while a gesture settles.
+    const r = rootRef.current?.getBoundingClientRect();
     return [e.clientX - (r?.left ?? 0), e.clientY - (r?.top ?? 0)];
   };
 
   const choose = useCallback(
     (sx: number, sy: number, allowLoupe: boolean) => {
       if (mode === "free-pin") {
-        const [bx, by] = screenToBase(t, sx, sy);
+        const [bx, by] = screenToBase(live.current, sx, sy);
         const ll = projection.invert?.([bx, by]);
         if (ll) onPinChange?.({ lat: round4(ll[1]), lon: round4(ll[0]) });
         return;
@@ -517,7 +775,7 @@ export function GameMap({
       const id = ringAt(rings, sx, sy)?.id ?? polygonAt(sx, sy);
       if (id) onSelect?.(id);
     },
-    [mode, t, projection, rings, polygonAt, pointerKind, onPinChange, onSelect],
+    [mode, projection, rings, polygonAt, pointerKind, onPinChange, onSelect],
   );
 
   const loupeCenter = loupe
@@ -532,17 +790,38 @@ export function GameMap({
   };
   const hovered = useRef<string | null>(null);
   const tracksHover = !!onHover || mode === "select" || mode === "highlight";
+  /** Hover is hit-tested at most once a frame, on the latest pointer position. */
+  const hoverAt = useRef<[number, number] | null>(null);
+  const hoverFrame = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (hoverFrame.current !== null) cancelAnimationFrame(hoverFrame.current);
+    },
+    [],
+  );
   const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
-    if (!tracksHover || e.pointerType === "touch" || down.current) return;
-    const [sx, sy] = rel(e);
-    const id = ringAt(rings, sx, sy)?.id ?? polygonAt(sx, sy) ?? null;
-    if (id !== hovered.current) {
-      hovered.current = id;
-      setHoverId(id);
-      onHover?.(id);
-    }
+    if (!tracksHover || e.pointerType === "touch" || down.current || moving) return;
+    const at = rel(e);
+    // Browsers send pointer moves after the page redraws under a still pointer; those need no new hit test.
+    const last = hoverAt.current;
+    if (last && last[0] === at[0] && last[1] === at[1]) return;
+    hoverAt.current = at;
+    const run = () => {
+      hoverFrame.current = null;
+      const at = hoverAt.current;
+      if (!at) return;
+      const id = ringAt(rings, at[0], at[1])?.id ?? polygonAt(at[0], at[1], hoverFeatures) ?? null;
+      if (id !== hovered.current) {
+        hovered.current = id;
+        setHoverId(id);
+        onHover?.(id);
+      }
+    };
+    if (typeof requestAnimationFrame !== "function") return run();
+    if (hoverFrame.current === null) hoverFrame.current = requestAnimationFrame(run);
   };
   const onPointerLeave = () => {
+    hoverAt.current = null;
     if (hovered.current !== null) {
       hovered.current = null;
       setHoverId(null);
@@ -733,7 +1012,7 @@ export function GameMap({
           </radialGradient>
         </defs>
         <rect width={size.w} height={size.h} className={styles.backdrop} />
-        <g transform={`translate(${t.x} ${t.y}) scale(${t.k})`}>
+        <g ref={worldRef} transform={transformAttr(t)}>
           <path d={sphere} className={styles.sphere} fill={`url(#${uid}-ocean)`} />
           <path d={graticule} className={styles.graticule} />
           {coast && (
@@ -753,48 +1032,50 @@ export function GameMap({
           {hoverPath && <path d={hoverPath} className={styles.hoverOutline} aria-hidden="true" />}
           <path d={sphere} className={styles.sphereEdge} />
         </g>
-        <g className={styles.rings}>{rings.map((r) => ringMark(r, r.id))}</g>
-        {markers && markers.size > 0 && (
-          <g className={styles.markers} data-markers="">
-            {[...markers].flatMap((id) => {
-              const a = anchors.get(id);
-              if (!a) return [];
-              const [cx, cy] = baseToScreen(t, a[0], a[1]);
-              return [
-                <circle
-                  key={id}
-                  cx={cx}
-                  cy={cy}
-                  r={4.5}
-                  className={styles.marker}
-                  data-marker={id}
-                />,
-              ];
-            })}
-          </g>
-        )}
-        {pinScreen && targetScreen && (
-          <line
-            x1={pinScreen[0]}
-            y1={pinScreen[1]}
-            x2={targetScreen[0]}
-            y2={targetScreen[1]}
-            className={styles.targetLine}
-            data-target-line=""
-          />
-        )}
-        {targetScreen && (
-          <g transform={`translate(${targetScreen[0]} ${targetScreen[1]})`} data-target="">
-            <circle r={9} className={styles.targetRing} />
-            <circle r={3} className={styles.pinDot} />
-          </g>
-        )}
-        {pinScreen && (
-          <g transform={`translate(${pinScreen[0]} ${pinScreen[1]})`} data-pin="">
-            <path d="M0 0 L-7 -15 A9 9 0 1 1 7 -15 Z" className={styles.pin} />
-            <circle cy={-20} r={3} className={styles.pinDot} />
-          </g>
-        )}
+        <g>
+          <g className={styles.rings}>{rings.map((r) => ringMark(r, r.id))}</g>
+          {markers && markers.size > 0 && (
+            <g className={styles.markers} data-markers="">
+              {[...markers].flatMap((id) => {
+                const a = anchors.get(id);
+                if (!a) return [];
+                const [cx, cy] = baseToScreen(t, a[0], a[1]);
+                return [
+                  <circle
+                    key={id}
+                    cx={cx}
+                    cy={cy}
+                    r={4.5}
+                    className={styles.marker}
+                    data-marker={id}
+                  />,
+                ];
+              })}
+            </g>
+          )}
+          {pinScreen && targetScreen && (
+            <line
+              x1={pinScreen[0]}
+              y1={pinScreen[1]}
+              x2={targetScreen[0]}
+              y2={targetScreen[1]}
+              className={styles.targetLine}
+              data-target-line=""
+            />
+          )}
+          {targetScreen && (
+            <g transform={`translate(${targetScreen[0]} ${targetScreen[1]})`} data-target="">
+              <circle r={9} className={styles.targetRing} />
+              <circle r={3} className={styles.pinDot} />
+            </g>
+          )}
+          {pinScreen && (
+            <g transform={`translate(${pinScreen[0]} ${pinScreen[1]})`} data-pin="">
+              <path d="M0 0 L-7 -15 A9 9 0 1 1 7 -15 Z" className={styles.pin} />
+              <circle cy={-20} r={3} className={styles.pinDot} />
+            </g>
+          )}
+        </g>
         {loupe && loupeCenter && (
           <g data-loupe="">
             <clipPath id={`${uid}-loupe`}>

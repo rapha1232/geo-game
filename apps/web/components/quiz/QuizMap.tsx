@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   GameMap,
   type Lod,
@@ -17,8 +17,11 @@ import { mapLabels } from "../../lib/map/labels";
 
 const LABELS = mapLabels();
 
-/** The world map for quizzes. Loads the 110m outlines first and finer ones as the player zooms. */
-export function QuizMap({
+/**
+ * The world map for quizzes. Loads the 110m outlines first and finer ones as the player zooms. Memoised: the quiz
+ * re-renders on every keystroke and clock tick, and the map should only hear about its own props changing.
+ */
+export const QuizMap = memo(function QuizMap({
   world,
   labelPoints,
   states,
@@ -91,4 +94,4 @@ export function QuizMap({
       />
     </div>
   );
-}
+});

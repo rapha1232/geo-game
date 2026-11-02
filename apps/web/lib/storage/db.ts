@@ -16,7 +16,12 @@ export type SessionRecord = {
   event_log?: unknown[];
 };
 
-export type PackRecord = { url: string; sha256: string; json: unknown };
+/**
+ * A cached pack. Packs are stored as their raw bytes: IndexedDB structured-clones what it stores on the main
+ * thread, and cloning a parsed 10m map (hundreds of thousands of small arrays) took about 0.9 s on a slow phone,
+ * against 40 ms for the bytes. `json` holds the small manifest, and packs cached by older versions.
+ */
+export type PackRecord = { url: string; sha256: string; json?: unknown; bytes?: ArrayBuffer };
 export type SettingsRecord = { key: "settings"; value: Record<string, unknown> };
 export type ResultRecord = {
   id: string;

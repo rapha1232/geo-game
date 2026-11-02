@@ -37,7 +37,7 @@ import { clickStatus, hintStatus, typeStatus, type Status } from "../../lib/quiz
 import type { QuizSession } from "../../lib/quiz/session";
 import { t, type MessageKey } from "../../lib/i18n";
 import { QuizMap } from "./QuizMap";
-import { QuizSlots } from "./QuizSlots";
+import { DotToggle, QuizSlots } from "./QuizSlots";
 import styles from "./quiz.module.css";
 import "../../lib/messages/qz";
 
@@ -234,6 +234,12 @@ export function QuizPlay(p: QuizPlayProps) {
     }, 900);
   };
 
+  // Stable props for the memoised map, so typing and the clock tick leave it alone.
+  const itemIds = useMemo(() => s.quiz.items.map((it) => it.id), [s.quiz.items]);
+  const clickedRef = useRef(clicked);
+  clickedRef.current = clicked;
+  const onMapSelect = useCallback((id: string) => clickedRef.current(id), []);
+
   // --- map states -------------------------------------------------------------------------------------------------
   const dotsOnly = p.missedDotsOnly === true;
   const { states, markers } = useMemo(() => {
@@ -328,14 +334,7 @@ export function QuizPlay(p: QuizPlayProps) {
 
   const pct = total === 0 ? 0 : (doneCount / total) * 100;
   const dotToggle = p.onMissedDotsOnly && showMap && (
-    <label className={styles.dotToggle}>
-      <input
-        type="checkbox"
-        checked={dotsOnly}
-        onChange={(e) => p.onMissedDotsOnly?.(e.target.checked)}
-      />
-      {t("qz.missedDots")}
-    </label>
+    <DotToggle on={dotsOnly} onChange={p.onMissedDotsOnly} />
   );
 
   return (
@@ -456,12 +455,12 @@ export function QuizPlay(p: QuizPlayProps) {
               ) : (
                 <QuizMap
                   world={world}
-                  items={s.quiz.items.map((it) => it.id)}
+                  items={itemIds}
                   labelPoints={facts.labelPoints}
                   states={states}
                   markers={markers}
                   mode={mapMode}
-                  {...(format === "MAP_CLICK" ? { onSelect: clicked } : {})}
+                  {...(format === "MAP_CLICK" ? { onSelect: onMapSelect } : {})}
                 />
               ))}
             {showMap && format !== "TYPE_ALL" && dotToggle && (
@@ -568,7 +567,13 @@ export function QuizPlay(p: QuizPlayProps) {
       </div>
 
       {format === "TYPE_ALL" && (
-        <QuizSlots world={world} session={session} itemName={itemName} aside={dotToggle} />
+        <QuizSlots
+          world={world}
+          session={session}
+          itemName={itemName}
+          dotsOnly={dotsOnly}
+          onDotsOnly={showMap ? p.onMissedDotsOnly : undefined}
+        />
       )}
     </div>
   );

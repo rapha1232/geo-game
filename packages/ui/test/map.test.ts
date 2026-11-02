@@ -3,6 +3,7 @@ import { geoPath } from "d3-geo";
 import { NavIndex, type NavPoint } from "../src/map/keynav";
 import { LOUPE_RADIUS_PX, TINY, candidatesNear, ringAt, tinyRings } from "../src/map/hit";
 import { worldProjection } from "../src/map/projection";
+import { featureAt, lonLatBounds, type MapFeature } from "../src/map/geo";
 import {
   DRAG_THRESHOLD_PX,
   IDENTITY,
@@ -224,5 +225,59 @@ describe("projection", () => {
     // Equal-area projections keep true proportions: 20°×20° at the equator is ~2.9× a same-sized box at 60–80°N.
     expect(equatorial / polar).toBeGreaterThan(2.2);
     expect(equatorial / polar).toBeLessThan(4);
+  });
+});
+
+describe("feature bounds for hit testing", () => {
+  const poly = (ring: [number, number][]) => ({ type: "Polygon" as const, coordinates: [ring] });
+  it("a plain feature gets its min/max box", () => {
+    expect(
+      lonLatBounds(
+        poly([
+          [10, 40],
+          [20, 40],
+          [20, 50],
+          [10, 50],
+          [10, 40],
+        ]),
+      ),
+    ).toEqual([
+      [10, 40],
+      [20, 50],
+    ]);
+  });
+  it("a feature across the antimeridian gets the narrow wrapping box (west > east), and hit tests still work", () => {
+    const geometry = {
+      type: "MultiPolygon" as const,
+      coordinates: [
+        [
+          [
+            [177, -18],
+            [180, -18],
+            [180, -16],
+            [177, -16],
+            [177, -18],
+          ],
+        ],
+        [
+          [
+            [-180, -18],
+            [-178, -18],
+            [-178, -16],
+            [-180, -16],
+            [-180, -18],
+          ],
+        ],
+      ],
+    };
+    const bounds = lonLatBounds(geometry);
+    expect(bounds).toEqual([
+      [177, -18],
+      [-178, -16],
+    ]);
+    const features: MapFeature[] = [{ id: "fiji", geometry, bounds }];
+    expect(featureAt(features, 178.5, -17)).toBe("fiji");
+    expect(featureAt(features, -179, -17)).toBe("fiji");
+    expect(featureAt(features, 0, -17)).toBeNull();
   });
 });

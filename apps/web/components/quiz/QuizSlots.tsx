@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { memo, useMemo } from "react";
 import { CONTINENT_NAMES, type QuizItem, type QuizWorld } from "@meridian/quiz";
 import type { QuizSession } from "../../lib/quiz/session";
 import { t } from "../../lib/i18n";
@@ -14,17 +14,19 @@ type Slot = { key: string; name: string; state: "empty" | "correct" | "missed" |
  * continent and sorted by name. A box stays blank until its answer is named, and every blank box is the same width,
  * so the board shows where the gaps are without hinting at a name or its length.
  */
-export function QuizSlots({
+export const QuizSlots = memo(function QuizSlots({
   world,
   session,
   itemName,
-  aside,
+  dotsOnly,
+  onDotsOnly,
 }: {
   world: QuizWorld;
   session: QuizSession;
   itemName: (id: string) => string;
-  /** Extra controls for the heading row. */
-  aside?: ReactNode;
+  /** "Dots for missed only", shown in the heading row when a handler is given. */
+  dotsOnly?: boolean;
+  onDotsOnly?: ((on: boolean) => void) | undefined;
 }) {
   const s = session.state;
   const groups = useMemo(() => {
@@ -60,7 +62,7 @@ export function QuizSlots({
           <h2 id="quiz-slots-h">{t("qz.answersHeading")}</h2>
           <p className={styles.note}>{t("qz.answersNote")}</p>
         </div>
-        {aside}
+        {onDotsOnly && <DotToggle on={dotsOnly === true} onChange={onDotsOnly} />}
       </div>
       <ul className={styles.slotGroups} aria-label={t("qz.countsHeading")}>
         {groups.map((g) => {
@@ -98,5 +100,15 @@ export function QuizSlots({
         })}
       </ul>
     </section>
+  );
+});
+
+/** The "Dots for missed only" switch, shared by the answer board and the map chip. */
+export function DotToggle({ on, onChange }: { on: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <label className={styles.dotToggle}>
+      <input type="checkbox" checked={on} onChange={(e) => onChange(e.target.checked)} />
+      {t("qz.missedDots")}
+    </label>
   );
 }

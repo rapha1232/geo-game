@@ -43,6 +43,20 @@ describe("ContentLoader", () => {
     // only the manifest was fetched again
     expect((f as unknown as ReturnType<typeof vi.fn>).mock.calls.length).toBe(calls + 1);
   });
+  it("caches packs as raw bytes (cheap to store) and still reads entries cached as parsed JSON", async () => {
+    const db = new MeridianDb("content-bytes");
+    await new ContentLoader({ host: "", db, fetcher: fake() }).pack("core.countries");
+    const rec = await db.packs.get("content/2026.10.0/core.countries.json");
+    expect(rec?.bytes).toBeInstanceOf(ArrayBuffer);
+    expect(rec?.json).toBeUndefined();
+    // An entry written by an older version keeps working.
+    await db.packs.put({ url: rec!.url, sha256: rec!.sha256, json: { hello: "old" } });
+    expect(
+      await new ContentLoader({ host: "", db, fetcher: fake() }).pack("core.countries"),
+    ).toEqual({
+      hello: "old",
+    });
+  });
   it("rejects a pack whose hash does not match the manifest", async () => {
     const l = new ContentLoader({
       host: "",

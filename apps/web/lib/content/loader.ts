@@ -92,7 +92,10 @@ export class ContentLoader {
   private async loadPack<T>(pack: string, version?: string): Promise<T> {
     const entry = await this.entry(pack, version);
     const cached = await this.o.db?.packs.get(entry.url).catch(() => undefined);
-    if (cached && cached.sha256 === entry.sha256) return cached.json as T;
+    if (cached && cached.sha256 === entry.sha256) {
+      if (cached.bytes) return JSON.parse(new TextDecoder().decode(cached.bytes)) as T;
+      if (cached.json !== undefined) return cached.json as T;
+    }
     const res = await this.get(`${this.o.host}/${entry.url}`);
     const bytes = await res.arrayBuffer();
     this.o.onProgress?.(pack, bytes.byteLength, entry.bytes);
@@ -103,8 +106,9 @@ export class ContentLoader {
         `${pack}: hash mismatch, expected ${entry.sha256.slice(0, 12)}`,
       );
     const json = JSON.parse(new TextDecoder().decode(bytes)) as T;
+    // Store the bytes, not the parsed tree: see PackRecord.
     await this.o.db?.packs
-      .put({ url: entry.url, sha256: entry.sha256, json })
+      .put({ url: entry.url, sha256: entry.sha256, bytes })
       .catch(() => undefined);
     return json;
   }
