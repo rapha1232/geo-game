@@ -1,4 +1,4 @@
-/* Base styles. Calm and editorial: light display type, generous whitespace, minimal chrome. */
+/* Base styles. "Living atlas": bold grotesque display type, vivid accents, motion with purpose. */
 *,
 *::before,
 *::after {
@@ -10,7 +10,7 @@ html {
   text-size-adjust: 100%;
 }
 
-/* Derived tints: mixed from the verified colour tokens, so they follow the theme and never add a new colour. */
+/* Derived tints: mixed from the verified colour tokens, so they follow the theme. */
 :root {
   --tint-accent: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
   --tint-accent-strong: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
@@ -21,10 +21,28 @@ html {
   --fx-glass-strong: color-mix(in srgb, var(--color-surface) 86%, transparent);
   --fx-glass-border: color-mix(in srgb, var(--color-text) 10%, transparent);
   --fx-hairline: color-mix(in srgb, var(--color-text) 7%, transparent);
-  --fx-glow: color-mix(in srgb, var(--color-accent) 22%, transparent);
-  --fx-glow-ocean: color-mix(in srgb, var(--color-ocean) 70%, transparent);
-  --fx-accent-deep: color-mix(in srgb, var(--color-accent) 86%, var(--color-text));
-  --fx-accent-shadow: 0 8px 22px -8px color-mix(in srgb, var(--color-accent) 70%, transparent);
+  --fx-glow: color-mix(in srgb, var(--hue-violet) 26%, transparent);
+  --fx-glow-ocean: color-mix(in srgb, var(--hue-cyan) 22%, transparent);
+  --fx-glow-warm: color-mix(in srgb, var(--hue-pink) 16%, transparent);
+  --fx-accent-deep: color-mix(in srgb, var(--color-accent) 80%, var(--hue-pink));
+  --fx-accent-shadow: 0 10px 28px -10px color-mix(in srgb, var(--color-accent) 80%, transparent);
+  /* Display gradient for the second voice of a headline: every stop keeps ≥ 3:1 (large text) on the page. */
+  --fx-em-gradient: linear-gradient(95deg, #5b2ee6, #b0198a 55%, #c2410c);
+  --fx-dot: color-mix(in srgb, var(--color-text) 11%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fx-em-gradient: linear-gradient(95deg, #b8a4ff, #ff7ac6 50%, #ffb020);
+    --fx-glow: color-mix(in srgb, var(--hue-violet) 38%, transparent);
+    --fx-glow-ocean: color-mix(in srgb, var(--hue-cyan) 20%, transparent);
+    --fx-glow-warm: color-mix(in srgb, var(--hue-pink) 18%, transparent);
+  }
+}
+:root[data-theme="dark"] {
+  --fx-em-gradient: linear-gradient(95deg, #b8a4ff, #ff7ac6 50%, #ffb020);
+  --fx-glow: color-mix(in srgb, var(--hue-violet) 38%, transparent);
+  --fx-glow-ocean: color-mix(in srgb, var(--hue-cyan) 20%, transparent);
+  --fx-glow-warm: color-mix(in srgb, var(--hue-pink) 18%, transparent);
 }
 
 html {
@@ -49,8 +67,8 @@ body {
 }
 
 /*
- * Ambient backdrop: faint meridian hairlines (the brand, literally) under two soft glows, one terracotta and one
- * ocean. Fixed and behind everything; purely decorative, so it is dropped in forced-colours mode.
+ * Ambient backdrop: an aurora of three soft glows (violet, cyan, pink) over a faint dot grid, like graticule
+ * points on a chart. Fixed and behind everything; purely decorative, so it is dropped in forced-colours mode.
  */
 body::before,
 body::after {
@@ -62,17 +80,20 @@ body::after {
 }
 body::before {
   background:
-    radial-gradient(60rem 36rem at 88% -8%, var(--fx-glow), transparent 70%),
-    radial-gradient(52rem 40rem at -6% 18%, var(--fx-glow-ocean), transparent 70%);
+    radial-gradient(48rem 30rem at 85% -10%, var(--fx-glow), transparent 70%),
+    radial-gradient(40rem 32rem at -8% 12%, var(--fx-glow-ocean), transparent 70%),
+    radial-gradient(36rem 26rem at 55% 8%, var(--fx-glow-warm), transparent 70%);
 }
 body::after {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--fx-hairline) 0 1px,
-    transparent 1px calc(100% / 12)
-  );
-  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 10%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 10%, transparent 75%);
+  background-image: radial-gradient(var(--fx-dot) 1px, transparent 1.4px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 10%, transparent 75%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: fx-aurora 24s ease-in-out infinite alternate;
+  }
 }
 @media (forced-colors: active) {
   body::before,
@@ -95,9 +116,9 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 380;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-weight: 620;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   margin: 0 0 var(--space-4);
   text-wrap: balance;
   font-optical-sizing: auto;
@@ -105,23 +126,36 @@ h3 {
 
 h1 {
   font-size: var(--text-title);
-  font-weight: 330;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
 }
 h2 {
   font-size: var(--text-2xl);
 }
 h3 {
   font-size: var(--text-xl);
-  font-weight: 420;
+  font-weight: 640;
+  letter-spacing: -0.02em;
 }
-/* Two-tone headlines: an <em> inside a heading carries the second, quieter voice. */
+/* Two-tone headlines: an <em> inside a heading carries the second voice, painted with the display gradient. */
 h1 em,
 h2 em {
-  font-style: italic;
+  font-style: normal;
   font-weight: inherit;
-  color: var(--color-text-muted);
+  color: var(--color-accent);
+  background: var(--fx-em-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.06em;
+}
+@media (forced-colors: active) {
+  h1 em,
+  h2 em {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
 }
 
 p {
@@ -161,9 +195,11 @@ hr {
 }
 .eyebrow::before {
   content: "";
-  width: 18px;
-  height: 1px;
-  background: var(--color-accent);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gradient-spectrum);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hue-violet) 18%, transparent);
 }
 
 /* Form controls: one consistent look for every native input in the app. */
@@ -322,6 +358,17 @@ table {
       transform: translateX(4px);
     }
   }
+  @keyframes fx-aurora {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-3%, 2%, 0) scale(1.06);
+    }
+    100% {
+      transform: translate3d(2%, -1%, 0) scale(1.02);
+    }
+  }
   @keyframes fx-shimmer {
     from {
       background-position: 200% 0;
@@ -446,4 +493,33 @@ table {
 :root[data-motion="reduce"]::view-transition-old(*),
 :root[data-motion="reduce"]::view-transition-new(*) {
   animation: none !important;
+}
+
+/*
+ * Identity hues. `data-hue` on any element sets `--hue` (and the card ring hue) for it and its children: game art,
+ * card rings and glows read it. Decorative only, never text.
+ */
+[data-hue="violet"] {
+  --hue: var(--hue-violet);
+}
+[data-hue="blue"] {
+  --hue: var(--hue-blue);
+}
+[data-hue="cyan"] {
+  --hue: var(--hue-cyan);
+}
+[data-hue="lime"] {
+  --hue: var(--hue-lime);
+}
+[data-hue="sun"] {
+  --hue: var(--hue-sun);
+}
+[data-hue="coral"] {
+  --hue: var(--hue-coral);
+}
+[data-hue="pink"] {
+  --hue: var(--hue-pink);
+}
+[data-hue] {
+  --card-hue: var(--hue);
 }

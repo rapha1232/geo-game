@@ -24,7 +24,8 @@ const land = {
   stroke: "var(--color-border-map)",
   strokeWidth: 1,
 } as const;
-const accent = "var(--color-accent)";
+/** The game identity hue (`data-hue` on the art or any ancestor), falling back to the theme accent. */
+const accent = "var(--hue, var(--color-accent))";
 const ink = "var(--color-text)";
 
 const ART: Record<ArtName, ReactNode> = {
@@ -218,10 +219,13 @@ export function GameArt({
   name,
   className,
   badge,
+  hue,
 }: {
   name: ArtName;
   className?: string | undefined;
   badge?: string | undefined;
+  /** A spectrum hue for the accent parts; defaults to the nearest `data-hue` ancestor, then the theme accent. */
+  hue?: Hue | undefined;
 }) {
   const w = badge ? 14 + badge.length * 11 : 0;
   return (
@@ -231,6 +235,7 @@ export function GameArt({
       aria-hidden="true"
       focusable="false"
       data-art={name}
+      data-hue={hue}
     >
       {ART[name]}
       {badge && (
@@ -260,4 +265,29 @@ export function artFor(href: string, format?: string): ArtName {
   if (format === "Choice") return "choice";
   if (format === "Type") return "type";
   return "quiz";
+}
+
+export type Hue = "violet" | "blue" | "cyan" | "lime" | "sun" | "coral" | "pink";
+
+const HUE_OF_ART: Record<ArtName, Hue> = {
+  silhouette: "violet",
+  quiz: "blue",
+  "fact-pin": "coral",
+  "border-run": "cyan",
+  "rank-it": "sun",
+  "deep-cut": "pink",
+  map: "blue",
+  flag: "coral",
+  type: "violet",
+  choice: "sun",
+  capital: "pink",
+};
+
+/**
+ * Each game (and each kind of quiz) has an identity hue from the spectrum (UX_AND_DESIGN §5.2). Decorative: it tints
+ * art, card rings and glows, never text, so it carries no meaning on its own.
+ */
+export function hueFor(href: string, format?: string): Hue {
+  if (href === "/play/quiz") return "blue";
+  return HUE_OF_ART[artFor(href, format)];
 }

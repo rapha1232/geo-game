@@ -16,7 +16,7 @@ import {
   type Topic,
 } from "../../lib/catalog/catalog";
 import { t, type MessageKey } from "../../lib/i18n";
-import { GameArt, artFor } from "../home/GameArt";
+import { GameArt, artFor, hueFor } from "../home/GameArt";
 import styles from "./catalog.module.css";
 import "../../lib/messages/cat";
 
@@ -154,7 +154,12 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
             const fav = state.favorites.has(i.key);
             return (
               <li key={i.key}>
-                <Card as="article" className={styles.card} data-kind={i.kind}>
+                <Card
+                  as="article"
+                  className={styles.card}
+                  data-kind={i.kind}
+                  data-hue={hueFor(i.href, i.format)}
+                >
                   <GameArt name={artFor(i.href, i.format)} badge={i.badge} className={styles.art} />
                   <div className={styles.cardHead}>
                     <h2>

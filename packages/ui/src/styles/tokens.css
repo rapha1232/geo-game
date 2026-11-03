@@ -1,20 +1,20 @@
 /* Design tokens. Keep in sync with ../tokens.ts (enforced by test/tokens.test.ts). */
 :root {
-  --color-bg: #f7f4ee;
+  --color-bg: #f4f5fb;
   --color-surface: #ffffff;
-  --color-text: #1a2433;
-  --color-text-muted: #5a6576;
-  --color-accent: #b4532a;
+  --color-text: #0d1330;
+  --color-text-muted: #4c5577;
+  --color-accent: #5b2ee6;
   --color-text-on-accent: #ffffff;
-  --color-border: #ddd6c8;
-  --color-border-strong: #7d8794;
-  --color-ocean: #dce8ef;
-  --color-land: #efe9dd;
-  --color-border-map: #9aa3ae;
+  --color-border: #e2e4f0;
+  --color-border-strong: #767e9c;
+  --color-ocean: #d8e6fa;
+  --color-land: #f3f1ec;
+  --color-border-map: #98a0b8;
   --color-correct: #1f7a4d;
   --color-wrong: #b42318;
   --color-near: #b7791f;
-  --color-focus: #1d4ed8;
+  --color-focus: #0b63ce;
   color-scheme: light;
 
   --space-1: 4px;
@@ -34,8 +34,11 @@
   --radius-pill: 999px;
 
   --font-ui:
-    "Source Sans 3 Variable", "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman", serif;
+    "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display:
+    "Bricolage Grotesque Variable", "Bricolage Grotesque", "Plus Jakarta Sans Variable", system-ui,
+    sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -45,8 +48,8 @@
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;
   /* Fluid display sizes for page titles and the home hero. */
-  --text-title: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
-  --text-display: clamp(2.5rem, 1.2rem + 6vw, 5.25rem);
+  --text-title: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  --text-display: clamp(2.75rem, 1rem + 7.4vw, 7rem);
 
   --page-max: 80rem;
   --page-pad: clamp(16px, 4vw, 40px);
@@ -64,32 +67,52 @@
 
   --focus-ring-width: 3px;
   --touch-target: 44px;
-  --shadow-overlay: 0 24px 64px -12px rgb(26 36 51 / 0.28), 0 2px 6px rgb(26 36 51 / 0.06);
-  --shadow-card: 0 1px 1px rgb(26 36 51 / 0.04), 0 2px 6px -1px rgb(26 36 51 / 0.05);
+  --shadow-overlay: 0 24px 64px -12px rgb(13 19 48 / 0.28), 0 2px 6px rgb(13 19 48 / 0.06);
+  --shadow-card: 0 1px 1px rgb(13 19 48 / 0.04), 0 2px 6px -1px rgb(13 19 48 / 0.05);
   --shadow-raised:
-    0 1px 2px rgb(26 36 51 / 0.05), 0 12px 24px -6px rgb(26 36 51 / 0.12),
-    0 24px 48px -18px rgb(26 36 51 / 0.14);
+    0 1px 2px rgb(13 19 48 / 0.05), 0 12px 24px -6px rgb(13 19 48 / 0.12),
+    0 24px 48px -18px rgb(13 19 48 / 0.14);
   /* A 1 px light edge on the top of raised surfaces: reads as a bevel in both themes. */
   --edge-highlight: inset 0 1px 0 rgb(255 255 255 / 0.7);
+
+  /*
+   * Spectrum: decorative brand hues for gradients, game identities, art and glows (UX_AND_DESIGN §5.2).
+   * Never used for text or as the only carrier of meaning, so they have no contrast requirement.
+   */
+  --hue-violet: #6d3cff;
+  --hue-blue: #2f7bff;
+  --hue-cyan: #12c2e9;
+  --hue-lime: #b8f02c;
+  --hue-sun: #ffb020;
+  --hue-coral: #ff5a5f;
+  --hue-pink: #f044b9;
+  --gradient-spectrum: linear-gradient(
+    100deg,
+    var(--hue-violet),
+    var(--hue-pink) 35%,
+    var(--hue-coral) 60%,
+    var(--hue-sun)
+  );
+  --gradient-ocean: linear-gradient(135deg, var(--hue-blue), var(--hue-cyan));
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg: #12161c;
-    --color-surface: #1b2129;
-    --color-text: #e8ecf1;
-    --color-text-muted: #9aa6b5;
-    --color-accent: #e07a4f;
-    --color-text-on-accent: #12161c;
-    --color-border: #2c353f;
-    --color-border-strong: #7c8896;
-    --color-ocean: #1a2b38;
-    --color-land: #2a3139;
-    --color-border-map: #5b6673;
+    --color-bg: #080a18;
+    --color-surface: #121530;
+    --color-text: #eef0ff;
+    --color-text-muted: #a2a8cc;
+    --color-accent: #a48bff;
+    --color-text-on-accent: #0a0b1e;
+    --color-border: #252a4a;
+    --color-border-strong: #7880a8;
+    --color-ocean: #0e1a33;
+    --color-land: #252b49;
+    --color-border-map: #59618e;
     --color-correct: #4cc38a;
     --color-wrong: #f97066;
     --color-near: #f0b429;
-    --color-focus: #93c5fd;
+    --color-focus: #7dd3fc;
     color-scheme: dark;
     --shadow-overlay: 0 24px 64px -12px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.3);
     --shadow-card: 0 1px 1px rgb(0 0 0 / 0.25), 0 2px 8px -2px rgb(0 0 0 / 0.3);
@@ -99,21 +122,21 @@
 }
 
 :root[data-theme="dark"] {
-  --color-bg: #12161c;
-  --color-surface: #1b2129;
-  --color-text: #e8ecf1;
-  --color-text-muted: #9aa6b5;
-  --color-accent: #e07a4f;
-  --color-text-on-accent: #12161c;
-  --color-border: #2c353f;
-  --color-border-strong: #7c8896;
-  --color-ocean: #1a2b38;
-  --color-land: #2a3139;
-  --color-border-map: #5b6673;
+  --color-bg: #080a18;
+  --color-surface: #121530;
+  --color-text: #eef0ff;
+  --color-text-muted: #a2a8cc;
+  --color-accent: #a48bff;
+  --color-text-on-accent: #0a0b1e;
+  --color-border: #252a4a;
+  --color-border-strong: #7880a8;
+  --color-ocean: #0e1a33;
+  --color-land: #252b49;
+  --color-border-map: #59618e;
   --color-correct: #4cc38a;
   --color-wrong: #f97066;
   --color-near: #f0b429;
-  --color-focus: #93c5fd;
+  --color-focus: #7dd3fc;
   color-scheme: dark;
   --shadow-overlay: 0 24px 64px -12px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.3);
   --shadow-card: 0 1px 1px rgb(0 0 0 / 0.25), 0 2px 8px -2px rgb(0 0 0 / 0.3);

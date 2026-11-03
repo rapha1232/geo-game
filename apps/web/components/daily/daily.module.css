@@ -1,5 +1,5 @@
 .page {
-  max-width: 64rem;
+  max-width: none;
   margin: 0;
   display: grid;
   gap: var(--space-4);
@@ -65,7 +65,7 @@
   gap: var(--space-2);
   min-height: 52px;
   padding: 0 var(--space-5);
-  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
+  background: linear-gradient(120deg, var(--color-accent), var(--fx-accent-deep));
   color: var(--color-text-on-accent);
   border-radius: var(--radius-pill);
   text-decoration: none;
@@ -98,12 +98,16 @@
   overflow: hidden;
   padding: var(--space-6);
   border-radius: var(--radius-xl);
-  background-image: radial-gradient(30rem 14rem at 100% 0%, var(--fx-glow), transparent 70%);
+  background-image: radial-gradient(
+    30rem 14rem at 100% 0%,
+    color-mix(in srgb, var(--hue, var(--color-accent)) 18%, transparent),
+    transparent 70%
+  );
   box-shadow: var(--shadow-raised), var(--edge-highlight);
 }
 .page h1 {
   font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
-  font-weight: 330;
+  font-weight: 700;
   letter-spacing: -0.04em;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -116,19 +120,25 @@
 .grid {
   display: grid;
   gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
   align-items: start;
 }
 .summary {
   align-content: start;
 }
 .art {
-  width: 64px;
-  height: 64px;
-  padding: 6px;
-  border: 1px solid var(--color-border);
+  width: 72px;
+  height: 72px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--hue, var(--color-accent)) 30%, var(--color-border));
   border-radius: var(--radius-card);
-  background: var(--tint-bg);
+  background:
+    radial-gradient(
+      circle at 50% 120%,
+      color-mix(in srgb, var(--hue, var(--color-accent)) 30%, transparent),
+      transparent 70%
+    ),
+    color-mix(in srgb, var(--hue, var(--color-accent)) 10%, var(--color-surface));
 }
 .summary h2 {
   font-size: var(--text-2xl);

@@ -239,8 +239,10 @@
   box-shadow: inset 0 0 0 1px var(--color-border);
   transition: background-color var(--motion-panel) var(--ease);
 }
+/* Filled segments share one spectrum gradient across the whole strip, so the bar warms as it fills. */
 .track > span[data-on] {
-  background: var(--color-accent);
+  background: var(--gradient-spectrum) fixed;
+  background-color: var(--color-accent);
   box-shadow: none;
 }
 .track[data-mode="bar"] {
@@ -253,7 +255,7 @@
   flex: none;
   height: 100%;
   border-radius: inherit;
-  background: var(--color-accent);
+  background: var(--gradient-spectrum);
   box-shadow: none;
   transition: width var(--motion-reveal) var(--ease-out);
 }
@@ -262,7 +264,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-weight: 400;
+  font-weight: 650;
   font-size: var(--text-xl);
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -557,7 +559,7 @@
 }
 .slotsHead h2 {
   margin: 0;
-  font-weight: 350;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 .slotGroups {
@@ -652,7 +654,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
-  font-weight: 350;
+  font-weight: 700;
   letter-spacing: -0.025em;
 }
 .table {

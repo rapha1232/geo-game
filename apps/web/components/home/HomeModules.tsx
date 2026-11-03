@@ -1,21 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@meridian/ui";
-import { POPULAR, buildCatalog, pickPlaySomething } from "../../lib/catalog/catalog";
+import { Card, ProgressRing } from "@meridian/ui";
+import {
+  POPULAR,
+  buildCatalog,
+  pickPlaySomething,
+  type CatalogItem,
+} from "../../lib/catalog/catalog";
 import { browserOffsetMinutes, localDate } from "../../lib/daily/time";
 import { LIBRARY } from "../../lib/quiz/library";
 import { t } from "../../lib/i18n";
 import { ContinueCard } from "../shell/ContinueCard";
 import { useServices } from "../shell/StorageProvider";
 import { HeroGlobe } from "./HeroGlobe";
-import { GameArt, artFor } from "./GameArt";
+import { GameArt, artFor, hueFor } from "./GameArt";
 import styles from "./home.module.css";
 
 const QUIZ_LIBRARY = {
   href: "/play/quiz",
   title: "Quiz Library",
   pitch: "Name them all, find them on the map, or choose.",
+  format: "Type · Map · Choice",
 };
 
 /** Today's optional puzzles, in the order of the Daily hub. Each links straight to its daily. */
@@ -27,10 +33,27 @@ const DAILIES = [
   { id: "deep-cut", href: "/play/deep-cut/daily", label: "home.todayDeepCut" },
 ] as const;
 
+/** The six "Countries of <continent>" quizzes, for the continent strip. */
+const CONTINENTS = [
+  ["africa", "Africa"],
+  ["asia", "Asia"],
+  ["europe", "Europe"],
+  ["north-america", "North America"],
+  ["south-america", "South America"],
+  ["oceania", "Oceania"],
+] as const;
+
 /** The default country set (DATA_AND_CONTENT §6): UN 193 + 4. */
 const COUNTRY_COUNT = 197;
 
-/** Splits a two-sentence headline so the second sentence can take the quieter voice. */
+const LENGTH_LABEL: Record<CatalogItem["length"], string> = {
+  short: "Under 2 min",
+  medium: "2 to 5 min",
+  long: "5 to 15 min",
+  endless: "Endless",
+};
+
+/** Splits a two-sentence headline so the second sentence can take the gradient voice. */
 function twoTone(text: string) {
   const i = text.indexOf(". ");
   if (i < 0) return text;
@@ -47,9 +70,23 @@ function twoTone(text: string) {
  */
 export function HomeModules() {
   const services = useServices();
-  const [href, setHref] = useState("/play/silhouette");
+  const items = buildCatalog(null);
+  // The server renders a fixed pick; the client picks at random after mount (no hydration mismatch).
+  const [pick, setPick] = useState<CatalogItem | null>(null);
   // The game ids with a daily result for today; null until IndexedDB answers.
   const [dailyDone, setDailyDone] = useState<Set<string> | null>(null);
+
+  const reroll = () =>
+    setPick((prev) => {
+      let next = pickPlaySomething(items, Math.random);
+      for (let i = 0; i < 4 && prev && next.href === prev.href; i++)
+        next = pickPlaySomething(items, Math.random);
+      return next;
+    });
+
+  useEffect(() => {
+    setPick(pickPlaySomething(buildCatalog(null), Math.random));
+  }, []);
 
   useEffect(() => {
     if (!services) return;
@@ -77,33 +114,71 @@ export function HomeModules() {
     };
   }, [services]);
 
-  const items = buildCatalog(null);
   const popular = POPULAR.map((slug) => LIBRARY.find((q) => q.slug === slug)).filter((q) => !!q);
+  const gameItems = items.filter((i) => i.kind === "game");
+  const silhouette = gameItems.find((i) => i.href === "/play/silhouette")!;
   const games = [
-    items.find((i) => i.href === "/play/silhouette")!,
+    { ...silhouette, format: `${silhouette.format} · ${LENGTH_LABEL[silhouette.length]}` },
     QUIZ_LIBRARY,
-    ...items.filter((i) => i.kind === "game" && i.href !== "/play/silhouette"),
-  ].filter(Boolean);
+    ...gameItems
+      .filter((i) => i.href !== "/play/silhouette")
+      .map((i) => ({ ...i, format: `${i.format} · ${LENGTH_LABEL[i.length]}` })),
+  ];
+  const quizzes = items.filter((i) => i.kind === "quiz" && !i.href.includes("/subdivisions/"));
+  const doneCount = dailyDone ? DAILIES.filter((d) => dailyDone.has(d.id)).length : 0;
+  const href = pick?.href ?? "/play/silhouette";
+
   return (
     <div className={styles.modules}>
       <section className={styles.hero}>
         <div className={styles.heroText}>
-          <p className="eyebrow">{t("home.eyebrow")}</p>
+          <p className={styles.badgeRow}>
+            <span className={styles.liveDot} aria-hidden="true" />
+            <span>
+              <strong>{COUNTRY_COUNT}</strong> {t("home.statCountries")}
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>
+              <strong>{items.length}</strong> {t("home.statQuizzes")}
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>
+              <strong>0</strong> {t("home.statAccounts")}
+            </span>
+          </p>
           <h1>{twoTone(t("home.hero"))}</h1>
           <p className={styles.lede}>{t("app.tagline")}</p>
           <div className={styles.ctaRow}>
-            <a
-              className={styles.cta}
-              href={href}
-              onClick={() => setHref(pickPlaySomething(items, Math.random).href)}
-              onMouseEnter={() => setHref(pickPlaySomething(items, Math.random).href)}
-              onFocus={() => setHref(pickPlaySomething(items, Math.random).href)}
-            >
-              <span aria-hidden="true" className={styles.ctaIcon}>
-                ▶
-              </span>
-              {t("home.playNow")}
-            </a>
+            <div className={styles.ctaGroup}>
+              <a className={styles.cta} href={href} data-hue={pick ? hueFor(pick.href) : undefined}>
+                <span aria-hidden="true" className={styles.ctaIcon}>
+                  <GameArt
+                    name={pick ? artFor(pick.href) : "silhouette"}
+                    hue={pick ? hueFor(pick.href) : "violet"}
+                  />
+                </span>
+                <span className={styles.ctaText}>
+                  <span>{t("home.playNow")}</span>
+                  <small aria-live="polite">
+                    {pick ? t("home.upNext", { title: pick.title }) : " "}
+                  </small>
+                </span>
+              </a>
+              <button
+                type="button"
+                className={styles.reroll}
+                onClick={reroll}
+                aria-label={t("home.reroll")}
+                title={t("home.reroll")}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
+                  <circle cx="8.5" cy="8.5" r="1.3" />
+                  <circle cx="15.5" cy="15.5" r="1.3" />
+                  <circle cx="12" cy="12" r="1.3" />
+                </svg>
+              </button>
+            </div>
             <a className={styles.ctaGhost} href="/play">
               {t("home.allQuizzes")}
               <span aria-hidden="true" className={styles.ctaArrow}>
@@ -111,23 +186,46 @@ export function HomeModules() {
               </span>
             </a>
           </div>
-          <dl className={styles.stats}>
-            <div>
-              <dt>{t("home.statCountries")}</dt>
-              <dd>{COUNTRY_COUNT}</dd>
-            </div>
-            <div>
-              <dt>{t("home.statQuizzes")}</dt>
-              <dd>{items.length}</dd>
-            </div>
-            <div>
-              <dt>{t("home.statAccounts")}</dt>
-              <dd>0</dd>
-            </div>
-          </dl>
+          <p className={styles.searchHint}>
+            {t("home.searchHint", { key: "/" })
+              .split("/")
+              .flatMap((part, i) => (i === 0 ? [part] : [<kbd key={i}>/</kbd>, part]))}
+          </p>
         </div>
-        <HeroGlobe />
+        <div className={styles.globeStage}>
+          <HeroGlobe />
+          <div className={styles.chips} aria-hidden="true">
+            <span className={styles.chip} data-kind="correct">
+              <b>✓</b> {t("home.chip.correct")}
+            </span>
+            <span className={styles.chip} data-kind="near">
+              <b>◐</b> {t("home.chip.near")}
+            </span>
+            <span className={styles.chip} data-kind="score">
+              <b>★</b> {t("home.chip.streak")}
+            </span>
+          </div>
+        </div>
       </section>
+
+      <nav aria-label={t("home.ticker")} className={styles.ticker}>
+        <ul className={styles.tickerTrack}>
+          {[0, 1].map((copy) =>
+            quizzes.map((q) => (
+              <li key={`${copy}-${q.key}`} aria-hidden={copy === 1 ? true : undefined}>
+                <a
+                  href={q.href}
+                  tabIndex={copy === 1 ? -1 : undefined}
+                  data-hue={hueFor(q.href, q.format)}
+                >
+                  <span className={styles.tickerDot} aria-hidden="true" />
+                  {q.title}
+                </a>
+              </li>
+            )),
+          )}
+        </ul>
+      </nav>
 
       <ContinueCard />
 
@@ -139,12 +237,20 @@ export function HomeModules() {
         <ul className={`${styles.bento} fx-stagger`}>
           {games.map((g, i) => (
             <li key={g.href} className={i < 2 ? styles.feature : undefined}>
-              <Card as="article" className={styles.card}>
-                <GameArt
-                  name={g.href === "/play/quiz" ? "quiz" : artFor(g.href)}
-                  className={styles.art}
-                />
+              <Card as="article" className={styles.card} data-fx-card="" data-hue={hueFor(g.href)}>
+                <div className={styles.artWell}>
+                  <GameArt
+                    name={g.href === "/play/quiz" ? "quiz" : artFor(g.href)}
+                    className={styles.art}
+                  />
+                </div>
                 <div className={styles.cardText}>
+                  <p className={styles.cardMeta}>
+                    <span className={styles.cardIndex} aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {g.format}
+                  </p>
                   <h3>
                     <a href={g.href} className={styles.stretched}>
                       {g.title}
@@ -169,9 +275,17 @@ export function HomeModules() {
         <ul className={`${styles.tiles} fx-stagger`}>
           {popular.map((q) => (
             <li key={q!.slug}>
-              <a className={styles.tile} href={`/play/quiz/${q!.slug}`} data-fx-card="">
+              <a
+                className={styles.tile}
+                href={`/play/quiz/${q!.slug}`}
+                data-fx-card=""
+                data-hue={hueFor(`/play/quiz/${q!.slug}`)}
+              >
                 <GameArt name={artFor(`/play/quiz/${q!.slug}`)} className={styles.tileArt} />
                 <span>{q!.title}</span>
+                <span className={styles.tileArrow} aria-hidden="true">
+                  →
+                </span>
               </a>
             </li>
           ))}
@@ -181,23 +295,47 @@ export function HomeModules() {
         </a>
       </section>
 
-      <section aria-labelledby="home-today" className="fx-reveal">
-        <div className={styles.sectionHead}>
-          <h2 id="home-today">{t("home.today")}</h2>
-          <p>
-            {dailyDone === null
-              ? ""
-              : t("home.todayCount", {
-                  done: DAILIES.filter((d) => dailyDone.has(d.id)).length,
-                  total: DAILIES.length,
-                })}
-          </p>
+      <div className={`${styles.continents} fx-reveal`}>
+        <p className={styles.continentsHead}>
+          <strong>{t("home.continents")}</strong> {t("home.continentsLede")}
+        </p>
+        <ul>
+          {CONTINENTS.map(([slug, name]) => (
+            <li key={slug}>
+              <a href={`/play/quiz/countries-of-${slug}`}>{name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <section aria-labelledby="home-today" className={`${styles.todaySection} fx-reveal`}>
+        <div className={styles.todayHead}>
+          <ProgressRing
+            value={dailyDone === null ? 0 : doneCount / DAILIES.length}
+            label={dailyDone === null ? "" : `${doneCount}/${DAILIES.length}`}
+            size="sm"
+            className={styles.todayRing ?? ""}
+          />
+          <div>
+            <h2 id="home-today">{t("home.today")}</h2>
+            <p>
+              {dailyDone === null
+                ? " "
+                : t("home.todayCount", { done: doneCount, total: DAILIES.length })}
+            </p>
+          </div>
         </div>
         <ul className={`${styles.todayList} fx-stagger`}>
           {DAILIES.map((d) => {
             const done = dailyDone?.has(d.id) ?? null;
             return (
-              <li key={d.id} className={styles.today} data-fx-card="">
+              <li
+                key={d.id}
+                className={styles.today}
+                data-fx-card=""
+                data-hue={hueFor(d.href)}
+                data-done={done ? "" : undefined}
+              >
                 <GameArt name={artFor(d.href)} className={styles.todayArt} />
                 <a href={d.href} className={styles.stretched}>
                   {t(d.label)}

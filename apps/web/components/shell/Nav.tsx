@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { BRAND_NAME } from "../../lib/brand";
 import { t, type MessageKey } from "../../lib/i18n";
 import { BrandMark, NavIcon } from "./NavIcons";
+import { SearchTrigger } from "./SearchTrigger";
 import styles from "./shell.module.css";
 
 const ITEMS: { href: string; label: MessageKey; icon: Parameters<typeof NavIcon>[0]["name"] }[] = [
@@ -38,6 +39,7 @@ export function Nav() {
             ))}
           </ul>
         </nav>
+        <SearchTrigger />
       </div>
     </header>
   );

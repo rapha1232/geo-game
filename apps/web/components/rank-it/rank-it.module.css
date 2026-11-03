@@ -171,7 +171,7 @@
 /* ---------------------------------------------------------------- polish layer (shared look across games) */
 .head h1 {
   font-size: clamp(2rem, 1.5rem + 1.8vw, 2.75rem);
-  font-weight: 330;
+  font-weight: 700;
   letter-spacing: -0.035em;
 }
 .meta {
@@ -202,7 +202,7 @@
 }
 .prompt {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 650;
   letter-spacing: -0.015em;
 }
 .list a {

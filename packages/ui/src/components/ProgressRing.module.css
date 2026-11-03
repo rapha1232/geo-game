@@ -54,7 +54,7 @@
 .label {
   font-family: var(--font-display);
   font-size: calc(var(--size) * 0.26);
-  font-weight: 350;
+  font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }

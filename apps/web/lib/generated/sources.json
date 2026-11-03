@@ -45,20 +45,20 @@
     "attributionRequired": false
   },
   {
-    "id": "font-source-sans-3",
-    "name": "Source Sans 3 (variable, via @fontsource-variable/source-sans-3)",
+    "id": "font-plus-jakarta-sans",
+    "name": "Plus Jakarta Sans (variable, via @fontsource-variable/plus-jakarta-sans)",
     "kind": "font",
     "license": "SIL OFL 1.1",
-    "licenseUrl": "https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md",
+    "licenseUrl": "https://github.com/tokotype/PlusJakartaSans/blob/master/OFL.txt",
     "attribution": null,
     "attributionRequired": false
   },
   {
-    "id": "font-source-serif-4",
-    "name": "Source Serif 4 (variable, via @fontsource-variable/source-serif-4)",
+    "id": "font-bricolage-grotesque",
+    "name": "Bricolage Grotesque (variable, via @fontsource-variable/bricolage-grotesque)",
     "kind": "font",
     "license": "SIL OFL 1.1",
-    "licenseUrl": "https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md",
+    "licenseUrl": "https://github.com/ateliertriay/bricolage/blob/main/OFL.txt",
     "attribution": null,
     "attributionRequired": false
   }

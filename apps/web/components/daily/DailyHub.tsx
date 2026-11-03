@@ -8,7 +8,7 @@ import { t, type MessageKey } from "../../lib/i18n";
 import { useServices } from "../shell/StorageProvider";
 import { DailySummary } from "./DailySummary";
 import { dailyBundleShare } from "../../lib/daily/share";
-import { GameArt, artFor } from "../home/GameArt";
+import { GameArt, artFor, hueFor } from "../home/GameArt";
 import styles from "./daily.module.css";
 import { track } from "../../lib/observability/analytics";
 import "../../lib/messages/daily";
@@ -178,7 +178,7 @@ export function DailyHub() {
           const state = states[g.id] ?? { kind: "loading" };
           return (
             <div key={g.id} className={styles.game} data-state={state.kind}>
-              <Card className={styles.summary}>
+              <Card className={styles.summary} data-hue={hueFor(g.href)}>
                 <GameArt name={artFor(g.href)} className={styles.art} />
                 <h2>{t(g.title)}</h2>
                 <p>{t(g.body)}</p>
