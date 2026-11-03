@@ -13,7 +13,7 @@
 .page > section > h2 {
   margin-bottom: var(--space-4);
   font-size: var(--text-3xl);
-  font-weight: 330;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 .headline {
@@ -69,7 +69,7 @@
 }
 .overview dd {
   font-size: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
-  font-weight: 330;
+  font-weight: 700;
   letter-spacing: -0.04em;
 }
 
@@ -275,7 +275,7 @@
   min-height: 52px;
   padding: 0 var(--space-5);
   border-radius: var(--radius-pill);
-  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
+  background: linear-gradient(120deg, var(--color-accent), var(--fx-accent-deep));
   color: var(--color-text-on-accent);
   font-weight: 600;
   text-decoration: none;
@@ -358,7 +358,7 @@
 }
 .streak .headline {
   font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-  font-weight: 330;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 

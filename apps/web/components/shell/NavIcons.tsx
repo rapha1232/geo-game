@@ -33,6 +33,12 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" />
     </>
   ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m20 20-4.2-4.2" />
+    </>
+  ),
   settings: (
     <>
       <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />

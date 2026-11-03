@@ -62,7 +62,7 @@
 
 /* The gradient moves away from the label colour, so label contrast is never lower than on the flat accent. */
 .primary {
-  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
+  background: linear-gradient(120deg, var(--color-accent), var(--fx-accent-deep));
   color: var(--color-text-on-accent);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.18),

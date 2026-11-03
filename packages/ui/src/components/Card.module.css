@@ -1,9 +1,12 @@
 /*
  * Surface with a 1 px border. On hover a soft spotlight follows the pointer (--mx/--my are set by the shell's
- * pointer tracker; without it the light sits at the top centre) and the border warms toward the accent.
+ * pointer tracker; without it the light sits at the top centre), the card lifts, and a spectrum ring lights its edge.
+ * Only cards that hold a link or button react, so static panels stay calm. A card can set --card-hue (a game identity colour) to tint the spotlight and ring.
  */
 .card {
+  --_hue: var(--card-hue, var(--color-accent));
   position: relative;
+  isolation: isolate;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -11,15 +14,59 @@
   box-shadow: var(--shadow-card), var(--edge-highlight);
   transition:
     border-color var(--motion-panel) var(--ease),
-    box-shadow var(--motion-panel) var(--ease);
+    box-shadow var(--motion-reveal) var(--ease);
 }
-.card:hover {
+/* The edge ring: a gradient border drawn with a mask, invisible until hover or focus inside. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--card-angle, 200deg),
+    var(--_hue),
+    var(--hue-pink),
+    var(--hue-sun),
+    var(--hue-cyan),
+    var(--_hue)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--motion-reveal) var(--ease);
+  pointer-events: none;
+}
+.card:has(a[href], button):hover,
+.card:focus-within {
   background-image: radial-gradient(
     22rem circle at var(--mx, 50%) var(--my, 0%),
-    color-mix(in srgb, var(--color-accent) 8%, transparent),
+    color-mix(in srgb, var(--_hue) 12%, transparent),
     transparent 65%
   );
-  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  border-color: transparent;
+  box-shadow:
+    var(--shadow-raised),
+    0 18px 40px -22px color-mix(in srgb, var(--_hue) 70%, transparent);
+}
+.card:has(a[href], button):hover::before,
+.card:focus-within::before {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition:
+      border-color var(--motion-panel) var(--ease),
+      box-shadow var(--motion-reveal) var(--ease),
+      transform var(--motion-reveal) var(--ease-spring);
+  }
+  .card:has(a[href]):hover {
+    transform: translateY(-3px);
+  }
 }
 
 @media (max-width: 639px) {
@@ -31,5 +78,8 @@
 @media (forced-colors: active) {
   .card {
     border-color: CanvasText;
+  }
+  .card::before {
+    display: none;
   }
 }

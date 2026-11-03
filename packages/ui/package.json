@@ -15,8 +15,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@fontsource-variable/source-sans-3": "^5.1.0",
-    "@fontsource-variable/source-serif-4": "^5.1.0",
+    "@fontsource-variable/bricolage-grotesque": "5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "5.3.0",
     "d3-geo": "^3.1.1",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",

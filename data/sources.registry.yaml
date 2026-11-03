@@ -135,26 +135,26 @@ sources:
         geo.silhouettes,
         daily.silhouette,
       ]
-  - id: font-source-sans-3
-    name: Source Sans 3 (variable, via @fontsource-variable/source-sans-3)
+  - id: font-plus-jakarta-sans
+    name: Plus Jakarta Sans (variable, via @fontsource-variable/plus-jakarta-sans)
     kind: font
     license: SIL OFL 1.1
-    license_url: https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md
+    license_url: https://github.com/tokotype/PlusJakartaSans/blob/master/OFL.txt
     attribution_required: false
     verification: done
-    verified_on: 2026-10-30
-    evidence: 'Upstream LICENSE.md: "This Font Software is licensed under the SIL Open Font License, Version 1.1." Copyright 2010-2024 Adobe, Reserved Font Name "Source".'
+    verified_on: 2026-11-03
+    evidence: 'Package LICENSE: "Copyright 2020 The Plus Jakarta Sans Project Authors (https://github.com/tokotype/PlusJakartaSans). This Font Software is licensed under the SIL Open Font License, Version 1.1."'
     notes: Keep the OFL notice in THIRD_PARTY_NOTICES. Used unmodified.
     used_in: [app]
-  - id: font-source-serif-4
-    name: Source Serif 4 (variable, via @fontsource-variable/source-serif-4)
+  - id: font-bricolage-grotesque
+    name: Bricolage Grotesque (variable, via @fontsource-variable/bricolage-grotesque)
     kind: font
     license: SIL OFL 1.1
-    license_url: https://github.com/adobe-fonts/source-serif/blob/release/LICENSE.md
+    license_url: https://github.com/ateliertriay/bricolage/blob/main/OFL.txt
     attribution_required: false
     verification: done
-    verified_on: 2026-10-30
-    evidence: 'Upstream LICENSE.md: "This Font Software is licensed under the SIL Open Font License, Version 1.1." Copyright 2014-2023 Adobe, Reserved Font Name "Source".'
+    verified_on: 2026-11-03
+    evidence: 'Package LICENSE: "Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage). This Font Software is licensed under the SIL Open Font License, Version 1.1."'
     used_in: [app]
   - id: icons-lucide
     name: Lucide icons

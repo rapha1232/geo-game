@@ -71,6 +71,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <SystemBanners />
             <main className={styles.main}>{children}</main>
             <footer className={styles.footer}>
+              <div className={styles.footerCta}>
+                <p>
+                  {t("footer.ctaLead")} <em>{t("footer.ctaTail")}</em>
+                </p>
+                <a href="/play">
+                  {t("footer.ctaButton")} <span aria-hidden="true">→</span>
+                </a>
+              </div>
               <div className={styles.footerInner}>
                 <div className={styles.footerBrand}>
                   <a href="/" className={styles.footerMark}>

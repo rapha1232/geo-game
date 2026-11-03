@@ -5,7 +5,7 @@
 
 .title {
   font-size: clamp(2.25rem, 6vw, 4rem);
-  font-weight: 300;
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.05;
   margin-bottom: var(--space-5);
@@ -129,7 +129,7 @@
   }
 }
 .primary {
-  background: linear-gradient(180deg, var(--color-accent), var(--fx-accent-deep));
+  background: linear-gradient(120deg, var(--color-accent), var(--fx-accent-deep));
   color: var(--color-text-on-accent);
   box-shadow: var(--fx-accent-shadow);
 }

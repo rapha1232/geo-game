@@ -48,7 +48,7 @@ describe("data/sources.registry.yaml", () => {
       verification: "rejected",
       used_in: [],
     });
-    for (const id of ["font-source-sans-3", "font-source-serif-4"])
+    for (const id of ["font-plus-jakarta-sans", "font-bricolage-grotesque"])
       expect(registry.sources.find((s) => s.id === id)).toMatchObject({
         license: "SIL OFL 1.1",
         verification: "done",
