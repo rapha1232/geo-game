@@ -161,6 +161,7 @@ export function DailyHub() {
   return (
     <section className={styles.page}>
       <h1>{t("daily.title")}</h1>
+      <p className={styles.lede}>{t("daily.lede")}</p>
       {done.length >= 2 && (
         <ShareAll
           text={dailyBundleShare(
@@ -178,7 +179,7 @@ export function DailyHub() {
           const state = states[g.id] ?? { kind: "loading" };
           return (
             <div key={g.id} className={styles.game} data-state={state.kind}>
-              <Card className={styles.summary} data-hue={hueFor(g.href)}>
+              <Card className={styles.summary} data-hue={hueFor(g.href)} data-tilt="">
                 <GameArt name={artFor(g.href)} className={styles.art} />
                 <h2>{t(g.title)}</h2>
                 <p>{t(g.body)}</p>

@@ -64,7 +64,7 @@
       box-shadow var(--motion-reveal) var(--ease),
       transform var(--motion-reveal) var(--ease-spring);
   }
-  .card:has(a[href]):hover {
+  .card:has(a[href]):not([data-tilt]):hover {
     transform: translateY(-3px);
   }
 }

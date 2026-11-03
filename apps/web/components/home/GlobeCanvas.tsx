@@ -29,17 +29,22 @@ const SPIN_DEG_PER_MS = 0.006;
 const ROUTE_MS = 2600;
 const HOLD_MS = 1400;
 
-function readPalette(): Palette {
-  const cs = getComputedStyle(document.documentElement);
-  const v = (name: string) => cs.getPropertyValue(name).trim() || "#888";
+/**
+ * Colours come from the canvas's own computed style, so a scene can restyle the globe: `--globe-*` variables on an
+ * ancestor win over the theme tokens (the Home hero paints a night Earth this way).
+ */
+function readPalette(el: Element): Palette {
+  const cs = getComputedStyle(el);
+  const v = (name: string, fallback: string) =>
+    cs.getPropertyValue(name).trim() || cs.getPropertyValue(fallback).trim() || "#888";
   return {
-    ocean: v("--color-ocean"),
-    oceanHi: v("--color-surface"),
-    land: v("--color-land"),
-    border: v("--color-border-map"),
-    accent: v("--color-accent"),
-    text: v("--color-text"),
-    surface: v("--color-surface"),
+    ocean: v("--globe-ocean", "--color-ocean"),
+    oceanHi: v("--globe-ocean-hi", "--color-surface"),
+    land: v("--globe-land", "--color-land"),
+    border: v("--globe-border", "--color-border-map"),
+    accent: v("--globe-accent", "--color-accent"),
+    text: v("--globe-text", "--color-text"),
+    surface: v("--globe-surface", "--color-surface"),
   };
 }
 
@@ -90,7 +95,7 @@ export default function GlobeCanvas({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
       document.documentElement.dataset.motion === "reduce";
 
-    let palette = readPalette();
+    let palette = readPalette(canvas);
     let size = 0;
     let dpr = 1;
     let lambda = -20;
@@ -131,7 +136,8 @@ export default function GlobeCanvas({
     const resize = () => {
       const w = canvas.clientWidth;
       if (!w) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // A big globe is costly to fill every frame: cap its pixel ratio lower.
+      dpr = Math.min(window.devicePixelRatio || 1, w > 640 ? 1.5 : 2);
       size = w;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(w * dpr);
@@ -342,7 +348,7 @@ export default function GlobeCanvas({
     };
     document.addEventListener("visibilitychange", onVis);
     const mo = new MutationObserver(() => {
-      palette = readPalette();
+      palette = readPalette(canvas);
       draw(performance.now());
     });
     mo.observe(document.documentElement, {
@@ -351,7 +357,7 @@ export default function GlobeCanvas({
     });
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onScheme = () => {
-      palette = readPalette();
+      palette = readPalette(canvas);
       draw(performance.now());
     };
     mq.addEventListener("change", onScheme);

@@ -3,14 +3,30 @@
   gap: var(--space-5);
 }
 .head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3) var(--space-5);
+  padding-block: var(--space-6) var(--space-4);
 }
 .head h1 {
   margin: 0;
+  font-size: clamp(3.5rem, 1rem + 9vw, 8rem);
+  letter-spacing: -0.065em;
+  line-height: 0.9;
+}
+.lede {
+  grid-column: 1;
+  margin: 0;
+  max-width: 34rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-xl);
+  line-height: 1.4;
+}
+.head .count {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: end;
 }
 .count {
   margin: 0;
@@ -31,10 +47,9 @@
   gap: var(--space-3);
   padding: var(--space-5);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(40rem 12rem at 100% 0%, var(--fx-glow), transparent 70%), var(--color-surface);
-  box-shadow: var(--shadow-raised), var(--edge-highlight);
+  border-radius: 28px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 .search input {
   min-height: 52px;
@@ -162,7 +177,7 @@
   padding: 0;
   display: grid;
   gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
 }
 .grid > li {
   display: grid;
@@ -173,35 +188,40 @@
   gap: var(--space-2);
   align-content: start;
 }
+/* Image-led cards: a tinted art well on top (the game's hue), the text below; the whole card tilts in 3D. */
 .card {
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: var(--space-4);
-  padding: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-5);
+  border-radius: 28px;
 }
 .card > :not(.art) {
-  grid-column: 2;
+  padding-inline: var(--space-3);
 }
 .art {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  width: 64px;
-  height: 64px;
-  padding: 7px;
-  border-radius: 18px;
+  width: 100%;
+  height: 9.5rem;
+  margin-bottom: var(--space-3);
+  padding: var(--space-5);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 50% 130%,
+      color-mix(in srgb, var(--hue, var(--color-accent)) 38%, transparent),
+      transparent 70%
+    ),
+    color-mix(in srgb, var(--hue, var(--color-accent)) 9%, var(--color-surface));
+}
+/* Games get a dark stage well, like the Home reel. */
+.card[data-kind="game"] .art {
   background:
     radial-gradient(
       circle at 50% 120%,
-      color-mix(in srgb, var(--hue, var(--color-accent)) 30%, transparent),
+      color-mix(in srgb, var(--hue, var(--color-accent)) 60%, transparent),
       transparent 70%
     ),
-    color-mix(in srgb, var(--hue, var(--color-accent)) 10%, var(--color-surface));
-}
-.card[data-kind="game"] {
-  background-image: radial-gradient(
-    18rem 10rem at 100% 0%,
-    color-mix(in srgb, var(--hue, var(--color-accent)) 14%, transparent),
-    transparent 70%
-  );
+    #0b0b0f;
 }
 .badge {
   display: inline-block;
@@ -220,7 +240,7 @@
     transition: transform var(--motion-reveal) var(--ease-spring);
   }
   .card:hover .art {
-    transform: rotate(-6deg) scale(1.08);
+    transform: translateZ(24px);
   }
   .star:active {
     transform: scale(1.3);
@@ -238,7 +258,7 @@
 }
 .cardHead h2 {
   margin: 0;
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
   font-weight: 700;
   letter-spacing: -0.03em;
 }

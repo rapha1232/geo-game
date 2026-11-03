@@ -2,6 +2,8 @@ import { registerMessages } from "../i18n";
 
 /** The `daily.*` strings. They load with the code that uses them, not with the shell. */
 export const messages = {
+  "daily.lede":
+    "Five small puzzles, the same for everyone, new every day. All optional, never a streak.",
   "daily.title": "Daily",
   "daily.silhouette": "Silhouette of the day",
   "daily.silhouetteBody": "One shape for everyone, new every day. Optional, and never a streak.",

@@ -114,6 +114,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                   <a href="/privacy">{t("footer.privacy")}</a>
                 </nav>
               </div>
+              <p className={`${styles.wordmark} fx-reveal`} aria-hidden="true">
+                {t("footer.wordmark")}
+              </p>
             </footer>
           </div>
         </StorageProvider>

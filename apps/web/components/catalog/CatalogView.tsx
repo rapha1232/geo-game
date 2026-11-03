@@ -81,6 +81,7 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
     <section className={styles.page}>
       <header className={styles.head}>
         <h1>{t("nav.play")}</h1>
+        <p className={styles.lede}>{t("cat.lede")}</p>
         <p className={styles.count} role="status">
           {t("cat.results", { n: results.length })}
         </p>
@@ -159,6 +160,7 @@ export function CatalogView({ items, state, onToggleFavorite }: CatalogViewProps
                   className={styles.card}
                   data-kind={i.kind}
                   data-hue={hueFor(i.href, i.format)}
+                  data-tilt=""
                 >
                   <GameArt name={artFor(i.href, i.format)} badge={i.badge} className={styles.art} />
                   <div className={styles.cardHead}>

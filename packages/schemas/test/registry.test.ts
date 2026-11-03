@@ -21,8 +21,9 @@ const entry = (over: object) => ({
 });
 
 describe("data/sources.registry.yaml", () => {
+  // 13 since the 2026-11 redesign: one font family (Inter) now covers both UI and display type.
   it("validates against the schema", () =>
-    expect(registry.sources.length).toBeGreaterThanOrEqual(14));
+    expect(registry.sources.length).toBeGreaterThanOrEqual(13));
 
   it("covers every source in DATA_AND_CONTENT §2", () => {
     const ids = registry.sources.map((s) => s.id);
@@ -48,7 +49,7 @@ describe("data/sources.registry.yaml", () => {
       verification: "rejected",
       used_in: [],
     });
-    for (const id of ["font-plus-jakarta-sans", "font-bricolage-grotesque"])
+    for (const id of ["font-inter"])
       expect(registry.sources.find((s) => s.id === id)).toMatchObject({
         license: "SIL OFL 1.1",
         verification: "done",

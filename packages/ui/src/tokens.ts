@@ -1,41 +1,41 @@
 /**
  * Design tokens (UX_AND_DESIGN §5.2). `styles/tokens.css` must match this file; a test enforces it.
- * Brand direction: "Living atlas": cool daylight paper or deep-space night, ink text, an electric violet accent.
+ * Brand direction: "Orbit": cinematic and near-monochrome (Apple-like greys, true black at night), one electric violet accent.
  */
 export const colorTokens = {
   light: {
-    bg: "#F4F5FB",
+    bg: "#F5F5F7",
     surface: "#FFFFFF",
-    text: "#0D1330",
-    "text-muted": "#4C5577",
+    text: "#1D1D1F",
+    "text-muted": "#5F5F66",
     accent: "#5B2EE6",
     "text-on-accent": "#FFFFFF",
-    border: "#E2E4F0",
-    "border-strong": "#767E9C",
+    border: "#E3E3E8",
+    "border-strong": "#86868B",
     ocean: "#D8E6FA",
     land: "#F3F1EC",
     "border-map": "#98A0B8",
     correct: "#1F7A4D",
     wrong: "#B42318",
     near: "#B7791F",
-    focus: "#0B63CE",
+    focus: "#0071E3",
   },
   dark: {
-    bg: "#080A18",
-    surface: "#121530",
-    text: "#EEF0FF",
-    "text-muted": "#A2A8CC",
+    bg: "#000000",
+    surface: "#161618",
+    text: "#F5F5F7",
+    "text-muted": "#A1A1A6",
     accent: "#A48BFF",
     "text-on-accent": "#0A0B1E",
-    border: "#252A4A",
-    "border-strong": "#7880A8",
-    ocean: "#0E1A33",
-    land: "#252B49",
-    "border-map": "#59618E",
+    border: "#2A2A2E",
+    "border-strong": "#7C7C82",
+    ocean: "#0B1428",
+    land: "#26283A",
+    "border-map": "#5C6080",
     correct: "#4CC38A",
     wrong: "#F97066",
     near: "#F0B429",
-    focus: "#7DD3FC",
+    focus: "#4DA3FF",
   },
 } as const;
 
