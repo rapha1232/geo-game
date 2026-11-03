@@ -166,6 +166,7 @@
     0 18px 36px -12px color-mix(in srgb, var(--color-accent) 90%, transparent);
 }
 .reroll {
+  flex: none;
   display: inline-grid;
   place-items: center;
   width: 52px;

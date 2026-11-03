@@ -12,6 +12,19 @@
   pointer-events: none;
 }
 
+/* Tucked while scrolling down (Nav.tsx); keyboard focus inside always brings it back. Phones keep it static. */
+@media (min-width: 640px) {
+  .header[data-tucked]:not(:focus-within) .headerInner {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .header[data-tucked]:not(:focus-within) .headerInner {
+    transform: translateY(calc(-100% - var(--space-4)));
+  }
+}
+
 .headerInner {
   display: flex;
   align-items: center;
@@ -29,6 +42,14 @@
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
   box-shadow: var(--shadow-card), var(--edge-highlight);
   pointer-events: auto;
+  transition: opacity var(--motion-panel) var(--ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .headerInner {
+    transition:
+      opacity var(--motion-panel) var(--ease),
+      transform var(--motion-reveal) var(--ease-out);
+  }
 }
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
