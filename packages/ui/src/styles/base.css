@@ -1,4 +1,4 @@
-/* Base styles. "Living atlas": bold grotesque display type, vivid accents, motion with purpose. */
+/* Base styles. "Orbit": cinematic, near-monochrome stages, big tight Inter display type, motion with purpose. */
 *,
 *::before,
 *::after {
@@ -64,43 +64,11 @@ body {
   text-rendering: optimizeLegibility;
   overflow-wrap: break-word;
   isolation: isolate;
+  /* A pop or tilt near the edge must never make the page scroll sideways. `clip` (not `hidden`) keeps sticky working. */
+  overflow-x: clip;
 }
 
-/*
- * Ambient backdrop: an aurora of three soft glows (violet, cyan, pink) over a faint dot grid, like graticule
- * points on a chart. Fixed and behind everything; purely decorative, so it is dropped in forced-colours mode.
- */
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-body::before {
-  background:
-    radial-gradient(48rem 30rem at 85% -10%, var(--fx-glow), transparent 70%),
-    radial-gradient(40rem 32rem at -8% 12%, var(--fx-glow-ocean), transparent 70%),
-    radial-gradient(36rem 26rem at 55% 8%, var(--fx-glow-warm), transparent 70%);
-}
-body::after {
-  background-image: radial-gradient(var(--fx-dot) 1px, transparent 1.4px);
-  background-size: 24px 24px;
-  mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 10%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, #000 10%, transparent 75%);
-}
-@media (prefers-reduced-motion: no-preference) {
-  body::before {
-    animation: fx-aurora 24s ease-in-out infinite alternate;
-  }
-}
-@media (forced-colors: active) {
-  body::before,
-  body::after {
-    display: none;
-  }
-}
+/* No ambient backdrop: pages are calm, flat stages (Apple-like); the drama lives in the Home scenes. */
 
 ::selection {
   background: color-mix(in srgb, var(--color-accent) 28%, transparent);
@@ -116,9 +84,9 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 620;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  font-weight: 650;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
   margin: 0 0 var(--space-4);
   text-wrap: balance;
   font-optical-sizing: auto;
@@ -127,8 +95,8 @@ h3 {
 h1 {
   font-size: var(--text-title);
   font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  letter-spacing: -0.05em;
+  line-height: 1;
 }
 h2 {
   font-size: var(--text-2xl);
@@ -358,17 +326,6 @@ table {
       transform: translateX(4px);
     }
   }
-  @keyframes fx-aurora {
-    0% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    50% {
-      transform: translate3d(-3%, 2%, 0) scale(1.06);
-    }
-    100% {
-      transform: translate3d(2%, -1%, 0) scale(1.02);
-    }
-  }
   @keyframes fx-shimmer {
     from {
       background-position: 200% 0;
@@ -522,4 +479,53 @@ table {
 }
 [data-hue] {
   --card-hue: var(--hue);
+}
+
+/*
+ * 3D tilt: `data-tilt` elements lean toward the pointer. PointerFX writes --rx / --ry (degrees) on hover; the
+ * transform is declared only for no-preference motion, so nothing moves with reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-tilt] {
+    transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform var(--motion-slow) var(--ease-out);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  [data-tilt][data-tilting] {
+    transition-duration: 120ms;
+  }
+  /* Layers inside a tilted element float at different depths. */
+  [data-tilt] [data-depth="1"] {
+    transform: translateZ(30px);
+  }
+  [data-tilt] [data-depth="2"] {
+    transform: translateZ(60px);
+  }
+}
+
+/*
+ * A dark stage: a cinematic, always-dark scene inside any theme (the Home hero, the game panels). It re-declares the
+ * dark theme's verified tokens locally, so everything inside keeps AA contrast.
+ */
+.stage-dark {
+  --color-bg: #000000;
+  --color-surface: #161618;
+  --color-text: #f5f5f7;
+  --color-text-muted: #a1a1a6;
+  --color-accent: #a48bff;
+  --color-text-on-accent: #0a0b1e;
+  --color-border: #2a2a2e;
+  --color-border-strong: #7c7c82;
+  --color-correct: #4cc38a;
+  --color-near: #f0b429;
+  --color-wrong: #f97066;
+  --color-focus: #4da3ff;
+  --tint-bg: color-mix(in srgb, #f5f5f7 6%, #000);
+  --fx-glass-border: rgb(255 255 255 / 0.12);
+  --fx-em-gradient: linear-gradient(95deg, #b8a4ff, #ff7ac6 50%, #ffb020);
+  --fx-accent-deep: color-mix(in srgb, #a48bff 80%, #f044b9);
+  color-scheme: dark;
+  background-color: #000;
+  color: var(--color-text);
 }

@@ -45,20 +45,11 @@
     "attributionRequired": false
   },
   {
-    "id": "font-plus-jakarta-sans",
-    "name": "Plus Jakarta Sans (variable, via @fontsource-variable/plus-jakarta-sans)",
+    "id": "font-inter",
+    "name": "Inter (variable, optical size and weight, via @fontsource-variable/inter)",
     "kind": "font",
     "license": "SIL OFL 1.1",
-    "licenseUrl": "https://github.com/tokotype/PlusJakartaSans/blob/master/OFL.txt",
-    "attribution": null,
-    "attributionRequired": false
-  },
-  {
-    "id": "font-bricolage-grotesque",
-    "name": "Bricolage Grotesque (variable, via @fontsource-variable/bricolage-grotesque)",
-    "kind": "font",
-    "license": "SIL OFL 1.1",
-    "licenseUrl": "https://github.com/ateliertriay/bricolage/blob/main/OFL.txt",
+    "licenseUrl": "https://github.com/rsms/inter/blob/master/LICENSE.txt",
     "attribution": null,
     "attributionRequired": false
   }

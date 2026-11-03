@@ -2,6 +2,7 @@ import { registerMessages } from "../i18n";
 
 /** The `cat.*` strings. They load with the code that uses them, not with the shell. */
 export const messages = {
+  "cat.lede": "Every game and quiz, all free and endless. Search, filter, or just pick one.",
   "cat.search": "Search games and quizzes",
   "cat.topic": "Topic",
   "cat.format": "Format",

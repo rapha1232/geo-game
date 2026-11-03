@@ -165,62 +165,60 @@ Deviations from the first draft, kept here so the table matches the build: reduc
 
 ### 5.1 Brand direction
 
-"**Living atlas**" (2026-11 redesign, owner request: "the site looks old and generic; add interactivity, dynamism, animation and vibrancy, inspired by modern websites; UX first, then UI"). It replaces "Cartographer's desk" (warm paper, ink-navy, terracotta, serif headings), which the owner found dated. The new look: cool daylight paper or a deep-space night, ink text, an **electric violet accent**, a decorative **spectrum** of identity hues, a bold grotesque display face, and motion that always has a job. Still never casino-gamified: no confetti walls, no fake urgency, no streak guilt.
+"**Orbit**" (2026-11 overhaul, owner request: "redesign, not new colours; an overhaul that feels like Apple's sites or 3D parallax, inspired by the top-ranked web design sites"). It replaces "Cartographer's desk" and the short-lived "Living atlas" refresh. The site now reads like a product film: near-monochrome stages (Apple greys by day, true black by night), big tight Inter type, one electric violet accent, and scenes that move with the scroll. Still never casino-gamified: no confetti walls, no fake urgency, no streak guilt.
 
-**Inspiration (owner request):** [siteinspire.com](https://www.siteinspire.com/) and well-known modern product sites (command palettes, bento grids, gradient headlines, floating chrome, ticker strips). Meridian takes patterns, never layouts, type or imagery.
+**Inspiration.** Apple product pages (pinned scroll scenes, giant statements, slim global nav, product lineups, light and dark chapters taking turns) and CSS Design Awards winners such as Endurosat Space Service (a planet rising from the horizon), Unanim Studio (a wordmark set edge to edge) and 60fps (dark WebGL stages). Awwwards blocks automated browsers. Meridian takes patterns, never layouts, type or imagery.
 
-**UX first.** The redesign started from what a visitor is trying to do, then built UI for it:
+**UX first.** Each scene answers what a visitor is trying to do:
 
-| Job                                        | Answer                                                                                                                                                                                                                                                                                                         |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| "Get me into a game, now"                  | The hero CTA says what it will start ("Up next: Flags of Asia", with that game's art) instead of a blind random link, and a dice button re-rolls it. Still one click from Home (AC-PL-001). The pick is made after mount, so server and client markup match.                                                   |
-| "I know what I want"                       | **Quick search** (⌘K / Ctrl+K, or `/` outside a text field; a Search button in the header, an icon on phones). A modal combobox over every game, quiz and main page; arrows move, Enter opens, Esc closes. Loaded on first open, so it costs pages nothing. Off during an immersive quiz round.               |
-| "What is there?"                           | A **ticker** of every quiz title under the hero (links; pauses on hover and focus; the duplicate copy is `aria-hidden` and out of the tab order; a plain scrollable row with reduced motion). Then the games **bento**: art well, number, format and length on each card.                                 |
-| "Something quick on a continent"           | A **Pick a continent** strip of six chips, each straight into "Countries of <continent>".                                                                                                                                                                                                                     |
-| "Did I do today's?"                        | **Today** panel: a progress ring with `n/5` next to the same count in text, and one card per daily with its played / not-yet pill.                                                                                                                                                                           |
-| "What does playing feel like?"             | Floating chips around the hero globe preview the feedback language (✓ correct, ◐ near with distance and direction, ★ score). Decorative.                                                                                                                                                                      |
-| "Keep going" (end of any page)             | The footer opens with one big line ("One more round? The map is waiting.") and a Browse all games button. Hidden in immersive rounds.                                                                                                                                                                          |
+| Job                              | Scene                                                                                                                                                                                                                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Get me into a game, now"        | **Hero.** The CTA names what it will start ("Up next: Flags of Asia") and a dice button re-rolls it; one click from Home (AC-PL-001). The pick is made after mount, so server and client markup match.                                                                                 |
+| "What is this?"                  | **Planet scene.** A pinned black stage: a night Earth (the live `geo.world.110m` globe) sits on the horizon under the headline. As the page scrolls, the headline drifts away, the planet rises to the centre and the three numbers (197 countries, games, 0 accounts) arrive beside it. |
+| "I know what I want"             | **Quick search** (⌘K / Ctrl+K or `/`, or the Search button): a modal combobox over every game, quiz and page, loaded on first open. Off during an immersive round.                                                                                                                       |
+| "What is there?"                 | **Ticker** of every quiz title in big type (pauses on hover and focus). Then the **games reel**: pinned large dark panels, one per game, that slide sideways as the page scrolls down. Tabbing into an off-screen panel scrolls it into view.                                          |
+| "Something classic or quick"     | **Bento** of the six popular quizzes (one hero tile, three wide) and a **Pick a continent** strip.                                                                                                                                                                                    |
+| "Did I do today's?"              | **Today lineup**: a row of five tall daily cards (a scroller on narrow screens) with a ring and the same count in text.                                                                                                                                                                 |
+| "Keep going" (end of every page) | Footer: "One more round?" with Browse all games, then the **Meridian wordmark set edge to edge**, fading into the page.                                                                                                                                                                |
 
 **Visual layer:**
 
-- **Backdrop:** an aurora of three soft glows (violet, cyan, pink) that drifts slowly, over a faint dot grid (graticule points). Fixed and decorative; still with reduced motion; dropped in forced-colours mode.
-- **Type:** display `Bricolage Grotesque` (heavy, tight tracking: 700 for `h1`, 620–720 for section heads), UI `Plus Jakarta Sans`. Both SIL OFL, self-hosted via Fontsource, in the source registry.
-- **Headlines:** two-tone. An `<em>` inside an `h1`/`h2` is painted with the display gradient (`--fx-em-gradient`), whose every stop keeps ≥ 4.5:1 on the page in its theme; the hero's gradient slowly sheens. Plain text in forced-colours mode.
-- **Identity hues:** each game and each kind of quiz has a spectrum hue (`hueFor()` in `components/home/GameArt.tsx`: Silhouette violet, Quiz Library and map quizzes blue, Fact Pin and flags coral, Border Run cyan, Rank It sun, Deep Cut and capitals pink). `data-hue` on any element sets `--hue`; game art, card rings, art wells and glows read it. Hues never colour text and never carry meaning alone; the title always names the game.
-- **Cards:** only cards that hold a link or button react: they lift, a conic spectrum ring lights their edge, and a pointer spotlight in the card's hue follows the mouse. Static panels stay calm.
-- **Chrome:** the header is a floating glass capsule (brand, links, search) that gains a shadow as the page scrolls, tucks away while the page scrolls down (so it never sits over maps and their controls) and returns after a deliberate scroll up of about 96 px, near the top, or whenever keyboard focus enters it; the current page is a filled accent pill (shape + `aria-current`); on phones the links become a floating dock. Glass is only used on floating chrome, toasts and map controls, never under body text.
-- **Buttons:** pills; the primary one runs a diagonal gradient from the accent to a deeper violet-magenta, so the label never drops below its contrast on the flat accent.
-- **Results and stats:** end-of-round heroes (quiz `ProgressRing`, Silhouette outcome card) are unchanged in structure and pick up the new tokens; the quiz progress strip fills with the spectrum.
-- **404:** a compass whose needle hunts for north (a still needle with reduced motion).
-- **No inline styles:** a `style` attribute in server-rendered markup is blocked by the CSP (`style-src` has no `unsafe-inline`), so components size and stagger with classes or data attributes instead.
+- **Type:** `Inter` (variable, optical sizes) for everything. Display sizes run to 8.5 rem with tight tracking (−0.05 to −0.065 em) and weights 650–800. SIL OFL, self-hosted via Fontsource, in the source registry.
+- **Colour:** neutral greys and black carry the page; the violet accent is for actions. Each game keeps an **identity hue** from the spectrum (`hueFor()` in `components/home/GameArt.tsx`) that tints only its art, panel glow and card well, never text and never meaning alone.
+- **Stages:** `.stage-dark` (base.css) is an always-dark scene inside either theme. It re-declares the dark theme's verified tokens locally, so contrast holds. Used by the hero and the game panels.
+- **Global nav:** a slim full-width glass bar (52 px) with a hairline. The brand is on the left, small links in the centre, search on the right. The current page is shown by full-strength text plus a short bar (and `aria-current`). It turns dark over the hero, tucks away while the page scrolls down (so it never sits over maps), and returns after a deliberate scroll up of about 96 px, near the top, or when keyboard focus enters it. On phones the links are a floating dock.
+- **Depth:** cards marked `data-tilt` lean toward the mouse in 3D (PointerFX writes `--rx`/`--ry`), and `data-depth` layers inside them float at different depths. Used on catalog cards, bento tiles, daily cards and game panels.
+- **Scroll scenes:** `useScrollProgress` writes `--p` (0..1) through the CSSOM, which the CSP allows. CSS turns it into movement only under `prefers-reduced-motion: no-preference` and without the in-app reduce setting. Otherwise every scene is a still, complete layout: the planet as a horizon, the numbers in a row, the reel as a plain horizontal scroller.
+- **Pages:** Play and Daily open with an 8 rem title and a one-line lede. Cards are image-led: a tinted art well on top (a dark stage well for games), with text below.
+- **No inline styles:** a `style` attribute in server-rendered markup is blocked by the CSP (`style-src` has no `unsafe-inline`), so components size and stagger with classes or data attributes, and scroll values go through the CSSOM.
 
 ### 5.2 Design tokens
 
 | Token                    | Light                  | Dark      | Use                                                           |
 | ------------------------ | ---------------------- | --------- | ------------------------------------------------------------- |
-| `--color-bg`             | `#F4F5FB` (daylight) | `#080A18` | Page background                                               |
-| `--color-surface`        | `#FFFFFF` | `#121530` | Cards, panels                                                 |
-| `--color-text`           | `#0D1330` (ink) | `#EEF0FF` | Body text                                                     |
-| `--color-text-muted`     | `#4C5577` | `#A2A8CC` | Secondary text                                                |
+| `--color-bg`             | `#F5F5F7` | `#000000` | Page background                                               |
+| `--color-surface`        | `#FFFFFF` | `#161618` | Cards, panels                                                 |
+| `--color-text`           | `#1D1D1F` | `#F5F5F7` | Body text                                                     |
+| `--color-text-muted`     | `#5F5F66` | `#A1A1A6` | Secondary text                                                |
 | `--color-accent`         | `#5B2EE6` (electric violet) | `#A48BFF` | Primary buttons, highlights                                   |
-| `--color-ocean`          | `#D8E6FA` | `#0E1A33` | Map water                                                     |
-| `--color-land`           | `#F3F1EC` | `#252B49` | Map land default                                              |
-| `--color-border-map`     | `#98A0B8` | `#59618E` | Country borders                                               |
+| `--color-ocean`          | `#D8E6FA` | `#0B1428` | Map water                                                     |
+| `--color-land`           | `#F3F1EC` | `#26283A` | Map land default                                              |
+| `--color-border-map`     | `#98A0B8` | `#5C6080` | Country borders                                               |
 | `--color-correct`        | `#1F7A4D`              | `#4CC38A` | Always paired with ✓ / solid fill                             |
 | `--color-wrong`          | `#B42318`              | `#F97066` | Always paired with ✕ / hatch                                  |
 | `--color-near`           | `#B7791F`              | `#F0B429` | Always paired with ◐ / dots                                   |
-| `--color-focus`          | `#0B63CE` | `#7DD3FC` | 3 px focus ring                                               |
+| `--color-focus`          | `#0071E3` | `#4DA3FF` | 3 px focus ring                                               |
 | `--color-text-on-accent` | `#FFFFFF` | `#0A0B1E` | Label on an accent fill (primary button)                      |
-| `--color-border`         | `#E2E4F0` | `#252A4A` | Decorative card and divider borders (no contrast requirement) |
-| `--color-border-strong`  | `#767E9C` | `#7880A8` | Borders of inputs and buttons (≥ 3:1, WCAG 1.4.11)            |
+| `--color-border`         | `#E3E3E8` | `#2A2A2E` | Decorative card and divider borders (no contrast requirement) |
+| `--color-border-strong`  | `#86868B` | `#7C7C82` | Borders of inputs and buttons (≥ 3:1, WCAG 1.4.11)            |
 
 All text/background pairs meet WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI components). Feedback colours (`correct`, `wrong`, `near`) are graphics paired with a glyph, so they need 3:1. Message text stays in `--color-text`. The focus ring is always drawn with a positive `outline-offset`, so it sits next to the page or card colour and never touches an accent fill (focus blue on the violet accent is low contrast). Map tokens (`ocean`, `land`, `border-map`) are verified together with `GameMap` in T0.10. The CI token test verifies this ([TESTING_AND_ACCEPTANCE §3](TESTING_AND_ACCEPTANCE.md#3-platform-acceptance-criteria)).
 
 **Themes:** every screen ships in light and dark. The default follows the system (`prefers-color-scheme`). A System / Light / Dark switch (in the footer now, in Settings later) overrides it. The choice is saved on the device (`localStorage["meridian:theme"]`, absent means System) and applied by a tiny inline script in `<head>` before first paint, so it never flashes. When a CSP is added (T0.12) that script needs a nonce or hash. Selected state is shown with a ✓ and bold text, not colour alone.
 
-**Spectrum (decorative, no contrast requirement):** `--hue-violet #6D3CFF`, `--hue-blue #2F7BFF`, `--hue-cyan #12C2E9`, `--hue-lime #B8F02C`, `--hue-sun #FFB020`, `--hue-coral #FF5A5F`, `--hue-pink #F044B9`, plus `--gradient-spectrum` and `--gradient-ocean`. They tint art, rings, glows and the progress strip; they never colour text or carry meaning alone.
+**Spectrum (decorative, no contrast requirement):** `--hue-violet #6D3CFF`, `--hue-blue #2F7BFF`, `--hue-cyan #12C2E9`, `--hue-lime #B8F02C`, `--hue-sun #FFB020`, `--hue-coral #FF5A5F`, `--hue-pink #F044B9`, plus `--gradient-spectrum` and `--gradient-ocean`. They tint art, panels, glows and the progress strip; they never colour text or carry meaning alone.
 
-**Typography:** UI font `Plus Jakarta Sans`, display/headings `Bricolage Grotesque`, numerals tabular (`font-variant-numeric: tabular-nums`) for timers and scores. All are SIL OFL fonts, self-hosted. Scale (rem): 0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25, plus fluid `--text-title` (2.25–4 rem) and `--text-display` (2.75–7 rem). Body line-height 1.55.
+**Typography:** UI and display font `Inter` (variable, optical sizes), numerals tabular (`font-variant-numeric: tabular-nums`) for timers and scores. All are SIL OFL fonts, self-hosted. Scale (rem): 0.75, 0.875, 1, 1.125, 1.375, 1.75, 2.25, plus fluid `--text-title` (2.5–5 rem) and `--text-display` (3–8.5 rem). Body line-height 1.55.
 
 **Spacing:** 4 px base (4, 8, 12, 16, 24, 32, 48, 64). Radius: 12 px for controls (buttons and chips are pills), 20 px for cards, 28 px for overlays and feature panels. Elevation: a 1 px border first, a soft card shadow with a 1 px top highlight, a raised shadow on hover and for key panels, and the strongest shadow only on overlays.
 

@@ -1,20 +1,20 @@
 /* Design tokens. Keep in sync with ../tokens.ts (enforced by test/tokens.test.ts). */
 :root {
-  --color-bg: #f4f5fb;
+  --color-bg: #f5f5f7;
   --color-surface: #ffffff;
-  --color-text: #0d1330;
-  --color-text-muted: #4c5577;
+  --color-text: #1d1d1f;
+  --color-text-muted: #5f5f66;
   --color-accent: #5b2ee6;
   --color-text-on-accent: #ffffff;
-  --color-border: #e2e4f0;
-  --color-border-strong: #767e9c;
+  --color-border: #e3e3e8;
+  --color-border-strong: #86868b;
   --color-ocean: #d8e6fa;
   --color-land: #f3f1ec;
   --color-border-map: #98a0b8;
   --color-correct: #1f7a4d;
   --color-wrong: #b42318;
   --color-near: #b7791f;
-  --color-focus: #0b63ce;
+  --color-focus: #0071e3;
   color-scheme: light;
 
   --space-1: 4px;
@@ -48,12 +48,12 @@
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;
   /* Fluid display sizes for page titles and the home hero. */
-  --text-title: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
-  --text-display: clamp(2.75rem, 1rem + 7.4vw, 7rem);
+  --text-title: clamp(2.5rem, 1.2rem + 4.5vw, 5rem);
+  --text-display: clamp(3rem, 0.8rem + 8.6vw, 8.5rem);
 
   --page-max: 80rem;
   --page-pad: clamp(16px, 4vw, 40px);
-  --header-h: 64px;
+  --header-h: 52px;
   --tabbar-h: 60px;
 
   --motion-micro: 120ms;
@@ -67,11 +67,11 @@
 
   --focus-ring-width: 3px;
   --touch-target: 44px;
-  --shadow-overlay: 0 24px 64px -12px rgb(13 19 48 / 0.28), 0 2px 6px rgb(13 19 48 / 0.06);
-  --shadow-card: 0 1px 1px rgb(13 19 48 / 0.04), 0 2px 6px -1px rgb(13 19 48 / 0.05);
+  --shadow-overlay: 0 24px 64px -12px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.06);
+  --shadow-card: 0 1px 1px rgb(0 0 0 / 0.04), 0 2px 6px -1px rgb(0 0 0 / 0.05);
   --shadow-raised:
-    0 1px 2px rgb(13 19 48 / 0.05), 0 12px 24px -6px rgb(13 19 48 / 0.12),
-    0 24px 48px -18px rgb(13 19 48 / 0.14);
+    0 1px 2px rgb(0 0 0 / 0.05), 0 12px 24px -6px rgb(0 0 0 / 0.12),
+    0 24px 48px -18px rgb(0 0 0 / 0.14);
   /* A 1 px light edge on the top of raised surfaces: reads as a bevel in both themes. */
   --edge-highlight: inset 0 1px 0 rgb(255 255 255 / 0.7);
 
@@ -98,21 +98,21 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg: #080a18;
-    --color-surface: #121530;
-    --color-text: #eef0ff;
-    --color-text-muted: #a2a8cc;
+    --color-bg: #000000;
+    --color-surface: #161618;
+    --color-text: #f5f5f7;
+    --color-text-muted: #a1a1a6;
     --color-accent: #a48bff;
     --color-text-on-accent: #0a0b1e;
-    --color-border: #252a4a;
-    --color-border-strong: #7880a8;
-    --color-ocean: #0e1a33;
-    --color-land: #252b49;
-    --color-border-map: #59618e;
+    --color-border: #2a2a2e;
+    --color-border-strong: #7c7c82;
+    --color-ocean: #0b1428;
+    --color-land: #26283a;
+    --color-border-map: #5c6080;
     --color-correct: #4cc38a;
     --color-wrong: #f97066;
     --color-near: #f0b429;
-    --color-focus: #7dd3fc;
+    --color-focus: #4da3ff;
     color-scheme: dark;
     --shadow-overlay: 0 24px 64px -12px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.3);
     --shadow-card: 0 1px 1px rgb(0 0 0 / 0.25), 0 2px 8px -2px rgb(0 0 0 / 0.3);
@@ -122,21 +122,21 @@
 }
 
 :root[data-theme="dark"] {
-  --color-bg: #080a18;
-  --color-surface: #121530;
-  --color-text: #eef0ff;
-  --color-text-muted: #a2a8cc;
+  --color-bg: #000000;
+  --color-surface: #161618;
+  --color-text: #f5f5f7;
+  --color-text-muted: #a1a1a6;
   --color-accent: #a48bff;
   --color-text-on-accent: #0a0b1e;
-  --color-border: #252a4a;
-  --color-border-strong: #7880a8;
-  --color-ocean: #0e1a33;
-  --color-land: #252b49;
-  --color-border-map: #59618e;
+  --color-border: #2a2a2e;
+  --color-border-strong: #7c7c82;
+  --color-ocean: #0b1428;
+  --color-land: #26283a;
+  --color-border-map: #5c6080;
   --color-correct: #4cc38a;
   --color-wrong: #f97066;
   --color-near: #f0b429;
-  --color-focus: #7dd3fc;
+  --color-focus: #4da3ff;
   color-scheme: dark;
   --shadow-overlay: 0 24px 64px -12px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.3);
   --shadow-card: 0 1px 1px rgb(0 0 0 / 0.25), 0 2px 8px -2px rgb(0 0 0 / 0.3);

@@ -105,8 +105,18 @@
   );
   box-shadow: var(--shadow-raised), var(--edge-highlight);
 }
+.lede {
+  max-width: 34rem;
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-muted);
+  font-size: var(--text-xl);
+  line-height: 1.4;
+}
 .page h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  padding-top: var(--space-6);
+  font-size: clamp(3.5rem, 1rem + 9vw, 8rem);
+  letter-spacing: -0.065em;
+  line-height: 0.9;
   font-weight: 700;
   letter-spacing: -0.04em;
 }
@@ -127,9 +137,9 @@
   align-content: start;
 }
 .art {
-  width: 72px;
-  height: 72px;
-  padding: 8px;
+  width: 100%;
+  height: 10rem;
+  padding: var(--space-5);
   border: 1px solid color-mix(in srgb, var(--hue, var(--color-accent)) 30%, var(--color-border));
   border-radius: var(--radius-card);
   background:

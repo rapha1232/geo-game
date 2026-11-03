@@ -135,26 +135,16 @@ sources:
         geo.silhouettes,
         daily.silhouette,
       ]
-  - id: font-plus-jakarta-sans
-    name: Plus Jakarta Sans (variable, via @fontsource-variable/plus-jakarta-sans)
+  - id: font-inter
+    name: Inter (variable, optical size and weight, via @fontsource-variable/inter)
     kind: font
     license: SIL OFL 1.1
-    license_url: https://github.com/tokotype/PlusJakartaSans/blob/master/OFL.txt
+    license_url: https://github.com/rsms/inter/blob/master/LICENSE.txt
     attribution_required: false
     verification: done
     verified_on: 2026-11-03
-    evidence: 'Package LICENSE: "Copyright 2020 The Plus Jakarta Sans Project Authors (https://github.com/tokotype/PlusJakartaSans). This Font Software is licensed under the SIL Open Font License, Version 1.1."'
+    evidence: 'Package LICENSE: "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter). This Font Software is licensed under the SIL Open Font License, Version 1.1."'
     notes: Keep the OFL notice in THIRD_PARTY_NOTICES. Used unmodified.
-    used_in: [app]
-  - id: font-bricolage-grotesque
-    name: Bricolage Grotesque (variable, via @fontsource-variable/bricolage-grotesque)
-    kind: font
-    license: SIL OFL 1.1
-    license_url: https://github.com/ateliertriay/bricolage/blob/main/OFL.txt
-    attribution_required: false
-    verification: done
-    verified_on: 2026-11-03
-    evidence: 'Package LICENSE: "Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage). This Font Software is licensed under the SIL Open Font License, Version 1.1."'
     used_in: [app]
   - id: icons-lucide
     name: Lucide icons

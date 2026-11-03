@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, ProgressRing } from "@meridian/ui";
+import { useEffect, useRef, useState } from "react";
+import { ProgressRing } from "@meridian/ui";
 import {
   POPULAR,
   buildCatalog,
@@ -13,6 +13,7 @@ import { LIBRARY } from "../../lib/quiz/library";
 import { t } from "../../lib/i18n";
 import { ContinueCard } from "../shell/ContinueCard";
 import { useServices } from "../shell/StorageProvider";
+import { useScrollProgress } from "../shell/useScrollProgress";
 import { HeroGlobe } from "./HeroGlobe";
 import { GameArt, artFor, hueFor } from "./GameArt";
 import styles from "./home.module.css";
@@ -61,6 +62,211 @@ function twoTone(text: string) {
     <>
       {text.slice(0, i + 1)} <em>{text.slice(i + 2)}</em>
     </>
+  );
+}
+
+const reducedMotion = () =>
+  document.documentElement.dataset.motion === "reduce" ||
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * The hero scene: a night Earth rises over the horizon as the page scrolls, the headline drifts away and the three
+ * numbers take its place. While it is on screen the global nav turns dark to match.
+ */
+function HeroScene({
+  pick,
+  onReroll,
+  count,
+}: {
+  pick: CatalogItem | null;
+  onReroll: () => void;
+  count: number;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  useScrollProgress(ref);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const root = document.documentElement;
+    // Dark while the hero is still under the nav bar.
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      if (el.getBoundingClientRect().bottom > 56) root.dataset.nav = "dark";
+      else delete root.dataset.nav;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      delete root.dataset.nav;
+    };
+  }, []);
+  const href = pick?.href ?? "/play/silhouette";
+  return (
+    <section ref={ref} className={styles.heroScene}>
+      <div className={`${styles.heroStage} stage-dark`}>
+        <div className={styles.stars} aria-hidden="true" />
+        <div className={styles.stars2} aria-hidden="true" />
+        <div className={styles.heroCopy}>
+          <p className={styles.kicker}>Meridian</p>
+          <h1>{twoTone(t("home.hero"))}</h1>
+          <p className={styles.lede}>{t("app.tagline")}</p>
+          <div className={styles.ctaRow}>
+            <div className={styles.ctaGroup}>
+              <a className={styles.cta} href={href}>
+                <span aria-hidden="true" className={styles.ctaIcon}>
+                  <GameArt
+                    name={pick ? artFor(pick.href) : "silhouette"}
+                    hue={pick ? hueFor(pick.href) : "violet"}
+                  />
+                </span>
+                <span className={styles.ctaText}>
+                  <span>{t("home.playNow")}</span>
+                  <small aria-live="polite">
+                    {pick ? t("home.upNext", { title: pick.title }) : " "}
+                  </small>
+                </span>
+              </a>
+              <button
+                type="button"
+                className={styles.reroll}
+                onClick={onReroll}
+                aria-label={t("home.reroll")}
+                title={t("home.reroll")}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
+                  <circle cx="8.5" cy="8.5" r="1.3" />
+                  <circle cx="15.5" cy="15.5" r="1.3" />
+                  <circle cx="12" cy="12" r="1.3" />
+                </svg>
+              </button>
+            </div>
+            <a className={styles.ctaGhost} href="/play">
+              {t("home.allQuizzes")}
+              <span aria-hidden="true" className={styles.ctaArrow}>
+                →
+              </span>
+            </a>
+          </div>
+          <p className={styles.searchHint}>
+            {t("home.searchHint", { key: "/" })
+              .split("/")
+              .flatMap((part, i) => (i === 0 ? [part] : [<kbd key={i}>/</kbd>, part]))}
+          </p>
+        </div>
+        <div className={styles.planet}>
+          <HeroGlobe />
+        </div>
+        <dl className={styles.heroStats}>
+          <div>
+            <dd>{COUNTRY_COUNT}</dd>
+            <dt>{t("home.statCountries")}</dt>
+          </div>
+          <div>
+            <dd>{count}</dd>
+            <dt>{t("home.statQuizzes")}</dt>
+          </div>
+          <div>
+            <dd>0</dd>
+            <dt>{t("home.statAccounts")}</dt>
+          </div>
+        </dl>
+        <p className={styles.scrollCue} aria-hidden="true">
+          {t("home.scroll")}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+type Panel = { href: string; title: string; pitch: string; format: string };
+
+/**
+ * The games reel: a pinned row of large panels that slides sideways as the page scrolls down (wide screens with
+ * motion). Elsewhere it is a plain horizontal scroller. Tabbing into an off-screen panel scrolls it into view.
+ */
+function GamesReel({ games }: { games: Panel[] }) {
+  const ref = useRef<HTMLElement>(null);
+  const track = useRef<HTMLUListElement>(null);
+  useScrollProgress(ref);
+  useEffect(() => {
+    const el = ref.current;
+    const list = track.current;
+    if (!el || !list) return;
+    const measure = () => {
+      const shift = Math.max(0, list.scrollWidth - window.innerWidth);
+      el.style.setProperty("--shift", `${shift}px`);
+      el.style.setProperty("--reel-h", `${shift + window.innerHeight}px`);
+    };
+    measure();
+    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    ro?.observe(list);
+    window.addEventListener("resize", measure);
+    const onFocus = (e: FocusEvent) => {
+      const pinned = getComputedStyle(el).getPropertyValue("--pinned").trim() === "1";
+      if (!pinned || reducedMotion()) return;
+      const item = (e.target as HTMLElement).closest("li");
+      if (!item) return;
+      const shift = Math.max(0, list.scrollWidth - window.innerWidth);
+      const want = Math.min(shift, Math.max(0, item.offsetLeft - window.innerWidth * 0.1));
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + want, behavior: "instant" as ScrollBehavior });
+    };
+    list.addEventListener("focusin", onFocus);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", measure);
+      list.removeEventListener("focusin", onFocus);
+    };
+  }, []);
+  return (
+    <section ref={ref} aria-labelledby="home-games" className={styles.reel}>
+      <div className={styles.reelSticky}>
+        <div className={styles.reelHead}>
+          <h2 id="home-games" className={styles.sectionLabel}>
+            {t("home.games")}
+          </h2>
+          <p className={styles.statement}>{t("home.gamesStatement")}</p>
+          <p className={styles.statementSub}>{t("home.gamesSub")}</p>
+        </div>
+        <ul ref={track} className={styles.reelTrack}>
+          {games.map((g, i) => (
+            <li key={g.href}>
+              <article
+                className={`${styles.panel} stage-dark`}
+                data-hue={hueFor(g.href)}
+                data-tilt=""
+              >
+                <span className={styles.panelNum} aria-hidden="true" data-depth="1">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className={styles.panelArt} data-depth="2">
+                  <GameArt name={g.href === "/play/quiz" ? "quiz" : artFor(g.href)} />
+                </div>
+                <div className={styles.panelText} data-depth="1">
+                  <p className={styles.panelMeta}>{g.format}</p>
+                  <h3>
+                    <a href={g.href} className={styles.stretched}>
+                      {g.title}
+                    </a>
+                  </h3>
+                  <p>{g.pitch}</p>
+                  <span className={styles.panelGo} aria-hidden="true">
+                    {t("home.play")} <span>→</span>
+                  </span>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 
@@ -117,7 +323,7 @@ export function HomeModules() {
   const popular = POPULAR.map((slug) => LIBRARY.find((q) => q.slug === slug)).filter((q) => !!q);
   const gameItems = items.filter((i) => i.kind === "game");
   const silhouette = gameItems.find((i) => i.href === "/play/silhouette")!;
-  const games = [
+  const games: Panel[] = [
     { ...silhouette, format: `${silhouette.format} · ${LENGTH_LABEL[silhouette.length]}` },
     QUIZ_LIBRARY,
     ...gameItems
@@ -126,87 +332,10 @@ export function HomeModules() {
   ];
   const quizzes = items.filter((i) => i.kind === "quiz" && !i.href.includes("/subdivisions/"));
   const doneCount = dailyDone ? DAILIES.filter((d) => dailyDone.has(d.id)).length : 0;
-  const href = pick?.href ?? "/play/silhouette";
 
   return (
-    <div className={styles.modules}>
-      <section className={styles.hero}>
-        <div className={styles.heroText}>
-          <p className={styles.badgeRow}>
-            <span className={styles.liveDot} aria-hidden="true" />
-            <span>
-              <strong>{COUNTRY_COUNT}</strong> {t("home.statCountries")}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <strong>{items.length}</strong> {t("home.statQuizzes")}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <strong>0</strong> {t("home.statAccounts")}
-            </span>
-          </p>
-          <h1>{twoTone(t("home.hero"))}</h1>
-          <p className={styles.lede}>{t("app.tagline")}</p>
-          <div className={styles.ctaRow}>
-            <div className={styles.ctaGroup}>
-              <a className={styles.cta} href={href} data-hue={pick ? hueFor(pick.href) : undefined}>
-                <span aria-hidden="true" className={styles.ctaIcon}>
-                  <GameArt
-                    name={pick ? artFor(pick.href) : "silhouette"}
-                    hue={pick ? hueFor(pick.href) : "violet"}
-                  />
-                </span>
-                <span className={styles.ctaText}>
-                  <span>{t("home.playNow")}</span>
-                  <small aria-live="polite">
-                    {pick ? t("home.upNext", { title: pick.title }) : " "}
-                  </small>
-                </span>
-              </a>
-              <button
-                type="button"
-                className={styles.reroll}
-                onClick={reroll}
-                aria-label={t("home.reroll")}
-                title={t("home.reroll")}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
-                  <circle cx="8.5" cy="8.5" r="1.3" />
-                  <circle cx="15.5" cy="15.5" r="1.3" />
-                  <circle cx="12" cy="12" r="1.3" />
-                </svg>
-              </button>
-            </div>
-            <a className={styles.ctaGhost} href="/play">
-              {t("home.allQuizzes")}
-              <span aria-hidden="true" className={styles.ctaArrow}>
-                →
-              </span>
-            </a>
-          </div>
-          <p className={styles.searchHint}>
-            {t("home.searchHint", { key: "/" })
-              .split("/")
-              .flatMap((part, i) => (i === 0 ? [part] : [<kbd key={i}>/</kbd>, part]))}
-          </p>
-        </div>
-        <div className={styles.globeStage}>
-          <HeroGlobe />
-          <div className={styles.chips} aria-hidden="true">
-            <span className={styles.chip} data-kind="correct">
-              <b>✓</b> {t("home.chip.correct")}
-            </span>
-            <span className={styles.chip} data-kind="near">
-              <b>◐</b> {t("home.chip.near")}
-            </span>
-            <span className={styles.chip} data-kind="score">
-              <b>★</b> {t("home.chip.streak")}
-            </span>
-          </div>
-        </div>
-      </section>
+    <div className={styles.modules} data-fullbleed="">
+      <HeroScene pick={pick} onReroll={reroll} count={items.length} />
 
       <nav aria-label={t("home.ticker")} className={styles.ticker}>
         <ul className={styles.tickerTrack}>
@@ -218,73 +347,50 @@ export function HomeModules() {
                   tabIndex={copy === 1 ? -1 : undefined}
                   data-hue={hueFor(q.href, q.format)}
                 >
-                  <span className={styles.tickerDot} aria-hidden="true" />
                   {q.title}
                 </a>
+                <span className={styles.tickerSep} aria-hidden="true">
+                  ✦
+                </span>
               </li>
             )),
           )}
         </ul>
       </nav>
 
-      <ContinueCard />
+      <div className={styles.page}>
+        <ContinueCard />
+      </div>
 
-      <section aria-labelledby="home-games" className="fx-reveal">
-        <div className={styles.sectionHead}>
-          <h2 id="home-games">{t("home.games")}</h2>
-          <p>{t("home.gamesLede")}</p>
-        </div>
-        <ul className={`${styles.bento} fx-stagger`}>
-          {games.map((g, i) => (
-            <li key={g.href} className={i < 2 ? styles.feature : undefined}>
-              <Card as="article" className={styles.card} data-fx-card="" data-hue={hueFor(g.href)}>
-                <div className={styles.artWell}>
-                  <GameArt
-                    name={g.href === "/play/quiz" ? "quiz" : artFor(g.href)}
-                    className={styles.art}
-                  />
-                </div>
-                <div className={styles.cardText}>
-                  <p className={styles.cardMeta}>
-                    <span className={styles.cardIndex} aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {g.format}
-                  </p>
-                  <h3>
-                    <a href={g.href} className={styles.stretched}>
-                      {g.title}
-                    </a>
-                  </h3>
-                  <p>{g.pitch}</p>
-                </div>
-                <span className={styles.arrow} aria-hidden="true">
-                  →
-                </span>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <GamesReel games={games} />
 
-      <section aria-labelledby="home-popular" className="fx-reveal">
-        <div className={styles.sectionHead}>
-          <h2 id="home-popular">{t("home.popular")}</h2>
-          <p>{t("home.popularLede")}</p>
+      <section aria-labelledby="home-popular" className={`${styles.page} ${styles.chapter}`}>
+        <div className={styles.chapterHead}>
+          <h2 id="home-popular" className={styles.sectionLabel}>
+            {t("home.popular")}
+          </h2>
+          <p className={`${styles.statement} fx-reveal`}>{t("home.popularLede")}</p>
         </div>
-        <ul className={`${styles.tiles} fx-stagger`}>
-          {popular.map((q) => (
-            <li key={q!.slug}>
+        <ul className={styles.bento}>
+          {popular.map((q, i) => (
+            <li
+              key={q!.slug}
+              data-size={i === 0 ? "hero" : i === 1 || i === 4 ? "wide" : undefined}
+            >
               <a
                 className={styles.tile}
                 href={`/play/quiz/${q!.slug}`}
                 data-fx-card=""
+                data-tilt=""
                 data-hue={hueFor(`/play/quiz/${q!.slug}`)}
               >
+                <span className={styles.tileGlow} aria-hidden="true" />
                 <GameArt name={artFor(`/play/quiz/${q!.slug}`)} className={styles.tileArt} />
-                <span>{q!.title}</span>
-                <span className={styles.tileArrow} aria-hidden="true">
-                  →
+                <span className={styles.tileText} data-depth="1">
+                  <span className={styles.tileTitle}>{q!.title}</span>
+                  <span className={styles.tileGo} aria-hidden="true">
+                    →
+                  </span>
                 </span>
               </a>
             </li>
@@ -295,7 +401,7 @@ export function HomeModules() {
         </a>
       </section>
 
-      <div className={`${styles.continents} fx-reveal`}>
+      <div className={`${styles.page} ${styles.continents} fx-reveal`}>
         <p className={styles.continentsHead}>
           <strong>{t("home.continents")}</strong> {t("home.continentsLede")}
         </p>
@@ -308,16 +414,21 @@ export function HomeModules() {
         </ul>
       </div>
 
-      <section aria-labelledby="home-today" className={`${styles.todaySection} fx-reveal`}>
+      <section aria-labelledby="home-today" className={`${styles.page} ${styles.chapter}`}>
         <div className={styles.todayHead}>
-          <ProgressRing
-            value={dailyDone === null ? 0 : doneCount / DAILIES.length}
-            label={dailyDone === null ? "" : `${doneCount}/${DAILIES.length}`}
-            size="sm"
-            className={styles.todayRing ?? ""}
-          />
           <div>
-            <h2 id="home-today">{t("home.today")}</h2>
+            <h2 id="home-today" className={styles.sectionLabel}>
+              {t("home.today")}
+            </h2>
+            <p className={`${styles.statement} fx-reveal`}>{t("home.todayStatement")}</p>
+          </div>
+          <div className={styles.todayMeter}>
+            <ProgressRing
+              value={dailyDone === null ? 0 : doneCount / DAILIES.length}
+              label={dailyDone === null ? "" : `${doneCount}/${DAILIES.length}`}
+              size="sm"
+              className={styles.todayRing ?? ""}
+            />
             <p>
               {dailyDone === null
                 ? " "
@@ -325,7 +436,7 @@ export function HomeModules() {
             </p>
           </div>
         </div>
-        <ul className={`${styles.todayList} fx-stagger`}>
+        <ul className={`${styles.lineup} fx-stagger`}>
           {DAILIES.map((d) => {
             const done = dailyDone?.has(d.id) ?? null;
             return (
@@ -333,9 +444,11 @@ export function HomeModules() {
                 key={d.id}
                 className={styles.today}
                 data-fx-card=""
+                data-tilt=""
                 data-hue={hueFor(d.href)}
                 data-done={done ? "" : undefined}
               >
+                <span className={styles.todayGlow} aria-hidden="true" />
                 <GameArt name={artFor(d.href)} className={styles.todayArt} />
                 <a href={d.href} className={styles.stretched}>
                   {t(d.label)}

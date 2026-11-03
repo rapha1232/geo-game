@@ -18,28 +18,41 @@
   margin-top: var(--space-7);
   padding: var(--space-8) var(--page-pad) var(--space-5);
   border-top: 1px solid var(--color-border);
-  background:
-    radial-gradient(40rem 18rem at 10% 0%, var(--fx-glow), transparent 70%),
-    radial-gradient(36rem 18rem at 90% 100%, var(--fx-glow-ocean), transparent 70%), var(--tint-bg);
+  background: var(--color-bg);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
   overflow: hidden;
 }
-/* A large, faint wordmark sets the footer apart without adding content. */
-.footer::after {
-  content: "";
-  position: absolute;
-  right: -6rem;
-  bottom: -10rem;
-  width: 28rem;
-  height: 28rem;
-  border-radius: 50%;
-  border: 1px solid var(--fx-hairline);
-  background: repeating-radial-gradient(circle, transparent 0 22px, var(--fx-hairline) 22px 23px);
+/* A closing call to action: one big line and the way back into play. */
+/* The closing wordmark: the brand name set edge to edge, fading into the page. Decorative (aria-hidden). */
+.wordmark {
+  position: relative;
+  z-index: 0;
+  max-width: none;
+  margin: var(--space-7) calc(var(--page-pad) * -1) calc(-0.2em - var(--space-5));
+  font-family: var(--font-display);
+  font-size: 23.5vw;
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.075em;
+  text-align: center;
+  white-space: nowrap;
+  background: linear-gradient(180deg, var(--color-text) 10%, transparent 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
   pointer-events: none;
 }
+:global(html[data-immersive]) .wordmark {
+  display: none;
+}
+@media (forced-colors: active) {
+  .wordmark {
+    display: none;
+  }
+}
 
-/* A closing call to action: one big line and the way back into play. */
 .footerCta {
   position: relative;
   z-index: 1;
@@ -90,7 +103,36 @@
     background: none;
   }
 }
-:global(html[data-immersive]) .footerCta {
+:global(html[data-immersive]) /* The closing wordmark: the brand name set edge to edge, fading into the page. Decorative (aria-hidden). */
+.wordmark {
+  position: relative;
+  z-index: 0;
+  max-width: none;
+  margin: var(--space-7) calc(var(--page-pad) * -1) calc(-0.2em - var(--space-5));
+  font-family: var(--font-display);
+  font-size: 23.5vw;
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.075em;
+  text-align: center;
+  white-space: nowrap;
+  background: linear-gradient(180deg, var(--color-text) 10%, transparent 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+:global(html[data-immersive]) .wordmark {
+  display: none;
+}
+@media (forced-colors: active) {
+  .wordmark {
+    display: none;
+  }
+}
+
+.footerCta {
   display: none;
 }
 
@@ -206,6 +248,12 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* Full-bleed pages (Home) run edge to edge and lay out their own inner width. */
+.main:has([data-fullbleed]) {
+  max-width: none;
+  padding: 0;
 }
 
 /* During a quiz round the game bar replaces the header and the map runs edge to edge (UX_AND_DESIGN §5.4). */
