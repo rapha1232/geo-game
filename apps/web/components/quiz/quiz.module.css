@@ -881,3 +881,55 @@
     align-items: center;
   }
 }
+
+/* ---------------------------------------------------------------- set-up on the title card (UX_AND_DESIGN §5.5) */
+.fieldRow > label {
+  min-width: min(100%, 10rem);
+  flex: 1 1 10rem;
+}
+.fieldRow select {
+  width: 100%;
+}
+/* The result hero is a dark stage in the quiz hue. */
+.resultCard {
+  border: 0;
+  background:
+    radial-gradient(
+      70% 90% at 90% 0%,
+      color-mix(in srgb, var(--hue) 45%, transparent),
+      transparent 70%
+    ),
+    #0b0b0f;
+  box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--hue) 70%, transparent);
+}
+
+/* ---------------------------------------------------------------- round chrome, matched to the game bar (§5.5) */
+.gameBar {
+  --game-bar-h: 64px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 9%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  box-shadow: none;
+  backdrop-filter: saturate(1.8) blur(20px);
+  -webkit-backdrop-filter: saturate(1.8) blur(20px);
+}
+.gameTitle {
+  font-size: var(--text-xl);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+.track {
+  height: 8px;
+}
+.count,
+.clock {
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+.dock {
+  border-radius: 28px;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  box-shadow:
+    0 30px 60px -20px rgb(0 0 0 / 0.35),
+    0 0 0 1px color-mix(in srgb, var(--color-text) 8%, transparent);
+}

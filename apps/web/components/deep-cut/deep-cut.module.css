@@ -200,3 +200,41 @@
     animation: fx-pop var(--motion-reveal) var(--ease-spring);
   }
 }
+
+/* ---------------------------------------------------------------- game stage (UX_AND_DESIGN §5.5) */
+.page {
+  max-width: none;
+  gap: 0;
+}
+.mapBox {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.mapBox > * {
+  border-radius: 0;
+}
+.reveal h2 {
+  font-size: clamp(1.375rem, 1rem + 1vw, 2rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+.reveal h3 {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.reveal .tiers li {
+  border-color: rgb(255 255 255 / 0.12);
+  background: rgb(255 255 255 / 0.05);
+}
+/* Set-up options on the title card: one full-width select per row. */
+.options {
+  display: grid;
+  gap: var(--space-4);
+}
+.options select {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+}

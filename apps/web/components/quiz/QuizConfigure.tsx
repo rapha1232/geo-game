@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card } from "@meridian/ui";
+import { Button } from "@meridian/ui";
 import {
   ALLOWED_FORMATS,
   ANSWER_LANGUAGES,
@@ -19,6 +19,7 @@ import {
 import { FORMAT_LABEL, formatClock, itemCount, type NamedQuiz } from "../../lib/quiz/library";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./quiz.module.css";
+import { TitleCard } from "../game/GameBar";
 import "../../lib/messages/qz";
 
 const SCOPES: { value: string; scope: Scope }[] = [
@@ -66,8 +67,11 @@ export function QuizConfigure({
   const total = itemCount(world, { ...c, count: "all" });
   const sizes: ("all" | number)[] = ["all", ...[10, 20, 50].filter((v) => v < total)];
   return (
-    <Card className={styles.configure}>
-      <h1>{quiz.title}</h1>
+    <TitleCard
+      title={quiz.title}
+      href={`/play/quiz/${quiz.slug}`}
+      pitch={t("qz.titlePitch", { n: total })}
+    >
       <fieldset className={styles.field}>
         <legend>{t("qz.format")}</legend>
         {formats.map((f: Format) => (
@@ -252,6 +256,6 @@ export function QuizConfigure({
           <span className={styles.note}>{t("qz.yourBest", { pb: `${best}%` })}</span>
         )}
       </div>
-    </Card>
+    </TitleCard>
   );
 }

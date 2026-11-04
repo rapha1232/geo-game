@@ -225,7 +225,8 @@
     padding: 4px;
     border: 1px solid var(--fx-glass-border);
     border-radius: var(--radius-xl);
-    background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+    /* Near-opaque: the dock floats over any page, dark stages included, and its labels must keep their contrast. */
+    background: color-mix(in srgb, var(--color-surface) 96%, transparent);
     backdrop-filter: saturate(1.8) blur(20px);
     -webkit-backdrop-filter: saturate(1.8) blur(20px);
     box-shadow: var(--shadow-overlay);

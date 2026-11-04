@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { Button, Card } from "@meridian/ui";
+import { Button } from "@meridian/ui";
 import {
   HINT_CAP,
   confirm,
@@ -24,6 +24,8 @@ import { searchPlaces, type LoadedFactPin } from "../../lib/fact-pin/data";
 import { advance, finishRun, type FactSession } from "../../lib/fact-pin/session";
 import { FactPinMap } from "./FactPinMap";
 import styles from "./fact-pin.module.css";
+import g from "../game/game.module.css";
+import { GameBar } from "../game/GameBar";
 import "../../lib/messages/fp";
 import "../../lib/messages/sil";
 
@@ -94,43 +96,49 @@ export function FactPinView({
       rating: t(`fp.rating.${rating}` as MessageKey),
     });
     return (
-      <div className={styles.page}>
-        <header className={styles.head}>
-          <h1>{t("fp.title")}</h1>
-        </header>
-        <Card className={styles.card} aria-labelledby="fp-summary">
-          <h2 id="fp-summary">{t("fp.summary.title")}</h2>
-          <p className={styles.big}>{t("fp.summary.total", { total: sum.total, max: sum.max })}</p>
-          <p>{t("fp.summary.rating", { rating: t(`fp.rating.${rating}` as MessageKey) })}</p>
-          {pb?.isNew && <p role="status">{t("fp.summary.newBest")}</p>}
-          {!saved && <p role="alert">{t("fp.summary.notSaved")}</p>}
-          {s.recycled && <p className={styles.note}>{t("fp.recycled")}</p>}
-          <ol className={styles.summaryRows} aria-label={t("fp.summary.title")}>
-            {sum.rows.map((r, i) => {
-              const label = data.byId.get(r.factId)?.answerLabel ?? r.factId;
-              return (
-                <li key={r.factId}>
-                  {r.timedOut && r.distanceKm === 0 && r.score === 0
-                    ? t("fp.summary.rowTimedOut", { n: i + 1, label, score: r.score })
-                    : t("fp.summary.row", {
-                        n: i + 1,
-                        label,
-                        score: r.score,
-                        km: Math.round(r.distanceKm),
-                      })}
-                </li>
-              );
-            })}
-          </ol>
-          <div className={styles.row}>
-            <Button variant="primary" onPress={onPlayAgain}>
-              {t("fp.playAgain")}
-            </Button>
-            {onShare && <Button onPress={() => onShare(shareText)}>{t("fp.share")}</Button>}
-          </div>
-          {shared && <p role="status">{t("fp.shared")}</p>}
-          {summarySlot}
-        </Card>
+      <div className={`${styles.page} ${g.page}`}>
+        <GameBar title={t("fp.title")} href="/play/fact-pin" />
+        <div className={g.focus}>
+          <section
+            className={`${g.result} ${styles.summary} stage-dark`}
+            data-hue="coral"
+            aria-labelledby="fp-summary"
+          >
+            <h2 id="fp-summary">{t("fp.summary.title")}</h2>
+            <p className={`${styles.big} ${g.score}`}>
+              {t("fp.summary.total", { total: sum.total, max: sum.max })}
+            </p>
+            <p>{t("fp.summary.rating", { rating: t(`fp.rating.${rating}` as MessageKey) })}</p>
+            {pb?.isNew && <p role="status">{t("fp.summary.newBest")}</p>}
+            {!saved && <p role="alert">{t("fp.summary.notSaved")}</p>}
+            {s.recycled && <p className={styles.note}>{t("fp.recycled")}</p>}
+            <ol className={styles.summaryRows} aria-label={t("fp.summary.title")}>
+              {sum.rows.map((r, i) => {
+                const label = data.byId.get(r.factId)?.answerLabel ?? r.factId;
+                return (
+                  <li key={r.factId}>
+                    {r.timedOut && r.distanceKm === 0 && r.score === 0
+                      ? t("fp.summary.rowTimedOut", { n: i + 1, label, score: r.score })
+                      : t("fp.summary.row", {
+                          n: i + 1,
+                          label,
+                          score: r.score,
+                          km: Math.round(r.distanceKm),
+                        })}
+                  </li>
+                );
+              })}
+            </ol>
+            <div className={styles.row}>
+              <Button variant="primary" onPress={onPlayAgain}>
+                {t("fp.playAgain")}
+              </Button>
+              {onShare && <Button onPress={() => onShare(shareText)}>{t("fp.share")}</Button>}
+            </div>
+            {shared && <p role="status">{t("fp.shared")}</p>}
+            {summarySlot}
+          </section>
+        </div>
       </div>
     );
   }
@@ -157,161 +165,174 @@ export function FactPinView({
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.head}>
-        <h1>{t("fp.title")}</h1>
-        <p className={styles.meta}>
-          {run.config.mode === "endless"
-            ? t("fp.factN", { n: run.index + 1 })
-            : t("fp.factOf", { n: run.index + 1, total: run.factIds.length })}{" "}
-          · {t("fp.points", { n: total(run) })}
-          {stats && stats.played > 0 && (
-            <> · {t("fp.endless.stats", { avg: stats.average, streak: stats.bestStreak })}</>
-          )}
-        </p>
-      </header>
-
-      <Card className={styles.card}>
-        <p className={styles.fact}>{fact.text}</p>
-        {asking && left !== null && (
-          <p
-            className={`${styles.timer} ${left <= 5000 ? styles.timerLow : ""}`}
-            aria-live="off"
-            data-testid="fp-timer"
-          >
-            {t("fp.timeLeft", { s: Math.max(0, Math.ceil(left / 1000)) })}
-          </p>
-        )}
-        {asking && (
-          <section aria-label={t("fp.hints")} className={styles.row}>
-            {hintTaken("continent") ? (
-              <p role="status">
-                {t("fp.hint.continentShown", { name: continentName })}{" "}
-                {t("fp.hint.capNote", { cap: HINT_CAP.continent })}
-              </p>
-            ) : (
-              <Button onPress={() => update(takeHint(run, fact, "continent"))}>
-                {t("fp.hint.continent")}
-              </Button>
+    <div className={`${styles.page} ${g.page}`}>
+      <GameBar
+        title={t("fp.title")}
+        href="/play/fact-pin"
+        meta={
+          <>
+            {run.config.mode === "endless"
+              ? t("fp.factN", { n: run.index + 1 })
+              : t("fp.factOf", { n: run.index + 1, total: run.factIds.length })}{" "}
+            · {t("fp.points", { n: total(run) })}
+            {stats && stats.played > 0 && (
+              <> · {t("fp.endless.stats", { avg: stats.average, streak: stats.bestStreak })}</>
             )}
-            {countryHintAllowed(fact) &&
-              (hintTaken("country") ? (
-                <p role="status">
-                  {t("fp.hint.countryShown", {
-                    name: (fact.countries ?? []).map(data.countryName).join(", "),
-                  })}{" "}
-                  {t("fp.hint.capNote", { cap: HINT_CAP.country })}
-                </p>
-              ) : (
-                <Button onPress={() => update(takeHint(run, fact, "country"))}>
-                  {t("fp.hint.country")}
-                </Button>
-              ))}
-          </section>
-        )}
-      </Card>
-
-      <FactPinMap
-        data={data}
-        pin={round.pin}
-        target={target}
-        states={states}
-        locked={!asking}
-        onPin={(p) => place(p.lat, p.lon)}
+          </>
+        }
       />
-
-      {asking && (
-        <div className={styles.search}>
-          <label htmlFor="fp-place">{t("fp.search")}</label>
-          <input
-            id="fp-place"
-            className={styles.input}
-            type="text"
-            value={text}
-            autoComplete="off"
-            aria-describedby="fp-place-hint"
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key !== "Enter") return;
-              e.preventDefault();
-              const first = suggestions[0];
-              if (first) place(first.lat, first.lon);
-              else if (round.pin) doConfirm();
-            }}
+      <div className={g.split}>
+        <div className={g.stage}>
+          <FactPinMap
+            data={data}
+            pin={round.pin}
+            target={target}
+            states={states}
+            locked={!asking}
+            onPin={(p) => place(p.lat, p.lon)}
           />
-          <p id="fp-place-hint" className={styles.note}>
-            {t("fp.searchHint")}
-          </p>
-          {suggestions.length > 0 && (
-            <ul className={styles.suggestions} aria-label={t("fp.suggestions")}>
-              {suggestions.map((p) => (
-                <li key={`${p.id}`}>
-                  <button type="button" onClick={() => place(p.lat, p.lon)}>
-                    {p.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <p role="status" className={styles.note}>
-            {round.pin ? t("fp.pinPlaced") : t("fp.noPin")}
-          </p>
-          <div className={styles.row}>
-            <Button variant="primary" isDisabled={!round.pin} onPress={doConfirm}>
-              {t("fp.confirm")}
-            </Button>
-          </div>
         </div>
-      )}
-
-      {!asking && result && (
-        <Card className={styles.card} aria-live="polite">
-          <h2>{t("fp.reveal.answer", { label: fact.answerLabel })}</h2>
-          <div className={styles.result}>
-            <p className={styles.big}>{t("fp.reveal.score", { score: result.score })}</p>
-            <p>
-              {!round.pin
-                ? t("fp.reveal.noPin")
-                : result.distanceKm === 0
-                  ? t("fp.reveal.inside")
-                  : t("fp.reveal.distance", { km: Math.round(result.distanceKm) })}
-              {result.timedOut && round.pin ? ` · ${t("fp.reveal.timedOut")}` : ""}
-            </p>
-            {result.cap !== null && result.rawScore > result.cap && (
-              <p className={styles.note}>
-                {t("fp.reveal.capped", { raw: result.rawScore, cap: result.cap })}
+        <div className={g.panel}>
+          <div className={g.block}>
+            <p className={`${styles.fact} ${g.prompt}`}>{fact.text}</p>
+            {asking && left !== null && (
+              <p
+                className={`${styles.timer} ${left <= 5000 ? styles.timerLow : ""}`}
+                aria-live="off"
+                data-testid="fp-timer"
+              >
+                {t("fp.timeLeft", { s: Math.max(0, Math.ceil(left / 1000)) })}
               </p>
             )}
-          </div>
-          <p>{fact.reveal}</p>
-          <section aria-label={t("fp.reveal.sources")}>
-            <h3>{t("fp.reveal.sources")}</h3>
-            <ul className={styles.sources}>
-              {fact.sources.map((src) => (
-                <li key={src.url}>
-                  <a
-                    href={src.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={t("fp.reveal.sourceLink", { title: src.title })}
-                  >
-                    {src.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <div className={styles.row}>
-            <Button variant="primary" onPress={go}>
-              {lastFact ? t("fp.seeSummary") : t("fp.next")}
-            </Button>
-            {run.config.mode === "endless" && (
-              <Button onPress={() => onChange(finishRun(s))}>{t("fp.finish")}</Button>
+            {asking && (
+              <section aria-label={t("fp.hints")} className={styles.row}>
+                {hintTaken("continent") ? (
+                  <p role="status">
+                    {t("fp.hint.continentShown", { name: continentName })}{" "}
+                    {t("fp.hint.capNote", { cap: HINT_CAP.continent })}
+                  </p>
+                ) : (
+                  <Button onPress={() => update(takeHint(run, fact, "continent"))}>
+                    {t("fp.hint.continent")}
+                  </Button>
+                )}
+                {countryHintAllowed(fact) &&
+                  (hintTaken("country") ? (
+                    <p role="status">
+                      {t("fp.hint.countryShown", {
+                        name: (fact.countries ?? []).map(data.countryName).join(", "),
+                      })}{" "}
+                      {t("fp.hint.capNote", { cap: HINT_CAP.country })}
+                    </p>
+                  ) : (
+                    <Button onPress={() => update(takeHint(run, fact, "country"))}>
+                      {t("fp.hint.country")}
+                    </Button>
+                  ))}
+              </section>
             )}
-            {revealSlot?.(fact)}
           </div>
-        </Card>
-      )}
+
+          {asking && (
+            <div className={`${styles.search} ${g.block}`}>
+              <label htmlFor="fp-place">{t("fp.search")}</label>
+              <input
+                id="fp-place"
+                className={styles.input}
+                type="text"
+                value={text}
+                autoComplete="off"
+                aria-describedby="fp-place-hint"
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter") return;
+                  e.preventDefault();
+                  const first = suggestions[0];
+                  if (first) place(first.lat, first.lon);
+                  else if (round.pin) doConfirm();
+                }}
+              />
+              <p id="fp-place-hint" className={styles.note}>
+                {t("fp.searchHint")}
+              </p>
+              {suggestions.length > 0 && (
+                <ul className={styles.suggestions} aria-label={t("fp.suggestions")}>
+                  {suggestions.map((p) => (
+                    <li key={`${p.id}`}>
+                      <button type="button" onClick={() => place(p.lat, p.lon)}>
+                        {p.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p role="status" className={styles.note}>
+                {round.pin ? t("fp.pinPlaced") : t("fp.noPin")}
+              </p>
+              <div className={styles.row}>
+                <Button variant="primary" isDisabled={!round.pin} onPress={doConfirm}>
+                  {t("fp.confirm")}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {!asking && result && (
+            <section
+              className={`${g.result} ${styles.reveal} stage-dark`}
+              data-hue="coral"
+              aria-live="polite"
+            >
+              <h2>{t("fp.reveal.answer", { label: fact.answerLabel })}</h2>
+              <div className={styles.result}>
+                <p className={`${styles.big} ${g.score}`}>
+                  {t("fp.reveal.score", { score: result.score })}
+                </p>
+                <p>
+                  {!round.pin
+                    ? t("fp.reveal.noPin")
+                    : result.distanceKm === 0
+                      ? t("fp.reveal.inside")
+                      : t("fp.reveal.distance", { km: Math.round(result.distanceKm) })}
+                  {result.timedOut && round.pin ? ` · ${t("fp.reveal.timedOut")}` : ""}
+                </p>
+                {result.cap !== null && result.rawScore > result.cap && (
+                  <p className={styles.note}>
+                    {t("fp.reveal.capped", { raw: result.rawScore, cap: result.cap })}
+                  </p>
+                )}
+              </div>
+              <p>{fact.reveal}</p>
+              <section aria-label={t("fp.reveal.sources")}>
+                <h3>{t("fp.reveal.sources")}</h3>
+                <ul className={styles.sources}>
+                  {fact.sources.map((src) => (
+                    <li key={src.url}>
+                      <a
+                        href={src.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={t("fp.reveal.sourceLink", { title: src.title })}
+                      >
+                        {src.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+              <div className={styles.row}>
+                <Button variant="primary" onPress={go}>
+                  {lastFact ? t("fp.seeSummary") : t("fp.next")}
+                </Button>
+                {run.config.mode === "endless" && (
+                  <Button onPress={() => onChange(finishRun(s))}>{t("fp.finish")}</Button>
+                )}
+                {revealSlot?.(fact)}
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

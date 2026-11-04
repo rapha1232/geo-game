@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnswerInput, Button, Card, GameMap, type Lod, type MapFeatureState } from "@meridian/ui";
+import { AnswerInput, Button, GameMap, type Lod, type MapFeatureState } from "@meridian/ui";
 import {
   clickSub,
   currentPrompt,
@@ -22,6 +22,8 @@ import { subPbKey, subdivisionResult } from "../../lib/results/subdivisions";
 import { loadBest, saveRankIt } from "../../lib/results/rank-it";
 import { randomUlid } from "../../lib/results/ulid";
 import styles from "./subdivisions.module.css";
+import g from "../game/game.module.css";
+import { GameBar, TitleCard } from "../game/GameBar";
 import "../../lib/messages/qz";
 import "../../lib/messages/sb";
 import { mapLabels } from "../../lib/map/labels";
@@ -201,10 +203,8 @@ export function SubdivisionGame({ code }: { code: string }) {
 
   if (!played)
     return (
-      <section className={styles.page}>
-        <h1>{subTitle(country)}</h1>
-        <p>{t("sb.intro")}</p>
-        <label>
+      <TitleCard title={subTitle(country)} href="/play/subdivisions" pitch={t("sb.intro")}>
+        <label className={styles.field}>
           {t("sb.format")}
           <select value={format} onChange={(e) => setFormat(e.target.value as Format)}>
             <option value="name">{t("sb.format.name")}</option>
@@ -216,7 +216,10 @@ export function SubdivisionGame({ code }: { code: string }) {
             {t("sb.start")}
           </Button>
         </div>
-      </section>
+        <p className={styles.note}>
+          {pluralKind(country.kind)} · {country.count}
+        </p>
+      </TitleCard>
     );
 
   const missedNames =
@@ -229,90 +232,111 @@ export function SubdivisionGame({ code }: { code: string }) {
   const target = r && r.kind === "sub-find" ? currentPrompt(r) : null;
 
   return (
-    <section className={styles.page}>
-      <h1>{subTitle(country)}</h1>
-      <p className={styles.meta} aria-live="polite">
-        {r?.kind === "sub-name"
-          ? t("sb.count", { n: r.found.length, total: r.ids.length })
-          : r
-            ? t("sb.findProgress", {
-                n: Object.keys((r as FindRound).scores).length,
-                total: (r as FindRound).order.length,
-              })
-            : ""}
-      </p>
-      {target && (
-        <p className={styles.prompt}>
-          {t("sb.findPrompt", { name: name(target) })}{" "}
-          <small>{t("sb.tries", { n: 3 - (r as FindRound).attempts })}</small>
-        </p>
-      )}
-      <div className={styles.mapBox}>
-        <GameMap
-          lods={lods}
-          entities={data.entities}
-          states={states}
-          mode={r?.kind === "sub-find" && !over ? "select" : "view"}
-          onSelect={pick}
-          labels={LABELS}
-          aria-label={t("sb.mapAria")}
-        />
-      </div>
-      {r?.kind === "sub-name" && !over && (
-        <AnswerInput
-          label={t("sb.input")}
-          value={text}
-          onChange={(v) => {
-            setText(v);
-            submit(v, false);
-          }}
-          onSubmit={(v) => submit(v, true)}
-          status={msg ? { tone: "error", text: msg } : null}
-          autoFocus
-        />
-      )}
-      {r?.kind === "sub-find" && msg && !over && (
-        <p role="status" className={styles.note}>
-          {msg}
-        </p>
-      )}
-      {!over && (
-        <div>
-          <Button
-            variant="ghost"
-            onPress={() => update({ ...played, round: giveUpSub(played.round) })}
-          >
-            {t("sb.giveUp")}
-          </Button>
-        </div>
-      )}
-      {over && r && (
-        <Card className={styles.result} aria-live="polite">
-          <h2>
-            {r.status === "gave_up"
-              ? t("sb.gaveUp", { n: subScore(r) })
-              : t("sb.done", { n: subScore(r) })}
-          </h2>
-          {missedNames.length > 0 && <p>{t("sb.missedList", { list: missedNames.join(", ") })}</p>}
-          {best !== null && <p>{t("sb.best", { n: Math.max(best, subScore(r)) })}</p>}
-          {newBest && <p>{t("sb.newBest")}</p>}
-          <div className={styles.actions}>
-            <Button
-              variant="primary"
-              onPress={() => {
-                void services?.store.discard(gameId);
-                setPlayed(null);
-              }}
-            >
-              {t("sb.again")}
-            </Button>
-            <a href="/play/subdivisions">{t("sb.back")}</a>
+    <div className={`${styles.page} ${g.page}`}>
+      <GameBar
+        title={subTitle(country)}
+        href="/play/subdivisions"
+        backHref="/play/subdivisions"
+        meta={
+          <span aria-live="polite">
+            {r?.kind === "sub-name"
+              ? t("sb.count", { n: r.found.length, total: r.ids.length })
+              : r
+                ? t("sb.findProgress", {
+                    n: Object.keys((r as FindRound).scores).length,
+                    total: (r as FindRound).order.length,
+                  })
+                : ""}
+          </span>
+        }
+      />
+      <div className={g.split}>
+        <div className={g.stage}>
+          <div className={styles.mapBox}>
+            <GameMap
+              lods={lods}
+              entities={data.entities}
+              focus={data.entities.map((e) => e.id)}
+              states={states}
+              mode={r?.kind === "sub-find" && !over ? "select" : "view"}
+              onSelect={pick}
+              labels={LABELS}
+              aria-label={t("sb.mapAria")}
+            />
           </div>
-        </Card>
-      )}
-      <p className={styles.note}>
-        {pluralKind(country.kind)} · {country.count}
-      </p>
-    </section>
+        </div>
+        <div className={g.panel}>
+          {over && r && (
+            <section
+              className={`${styles.result} ${g.result} stage-dark`}
+              data-hue="blue"
+              aria-live="polite"
+            >
+              <h2>
+                {r.status === "gave_up"
+                  ? t("sb.gaveUp", { n: subScore(r) })
+                  : t("sb.done", { n: subScore(r) })}
+              </h2>
+              {missedNames.length > 0 && (
+                <p>{t("sb.missedList", { list: missedNames.join(", ") })}</p>
+              )}
+              {best !== null && <p>{t("sb.best", { n: Math.max(best, subScore(r)) })}</p>}
+              {newBest && <p>{t("sb.newBest")}</p>}
+              <div className={styles.actions}>
+                <Button
+                  variant="primary"
+                  onPress={() => {
+                    void services?.store.discard(gameId);
+                    setPlayed(null);
+                  }}
+                >
+                  {t("sb.again")}
+                </Button>
+                <a href="/play/subdivisions">{t("sb.back")}</a>
+              </div>
+            </section>
+          )}
+          <div className={g.block}>
+            <p className={g.label}>
+              {pluralKind(country.kind)} · {country.count}
+            </p>
+            {target && (
+              <p className={`${styles.prompt} ${g.prompt}`}>
+                {t("sb.findPrompt", { name: name(target) })}{" "}
+                <small>{t("sb.tries", { n: 3 - (r as FindRound).attempts })}</small>
+              </p>
+            )}
+            {r?.kind === "sub-name" && !over && (
+              <AnswerInput
+                label={t("sb.input")}
+                value={text}
+                onChange={(v) => {
+                  setText(v);
+                  submit(v, false);
+                }}
+                onSubmit={(v) => submit(v, true)}
+                status={msg ? { tone: "error", text: msg } : null}
+                autoFocus
+              />
+            )}
+            {r?.kind === "sub-find" && msg && !over && (
+              <p role="status" className={styles.note}>
+                {msg}
+              </p>
+            )}
+            {!over && (
+              <div>
+                <Button
+                  variant="ghost"
+                  onPress={() => update({ ...played, round: giveUpSub(played.round) })}
+                >
+                  {t("sb.giveUp")}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
