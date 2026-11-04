@@ -12,9 +12,19 @@ export type MapFeature = {
   ];
 };
 
-/** Decodes `objects.countries` of a TopoJSON pack. Features without an id are skipped. */
+/**
+ * The pack's feature layer: `objects.countries` in world packs, otherwise the pack's only (first) object, such as
+ * `objects.subdivisions` in a subdivision pack.
+ */
+export function featureObject(topology: Topology | undefined): GeometryCollection | undefined {
+  if (!topology) return undefined;
+  const objects = topology.objects;
+  return (objects["countries"] ?? Object.values(objects)[0]) as GeometryCollection | undefined;
+}
+
+/** Decodes the feature layer of a TopoJSON pack. Features without an id are skipped. */
 export function decodeFeatures(topology: Topology): MapFeature[] {
-  const object = topology.objects["countries"] as GeometryCollection | undefined;
+  const object = featureObject(topology);
   if (!object) return [];
   const fc = feature(topology, object) as unknown as {
     features: { id?: string | number; geometry: GeoPermissibleObjects | null }[];

@@ -87,7 +87,7 @@ export function QuizReview({
   return (
     <section className={styles.review}>
       <h1>{t("qz.review")}</h1>
-      <Card className={`${styles.card} ${styles.resultCard}`}>
+      <Card className={`${styles.card} ${styles.resultCard} stage-dark`} data-hue="blue">
         <div className={styles.resultHero}>
           {!learn && (
             <ProgressRing

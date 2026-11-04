@@ -3,7 +3,13 @@ import { geoPath } from "d3-geo";
 import { NavIndex, type NavPoint } from "../src/map/keynav";
 import { LOUPE_RADIUS_PX, TINY, candidatesNear, ringAt, tinyRings } from "../src/map/hit";
 import { worldProjection } from "../src/map/projection";
-import { featureAt, lonLatBounds, type MapFeature } from "../src/map/geo";
+import {
+  decodeFeatures,
+  featureAt,
+  featureObject,
+  lonLatBounds,
+  type MapFeature,
+} from "../src/map/geo";
 import {
   DRAG_THRESHOLD_PX,
   IDENTITY,
@@ -280,4 +286,30 @@ describe("feature bounds for hit testing", () => {
     expect(featureAt(features, -179, -17)).toBe("fiji");
     expect(featureAt(features, 0, -17)).toBeNull();
   });
+});
+
+describe("T2.13 feature layer of a pack", () => {
+  const square = { type: "Polygon", arcs: [[0]], id: "subdivision:XX-A" };
+  const topo = (name: string) =>
+    ({
+      type: "Topology",
+      arcs: [
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 1],
+          [0, 0],
+        ],
+      ],
+      objects: { [name]: { type: "GeometryCollection", geometries: [square] } },
+    }) as never;
+  it("reads objects.countries in world packs", () => {
+    expect(featureObject(topo("countries"))?.geometries).toHaveLength(1);
+  });
+  it("reads a subdivision pack's own layer, so its states draw", () => {
+    expect(featureObject(topo("subdivisions"))?.geometries).toHaveLength(1);
+    expect(decodeFeatures(topo("subdivisions")).map((f) => f.id)).toEqual(["subdivision:XX-A"]);
+  });
+  it("is undefined without a pack", () => expect(featureObject(undefined)).toBeUndefined());
 });

@@ -23,11 +23,11 @@ import {
   type ReactNode,
 } from "react";
 import { merge, neighbors } from "topojson-client";
-import type { GeometryCollection, Topology } from "topojson-specification";
+import type { Topology } from "topojson-specification";
 import { Button } from "../components/Button";
 import { MapStylePicker } from "../components/MapStylePicker";
 import { cx } from "../components/cx";
-import { decodeFeatures, featureAt, round4, type MapFeature } from "./geo";
+import { decodeFeatures, featureAt, featureObject, round4, type MapFeature } from "./geo";
 import {
   LOUPE_RADIUS_PX,
   LOUPE_ZOOM,
@@ -201,7 +201,7 @@ const wraps = (f: MapFeature): boolean => {
 
 /** The outer coastline of a pack (internal borders removed), for the shadow and water lines. */
 function coastOf(topology: Topology | undefined) {
-  const object = topology?.objects["countries"] as GeometryCollection | undefined;
+  const object = featureObject(topology);
   if (!topology || !object) return null;
   if (coasts.has(topology)) return coasts.get(topology) ?? null;
   let shape: ReturnType<typeof merge> | null = null;
@@ -439,7 +439,7 @@ export function GameMap({
   const slotsRef = useRef<Map<string, number>>(new Map());
   const slots = useMemo(() => {
     const topo = lod ? lods[lod] : undefined;
-    const object = topo?.objects["countries"] as GeometryCollection | undefined;
+    const object = featureObject(topo);
     if (object?.geometries.some((g) => g.id !== undefined && !slotsRef.current.has(String(g.id)))) {
       const ids = object.geometries.map((g) => String(g.id ?? ""));
       for (const [id, v] of colourSlots(ids, neighbors(object.geometries as never)))

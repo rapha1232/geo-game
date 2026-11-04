@@ -238,3 +238,55 @@
     transform: scale(0.96);
   }
 }
+
+/* ---------------------------------------------------------------- game stage (UX_AND_DESIGN §5.5) */
+.page {
+  max-width: none;
+  gap: 0;
+}
+.mapBox {
+  height: 100%;
+  min-height: 15rem;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.mapBox > * {
+  border-radius: 0;
+}
+.route {
+  font-size: clamp(1.5rem, 1rem + 1.2vw, 2.25rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+.counter {
+  justify-self: start;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+.result h2 {
+  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+.result .meta {
+  color: var(--color-text);
+}
+.settings summary {
+  min-height: var(--touch-target);
+  display: flex;
+  align-items: center;
+  font-weight: 650;
+  cursor: pointer;
+}
+.settings[open] summary {
+  margin-bottom: var(--space-2);
+}
+.settings .options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

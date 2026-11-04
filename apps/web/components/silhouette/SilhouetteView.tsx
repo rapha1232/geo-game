@@ -35,6 +35,8 @@ import { silhouettePath, VIEW } from "../../lib/silhouette/draw";
 import type { Shape } from "../../lib/silhouette/data";
 import { t, type MessageKey } from "../../lib/i18n";
 import styles from "./silhouette.module.css";
+import g from "../game/game.module.css";
+import { GameBar } from "../game/GameBar";
 import "../../lib/messages/ch";
 import "../../lib/messages/sil";
 
@@ -164,41 +166,222 @@ export function SilhouetteView({
 
   if (s.phase === "finished" && finishedSlot)
     return (
-      <div className={styles.page}>
-        <header className={styles.head}>
-          <h1>{t("sil.title")}</h1>
-        </header>
-        {finishedSlot}
+      <div className={`${styles.page} ${g.page}`}>
+        <GameBar title={t("sil.title")} href="/play/silhouette" />
+        <div className={g.focus}>{finishedSlot}</div>
       </div>
     );
 
-  return (
-    <div className={styles.page}>
-      <header className={styles.head}>
-        <h1>{t("sil.title")}</h1>
-        <p className={styles.meta}>
-          {s.challenge
-            ? t("ch.roundOf", { n: s.roundNo, total: s.challenge.targets.length })
-            : t("sil.round", { n: s.roundNo })}{" "}
-          · {t("sil.points", { n: sessionPoints(s) })}
-        </p>
-      </header>
+  const resultSection = over && target && (
+    <section className={styles.result} aria-live="polite" data-outcome={s.round.status}>
+      <h2 className={`${styles.outcome} ${g.result} stage-dark`} data-hue="violet">
+        <span aria-hidden="true" className={styles.outcomeGlyph}>
+          {s.round.status === "solved" ? "✓" : "✕"}
+        </span>
+        {s.round.status === "solved"
+          ? t("sil.solved", { n: s.round.guesses.length, name: target.name })
+          : t("sil.failed", { name: target.name })}
+      </h2>
 
-      <div className={styles.layout}>
-        <Card className={styles.shapeCard}>
-          <svg
-            viewBox={`0 0 ${VIEW} ${VIEW}`}
-            role="img"
-            aria-label={t("sil.shapeLabel")}
-            className={styles.shape}
-            style={{ transform: `rotate(${s.round.rotation}deg)` }}
-          >
-            <path d={d} className={styles.land} />
-          </svg>
+      {s.followUps.map((f, i) => {
+        if (f.prompt.kind === "neighbors")
+          return (
+            <NeighborsFollowUp
+              key="neighbors"
+              world={world}
+              state={f}
+              onSubmit={(picks) => onChange(answerNeighborsAt(s, i, picks))}
+            />
+          );
+        const prompt = f.prompt;
+        const answered = f.choice !== null;
+        const correctLabel = prompt.options[prompt.correctIndex] as string;
+        const label = (opt: string) =>
+          prompt.kind === "flag" ? (world.byId.get(opt)?.name ?? opt) : opt;
+        return (
+          <div key={prompt.kind} className={styles.followUp}>
+            <h3>
+              {t(prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag", {
+                name: target.name,
+              })}
+            </h3>
+            <ChoiceGrid
+              aria-label={t(
+                prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag",
+                { name: target.name },
+              )}
+              stateLabels={{ correct: t("sil.followUpCorrect"), wrong: "✕", near: "" }}
+              shortcuts={false}
+              choices={prompt.options.map((opt, oi) => ({
+                id: String(oi),
+                label: label(opt),
+                disabled: answered,
+                ...(answered
+                  ? {
+                      state:
+                        oi === prompt.correctIndex
+                          ? ("correct" as const)
+                          : oi === f.choice
+                            ? ("wrong" as const)
+                            : ("idle" as const),
+                    }
+                  : {}),
+              }))}
+              onChoose={(id) => onChange(answer(s, i, Number(id)))}
+            />
+            {answered && (
+              <p role="status">
+                {f.choice === prompt.correctIndex
+                  ? t("sil.followUpCorrect")
+                  : t("sil.followUpWrong", { answer: label(correctLabel) })}
+              </p>
+            )}
+          </div>
+        );
+      })}
+
+      {s.phase === "learn" && (
+        <Card className={styles.learn}>
+          <h3>{t("sil.learn", { name: target.name })}</h3>
+          <ul>
+            <li>{t("sil.capital", { list: target.capitals.join(", ") })}</li>
+            <li>
+              {(world.neighbors.get(target.id)?.size ?? 0) > 0
+                ? t("sil.neighbors", {
+                    list: [...(world.neighbors.get(target.id) ?? [])]
+                      .map((id) => world.byId.get(id)?.name ?? id)
+                      .sort()
+                      .join(", "),
+                  })
+                : t("sil.noNeighbors")}
+            </li>
+            <li>
+              {t("sil.hint.area", {
+                area: fmt(target.areaKm2),
+                pct: (hintContent(world, target.id, 1) as { largerThanPercent: number })
+                  .largerThanPercent,
+              })}
+            </li>
+          </ul>
+          <p className={styles.note}>{t("sil.distanceNote")}</p>
+          <ReportButton
+            targetRef={target.id}
+            context={{
+              game_id: "silhouette",
+              seed: s.seed,
+              round: s.roundNo,
+              content_version: contentVersion ?? "unknown",
+              input: s.round.guesses.map((g) => g.input).slice(-3),
+            }}
+          />
+          <p className={styles.meta}>
+            {t("sil.points", { n: points(s) })} · {followUpsCorrect(s)}/{s.followUps.length}
+          </p>
+          {endSlot ?? (
+            <Button
+              variant="primary"
+              onPress={() => {
+                onChange(next(world, s, Date.now()));
+                setText("");
+              }}
+            >
+              {s.challenge && s.roundNo >= s.challenge.targets.length
+                ? t("ch.seeResults")
+                : t("sil.next")}
+            </Button>
+          )}
         </Card>
+      )}
+    </section>
+  );
 
-        <div className={styles.side}>
-          <section aria-label={t("sil.hints")} className={styles.hints}>
+  const meta = (
+    <>
+      {s.challenge
+        ? t("ch.roundOf", { n: s.roundNo, total: s.challenge.targets.length })
+        : t("sil.round", { n: s.roundNo })}{" "}
+      · {t("sil.points", { n: sessionPoints(s) })}
+    </>
+  );
+
+  return (
+    <div className={`${styles.page} ${g.page}`}>
+      <GameBar title={t("sil.title")} href="/play/silhouette" meta={meta} />
+
+      <div className={g.split}>
+        <div className={`${g.stage} ${styles.shapeStage} stage-dark`} data-hue="violet">
+          <div className={styles.shapeFloat}>
+            <svg
+              viewBox={`0 0 ${VIEW} ${VIEW}`}
+              role="img"
+              aria-label={t("sil.shapeLabel")}
+              className={styles.shape}
+              style={{ transform: `rotate(${s.round.rotation}deg)` }}
+            >
+              <path d={d} className={styles.land} />
+            </svg>
+          </div>
+        </div>
+
+        <div className={g.panel}>
+          {over && target && resultSection}
+          <div className={`${g.block} ${styles.play}`}>
+            <p className={styles.counter}>
+              {max === null
+                ? t("sil.guessCountOpen", { n: s.round.guesses.length + (over ? 0 : 1) })
+                : t("sil.guessCount", {
+                    n: Math.min(max, s.round.guesses.length + (over ? 0 : 1)),
+                    max,
+                  })}
+            </p>
+
+            {!over && (
+              <>
+                <AnswerInput
+                  label={t("sil.inputLabel")}
+                  value={text}
+                  onChange={setText}
+                  onSubmit={(v) => {
+                    onChange(guess(world, s, v, Date.now()));
+                    setText("");
+                  }}
+                  status={eventMessage}
+                  autoFocus
+                />
+                {suggestions.length > 0 && (
+                  <ul className={styles.suggestions} aria-label={t("sil.suggestions")}>
+                    {suggestions.map((e) => (
+                      <li key={e.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onChange(pick(world, s, e.id, Date.now()));
+                            setText("");
+                          }}
+                        >
+                          {e.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <Button variant="ghost" onPress={() => onChange(surrender(world, s, Date.now()))}>
+                  {t("sil.giveUp")}
+                </Button>
+              </>
+            )}
+          </div>
+
+          <ol className={styles.rows} aria-label={t("sil.title")}>
+            {s.round.guesses.map((row, i) => (
+              <Row key={row.entityId} row={row} world={world} n={i + 1} max={max} unit={unit} />
+            ))}
+          </ol>
+
+          <GuessHeatMap guesses={s.round.guesses} world={world} />
+
+          <section aria-label={t("sil.hints")} className={`${g.block} ${styles.hints}`}>
+            <p className={g.label}>{t("sil.hints")}</p>
             {Array.from({ length: HINT_COUNT }, (_, i) => i + 1).map((n) => {
               const open = isOpen(s.round, n);
               const label =
@@ -221,184 +404,8 @@ export function SilhouetteView({
               );
             })}
           </section>
-
-          <p className={styles.counter}>
-            {max === null
-              ? t("sil.guessCountOpen", { n: s.round.guesses.length + (over ? 0 : 1) })
-              : t("sil.guessCount", {
-                  n: Math.min(max, s.round.guesses.length + (over ? 0 : 1)),
-                  max,
-                })}
-          </p>
-
-          <ol className={styles.rows} aria-label={t("sil.title")}>
-            {s.round.guesses.map((row, i) => (
-              <Row key={row.entityId} row={row} world={world} n={i + 1} max={max} unit={unit} />
-            ))}
-          </ol>
-
-          <GuessHeatMap guesses={s.round.guesses} world={world} />
-
-          {!over && (
-            <>
-              <AnswerInput
-                label={t("sil.inputLabel")}
-                value={text}
-                onChange={setText}
-                onSubmit={(v) => {
-                  onChange(guess(world, s, v, Date.now()));
-                  setText("");
-                }}
-                status={eventMessage}
-                autoFocus
-              />
-              {suggestions.length > 0 && (
-                <ul className={styles.suggestions} aria-label={t("sil.suggestions")}>
-                  {suggestions.map((e) => (
-                    <li key={e.id}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onChange(pick(world, s, e.id, Date.now()));
-                          setText("");
-                        }}
-                      >
-                        {e.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <Button variant="ghost" onPress={() => onChange(surrender(world, s, Date.now()))}>
-                {t("sil.giveUp")}
-              </Button>
-            </>
-          )}
         </div>
       </div>
-
-      {over && target && (
-        <section className={styles.result} aria-live="polite" data-outcome={s.round.status}>
-          <h2 className={styles.outcome}>
-            <span aria-hidden="true" className={styles.outcomeGlyph}>
-              {s.round.status === "solved" ? "✓" : "✕"}
-            </span>
-            {s.round.status === "solved"
-              ? t("sil.solved", { n: s.round.guesses.length, name: target.name })
-              : t("sil.failed", { name: target.name })}
-          </h2>
-
-          {s.followUps.map((f, i) => {
-            if (f.prompt.kind === "neighbors")
-              return (
-                <NeighborsFollowUp
-                  key="neighbors"
-                  world={world}
-                  state={f}
-                  onSubmit={(picks) => onChange(answerNeighborsAt(s, i, picks))}
-                />
-              );
-            const prompt = f.prompt;
-            const answered = f.choice !== null;
-            const correctLabel = prompt.options[prompt.correctIndex] as string;
-            const label = (opt: string) =>
-              prompt.kind === "flag" ? (world.byId.get(opt)?.name ?? opt) : opt;
-            return (
-              <div key={prompt.kind} className={styles.followUp}>
-                <h3>
-                  {t(prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag", {
-                    name: target.name,
-                  })}
-                </h3>
-                <ChoiceGrid
-                  aria-label={t(
-                    prompt.kind === "capital" ? "sil.followUpCapital" : "sil.followUpFlag",
-                    { name: target.name },
-                  )}
-                  stateLabels={{ correct: t("sil.followUpCorrect"), wrong: "✕", near: "" }}
-                  shortcuts={false}
-                  choices={prompt.options.map((opt, oi) => ({
-                    id: String(oi),
-                    label: label(opt),
-                    disabled: answered,
-                    ...(answered
-                      ? {
-                          state:
-                            oi === prompt.correctIndex
-                              ? ("correct" as const)
-                              : oi === f.choice
-                                ? ("wrong" as const)
-                                : ("idle" as const),
-                        }
-                      : {}),
-                  }))}
-                  onChoose={(id) => onChange(answer(s, i, Number(id)))}
-                />
-                {answered && (
-                  <p role="status">
-                    {f.choice === prompt.correctIndex
-                      ? t("sil.followUpCorrect")
-                      : t("sil.followUpWrong", { answer: label(correctLabel) })}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-
-          {s.phase === "learn" && (
-            <Card className={styles.learn}>
-              <h3>{t("sil.learn", { name: target.name })}</h3>
-              <ul>
-                <li>{t("sil.capital", { list: target.capitals.join(", ") })}</li>
-                <li>
-                  {(world.neighbors.get(target.id)?.size ?? 0) > 0
-                    ? t("sil.neighbors", {
-                        list: [...(world.neighbors.get(target.id) ?? [])]
-                          .map((id) => world.byId.get(id)?.name ?? id)
-                          .sort()
-                          .join(", "),
-                      })
-                    : t("sil.noNeighbors")}
-                </li>
-                <li>
-                  {t("sil.hint.area", {
-                    area: fmt(target.areaKm2),
-                    pct: (hintContent(world, target.id, 1) as { largerThanPercent: number })
-                      .largerThanPercent,
-                  })}
-                </li>
-              </ul>
-              <p className={styles.note}>{t("sil.distanceNote")}</p>
-              <ReportButton
-                targetRef={target.id}
-                context={{
-                  game_id: "silhouette",
-                  seed: s.seed,
-                  round: s.roundNo,
-                  content_version: contentVersion ?? "unknown",
-                  input: s.round.guesses.map((g) => g.input).slice(-3),
-                }}
-              />
-              <p className={styles.meta}>
-                {t("sil.points", { n: points(s) })} · {followUpsCorrect(s)}/{s.followUps.length}
-              </p>
-              {endSlot ?? (
-                <Button
-                  variant="primary"
-                  onPress={() => {
-                    onChange(next(world, s, Date.now()));
-                    setText("");
-                  }}
-                >
-                  {s.challenge && s.roundNo >= s.challenge.targets.length
-                    ? t("ch.seeResults")
-                    : t("sil.next")}
-                </Button>
-              )}
-            </Card>
-          )}
-        </section>
-      )}
     </div>
   );
 }

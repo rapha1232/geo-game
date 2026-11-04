@@ -24,6 +24,7 @@ import { DailySummary } from "../daily/DailySummary";
 import type { GameResult } from "@meridian/schemas";
 import { DeepCutView } from "./DeepCutView";
 import styles from "./deep-cut.module.css";
+import { TitleCard } from "../game/GameBar";
 import "../../lib/messages/dc";
 import "../../lib/messages/rk";
 
@@ -184,11 +185,7 @@ export function DeepCutGame({ daily = false }: { daily?: boolean }) {
   if (!data) return <LoadingState className={styles.page}>{t("dc.loading")}</LoadingState>;
   if (!session)
     return (
-      <div className={styles.page}>
-        <header className={styles.head}>
-          <h1>{t("dc.title")}</h1>
-        </header>
-        <p>{t("dc.pitch")}</p>
+      <TitleCard title={t("dc.title")} href="/play/deep-cut" pitch={t("dc.pitch")}>
         <fieldset className={styles.options}>
           <legend className={styles.srOnly}>{t("rk.options")}</legend>
           <label>
@@ -224,7 +221,7 @@ export function DeepCutGame({ daily = false }: { daily?: boolean }) {
             {t("dc.start")}
           </Button>
         </div>
-      </div>
+      </TitleCard>
     );
   return (
     <DeepCutView

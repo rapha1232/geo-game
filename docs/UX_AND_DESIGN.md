@@ -255,6 +255,19 @@ Map rendering details shared by all styles: the outer coastline is a TopoJSON `m
 - **Phones (< 640 px).** A full-height portrait frame would run past the top of the world map and leave the dock covering most of it. So the map takes `min(112vw, 100dvh − bar − 9rem)` and the dock sits under it as a solid band.
 - **Pause** replaces the dock with a "Paused" card; the map is hidden so the clock can't be gamed.
 
+### 5.5 Game screens (stage system)
+
+**2026-11 overhaul (owner request: "now overhaul the game screens too").** Every game shares one system, in `apps/web/components/game/` (`GameBar`, `TitleCard`, `game.module.css`):
+
+- **Title card (set-up).** Fact Pin, Deep Cut, Subdivisions and every quiz open on a title card. On the left is a dark stage in the game's identity hue, with its art floating, the game name at up to 7.5 rem and a one-line pitch. On the right is a panel holding the options and Start. The site nav stays visible. Silhouette, Border Run and Rank It have no set-up step and start straight away.
+- **Game bar.** While a round is on screen the site nav and footer step aside (`data-immersive` on `<html>`, as in a quiz round). A slim glass bar holds back-to-all-games, the game's art, its name (the page `h1`) and the live stats as a pill ("Round 2 · 140 points"). A round opens scrolled to the top.
+- **Stage and panel.** From 1024 px the screen splits into a large **stage** (the map, or Silhouette's shape) and a 340–420 px **panel** that scrolls on its own. The panel holds, in order: the result (when the round is over), the prompt or route set large, the answer field with Give up, the guesses, then hints and round settings. Round settings are a collapsible block, so they never push the game down. Below 1024 px the stage stacks above the panel. Phones shorten the stage (≤ 46 vh), so the prompt and answer field are on screen without scrolling.
+- **Silhouette stage.** The outline glows in the game's hue on a black stage with a dot grid and target rings, and floats gently (still with reduced motion).
+- **Results.** A round's result is a dark block in the game's hue, with the outcome and one big number (score, points or distance). It sits at the top of the panel, never below the fold. Run summaries (Fact Pin, Deep Cut) use the same block in a centred column.
+- **Rank It** has no map. It uses a centred column with the question set as a 2–3.75 rem statement, large tilting rows, value bars in its sun-to-coral hue, and the score as a dark block.
+- **Quiz rounds** keep §5.4. Their game bar and dock pick up the same glass, type and shadows.
+- **Subdivision maps** open framed on the country, and `GameMap` now reads a pack's own feature layer (`objects.subdivisions`), not only `objects.countries`. Before this, the states never drew.
+
 ## 6. Responsive layouts
 
 | Breakpoint | Width       | Layout rules                                                                                                                                                          |

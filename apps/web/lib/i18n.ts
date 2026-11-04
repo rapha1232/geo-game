@@ -62,6 +62,8 @@ const core = {
   "footer.ctaLead": "One more round?",
   "footer.ctaTail": "The map is waiting.",
   "footer.ctaButton": "Browse all games",
+  "game.back": "All games",
+  "game.setup": "Set up your round",
   "search.open": "Search",
   "search.openLong": "Search games and quizzes",
   "search.title": "Jump to a game or quiz",

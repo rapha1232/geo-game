@@ -2,6 +2,7 @@ import { registerMessages } from "../i18n";
 
 /** The `qz.*` strings. They load with the code that uses them, not with the shell. */
 export const messages = {
+  "qz.titlePitch": "{n} to know. Type them, find them on the map, or choose. Timed or untimed.",
   "qz.title": "Quiz Library",
   "qz.blurb":
     "Name them all, find them on the map, or choose. Timed or untimed, as long as you like.",

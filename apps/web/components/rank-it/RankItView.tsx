@@ -31,6 +31,8 @@ import {
 } from "../../lib/rank-it/controller";
 import { ReportButton } from "../report/ReportButton";
 import styles from "./rank-it.module.css";
+import g from "../game/game.module.css";
+import { GameBar } from "../game/GameBar";
 import "../../lib/messages/br";
 import "../../lib/messages/rk";
 import "../../lib/messages/sil";
@@ -94,126 +96,133 @@ export function RankItView({
   const def = world.statById.get(r.stat) as StatDef;
 
   return (
-    <div className={styles.page}>
-      <header className={styles.head}>
-        <h1>{t("rk.title")}</h1>
-        <p className={styles.meta}>
-          {t("rk.round", { n: s.roundNo })} ·{" "}
-          {t("rk.points", { n: s.total + (r.kind === "higher-lower" ? 0 : points(s)) })}
-        </p>
-      </header>
+    <div className={`${styles.page} ${g.page}`}>
+      <GameBar
+        title={t("rk.title")}
+        href="/play/rank-it"
+        meta={
+          <>
+            {t("rk.round", { n: s.roundNo })} ·{" "}
+            {t("rk.points", { n: s.total + (r.kind === "higher-lower" ? 0 : points(s)) })}
+          </>
+        }
+      />
+      <div className={`${g.focus} ${styles.focus}`}>
+        {noRound && (
+          <p role="alert" className={styles.note}>
+            {t("rk.opt.noRound")}
+          </p>
+        )}
 
-      <fieldset className={styles.options}>
-        <legend className={styles.srOnly}>{t("rk.options")}</legend>
-        <label>
-          {t("rk.opt.format")}
-          <select
-            value={s.config.format}
-            onChange={(e) => set({ format: e.target.value as Format })}
-          >
-            {FORMATS.map((f) => (
-              <option key={f} value={f}>
-                {t(`rk.opt.format.${f}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t("rk.opt.stat")}
-          <select value={s.config.stat} onChange={(e) => set({ stat: e.target.value })}>
-            <option value="random">{t("rk.opt.stat.random")}</option>
-            {world.stats.map((x) => (
-              <option key={x.id} value={x.id}>
-                {statName(x.id)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t("rk.opt.scope")}
-          <select value={s.config.scope} onChange={(e) => set({ scope: e.target.value })}>
-            <option value="world">{t("br.opt.region.world")}</option>
-            {CONTINENTS.map((c) => (
-              <option key={c} value={c}>
-                {t(`sil.continent.${c}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t("rk.opt.difficulty")}
-          <select
-            value={s.config.difficulty}
-            onChange={(e) => set({ difficulty: e.target.value as Difficulty })}
-          >
-            {DIFFICULTIES.map((d) => (
-              <option key={d} value={d}>
-                {t(`rk.opt.difficulty.${d}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </label>
-      </fieldset>
-      {noRound && (
-        <p role="alert" className={styles.note}>
-          {t("rk.opt.noRound")}
-        </p>
-      )}
-
-      {r.kind === "order" && (
-        <OrderPlay
-          round={r}
-          def={def}
-          world={world}
-          revealed={s.phase === "revealed"}
-          onMove={(from, to) => onChange(move(s, from, to))}
-          onHint={() => onChange(hint(s))}
-          onSubmit={() => onChange(submit(s, Date.now()))}
-        />
-      )}
-      {r.kind === "top-picks" && (
-        <TopPlay
-          round={r}
-          def={def}
-          world={world}
-          revealed={s.phase === "revealed"}
-          onToggle={(id) => onChange(toggle(s, id))}
-          onReveal={() => onChange(submit(s, Date.now()))}
-        />
-      )}
-      {r.kind === "higher-lower" && (
-        <HigherLowerPlay
-          run={r}
-          def={def}
-          world={world}
-          best={best ?? null}
-          newBest={newBest ?? false}
-          onChoose={(c) => onChange(choose(world, s, c, Date.now()))}
-        />
-      )}
-
-      {s.phase === "revealed" && (
-        <Card className={styles.result}>
-          <ReportButton
-            targetRef={
-              r.kind === "higher-lower"
-                ? r.current
-                : ((r.kind === "order" ? r.truth[0] : r.truth[0]) ?? r.stat)
-            }
-            context={{
-              game_id: "rank-it",
-              seed: s.seed,
-              round: s.roundNo,
-              content_version: contentVersion ?? "unknown",
-              stat: r.stat,
-              names: (r.kind === "higher-lower" ? r.used : r.truth).map(name),
-            }}
+        {r.kind === "order" && (
+          <OrderPlay
+            round={r}
+            def={def}
+            world={world}
+            revealed={s.phase === "revealed"}
+            onMove={(from, to) => onChange(move(s, from, to))}
+            onHint={() => onChange(hint(s))}
+            onSubmit={() => onChange(submit(s, Date.now()))}
           />
-          <Button variant="primary" onPress={() => onChange(next(world, s, Date.now()))}>
-            {r.kind === "higher-lower" ? t("rk.hl.again") : t("rk.next")}
-          </Button>
-        </Card>
-      )}
+        )}
+        {r.kind === "top-picks" && (
+          <TopPlay
+            round={r}
+            def={def}
+            world={world}
+            revealed={s.phase === "revealed"}
+            onToggle={(id) => onChange(toggle(s, id))}
+            onReveal={() => onChange(submit(s, Date.now()))}
+          />
+        )}
+        {r.kind === "higher-lower" && (
+          <HigherLowerPlay
+            run={r}
+            def={def}
+            world={world}
+            best={best ?? null}
+            newBest={newBest ?? false}
+            onChoose={(c) => onChange(choose(world, s, c, Date.now()))}
+          />
+        )}
+
+        {s.phase === "revealed" && (
+          <Card className={`${styles.result} ${styles.resultBar}`}>
+            <ReportButton
+              targetRef={
+                r.kind === "higher-lower"
+                  ? r.current
+                  : ((r.kind === "order" ? r.truth[0] : r.truth[0]) ?? r.stat)
+              }
+              context={{
+                game_id: "rank-it",
+                seed: s.seed,
+                round: s.roundNo,
+                content_version: contentVersion ?? "unknown",
+                stat: r.stat,
+                names: (r.kind === "higher-lower" ? r.used : r.truth).map(name),
+              }}
+            />
+            <Button variant="primary" onPress={() => onChange(next(world, s, Date.now()))}>
+              {r.kind === "higher-lower" ? t("rk.hl.again") : t("rk.next")}
+            </Button>
+          </Card>
+        )}
+        <details className={`${g.block} ${styles.settings}`}>
+          <summary>{t("rk.options")}</summary>
+          <fieldset className={styles.options}>
+            <legend className={styles.srOnly}>{t("rk.options")}</legend>
+            <label>
+              {t("rk.opt.format")}
+              <select
+                value={s.config.format}
+                onChange={(e) => set({ format: e.target.value as Format })}
+              >
+                {FORMATS.map((f) => (
+                  <option key={f} value={f}>
+                    {t(`rk.opt.format.${f}` as MessageKey)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {t("rk.opt.stat")}
+              <select value={s.config.stat} onChange={(e) => set({ stat: e.target.value })}>
+                <option value="random">{t("rk.opt.stat.random")}</option>
+                {world.stats.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {statName(x.id)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {t("rk.opt.scope")}
+              <select value={s.config.scope} onChange={(e) => set({ scope: e.target.value })}>
+                <option value="world">{t("br.opt.region.world")}</option>
+                {CONTINENTS.map((c) => (
+                  <option key={c} value={c}>
+                    {t(`sil.continent.${c}` as MessageKey)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {t("rk.opt.difficulty")}
+              <select
+                value={s.config.difficulty}
+                onChange={(e) => set({ difficulty: e.target.value as Difficulty })}
+              >
+                {DIFFICULTIES.map((d) => (
+                  <option key={d} value={d}>
+                    {t(`rk.opt.difficulty.${d}` as MessageKey)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </fieldset>
+        </details>
+      </div>
     </div>
   );
 }
@@ -373,8 +382,8 @@ function OrderPlay({
         </div>
       )}
       {revealed && (
-        <div aria-live="polite">
-          <h2>
+        <div aria-live="polite" className={`${g.result} stage-dark`} data-hue="sun">
+          <h2 className={styles.score}>
             {t("rk.reveal.title", {
               n: Math.max(
                 0,
@@ -461,8 +470,8 @@ function TopPlay({
         </div>
       )}
       {revealed && (
-        <div aria-live="polite">
-          <h2>{t("rk.top.title", { n: score })}</h2>
+        <div aria-live="polite" className={`${g.result} stage-dark`} data-hue="sun">
+          <h2 className={styles.score}>{t("rk.top.title", { n: score })}</h2>
           <p>{t("rk.top.truth")}</p>
           <ol>
             {round.truth.map((id) => (

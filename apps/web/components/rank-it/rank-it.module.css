@@ -216,3 +216,78 @@
     animation: fx-lift var(--motion-slow) var(--ease-out);
   }
 }
+
+/* ---------------------------------------------------------------- game stage (UX_AND_DESIGN §5.5) */
+.page {
+  max-width: none;
+  gap: 0;
+}
+.focus {
+  gap: var(--space-5);
+}
+/* The question, set as a statement. */
+.prompt {
+  font-size: clamp(2rem, 1rem + 3.4vw, 3.75rem);
+  font-weight: 750;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-wrap: balance;
+}
+.list {
+  gap: var(--space-3);
+  counter-reset: rank;
+}
+.row {
+  min-height: 72px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+.name {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+/* The value bar after the reveal carries Rank It's identity hue. */
+.bar {
+  height: 0.75rem;
+  background: linear-gradient(90deg, var(--hue-sun), var(--hue-coral));
+  opacity: 1;
+}
+.cell {
+  min-height: 64px;
+  border-radius: 18px;
+  font-weight: 650;
+}
+.resultBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 24px;
+}
+.settings summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  font-weight: 650;
+  cursor: pointer;
+}
+.settings .options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--space-2);
+}
+.settings .options select {
+  width: 100%;
+}
+.prompt {
+  margin-bottom: var(--space-3);
+}
+.score {
+  margin: 0;
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}

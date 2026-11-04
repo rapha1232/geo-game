@@ -1,8 +1,5 @@
 .page {
-  max-width: 64rem;
-  margin: 0;
-  display: grid;
-  gap: var(--space-4);
+  position: relative;
 }
 .head {
   display: flex;
@@ -67,12 +64,11 @@
   margin: 0;
   max-width: 60ch;
 }
+/* The map fills the game stage. */
 .mapBox {
   position: relative;
-  height: min(58vh, 32rem);
+  height: 100%;
   min-height: 16rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   overflow: hidden;
 }
 .timer {
@@ -153,12 +149,8 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.mapBox {
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-raised);
-}
 .mapBox > * {
-  border-radius: inherit;
+  border-radius: 0;
 }
 /* Options read as chips, like the quiz setup; the native radio or checkbox stays visible inside each one. */
 .option {
@@ -214,13 +206,8 @@
   position: relative;
 }
 .fact {
-  padding: var(--space-4) var(--space-5);
-  border-left: 3px solid var(--color-accent);
-  border-radius: 0 var(--radius-card) var(--radius-card) 0;
-  background: var(--tint-accent);
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  line-height: 1.4;
+  padding: 0;
+  max-width: none;
 }
 .big {
   font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
@@ -243,4 +230,39 @@
   border-radius: var(--radius-xl);
   background-image: radial-gradient(36rem 14rem at 100% 0%, var(--fx-glow), transparent 70%);
   box-shadow: var(--shadow-raised), var(--edge-highlight);
+}
+
+/* ---------------------------------------------------------------- reveal and summary (dark result blocks) */
+.reveal h2,
+.summary h2 {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.reveal h3 {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.reveal .result {
+  gap: var(--space-1);
+}
+.summary {
+  max-width: 40rem;
+  width: 100%;
+  justify-self: center;
+}
+.summaryRows {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: row;
+}
+.summaryRows li {
+  padding: var(--space-3) var(--space-4);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.06);
 }
