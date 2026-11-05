@@ -137,6 +137,16 @@ describe("state and compare", () => {
     });
     expect(parseState(stateToSearch(s))).toEqual(s);
   });
+  it("AC-AE-013 the globe is the default view; map and table round-trip", () => {
+    expect(parseState("").view).toBe("globe");
+    expect(stateToSearch(parseState(""))).toBe("");
+    for (const view of ["map", "table"] as const) {
+      const s = parseState(`?view=${view}`);
+      expect(s.view).toBe(view);
+      expect(parseState(stateToSearch(s))).toEqual(s);
+    }
+    expect(parseState("?view=nope").view).toBe("globe");
+  });
   it("AC-AE-007 a deep link selects the entity from the path", () => {
     expect(parseState("", "country:PER").sel).toBe("country:PER");
     expect(parseState("", "nonsense").sel).toBeNull();
