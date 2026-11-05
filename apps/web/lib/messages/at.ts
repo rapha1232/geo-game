@@ -3,6 +3,7 @@ import { registerMessages } from "../i18n";
 /** The `at.*` strings. They load with the code that uses them, not with the shell. */
 export const messages = {
   "at.title": "Atlas",
+  "at.discover": "Explore the world",
   "at.intro":
     "Explore the world by population, wealth, size and more. Everything here is a click from a game.",
   "at.search": "Search places and capitals",
@@ -17,7 +18,12 @@ export const messages = {
   "at.layer.capital-latitude": "Capital latitude",
   "at.layer.landlocked": "Landlocked",
   "at.layer.driving": "Driving side",
+  "at.view.globe": "Globe",
   "at.view.map": "Map",
+  "at.globeAria":
+    "Interactive globe of the current layer. Drag to spin, scroll or pinch to zoom, click a place to open its card. Arrow keys spin it and + and − zoom. To choose places with the keyboard, use the search or the Map view.",
+  "at.globeLoading": "Loading the globe…",
+  "at.globeHint": "Drag to spin · scroll to zoom · click a country",
   "at.view.table": "Table",
   "at.view.label": "View",
   "at.mapAria":

@@ -8,7 +8,8 @@ export type AtlasState = {
   /** The entity whose card is open. */
   sel: string | null;
   compare: string[];
-  view: "map" | "table";
+  /** The globe (default), the flat map (full keyboard navigation) or the table. */
+  view: "globe" | "map" | "table";
 };
 
 export const EMPTY_STATE: AtlasState = {
@@ -16,7 +17,7 @@ export const EMPTY_STATE: AtlasState = {
   filter: [],
   sel: null,
   compare: [],
-  view: "map",
+  view: "globe",
 };
 
 export function parseState(search: string, pathEntity?: string | null): AtlasState {
@@ -31,7 +32,7 @@ export function parseState(search: string, pathEntity?: string | null): AtlasSta
       .split(",")
       .filter((x) => /^country:[A-Z]{3}$/.test(x))
       .slice(0, 3),
-    view: q.get("view") === "table" ? "table" : "map",
+    view: q.get("view") === "table" ? "table" : q.get("view") === "map" ? "map" : "globe",
   };
 }
 
@@ -41,7 +42,7 @@ export function stateToSearch(s: AtlasState): string {
   if (s.filter.length > 0) q.set("filter", serializeFilter(s.filter));
   if (s.sel) q.set("sel", s.sel);
   if (s.compare.length > 0) q.set("compare", s.compare.join(","));
-  if (s.view === "table") q.set("view", "table");
+  if (s.view !== "globe") q.set("view", s.view);
   const text = q.toString();
   return text ? `?${text}` : "";
 }

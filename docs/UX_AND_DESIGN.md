@@ -268,6 +268,15 @@ Map rendering details shared by all styles: the outer coastline is a TopoJSON `m
 - **Quiz rounds** keep §5.4. Their game bar and dock pick up the same glass, type and shadows.
 - **Subdivision maps** open framed on the country, and `GameMap` now reads a pack's own feature layer (`objects.subdivisions`), not only `objects.countries`. Before this, the states never drew.
 
+### 5.6 Atlas (map-first explorer)
+
+**2026-11 overhaul (owner request: "now overhaul the atlas page too").** The Atlas uses the same stage system as the games, as a map-first explorer. It runs full width under the site nav (the nav stays, because Atlas is a main destination):
+
+- **Three columns from 1200 px.** The **console** is on the left. It holds the 3.5 rem title, discovery progress (a spectrum bar beside the "Discovered n of 197" sentence), a large search field with a results list, the Layer and View selects, and "Show only where…" filter clauses as cards. The **map** is in the middle and fills the screen height. The **place sheet** is on the right. Between 768 and 1199 px the sheet drops under the console and map. Below 768 px everything stacks (console, map, legend, compare, sheet), and choosing a place scrolls its card into view.
+- **Globe (the default view).** The middle canvas is a live night Earth on a starfield, with an atmosphere glow. Countries take the layer's colours: continents on the political layer (with a continent legend), the sequential ramp on indicators, amber marks on landlocked and driving side. It spins slowly while idle and drags with inertia; the wheel or a pinch zooms; a click opens the card. Choosing a place, by click, search or neighbour chip, flies the globe there, lights the country with a glow and a pulse, and labels it. Map and Table are the other views (see the atlas spec for keyboard use).
+- **Over the map.** The legend floats bottom-left as a card of swatches, with the hover readout as a dark pill above it. The compare tray floats top-left as a pill with removable chips; it moves to the bottom in table view, clear of the header row. The table view fills the same canvas, with a sticky header.
+- **Place sheet.** A dark hero with the flag at 3 rem and the name. Capital, continent, coast and driving side are tiles, and the indicators are rows (value, source and year). Neighbours are chips that open their own card. Then the facts, a primary "＋ Compare" and "Close card" as pills, and "Quiz me on this" as a call to action. With no place chosen, the sheet shows an "Explore the world" panel with the intro.
+
 ## 6. Responsive layouts
 
 | Breakpoint | Width       | Layout rules                                                                                                                                                          |
